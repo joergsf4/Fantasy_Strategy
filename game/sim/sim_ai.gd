@@ -72,6 +72,8 @@ static func _status_value(b: SimBattle, u: Dictionary, v: Dictionary, ef: Dictio
 			return val if engaged else val * 0.3
 		"stealth":
 			return 3.0
+		"scared":
+			return float(v["atk"]) * 0.8 if v["team"] != u["team"] else 0.0
 		"tired":
 			return float(mods.get("def", 0)) * 1.5
 	return 0.0

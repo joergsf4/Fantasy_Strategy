@@ -3,7 +3,7 @@ extends Node
 
 const TITLE_MUSIC := "res://assets/audio/title_theme.mp3"
 const BATTLE_MUSIC := "res://assets/audio/battle_theme.mp3"
-const CHAPTERS := ["ch1", "ch2", "ch3"]
+const CHAPTERS := ["ch1", "ch2", "ch3", "ch4"]
 const MUSIC_DB := -6.0
 
 var units: Dictionary
@@ -32,6 +32,7 @@ func _names() -> Dictionary:
 	var n := {}
 	for id: String in units:
 		n[id] = units[id]["name"]
+	n["mutter"] = "Lieselotte"     # Geisel aus Mission 4 (Platzhaltername), keine Kampfeinheit
 	return n
 
 
@@ -47,7 +48,8 @@ func _run() -> void:
 	var pick: Array = await _choose_level()
 	for i in range(int(pick[0]), CHAPTERS.size()):
 		party.chapter = i + 1
-		await _chapter(CHAPTERS[i], bool(pick[1]) and i == int(pick[0]))
+		var nxt: String = CHAPTERS[i + 1] if i + 1 < CHAPTERS.size() else ""
+		await _chapter(CHAPTERS[i], bool(pick[1]) and i == int(pick[0]), nxt)
 	var layer := CanvasLayer.new()
 	layer.layer = 2
 	add_child(layer)
@@ -114,7 +116,7 @@ func _choose_level() -> Array:
 	return res
 
 
-func _chapter(cid: String, skip_intro := false) -> void:
+func _chapter(cid: String, skip_intro := false, next_cid := "") -> void:
 	var m := Mission.load_mission(cid)
 	var story_c := _load_json("res://data/story_%s.json" % cid)
 	if stage.map_data.get("id", "") != cid:
@@ -137,7 +139,7 @@ func _chapter(cid: String, skip_intro := false) -> void:
 	party.absorb(res)
 	party.save()
 	await _dialogue(story_c["outro"])
-	await _camp(m)
+	await _camp(Mission.load_mission(next_cid) if next_cid != "" else m)   # Lager zeigt die feste Gruppe der naechsten Mission
 	party.save()
 
 
@@ -464,6 +466,40 @@ func _screenshot_mode() -> void:
 		for i in 40:
 			await get_tree().process_frame
 		await get_tree().create_timer(1.0).timeout
+		get_viewport().get_texture().get_image().save_png(OS.get_environment("SHOT_OUT"))
+		get_tree().quit()
+		return
+	if mode == "soundlab":
+		var lab := SoundLab.new()
+		add_child(lab)
+		for i in 20:
+			await get_tree().process_frame
+		get_viewport().get_texture().get_image().save_png(OS.get_environment("SHOT_OUT"))
+		get_tree().quit()
+		return
+	if mode.begins_with("teehaus"):   # Mission 4: teehaus | teehaus_menu (Befreien-Menue) | teehaus_gebiss (Gebiss im Flug) | teehaus_frei (Mutter rennt davon)
+		var bt := Battle.new()
+		bt.setup(Mission.load_mission("ch4"), units)
+		bt.loadout = Items.defs()["loadout_chapter1"]
+		add_child(bt)
+		await get_tree().process_frame
+		var lin: Dictionary = bt._find("kungfu")
+		if mode == "teehaus_menu" or mode == "teehaus_frei":
+			lin["pos"] = Vector2i(6, 2)
+			(lin["node"] as Node3D).position = bt.to_world(lin["pos"])
+		if mode == "teehaus_menu":
+			bt._select(lin)
+			bt._enter_action()
+		if mode == "teehaus_frei":
+			bt._free_hostage(lin, bt.world.by_id("geisel"))
+			await get_tree().create_timer(0.9).timeout
+		if mode == "teehaus_gebiss":
+			var xl: Dictionary = bt._find("xiulan")
+			bt.fx.before_hit("gebiss", xl, lin, 0)
+			await get_tree().create_timer(0.2).timeout
+		for i in (0 if mode == "teehaus_gebiss" else 30):
+			await get_tree().process_frame
+		await get_tree().create_timer(0.0 if mode == "teehaus_gebiss" else 0.6).timeout
 		get_viewport().get_texture().get_image().save_png(OS.get_environment("SHOT_OUT"))
 		get_tree().quit()
 		return

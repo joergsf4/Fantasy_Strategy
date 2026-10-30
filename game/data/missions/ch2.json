@@ -2,7 +2,7 @@
  "id": "ch2",
  "title": "Der Hohlweg",
  "map": "res://data/map_ch2.json",
- "briefing": "Eine Mauer sperrt den Hohlweg, in der Mitte ein Tor. Springen, werfen, sprengen oder schmelzen bringt einen hinüber. Wer auf der anderen Seite am Tor steht, öffnet es von innen.",
+ "briefing": "Eine Mauer sperrt den Hohlweg, in der Mitte ein Tor. Springen, werfen, sprengen oder schmelzen bringt einen hinüber. Wer auf der anderen Seite am Tor steht, öffnet es von innen. Hinter der Mauer wartet Wart, ein Söldner mit Raketenwerfer.",
  "goals": [
   {
    "type": "rout"
@@ -97,6 +97,233 @@
      ]
     }
    ]
+  },
+  {
+   "when": {
+    "ability": {
+     "id": "wurf",
+     "by": "museklaugust"
+    }
+   },
+   "if": {
+    "present": [
+     "maedchen_baer"
+    ]
+   },
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "maedchen_baer",
+       "right": "museklaugust",
+       "speaker": "museklaugust",
+       "text": "So wirft ein Kurfürst und König! Mit Anlauf und ohne Gewissensbisse!",
+       "right_expr": "lachend"
+      },
+      {
+       "left": "maedchen_baer",
+       "right": "museklaugust",
+       "speaker": "maedchen_baer",
+       "text": "Brumm war nicht begeistert. Ich auch nicht. Aber es hat geklappt.",
+       "left_expr": "wuetend"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "ability": {
+     "id": "stabsprung",
+     "by": "kungfu"
+    }
+   },
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "kungfu",
+       "right": "maedchen_baer",
+       "speaker": "kungfu",
+       "left_expr": "lachend",
+       "text": "Wer den Stab beherrscht, braucht keine Tür."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "ability": {
+     "id": "kanone",
+     "by": "elisabeth"
+    }
+   },
+   "if": {
+    "present": [
+     "robo"
+    ]
+   },
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "elisabeth",
+       "right": "robo",
+       "speaker": "elisabeth",
+       "text": "Feuer frei! Ich ziele auf alles, was nicht winkt.",
+       "left_expr": "lachend"
+      },
+      {
+       "left": "elisabeth",
+       "right": "robo",
+       "speaker": "robo",
+       "text": "Treffer bestätigt. Trefferquote: ausreichend. Lautstärke: unnötig hoch."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "near": {
+     "a": "robo",
+     "b": "any_enemy",
+     "dist": 3
+    }
+   },
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "robo",
+       "right": "soldat_infanterie",
+       "speaker": "robo",
+       "text": "Ziele erfasst. Empfehlung an die Büttel: Rückzug."
+      },
+      {
+       "left": "robo",
+       "right": "soldat_infanterie",
+       "speaker": "soldat_infanterie",
+       "text": "Der redet mit uns? Mamaaa!"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "enemies_left": 2
+   },
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "maedchen_baer",
+       "right": "soldat_infanterie",
+       "speaker": "soldat_infanterie",
+       "text": "Der Regent hat uns nicht genug bezahlt für das hier."
+      },
+      {
+       "left": "maedchen_baer",
+       "right": "soldat_infanterie",
+       "speaker": "maedchen_baer",
+       "left_expr": "lachend",
+       "text": "Dann geht doch heim. Wir haben nichts gegen Pensionäre."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "near": {
+     "a": "wart",
+     "b": "any_enemy",
+     "dist": 6
+    }
+   },
+   "if": {
+    "present": [
+     "museklaugust"
+    ]
+   },
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "museklaugust",
+       "right": "wart",
+       "speaker": "museklaugust",
+       "text": "Ein Wildschwein! Ich dachte, die gibt es nur im Eintopf."
+      },
+      {
+       "left": "museklaugust",
+       "right": "wart",
+       "speaker": "wart",
+       "text": "Und ich dachte, Kurfürsten wären größer. Raketen frei!",
+       "right_expr": "lachend"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "ability": {
+     "id": "rakete",
+     "by": "wart"
+    }
+   },
+   "if": {
+    "present": [
+     "maedchen_baer"
+    ]
+   },
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "maedchen_baer",
+       "right": "wart",
+       "speaker": "wart",
+       "text": "Boom! Das ist meine Antwort auf Höflichkeit.",
+       "right_expr": "lachend"
+      },
+      {
+       "left": "maedchen_baer",
+       "right": "wart",
+       "speaker": "maedchen_baer",
+       "text": "Brumm, runter! Der Eber schießt mit Feuerwerk!",
+       "left_expr": "wuetend"
+      }
+     ]
+    }
+   ]
   }
- ]
+ ],
+ "flee": {
+  "wart": [
+   {
+    "left": "$hero",
+    "right": "wart",
+    "speaker": "wart",
+    "right_expr": "wuetend",
+    "text": "Genug! Meine Raketen sind leer und mein Stolz ist verbeult. Das… das bleibt nicht ungerächt!"
+   },
+   {
+    "left": "$hero",
+    "right": "wart",
+    "speaker": "$hero",
+    "text": "Er rennt wie ein Ferkel, dem man das Futter wegnimmt."
+   },
+   {
+    "left": "$hero",
+    "right": "wart",
+    "speaker": "wart",
+    "right_expr": "wuetend",
+    "text": "Ich komme wieder! Mit mehr Raketen! Und mit Senf!"
+   }
+  ]
+ }
 }

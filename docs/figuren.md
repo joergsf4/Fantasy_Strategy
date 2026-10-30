@@ -205,6 +205,58 @@ Tank
 
 ---
 
+## Ikonische Gegenspieler (Generäle des Regenten)
+
+Bilder fertig (Porträt, lachend, wütend, Karten-Figur). Wart, Oskar und Maja sind im Spiel (Werte und Fähigkeiten sind meine Platzhalter-Vorschläge). **Xiùlán ist im Spiel** (Mission 4 „Das Teehaus am Pass“, Gebiss-Wurf als Fernangriff mit Abklingzeit 3: Reichweite 2–4, ×1,4; HP 38, ATK 8, DEF 3).
+
+### Wart
+*Anthropomorphes Wildschwein, fies bis an die Zähne bewaffnet, Raketenwerfer*  
+`wart`
+
+**Typ:** Fernkampf-Schaden (Boss), HP 42 · ATK 10 · DEF 4 · BEW 3 · Reichweite 1–2 (Platzhalterwerte)
+
+**Spezialattacke / Fähigkeit:** Raketenwerfer: Reichweite 2–4, ×1,6, Gegner neben dem Ziel erhalten 50 % (Abklingzeit 3). **Im Spiel:** Mission 2 „Der Hohlweg“
+
+**Sonstiges (Rolle, Story, Kombos):** Trägt Gold und eine Rauchbombe. Wertet der Vorschlag nach dem ersten Spieltest nach.
+
+---
+
+### Xiùlán
+*Asiatische Oma, kämpft im Mantis-Style-Kung-Fu, kann ihr Gebiss (dritte Zähne) werfen*  
+`xiulan`
+
+**Typ:** 
+
+**Spezialattacke / Fähigkeit:** 
+
+**Sonstiges (Rolle, Story, Kombos):** 
+
+---
+
+### Oskar
+*General, jung, hübsch, blond, kann seine Truppen buffen*  
+`oskar`
+
+**Typ:** Unterstützer-General (Boss), HP 34 · ATK 7 · DEF 4 · RES 3 · BEW 4 (Platzhalterwerte)
+
+**Spezialattacke / Fähigkeit:** Feldherrenbefehl: Truppen im Umkreis 3 erhalten +3 Angriff, +2 Verteidigung für 2 Runden (Abklingzeit 4). **Im Spiel:** Mission 3 „Mühlbach in Flammen“
+
+**Sonstiges (Rolle, Story, Kombos):** Zwillingsbruder von Maja. Setzt den Befehl ein, sobald mindestens 2 Verbündete in der Nähe sind.
+
+---
+
+### Maja
+*Zwillingsschwester des Generals, schüchtert Gegner ein, sehr hübsch und fies*  
+`maja`
+
+**Typ:** Schadensausteiler (Boss), HP 30 · ATK 8 · DEF 3 · RES 5 · BEW 4 · Reichweite 1–2 (Platzhalterwerte)
+
+**Spezialattacke / Fähigkeit:** Eisiger Blick: Helden im Umkreis 2 sind 2 Runden eingeschüchtert (−3 Angriff, −1 Verteidigung), Abklingzeit 3. **Im Spiel:** Mission 3
+
+**Sonstiges (Rolle, Story, Kombos):** Zwillingsschwester von Oskar. Wird sie besiegt, reagiert er wütend (und umgekehrt).
+
+---
+
 ## Generische Soldaten (Gegner)
 
 ### Infanterie

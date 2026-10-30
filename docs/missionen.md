@@ -156,3 +156,47 @@ Nutzt das bestehende Dialogsystem über der Karte: Auslöser sind Betreten eines
 - Nächster Schritt: Feuer und Rettung (Mission 1 nachrüsten), danach Briefing und Heldenwahl.
 
 - **Mission 3 „Mühlbach in Flammen“** (`data/missions/ch3.json`, `map_ch3.json`, `story_ch3.json`): Feuer als Weltobjekt (`fire`, `house`; `World.tick_fire`, 3 Phasen Brenndauer, Ausbreitung nur auf Häuser und Wald). Löschen: **Fasswurf** (Brunhilde, Umkreis 1) oder **„Feuer löschen“** (jede Figur, 1 Feld, Sicherheitsnetz). Brandschaden 4 auf Feuerfeldern, Vorschau der nächsten Zündung (orange Felder), Bonusziel „Kein Haus brennt ab“. Test: `tests/test_fire.gd`. **Offen:** Bier als Löschmittel (Gegenstand) und Feuer im Simulator (Balancing nicht gemessen).
+
+
+## Feste Gruppen und Ereignisse (Entscheidung des Nutzers)
+- **Keine Heldenwahl.** Jede Mission hat eine **feste Gruppe** (`players` in der Karte). Das ermöglicht Dialoge und Ereignisse zwischen genau diesen Figuren. Das Lager zeigt die Gruppe der **nächsten** Mission (Reiter „Aufstellung“ ist nur eine Anzeige), Ausrüstung und Rucksack bleiben frei verteilbar.
+- **Mehr Ereignisse:** Verstärkung (geskriptet), Dialoge zwischen Figuren untereinander und mit Gegnern, Reaktionen auf Taten („Wendy heilt drei Verbündete, die Gruppe lobt sie“).
+
+### Ereignisse in einer Mission (`triggers` in `data/missions/<id>.json`)
+Ein Ereignis = `when` (Auslöser) + optional `if` (Bedingung) + `do` (Schritte). Jedes feuert höchstens einmal. Geprüft wird nach jeder Aktion und zu Beginn jeder Phase.
+
+| `when` | Bedeutung | wer ist `$hero` |
+|---|---|---|
+| `{"turn": 3}` | Beginn von Runde 3 | – |
+| `{"enter": [x, y]}` | eine Figur betritt das Feld | die Figur |
+| `{"object": {"id", "state"}}` | Weltobjekt hat Zustand (Tor offen …) | – |
+| `{"heal": {"by": "wendy", "targets": 3}}` | Heilung erreicht mindestens N Verbündete | die Heilerin |
+| `{"ability": {"id": "fasswurf", "by": "braumeisterin"}}` | Fähigkeit wird benutzt (`id`, `by` optional) | die Nutzerin |
+| `{"kill": {"id": "bienenmaedchen", "count": 3}}` | Gegner besiegt (bestimmter Typ und/oder Anzahl insgesamt) | der Sieger |
+| `{"first_kill": true}` | erster besiegter Gegner | der Sieger |
+| `{"fall": {"id": "wendy"}}` | Held fällt (`{}` = irgendein Held) | der Gefallene |
+| `{"hp_below": {"id": "ritter", "ratio": 0.5}}` | Leben unter Anteil | die Figur |
+| `{"near": {"a": "samurai", "b": "soldat_beritten", "dist": 3}}` | zwei Figuren nahe beieinander (`b` auch `"any_enemy"`) | `a` |
+| `{"enemies_left": 2}` | höchstens N Gegner übrig | irgendein Held |
+
+Bedingungen `if`: `{"present": ["ritter", "wendy"]}` (alle leben noch), `{"absent": ["wendy"]}`, `{"object": {...}}`.
+Schritte `do`: `{"dialogue": [...]}` (Zeilen mit `"left"/"right"/"speaker"/"text"`, `"left_expr"/"right_expr"`, `$hero` als Platzhalter, `text_by` je Figur), `{"popup": "Text"}`, `{"spawn": [{"id", "pos", "carry"}]}`, `{"world": {"id", "effect"}}`.
+
+Beispiele sind in Mission 1 bis 3 eingetragen (Heilung loben, Stachelia trifft Mira, Takeda und der Reiter, Robo und die Büttel, Brunhildes Fasswurf-Spruch). Test: `tests/test_events.gd`.
+
+## Wiederkehrende Gegner (Flucht statt Tod)
+
+Benannte Gegner (`"flees": true` in `units.json`: Wart, Oskar, Maja) sterben nicht. Fallen sie auf 0 Leben, lassen sie ihre Beute fallen, ein Fluchtdialog mit wütendem Portrait läuft (`"flee": {id: [Zeilen]}` in der Mission, sonst ein Standardsatz), dann rennen sie zum nächsten Kartenrand. Für das Ziel „alle besiegen“ zählen sie als erledigt.
+
+- Die Party merkt sich Entkommene (`Party.nemesis`, im Speicherstand). Der Kampf liest sie als `nemeses`.
+- In späteren Missionen prüft die Bedingung `"if": {"fled": ["wart"]}` darauf. Beispiel Mission 3: Runde 3 kehrt Wart mit Dialog und frischer Rakete zurück (`spawn`). Ohne Vorgeschichte, etwa über den Levelwähler, erscheint er nicht.
+- Fliehen sie erneut, bleiben sie vermerkt. Noch offen: Oskar und Maja kehren erst in einer späteren Mission zurück, Xiùlán ist aufgehoben.
+
+## Mission 4: Das Teehaus am Pass (Geisel)
+
+- **Ziel (Pflicht):** Geisel befreien (`goal: free`). Ein Held auf einem Nachbarfeld wählt „Befreien“, die Mutter (Lieselotte, Platzhalter) rennt davon. Geisel und Teehaus sind Weltobjekte (`hostage`, `teahouse`) und sperren ihr Feld.
+- **Lärm-Uhr:** Das Baby schreit, in Runde 2, 4 und 6 kommt Verstärkung vom Kartenrand (`turn`-Auslöser mit `spawn`). Keine harte Frist.
+- **Xiùlán:** Wache an der Tür, wirft ihr Gebiss (Fernangriff, Abklingzeit 3). Fällt sie unter 50 % Leben, solange die Geisel gefesselt ist, bricht sie ab (`retreat`-Schritt, Bonusziel „überzeugt“) und merkt sich als Entkommene. Wird sie besiegt, flieht sie wie die anderen Benannten.
+- **Bonus:** Alle Wachen besiegt (60 Gold), Xiùlán überzeugt (Äther).
+- Gruppe: Mira, Meister Lin, Albrecht, Wendy, Kage-Schwestern, Elisabeth.
+- Simulator: Mission 4 ist dort noch nicht abgebildet (Geisel, Verstärkung).

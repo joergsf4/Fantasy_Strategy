@@ -73,6 +73,9 @@ func apply(o: Dictionary, effect: String) -> Array[Dictionary]:
 		"open":
 			o["state"] = "open"
 			changed.append(o)
+		"free":
+			o["state"] = "free"
+			changed.append(o)
 		"extinguish":
 			o["age"] = 0
 			o["state"] = "out" if o["type"] == "fire" else "intact"

@@ -106,6 +106,36 @@ jobs.push({ name: 'haendler', refs: [ref(STYLE_REF)], prompt: `Create a dialogue
 jobs.push({ name: 'haendler_lachend', refs: [ref(STYLE_REF)], prompt: `Create a dialogue portrait of ${MERCHANT}, laughing out loud with joy.` + PORTRAIT_TAIL });
 jobs.push({ name: 'haendler_chibi', refs: [path.join(OUT, 'ritter_chibi.jpg')], prompt: `Create ${MERCHANT}.` + CHIBI_TAIL });
 
+// Neue Gegenspieler: Wart, Xiulan, Oskar, Maja. Reihenfolge wichtig: Maja nutzt Oskars Portrait als Vorlage (Zwillinge).
+const VILLAINS = {
+  wart: 'Wart, an anthropomorphic wild boar mercenary: huge tusks, scarred snout, bristly dark mohawk, small mean eyes with an evil grin, muscular, wearing patched spiked leather armor, crossed bandoliers of bullets and grenades, knives in his belt and boots, and a big rocket launcher resting on his shoulder; armed to the teeth',
+  xiulan: 'Xiulan, a small elderly Chinese grandmother kung fu master: grey hair in a tight bun with chopsticks, deeply wrinkled face with a sly toothless grin, a faded red-and-gold silk jacket with frog buttons, wide trousers and cloth shoes, hands in a praying-mantis claw stance, and in one hand she is holding up a set of false teeth (dentures) ready to throw',
+  oskar: 'Oskar, a young, very handsome blond general: swept-back golden hair, sharp blue eyes, a confident charming smirk, an ornate crimson and black officer uniform with gold braid and epaulettes, a short black cape, a sabre at his hip, one hand raised commandingly as if rallying troops',
+  maja: 'Maja, the twin sister of the attached general: same face structure, same golden blond hair color and blue eyes but feminine, extremely beautiful and cruel, long flowing blond hair, a cold intimidating smile and a piercing icy gaze, wearing an elegant crimson and black dress-armor with high collar and gold trim, holding a black riding crop; she looks menacing and makes opponents shrink',
+};
+const V_EMO = { lachend: 'laughing wickedly with delight, head thrown back slightly', wuetend: 'furious and snarling, eyes blazing with rage' };
+const SELF_TAIL = ' Solid bright green background, no text, no border. Output exactly ONE character, no duplicates or ghost copies.';
+for (const [vid, d] of Object.entries(VILLAINS)) {
+  const base = vid === 'maja' ? path.join(OUT, 'oskar.jpg') : ref(STYLE_REF);
+  const intro = vid === 'maja'
+    ? `Create a dialogue portrait of ${d}. Same pixel-art style, framing and composition as the attached image: character on the left side of the image, upper body, facing right, nothing on the right half.`
+    : `Create a dialogue portrait of ${d}.` + PORTRAIT_TAIL;
+  jobs.push({ name: vid, refs: [base], prompt: intro + (vid === 'maja' ? SELF_TAIL : '') });
+  jobs.push({ name: `${vid}_chibi`, refs: [path.join(OUT, `${vid}.jpg`)], prompt:
+    `Create a chibi version of exactly this character. Keep the same face, hair, colors, outfit and props. IMPORTANT: strict FULL BODY from head to toe, both feet clearly visible standing on the ground, nothing cropped, entire figure inside the image with margin. Tiny cute chibi proportions (about 2.5 heads tall), standing, facing right, small game-map sprite. Keep exactly the same pixel-art style.` + ' Output exactly ONE single character: no second figure, no ghost duplicate. NO ground line, NO floor strip, NO shadow or platform under the feet: the feet stand directly on the flat green background. ' + GREEN });
+  for (const [e, t] of Object.entries(V_EMO))
+    jobs.push({ name: `${vid}_${e}`, refs: [path.join(OUT, `${vid}.jpg`)], prompt:
+      `Redraw exactly this character in the identical pixel-art style, outfit, colors, size and framing: character on the left side of the image, facing right, nothing on the right half, solid bright green background like the reference. Change ONLY the facial expression and body language to: ${t}. Any glow stays inside the head: no light beams, streaks or glow extending outside the face. No text, no border.` });
+}
+
+// Mission 4 (Teehaus): Mutter mit Baby (Geisel, Platzhalter "Lieselotte") und Xiulans Wurf-Gebiss als Effekt-Sprite.
+const MOTHER = 'a young village mother: warm brown hair in a loose braid with a headscarf, a worn green-and-cream peasant dress with an apron, soft kind face, carrying a tiny baby wrapped in a cream blanket in her arms (the baby has a little tuft of hair and big round eyes)';
+const MOTHER_EMO = { '': 'frightened and worried, eyes wide, protectively hugging the baby', lachend: 'beaming with relief and gratitude, tears of joy, hugging the baby', wuetend: 'fierce mother-bear anger, glaring and scolding, shielding the baby' };
+for (const [e, t] of Object.entries(MOTHER_EMO))
+  jobs.push({ name: e ? `mutter_${e}` : 'mutter', refs: [ref(STYLE_REF)], prompt: `Create a dialogue portrait of ${MOTHER}, ${t}.` + PORTRAIT_TAIL });
+jobs.push({ name: 'mutter_chibi', refs: [path.join(OUT, 'ritter_chibi.jpg')], prompt: `Create ${MOTHER}.` + CHIBI_TAIL + ' NO ground line, NO floor strip, NO shadow under the feet.' });
+jobs.push({ name: 'fx_gebiss', refs: [path.join(OUT, 'fx_fireball.jpg')], prompt: 'Create a single set of cartoon false teeth (dentures): pink gums with two rows of white teeth, slightly open as if chomping, with a short white motion streak, game sprite.' + FX_STYLE });
+
 async function generate(page, job) {
   await page.goto('https://gemini.google.com/app', { waitUntil: 'domcontentloaded' });
   await page.waitForSelector('div[role=textbox], .ql-editor', { timeout: 30000 });

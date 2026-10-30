@@ -40,7 +40,8 @@ func scene(heroes: Array, foes := []) -> Array:
 	b.state = Battle.State.IDLE
 	b.world = World.new(Mission.load_mission("ch2")["objects"])
 	b.grid.blocked = b.world.blocked()
-	b.triggers = (Mission.load_mission("ch2")["triggers"] as Array).duplicate(true)
+	# nur die Tor-Ereignisse (Objekt/Feld); Kampfereignisse (Naehe, Gegner uebrig ...) gehoeren in test_events.gd
+	b.triggers = (Mission.load_mission("ch2")["triggers"] as Array).filter(func(t: Dictionary) -> bool: return t["when"].has("object") or t["when"].has("enter")).duplicate(true)
 	talk.clear()
 	var out: Array = []
 	for h: Array in heroes:

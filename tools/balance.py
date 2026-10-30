@@ -295,7 +295,7 @@ def e7_fire():
     print("E7: Mission 3, Feuer und Loeschen")
     base_party = ["ritter", "maedchen_baer", "braumeisterin", "wendy", "elisabeth", "samurai"]
     no_bru = [("kungfu" if h == "braumeisterin" else h) for h in base_party]
-    foes = ["soldat_infanterie", "soldat_infanterie", "soldat_infanterie", "soldat_bogenschuetze", "soldat_beritten"]
+    foes = ["soldat_infanterie", "soldat_infanterie", "soldat_infanterie", "soldat_bogenschuetze", "soldat_beritten", "oskar", "maja"]   # wie in Mission 3
     variants = {
         "voll": dict(party={"fixed": base_party}),
         "ohne_fasswurf": dict(party={"fixed": base_party}, disabled={"braumeisterin": ["fasswurf"]}),
@@ -661,7 +661,7 @@ def report():
         nm = {"voll": "Voll (Fasswurf + Löschen von Hand)", "ohne_fasswurf": "Ohne Fasswurf (nur Löschen von Hand)",
               "ohne_loeschen": "Gar nicht löschen", "ohne_brunhilde": "Ohne Brunhilde (Lin statt ihr, nur Löschen von Hand)"}
         w("## 8. Mission 3: Feuer\n")
-        w("Aufstellung wie im Spiel (Albrecht, Mira, Brunhilde, Wendy, Elisabeth, Takeda gegen 3 Büttel, 1 Bogenschützen, 1 Reiter). "
+        w("Aufstellung wie im Spiel (Albrecht, Mira, Brunhilde, Wendy, Elisabeth, Takeda gegen 3 Büttel, 1 Bogenschützen, 1 Reiter und die Zwillinge Oskar und Maja). "
           "Zahlen: Siegquote / durchschnittlich verlorene Häuser von 4, bei steigender Gegnerstärke (Leben und Angriff ×).\n")
         w("| Variante | " + " | ".join(f"×{m}" for m in e7["mults"]) + " |")
         w("|---|" + "--:|" * len(e7["mults"]))

@@ -1,18 +1,164 @@
 {
-  "id": "ch1",
-  "title": "Eichenfurt brennt",
-  "map": "res://data/map_ch1.json",
-  "briefing": "Rauch über Eichenfurt. Der Regent schickt seine Büttel: schlagt sie zurück, bevor das Dorf fällt.",
-  "goals": [{"type": "rout"}],
-  "triggers": [
-    {"when": {"turn": 3},
-     "do": [
-       {"popup": "Verstärkung!"},
-       {"dialogue": [
-         {"left": "maedchen_baer", "right": "soldat_infanterie", "speaker": "soldat_infanterie", "text": "Der Hauptmann schickt Nachschub! Für den Regenten!"},
-         {"left": "maedchen_baer", "right": "soldat_infanterie", "speaker": "maedchen_baer", "left_expr": "wuetend", "text": "Brumm, die Nachzügler gehören dir."}
-       ]},
-       {"spawn": [{"id": "soldat_infanterie", "pos": [11, 4]}]}
-     ]}
-  ]
+ "id": "ch1",
+ "title": "Eichenfurt brennt",
+ "map": "res://data/map_ch1.json",
+ "briefing": "Rauch über Eichenfurt. Der Regent schickt seine Büttel: schlagt sie zurück, bevor das Dorf fällt.",
+ "goals": [
+  {
+   "type": "rout"
+  }
+ ],
+ "triggers": [
+  {
+   "when": {
+    "turn": 3
+   },
+   "do": [
+    {
+     "popup": "Verstärkung!"
+    },
+    {
+     "dialogue": [
+      {
+       "left": "maedchen_baer",
+       "right": "soldat_infanterie",
+       "speaker": "soldat_infanterie",
+       "text": "Der Hauptmann schickt Nachschub! Für den Regenten!"
+      },
+      {
+       "left": "maedchen_baer",
+       "right": "soldat_infanterie",
+       "speaker": "maedchen_baer",
+       "left_expr": "wuetend",
+       "text": "Brumm, die Nachzügler gehören dir."
+      }
+     ]
+    },
+    {
+     "spawn": [
+      {
+       "id": "soldat_infanterie",
+       "pos": [
+        11,
+        4
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "heal": {
+     "by": "wendy",
+     "targets": 3
+    }
+   },
+   "if": {
+    "present": [
+     "ritter"
+    ]
+   },
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "ritter",
+       "right": "wendy",
+       "speaker": "ritter",
+       "text": "Drei auf einen Streich! Das war meisterhaft, Wendy.",
+       "right_expr": "lachend"
+      },
+      {
+       "left": "ritter",
+       "right": "wendy",
+       "speaker": "wendy",
+       "text": "Mäh… ich habe nur kräftig gerührt. Der Kräutertee macht es.",
+       "right_expr": "lachend"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "near": {
+     "a": "maedchen_baer",
+     "b": "bienenmaedchen",
+     "dist": 4
+    }
+   },
+   "if": {
+    "present": [
+     "bienenmaedchen"
+    ]
+   },
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "maedchen_baer",
+       "right": "bienenmaedchen",
+       "speaker": "bienenmaedchen",
+       "text": "Bssss… so ein niedlicher Bär. Den fülle ich mit Honig und hänge ihn an die Wand.",
+       "right_expr": "lachend"
+      },
+      {
+       "left": "maedchen_baer",
+       "right": "bienenmaedchen",
+       "speaker": "maedchen_baer",
+       "text": "Brumm ist kein Kuchen. Und ich bin keine Beute.",
+       "left_expr": "wuetend"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "first_kill": true
+   },
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "$hero",
+       "right": "ritter",
+       "speaker": "$hero",
+       "text": "Einer weniger! Das war leichter, als es aussah."
+      },
+      {
+       "left": "$hero",
+       "right": "ritter",
+       "speaker": "ritter",
+       "text": "Gut. Aber werdet nicht übermütig, der Regent schickt mehr."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "enemies_left": 1
+   },
+   "if": {
+    "present": [
+     "bienenmaedchen"
+    ]
+   },
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "maedchen_baer",
+       "right": "bienenmaedchen",
+       "speaker": "bienenmaedchen",
+       "text": "Ihr werdet den Regenten nicht aufhalten! Königin Krone wird euch… ach, egal. Stecht zu!",
+       "right_expr": "wuetend"
+      }
+     ]
+    }
+   ]
+  }
+ ]
 }

@@ -350,5 +350,106 @@
    "extinguish",
    "smash"
   ]
+ },
+ "rakete": {
+  "name": "Raketenwerfer",
+  "text": "Feuert eine Rakete (×1,6, Reichweite 2–4). Gegner neben dem Ziel erhalten 50 % Schaden.",
+  "cd": 3,
+  "target": "enemy",
+  "range": [
+   2,
+   4
+  ],
+  "caps": [
+   "blast",
+   "ranged_hit"
+  ],
+  "effects": [
+   {
+    "type": "damage",
+    "mult": 1.6
+   },
+   {
+    "type": "splash",
+    "mult": 0.5
+   }
+  ],
+  "ai_bonus": 4
+ },
+ "befehl": {
+  "name": "Feldherrenbefehl",
+  "text": "Truppen im Umkreis 3: +3 Angriff und +2 Verteidigung für 2 Runden.",
+  "cd": 4,
+  "target": "self",
+  "area": {
+   "shape": "radius",
+   "r": 3
+  },
+  "caps": [
+   "rally"
+  ],
+  "effects": [
+   {
+    "type": "status",
+    "id": "buff",
+    "turns": 2,
+    "mods": {
+     "atk": 3,
+     "def": 2
+    },
+    "to": "area_allies"
+   }
+  ],
+  "ai_self": {
+   "allies": 2
+  }
+ },
+ "einschuechtern": {
+  "name": "Eisiger Blick",
+  "text": "Gegner im Umkreis 2 sind eingeschüchtert: −3 Angriff und −1 Verteidigung für 2 Runden.",
+  "cd": 3,
+  "target": "self",
+  "area": {
+   "shape": "radius",
+   "r": 2
+  },
+  "caps": [
+   "lure"
+  ],
+  "effects": [
+   {
+    "type": "status",
+    "id": "scared",
+    "turns": 2,
+    "mods": {
+     "atk": -3,
+     "def": -1
+    },
+    "to": "area_enemies"
+   }
+  ],
+  "ai_self": {
+   "enemies": 1
+  }
+ },
+ "gebiss": {
+  "name": "Gebiss-Wurf",
+  "text": "Schleudert ihr Gebiss (×1,4, Reichweite 2–4).",
+  "cd": 3,
+  "target": "enemy",
+  "range": [
+   2,
+   4
+  ],
+  "effects": [
+   {
+    "type": "damage",
+    "mult": 1.4
+   }
+  ],
+  "ai_bonus": 3,
+  "caps": [
+   "ranged_hit"
+  ]
  }
 }

@@ -91,5 +91,38 @@
   "soldat_bogenschuetze": "fx_arrow",
   "ninjas": "fx_shuriken",
   "elisabeth": "fx_cannonball"
+ },
+ "rakete": {
+  "arc": 1.9,
+  "time": 0.56,
+  "ball": "fx_cannonball",
+  "fire": "fx_fireball",
+  "smoke": "fx_smoke",
+  "boom": 2.6,
+  "shake": 0.14,
+  "lunge": false
+ },
+ "befehl": {
+  "color": [
+   1.0,
+   0.8,
+   0.25,
+   0.55
+  ],
+  "lunge": false
+ },
+ "einschuechtern": {
+  "color": [
+   0.55,
+   0.2,
+   0.65,
+   0.6
+  ],
+  "lunge": false
+ },
+ "gebiss": {
+  "sprite": "fx_gebiss",
+  "time": 0.45,
+  "lunge": false
  }
 }

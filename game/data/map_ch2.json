@@ -102,13 +102,26 @@
     5,
     0
    ]
+  },
+  {
+   "id": "wart",
+   "pos": [
+    7,
+    1
+   ],
+   "carry": {
+    "gold": 40,
+    "items": {
+     "rauchbombe": 1
+    }
+   }
   }
  ],
  "chests": [
   {
    "pos": [
     1,
-    9
+    3
    ],
    "reward": {
     "items": {
@@ -258,7 +271,7 @@
  "objectives": [
   {
    "id": "alle_leben",
-   "text": "Kein Held f\u00e4llt",
+   "text": "Kein Held fällt",
    "reward": {
     "gold": 60
    }

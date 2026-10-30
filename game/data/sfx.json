@@ -1,0 +1,223 @@
+{
+ "volume_db": -2.0,
+ "weapon": {
+  "wood": {
+   "s": "w_wood"
+  },
+  "metal": {
+   "s": "w_metal"
+  },
+  "fist": {
+   "s": "w_fist"
+  }
+ },
+ "body": {
+  "armor": "t_armor",
+  "wood": "t_wood",
+  "flesh": "t_flesh",
+  "stone": "t_stone"
+ },
+ "combo": {
+  "fist+flesh": [
+   "w_fist",
+   {
+    "s": "t_face",
+    "db": -1
+   }
+  ],
+  "fist+armor": [
+   "w_fist",
+   {
+    "s": "t_armor",
+    "db": -5
+   }
+  ]
+ },
+ "accent": {
+  "s": "crit",
+  "db": -4
+ },
+ "swing": {
+  "wood": "whoosh_l",
+  "metal": "whoosh_s",
+  "fist": "whoosh_s"
+ },
+ "ranged": {
+  "default": {
+   "shot": {
+    "s": "zap",
+    "db": -3
+   },
+   "hit": {
+    "s": "zap",
+    "db": -5
+   }
+  },
+  "soldat_bogenschuetze": {
+   "shot": "bow_shot",
+   "hit": [
+    "arrow_hit",
+    "t_flesh"
+   ]
+  },
+  "ninjas": {
+   "shot": "shuriken_throw",
+   "hit": [
+    "shuriken_hit",
+    "t_flesh"
+   ]
+  },
+  "elisabeth": {
+   "shot": {
+    "s": "cannon",
+    "db": -6
+   },
+   "hit": [
+    "arrow_hit",
+    "t_flesh"
+   ]
+  },
+  "wart": {
+   "shot": "rocket_launch",
+   "hit": "explosion"
+  },
+  "maja": {
+   "shot": "whoosh_s",
+   "hit": [
+    "t_wood",
+    "t_flesh"
+   ]
+  }
+ },
+ "abilities": {
+  "baerenpranke": {
+   "windup": "whoosh_l",
+   "hit": [
+    "w_fist",
+    "t_flesh",
+    {
+     "s": "crit",
+     "db": -6
+    }
+   ]
+  },
+  "schlachtruf": {
+   "cast": "buff"
+  },
+  "verspotten": {
+   "cast": "taunt"
+  },
+  "todeswirbel": {
+   "windup": "whoosh_l",
+   "hit": "@melee"
+  },
+  "stabsprung": {
+   "windup": "whoosh_s",
+   "hit": "@melee"
+  },
+  "versteck": {
+   "cast": "poof"
+  },
+  "kanone": {
+   "shot": "cannon",
+   "hit": "explosion"
+  },
+  "rakete": {
+   "shot": "rocket_launch",
+   "hit": "explosion"
+  },
+  "wurf": {
+   "windup": "whoosh_l"
+  },
+  "roter_laser": {
+   "windup": "laser_charge",
+   "shot": "laser_fire",
+   "hit": {
+    "s": "zap",
+    "db": -4
+   }
+  },
+  "gruener_laser": {
+   "windup": "laser_charge",
+   "heal": "heal"
+  },
+  "knochenwurf": {
+   "shot": "whoosh_s",
+   "hit": [
+    "t_wood",
+    {
+     "s": "t_flesh",
+     "db": -4
+    }
+   ]
+  },
+  "gruppenheilung": {
+   "cast": "heal"
+  },
+  "polymorph": {
+   "windup": "wave"
+  },
+  "giftstachel": {
+   "windup": "whoosh_s",
+   "hit": [
+    "w_metal",
+    "t_flesh",
+    "debuff"
+   ]
+  },
+  "fasswurf": {
+   "shot": "whoosh_l",
+   "hit": [
+    "t_wood",
+    "splash"
+   ]
+  },
+  "befehl": {
+   "cast": [
+    "taunt",
+    "buff"
+   ]
+  },
+  "einschuechtern": {
+   "cast": "scared"
+  },
+  "gebiss": {
+   "shot": "chomp",
+   "hit": [
+    "t_flesh",
+    {
+     "s": "w_wood",
+     "db": -4
+    }
+   ]
+  }
+ },
+ "events": {
+  "death": "death",
+  "flee": "flee_zip",
+  "defend": "defend",
+  "retreat": "flee_zip",
+  "polymorph_out": "quack",
+  "polymorph_in": "poof",
+  "wall_break": "wall_break",
+  "gate_open": "gate_open",
+  "switch": "switch",
+  "extinguish": "extinguish",
+  "fire": "fire_whoosh",
+  "ruin": {
+   "s": "wall_break",
+   "db": -6
+  },
+  "chest": "chest_open",
+  "village": "pickup",
+  "coin": "coin",
+  "free": "rope",
+  "item": "item_use",
+  "heal": "heal",
+  "turn_start": "turn_start",
+  "victory": "victory",
+  "defeat": "defeat",
+  "baby": "baby",
+  "dialog": "dialog_tick"
+ }
+}

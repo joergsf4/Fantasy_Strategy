@@ -1,0 +1,256 @@
+{
+ "id": "ch4",
+ "title": "Das Teehaus am Pass",
+ "map": "res://data/map_ch4.json",
+ "briefing": "Der Regent hält eine Mutter mit ihrem Baby in einem Teehaus am Pass gefangen. Das Baby schreit, und jede zweite Runde eilt Verstärkung herbei. Befreit die Geisel, bevor die Wachen überhandnehmen. Vor der Tür steht Xiùlán, eine alte Dame, die für Geld als Babysitterin angeheuert wurde und mit dem Gebiss um sich wirft.",
+ "goals": [
+  {
+   "type": "free",
+   "id": "geisel"
+  }
+ ],
+ "triggers": [
+  {
+   "when": {
+    "turn": 2
+   },
+   "do": [
+    {
+     "popup": "Das Baby schreit! Wachen eilen herbei."
+    },
+    {
+     "spawn": [
+      {
+       "id": "soldat_infanterie",
+       "pos": [
+        0,
+        5
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 4
+   },
+   "do": [
+    {
+     "popup": "Das Baby schreit! Wachen eilen herbei."
+    },
+    {
+     "spawn": [
+      {
+       "id": "soldat_infanterie",
+       "pos": [
+        11,
+        6
+       ]
+      },
+      {
+       "id": "soldat_bogenschuetze",
+       "pos": [
+        11,
+        5
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 6
+   },
+   "do": [
+    {
+     "popup": "Das Baby schreit! Wachen eilen herbei."
+    },
+    {
+     "spawn": [
+      {
+       "id": "soldat_beritten",
+       "pos": [
+        0,
+        6
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "near": {
+     "a": "kungfu",
+     "b": "xiulan",
+     "dist": 3
+    }
+   },
+   "if": {
+    "present": [
+     "xiulan"
+    ]
+   },
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "kungfu",
+       "right": "xiulan",
+       "speaker": "kungfu",
+       "text": "Eine alte Dame am Teehaus. Ich verbeuge mich, Großmutter."
+      },
+      {
+       "left": "kungfu",
+       "right": "xiulan",
+       "speaker": "xiulan",
+       "text": "Verbeug dich ruhig, Jungchen. Dann hast du die Nase auf Höhe meines Knies.",
+       "right_expr": "lachend"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "ability": {
+     "id": "gebiss",
+     "by": "xiulan"
+    }
+   },
+   "if": {
+    "present": [
+     "kungfu"
+    ]
+   },
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "kungfu",
+       "right": "xiulan",
+       "speaker": "kungfu",
+       "text": "Hat sie gerade ihr Gebiss geworfen?"
+      },
+      {
+       "left": "kungfu",
+       "right": "xiulan",
+       "speaker": "xiulan",
+       "text": "Keine Sorge, ich habe Ersatz! Und einen Kaugummi für Notfälle.",
+       "right_expr": "lachend"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "hp_below": {
+     "id": "xiulan",
+     "ratio": 0.5
+    }
+   },
+   "if": {
+    "object": {
+     "id": "geisel",
+     "state": "bound"
+    }
+   },
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "kungfu",
+       "right": "xiulan",
+       "speaker": "xiulan",
+       "text": "Moment mal. Diese Frau ist ja gefesselt! Mit Baby! Das war nicht ausgemacht.",
+       "right_expr": "wuetend"
+      },
+      {
+       "left": "kungfu",
+       "right": "xiulan",
+       "speaker": "kungfu",
+       "text": "Der Regent hat sie als Geisel genommen. Du bist seine Wache."
+      },
+      {
+       "left": "kungfu",
+       "right": "xiulan",
+       "speaker": "xiulan",
+       "text": "Ich sollte nur auf die Kleine aufpassen! Für Geld, ja, aber nicht dafür. Der Auftrag ist beendet.",
+       "right_expr": "wuetend"
+      },
+      {
+       "left": "kungfu",
+       "right": "xiulan",
+       "speaker": "xiulan",
+       "text": "Befreit sie, Jungchen. Wir sehen uns wieder, und dann zahlt mir jemand die Zahnarztrechnung."
+      }
+     ]
+    },
+    {
+     "retreat": "xiulan"
+    }
+   ]
+  },
+  {
+   "when": {
+    "object": {
+     "id": "geisel",
+     "state": "free"
+    }
+   },
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "wendy",
+       "right": "mutter",
+       "speaker": "mutter",
+       "text": "Danke, danke! Mein Kleiner ist unversehrt. Sie wollten uns zum Regenten bringen.",
+       "right_expr": "lachend"
+      },
+      {
+       "left": "wendy",
+       "right": "mutter",
+       "speaker": "wendy",
+       "text": "Mäh, der Kleine hat ja eine Stimme. Die haben sie bis zum Tal gehört.",
+       "left_expr": "lachend"
+      },
+      {
+       "left": "wendy",
+       "right": "mutter",
+       "speaker": "mutter",
+       "text": "Er hat Hunger und schlechte Laune. Wie sein Vater. Lauft, ich bringe ihn in Sicherheit."
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "flee": {
+  "xiulan": [
+   {
+    "left": "$hero",
+    "right": "xiulan",
+    "speaker": "xiulan",
+    "text": "Mein Kreuz! Du Rüpel. Ich rufe meinen Enkel an!",
+    "right_expr": "wuetend"
+   },
+   {
+    "left": "$hero",
+    "right": "xiulan",
+    "speaker": "$hero",
+    "text": "Eine Großmutter mit Gebiss-Geschoss. Das erzähle ich keinem."
+   },
+   {
+    "left": "$hero",
+    "right": "xiulan",
+    "speaker": "xiulan",
+    "text": "Ich komme wieder. Mit Ersatzgebiss!",
+    "right_expr": "wuetend"
+   }
+  ]
+ }
+}

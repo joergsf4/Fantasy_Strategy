@@ -12,7 +12,9 @@
   "dmg_type": "body",
   "abilities": [
    "baerenpranke"
-  ]
+  ],
+  "weapon": "fist",
+  "body": "flesh"
  },
  "ritter": {
   "name": "Ser Albrecht",
@@ -28,7 +30,9 @@
   "abilities": [
    "schlachtruf",
    "verspotten"
-  ]
+  ],
+  "weapon": "metal",
+  "body": "armor"
  },
  "samurai": {
   "name": "Takeda",
@@ -43,7 +47,9 @@
   "dmg_type": "body",
   "abilities": [
    "todeswirbel"
-  ]
+  ],
+  "weapon": "metal",
+  "body": "flesh"
  },
  "kungfu": {
   "name": "Meister Lin",
@@ -58,7 +64,9 @@
   "dmg_type": "body",
   "abilities": [
    "stabsprung"
-  ]
+  ],
+  "weapon": "wood",
+  "body": "flesh"
  },
  "ninjas": {
   "name": "Die Kage-Schwestern",
@@ -74,7 +82,9 @@
   "abilities": [
    "versteck"
   ],
-  "ranged_mult": 0.7
+  "ranged_mult": 0.7,
+  "weapon": "metal",
+  "body": "flesh"
  },
  "elisabeth": {
   "name": "Käpt’n Elisabeth",
@@ -89,7 +99,9 @@
   "dmg_type": "body",
   "abilities": [
    "kanone"
-  ]
+  ],
+  "weapon": "metal",
+  "body": "flesh"
  },
  "museklaugust": {
   "name": "Muskelaugust",
@@ -104,7 +116,9 @@
   "dmg_type": "body",
   "abilities": [
    "wurf"
-  ]
+  ],
+  "weapon": "fist",
+  "body": "flesh"
  },
  "robo": {
   "name": "Robo",
@@ -120,7 +134,9 @@
   "abilities": [
    "roter_laser",
    "gruener_laser"
-  ]
+  ],
+  "weapon": "metal",
+  "body": "armor"
  },
  "hund": {
   "name": "Blauer Hundsfreund",
@@ -135,7 +151,9 @@
   "dmg_type": "body",
   "abilities": [
    "knochenwurf"
-  ]
+  ],
+  "weapon": "fist",
+  "body": "flesh"
  },
  "wendy": {
   "name": "Wendy Wolle",
@@ -151,7 +169,9 @@
   "heal": 8,
   "abilities": [
    "gruppenheilung"
-  ]
+  ],
+  "weapon": "wood",
+  "body": "flesh"
  },
  "claude": {
   "name": "Claude",
@@ -166,7 +186,9 @@
   "dmg_type": "magic",
   "abilities": [
    "polymorph"
-  ]
+  ],
+  "weapon": "fist",
+  "body": "flesh"
  },
  "bienenmaedchen": {
   "name": "Stachelia",
@@ -182,7 +204,9 @@
   "flying": true,
   "abilities": [
    "giftstachel"
-  ]
+  ],
+  "weapon": "metal",
+  "body": "flesh"
  },
  "braumeisterin": {
   "name": "Brunhilde Bräu",
@@ -197,7 +221,9 @@
   "dmg_type": "body",
   "abilities": [
    "fasswurf"
-  ]
+  ],
+  "weapon": "wood",
+  "body": "flesh"
  },
  "soldat_infanterie": {
   "name": "Büttel des Regenten",
@@ -215,7 +241,9 @@
   ],
   "passives": [
    "schildwall"
-  ]
+  ],
+  "weapon": "metal",
+  "body": "armor"
  },
  "soldat_beritten": {
   "name": "Reiter des Regenten",
@@ -233,7 +261,9 @@
   ],
   "passives": [
    "sturmangriff"
-  ]
+  ],
+  "weapon": "metal",
+  "body": "armor"
  },
  "soldat_bogenschuetze": {
   "name": "Bogenschütze des Regenten",
@@ -248,7 +278,9 @@
   "dmg_type": "body",
   "tags": [
    "standard"
-  ]
+  ],
+  "weapon": "wood",
+  "body": "flesh"
  },
  "soldat_priester": {
   "name": "Priester des Regenten",
@@ -264,7 +296,9 @@
   "tags": [
    "standard"
   ],
-  "heal": 6
+  "heal": 6,
+  "weapon": "wood",
+  "body": "flesh"
  },
  "fuerst": {
   "name": "Regent Morgrim",
@@ -280,7 +314,9 @@
   "tags": [
    "boss"
   ],
-  "abilities": []
+  "abilities": [],
+  "weapon": "metal",
+  "body": "armor"
  },
  "dummy": {
   "name": "Trainingsattrappe",
@@ -296,6 +332,94 @@
   "tags": [
    "standard"
   ],
-  "abilities": []
+  "abilities": [],
+  "weapon": "wood",
+  "body": "wood"
+ },
+ "wart": {
+  "name": "Wart",
+  "hp": 42,
+  "atk": 10,
+  "def": 4,
+  "res": 1,
+  "move": 3,
+  "range_min": 1,
+  "range": 2,
+  "role": "damage",
+  "dmg_type": "body",
+  "tags": [
+   "boss"
+  ],
+  "abilities": [
+   "rakete"
+  ],
+  "ranged_mult": 0.8,
+  "flees": true,
+  "weapon": "metal",
+  "body": "flesh"
+ },
+ "oskar": {
+  "name": "Oskar",
+  "hp": 34,
+  "atk": 7,
+  "def": 4,
+  "res": 3,
+  "move": 4,
+  "range_min": 1,
+  "range": 1,
+  "role": "support",
+  "dmg_type": "body",
+  "tags": [
+   "boss"
+  ],
+  "abilities": [
+   "befehl"
+  ],
+  "flees": true,
+  "weapon": "metal",
+  "body": "armor"
+ },
+ "maja": {
+  "name": "Maja",
+  "hp": 30,
+  "atk": 8,
+  "def": 3,
+  "res": 5,
+  "move": 4,
+  "range_min": 1,
+  "range": 2,
+  "role": "damage",
+  "dmg_type": "body",
+  "tags": [
+   "boss"
+  ],
+  "abilities": [
+   "einschuechtern"
+  ],
+  "ranged_mult": 0.8,
+  "flees": true,
+  "weapon": "wood",
+  "body": "flesh"
+ },
+ "xiulan": {
+  "name": "Xiùlán",
+  "hp": 38,
+  "atk": 8,
+  "def": 3,
+  "res": 3,
+  "move": 4,
+  "range_min": 1,
+  "range": 1,
+  "role": "damage",
+  "dmg_type": "body",
+  "tags": [
+   "boss"
+  ],
+  "abilities": [
+   "gebiss"
+  ],
+  "flees": true,
+  "weapon": "fist",
+  "body": "flesh"
  }
 }

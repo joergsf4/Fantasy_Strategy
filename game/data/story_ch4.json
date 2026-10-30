@@ -1,0 +1,44 @@
+{
+ "intro": [
+  {
+   "left": "maedchen_baer",
+   "right": "kungfu",
+   "speaker": "kungfu",
+   "text": "Am Pass steht ein Teehaus. Die Soldaten des Regenten haben eine Mutter mit Baby dort eingesperrt."
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "kungfu",
+   "speaker": "maedchen_baer",
+   "text": "Hört ihr das Geschrei? Das Baby hat Lungen für drei. Jeder im Umkreis weiß, wo wir hinmüssen, und die Wachen auch.",
+   "left_expr": "wuetend"
+  },
+  {
+   "left": "wendy",
+   "right": "kungfu",
+   "speaker": "wendy",
+   "text": "Mäh. Ich gehe zu der Mutter, sobald die Tür frei ist. Befreit sie, so schnell ihr könnt!"
+  }
+ ],
+ "outro": [
+  {
+   "left": "wendy",
+   "right": "kungfu",
+   "speaker": "wendy",
+   "text": "Mäh, geschafft. Die Mutter ist in Sicherheit, und das Baby hat aufgehört zu brüllen.",
+   "left_expr": "lachend"
+  },
+  {
+   "left": "wendy",
+   "right": "kungfu",
+   "speaker": "kungfu",
+   "text": "Und eine Großmutter mit fliegendem Gebiss ist uns entkommen. Die vergesse ich nicht."
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "kungfu",
+   "speaker": "maedchen_baer",
+   "text": "Der Regent schickt Babysitter. Was kommt als Nächstes?"
+  }
+ ]
+}

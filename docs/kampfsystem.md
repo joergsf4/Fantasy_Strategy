@@ -114,3 +114,13 @@ Neue Aktion im Menü (wie Angriff oder Warten, der Zug der Figur endet):
 - sichtbar als blaue Schutzblase um die Figur und „Verteidigt 1“ auf der Karte.
 
 Der **Stabsprung** verbraucht die Aktion nicht: Springen und danach Verteidigen geht, damit ein Ablenker hinter den feindlichen Linien überlebt. Messwerte und das Zusammenspiel mit Spott stehen in `docs/balance.md`, Abschnitt 7.
+
+
+## Gegenspieler-Fähigkeiten
+| Figur | Fähigkeit | Wirkung | AK |
+|---|---|---|--:|
+| Wart | Raketenwerfer | Reichweite 2–4, ×1,6, Nachbarn des Ziels 50 % | 3 |
+| Oskar | Feldherrenbefehl | Verbündete im Umkreis 3: +3 ATK, +2 DEF, 2 Runden | 4 |
+| Maja | Eisiger Blick | Helden im Umkreis 2: −3 ATK, −1 DEF, 2 Runden (Status „Eingeschüchtert“) | 3 |
+
+Fähigkeiten auf sich selbst (Befehl, Blick) setzt die Gegner-KI ein, wenn genug Ziele im Umkreis sind (`ai_self` in `abilities.json`).

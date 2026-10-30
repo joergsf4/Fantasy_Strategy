@@ -62,6 +62,9 @@ var _start_inventory: Dictionary = {}
 var _results: Dictionary = {}
 var goal: Dictionary = {"type": "rout"}
 var triggers: Array = []                 # {when, do, fired}
+var _notes: Array = []                    # Ereignisse seit der letzten Pruefung: {kind, ...}
+var kills_total := 0                      # besiegte Gegner insgesamt
+var _actor: Dictionary = {}               # zuletzt handelnde Figur (fuer "$hero" bei Ereignissen ohne eigenen Ausloeser)
 var dialogue_runner := Callable()         # async func(lines: Array) -> von main gesetzt, zeigt Dialoge ueber der Karte
 var _goal: TextBox
 var world: World
@@ -72,6 +75,9 @@ var _obj_nodes: Dictionary = {}          # Objekt-ID -> {root, body, rubble, doo
 var _target_objs: Array[Dictionary] = []  # anwaehlbare Weltobjekte beim Zielen
 var _landing_ally: Dictionary = {}
 var _landing_tiles: Array[Vector2i] = []
+var retreated: Array = []           # Gegner, die sich freiwillig zurueckgezogen haben
+var fled: Array = []                # in dieser Mission geflohene Gegner (kehren spaeter zurueck)
+var nemeses: Array = []             # aus frueheren Missionen entkommene Gegner (Party)
 var loadout: Dictionary = {}      # {inventory: {Gegenstand: Anzahl}, equipment: {Held: [Ausruestung]}}
 var inventory: Dictionary = {}    # Rucksack der Spielerseite
 var _acted := false
@@ -88,6 +94,7 @@ func _ready() -> void:
 	abilities = JSON.parse_string(FileAccess.get_file_as_string("res://data/abilities.json"))
 	rng.randomize()
 	inventory = (loadout.get("inventory", {}) as Dictionary).duplicate()
+	nemeses = (loadout.get("nemesis", []) as Array).duplicate()
 	_start_inventory = inventory.duplicate()
 	for k: String in abilities:
 		abilities[k]["id"] = k
@@ -229,6 +236,7 @@ func _spawn(id: String, team: String, pos: Vector2i, extra := {}) -> void:
 		"ranged_mult": d.get("ranged_mult", 1.0), "flying": d.get("flying", false),
 		"heal": d.get("heal", 0), "done": false, "status": [], "cd": {}, "dir": Vector2i.RIGHT,
 		"uid": str(_next_uid), "charge": 0,
+		"weapon": d.get("weapon", "fist"), "body": d.get("body", "flesh"),
 	}
 	_next_uid += 1
 	u["carry"] = extra.get("carry", {})
@@ -777,6 +785,9 @@ func _enter_action(show_abilities := false, show_items := false) -> void:
 			var so := world.at(sel["pos"])
 			if not so.is_empty() and so["type"] == "switch" and so["state"] == "off":
 				_menu_button(box, "Schalter umlegen", true, func() -> void: _use_switch(sel, so))
+			var hs := _hostage_near(sel["pos"])
+			if not hs.is_empty():
+				_menu_button(box, "Befreien", true, func() -> void: _free_hostage(sel, hs))
 			var vl := _village_at(sel["pos"])
 			if not vl.is_empty() and not vl["visited"]:
 				_menu_button(box, "Dorf besuchen", true, func() -> void: _collect(sel, vl, "village"))
@@ -939,6 +950,8 @@ func _collect(u: Dictionary, entry: Dictionary, kind: String) -> void:
 	else:
 		entry["visited"] = true
 	var lines := _grant(entry["reward"])
+	Sfx.event("chest" if kind == "chest" else "village")
+	Sfx.event("coin")
 	fx.light_flash(fx.chest(u, 0.6), Color(1.0, 0.85, 0.4), 2.0, 3.0, 0.5)
 	await _popup(u, "\n".join(lines), Color(1.0, 0.9, 0.5))
 	_finish_unit_after(u)
@@ -946,14 +959,60 @@ func _collect(u: Dictionary, entry: Dictionary, kind: String) -> void:
 
 ## Besiegte Gegner mit Beute geben sie sofort her; gefallene Helden werden vermerkt.
 func _on_death(def: Dictionary) -> void:
+	_note("death", {"unit": def, "by": _actor})
 	if def["team"] == "e":
+		kills_total += 1
 		var carry: Dictionary = def.get("carry", {})
 		if not carry.is_empty():
 			var lines := _grant(carry)
+			Sfx.event("coin")
 			_popup(def, "\n".join(lines), Color(1.0, 0.9, 0.5))
 			def["carry"] = {}
 	else:
 		fallen.append(def["id"])
+
+
+## Eine Figur faellt (Leben 0, schon aus `units` entfernt): Gegner mit "flees" fliehen wuetend und kehren spaeter
+## zurueck, alle anderen sterben.
+func _down(def: Dictionary) -> void:
+	_on_death(def)
+	if def["team"] == "e" and unit_defs[def["id"]].get("flees", false):
+		await _flee(def)
+	else:
+		fx.death(def)
+
+
+## Wuetender Rueckzug: Beute faellt, Dialog (mission "flee": {id: [Zeilen]}), dann rennt die Figur zum naechsten Kartenrand.
+func _flee(def: Dictionary, talk := true) -> void:
+	fled.append(def["id"])
+	var n: Node3D = def["node"]
+	fx.flash_unit(def, Color(2.0, 0.5, 0.4), 0.3)
+	await _popup(def, "Rückzug!", Color(1.0, 0.5, 0.35))
+	Sfx.event("flee")
+	var lines: Array = (map_data.get("flee", {}) as Dictionary).get(def["id"], [])
+	if lines.is_empty():
+		lines = [{"left": "$hero", "right": def["id"], "speaker": def["id"], "right_expr": "wuetend", "text": "Das merke ich mir! Wir sehen uns wieder!"}]
+	if talk and dialogue_runner.is_valid():
+		var was_visible := _hud_layer.visible
+		_hud_layer.visible = false
+		await dialogue_runner.call(_hero_lines(lines, _actor))
+		_hud_layer.visible = was_visible
+	if is_instance_valid(n):
+		var p := def["pos"] as Vector2i
+		var dirs := [Vector2i(-1, 0), Vector2i(1, 0), Vector2i(0, -1), Vector2i(0, 1)]
+		var best: Vector2i = dirs[0]
+		var best_d := 999
+		for d: Vector2i in dirs:
+			var dd := p.x if d.x < 0 else (grid.width - 1 - p.x if d.x > 0 else (p.y if d.y < 0 else grid.height - 1 - p.y))
+			if dd < best_d:
+				best_d = dd
+				best = d
+		var out := n.position + Vector3(best.x, 0, best.y) * (best_d + 3.0)
+		var tw := create_tween()
+		tw.tween_property(n, "position", out, 0.9).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+		tw.parallel().tween_property(def["sprite"], "modulate:a", 0.0, 0.9)
+		await tw.finished
+		n.queue_free()
 
 
 ## Ergebnis fuer Belohnungsbildschirm und Party: Rucksack-Rest samt Beute, Zutaten, Gold, Ziele.
@@ -972,6 +1031,10 @@ func results() -> Dictionary:
 				ok = turn <= int(o["turns"])
 			"haeuser":
 				ok = world.houses_lost() == 0
+			"alle_gegner":
+				ok = _count_team("e") == 0
+			"ueberzeugt":
+				ok = retreated.has(o["unit"])
 		done.append({"id": o["id"], "text": o["text"], "done": ok, "reward": o.get("reward", {})})
 	# Kapitelbelohnung und erfuellte Ziele gutschreiben
 	var bonus: Array = [map_data.get("rewards", {})]
@@ -990,6 +1053,7 @@ func results() -> Dictionary:
 	gained["inventory"] = inventory.duplicate()
 	gained["objectives"] = done
 	gained["turns"] = turn
+	gained["fled"] = fled.duplicate()
 	_results = gained
 	return gained
 
@@ -1005,6 +1069,9 @@ func _build_objects() -> void:
 func _make_object(o: Dictionary) -> void:
 	if o["type"] == "fire" or o["type"] == "house":
 		_make_burnable(o)
+		return
+	if o["type"] == "teahouse" or o["type"] == "hostage":
+		_make_teahouse(o) if o["type"] == "teahouse" else _make_hostage(o)
 		return
 	var stone := Color(0.52, 0.5, 0.54)
 	var dark := Color(0.38, 0.37, 0.42)
@@ -1084,9 +1151,13 @@ func _refresh_object(o: Dictionary, animate: bool) -> void:
 		"wall":
 			p["body"].visible = st == "intact"
 			p["rubble"].visible = st == "broken"
+			if animate and st == "broken":
+				Sfx.event("wall_break")
 		"gate":
 			p["body"].visible = st != "broken"
 			p["rubble"].visible = st == "broken"
+			if animate:
+				Sfx.event("wall_break" if st == "broken" else "gate_open")
 			for d: Dictionary in p["doors"]:
 				var piv: Node3D = d["pivot"]
 				piv.visible = st != "broken"
@@ -1096,6 +1167,8 @@ func _refresh_object(o: Dictionary, animate: bool) -> void:
 				else:
 					piv.rotation_degrees.y = angle
 		"switch":
+			if animate:
+				Sfx.event("switch")
 			p["rubble"].visible = false
 			var lv: Node3D = p["lever"]
 			var tilt := 35.0 if st == "on" else -35.0
@@ -1103,8 +1176,24 @@ func _refresh_object(o: Dictionary, animate: bool) -> void:
 				lv.create_tween().tween_property(lv, "rotation_degrees:z", tilt, 0.25).set_trans(Tween.TRANS_BACK)
 			else:
 				lv.rotation_degrees.z = tilt
+		"hostage":
+			if st == "free":
+				if animate:
+					Sfx.event("free")
+				var sp: Sprite3D = p["sprite"]
+				(p["body"] as Node3D).visible = false
+				if animate:
+					var rn: Node3D = p["root"]
+					var run := rn.position + Vector3(0, 0, 4.0)
+					var wtw := create_tween().set_parallel(true)
+					wtw.tween_property(rn, "position", run, 1.4).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+					wtw.tween_property(sp, "modulate:a", 0.0, 1.4)
+				else:
+					sp.visible = false
 		"fire":
 			(p["flames"] as Node3D).visible = st == "burning"
+			if animate:
+				Sfx.event("fire" if st == "burning" else "extinguish")
 			if animate and st == "burning":
 				fx.light_flash(to_world(o["pos"]) + Vector3(0, 0.5, 0), Color(1.0, 0.6, 0.2), 2.0, 3.5, 0.5)
 			elif animate:
@@ -1113,6 +1202,8 @@ func _refresh_object(o: Dictionary, animate: bool) -> void:
 			(p["body"] as Node3D).visible = st != "ruin"
 			(p["rubble"] as Node3D).visible = st == "ruin"
 			(p["flames"] as Node3D).visible = st == "burning"
+			if animate:
+				Sfx.event("fire" if st == "burning" else ("ruin" if st == "ruin" else "extinguish"))
 			if animate and st == "burning":
 				fx.light_flash(to_world(o["pos"]) + Vector3(0, 0.7, 0), Color(1.0, 0.6, 0.2), 2.5, 4.0, 0.6)
 			elif animate and st == "intact":
@@ -1121,6 +1212,74 @@ func _refresh_object(o: Dictionary, animate: bool) -> void:
 				fx.particles("fx_smoke", to_world(o["pos"]) + Vector3(0, 0.3, 0), 10, 1.5, 0.7, 1.0, -0.3, Color(0.3, 0.3, 0.3), false, 70.0)
 	if not ["gate", "wall", "house"].has(o["type"]) and p["rubble"] != null:
 		(p["rubble"] as Node3D).visible = false
+
+
+## Teehaus: rote Saeulen, zwei geschwungene Daecher, goldene Spitze und Laternen. Nur Kulisse und gesperrtes Feld.
+func _make_teahouse(o: Dictionary) -> void:
+	var root := Node3D.new()
+	root.position = to_world(o["pos"])
+	root.scale = Vector3.ONE * 1.3
+	add_child(root)
+	var k := MeshKit.new()
+	var red := Color(0.62, 0.13, 0.1)
+	var roof := Color(0.58, 0.14, 0.11)
+	var cream := Color(0.93, 0.87, 0.7)
+	var gold := Color(0.95, 0.78, 0.25)
+	k.box(Vector3(0, 0.04, 0), Vector3(0.94, 0.08, 0.8), Color(0.52, 0.5, 0.47))
+	k.box(Vector3(0, 0.27, 0), Vector3(0.62, 0.38, 0.5), cream)
+	for sx in [-1, 1]:
+		for sz in [-1, 1]:
+			k.box(Vector3(sx * 0.33, 0.27, sz * 0.27), Vector3(0.06, 0.4, 0.06), red)
+	k.box(Vector3(0, 0.22, 0.255), Vector3(0.16, 0.26, 0.02), Color(0.28, 0.17, 0.09))
+	for wx in [-0.2, 0.2]:
+		k.box(Vector3(wx, 0.3, 0.255), Vector3(0.12, 0.14, 0.02), Color(0.98, 0.84, 0.45))
+	k.gable_roof(Vector3(0, 0.46, 0), Vector3(1.0, 0, 0.84), 0.16, roof)
+	k.box(Vector3(0, 0.47, 0.0), Vector3(1.02, 0.03, 0.04), gold)
+	k.box(Vector3(0, 0.55, 0), Vector3(0.36, 0.16, 0.3), cream)
+	k.gable_roof(Vector3(0, 0.63, 0), Vector3(0.6, 0, 0.5), 0.13, roof)
+	k.box(Vector3(0, 0.79, 0), Vector3(0.05, 0.14, 0.05), gold)
+	for sx in [-1, 1]:
+		k.box(Vector3(sx * 0.4, 0.36, 0.38), Vector3(0.08, 0.12, 0.08), red)
+		k.box(Vector3(sx * 0.4, 0.43, 0.38), Vector3(0.1, 0.02, 0.1), gold)
+	var mat := StandardMaterial3D.new()
+	mat.vertex_color_use_as_albedo = true
+	mat.roughness = 1.0
+	var mi := MeshInstance3D.new()
+	mi.mesh = k.build()
+	mi.material_override = mat
+	root.add_child(mi)
+	_obj_nodes[o["id"]] = {"root": root, "body": mi, "rubble": null, "doors": [], "lever": null}
+
+
+## Gefesselte Geisel: Figur an einem Pfosten. Befreit rennt sie davon (_refresh_object).
+func _make_hostage(o: Dictionary) -> void:
+	var root := Node3D.new()
+	root.position = to_world(o["pos"])
+	add_child(root)
+	var tex := _portrait_tex(o.get("figure", "mutter"))
+	var sp := Sprite3D.new()
+	sp.texture = tex
+	sp.pixel_size = 1.2 / maxf(tex.get_width(), tex.get_height())
+	sp.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+	sp.shaded = false
+	sp.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+	sp.alpha_cut = SpriteBase3D.ALPHA_CUT_OPAQUE_PREPASS
+	sp.offset = Vector2(0, tex.get_height() / 2.0)
+	sp.position = Vector3(0, 0.08, 0)
+	root.add_child(sp)
+	var k := MeshKit.new()
+	var wood := Color(0.42, 0.26, 0.13)
+	for sx in [-1, 1]:
+		k.box(Vector3(sx * 0.3, 0.16, 0.1), Vector3(0.05, 0.32, 0.05), wood)
+	k.box(Vector3(0, 0.12, 0.1), Vector3(0.62, 0.03, 0.03), Color(0.75, 0.65, 0.4))
+	var mat := StandardMaterial3D.new()
+	mat.vertex_color_use_as_albedo = true
+	mat.roughness = 1.0
+	var mi := MeshInstance3D.new()
+	mi.mesh = k.build()
+	mi.material_override = mat
+	root.add_child(mi)
+	_obj_nodes[o["id"]] = {"root": root, "body": mi, "rubble": null, "doors": [], "lever": null, "sprite": sp}
 
 
 ## Haus (Fachwerk) oder Feuerfeld; Flammen sind Partikel mit warmem Schein, ein/aus je nach Zustand.
@@ -1378,6 +1537,28 @@ func _use_switch(u: Dictionary, o: Dictionary) -> void:
 	_finish_unit_after(u)
 
 
+## Gefesselte Geisel auf einem Nachbarfeld ({} wenn keine).
+func _hostage_near(p: Vector2i) -> Dictionary:
+	for o in world.objects:
+		if o["type"] == "hostage" and o["state"] == "bound" and Grid.dist(p, o["pos"]) == 1:
+			return o
+	return {}
+
+
+func _free_hostage(u: Dictionary, o: Dictionary) -> void:
+	_close_menu()
+	state = State.BUSY
+	_show_tiles({})
+	_update_status()
+	_actor = u
+	await _popup(u, "Befreit!", Color(0.6, 1.0, 0.6))
+	await _after_world_change(world.apply(o, "free"))
+	_check_end()
+	if state == State.OVER:
+		return
+	_finish_unit_after(u)
+
+
 ## Verteidigen: Zug endet, bis zur naechsten eigenen Phase halber Schaden (Tanks x0,4), kein Gegenschlag.
 func _defend(u: Dictionary) -> void:
 	_close_menu()
@@ -1427,7 +1608,7 @@ func _burn(u: Dictionary) -> void:
 	if u["hp"] <= 0:
 		units.erase(u)
 		_away.erase(u)
-		_on_death(u)
+		await _down(u)
 		fx.death(u)
 
 
@@ -1496,6 +1677,7 @@ func _use_item(u: Dictionary, id: String, target: Dictionary) -> void:
 	for v: Dictionary in res["victims"]:
 		_refresh_unit(v)
 	if res["heal"] > 0 or res["cured"] > 0:
+		Sfx.event("item")
 		fx.on_heal("item", u, target, res["heal"], res["cured"] > 0)
 		await _popup(target, ("+%d" % res["heal"]) + ("\nGegengift" if res["cured"] > 0 else ""), Color(0.4, 1, 0.5))
 	if res["status"] > 0:
@@ -1603,12 +1785,18 @@ func _act(u: Dictionary, target: Dictionary) -> void:
 		return
 	if free_ability and u["hp"] > 0:
 		_acted = true
+		await _flush_events()
 		_enter_action()
 		return
 	_finish_unit_after(u)
 
 
 func _finish_unit_after(u: Dictionary) -> void:
+	if state != State.OVER:
+		state = State.BUSY          # waehrend Ereignisse laufen (Dialoge), keine Eingabe
+		await _flush_events()
+	if state == State.OVER:
+		return
 	state = State.IDLE
 	if u["hp"] > 0:
 		_finish_unit(u)
@@ -1623,9 +1811,13 @@ func _finish_unit_after(u: Dictionary) -> void:
 func _resolve(u: Dictionary, target: Dictionary) -> void:
 	if target["team"] == u["team"]:
 		var amount := mini(u["heal"], target["maxhp"] - target["hp"])
+		_actor = u
+		if amount > 0:
+			_note("heal", {"by": u, "healed": [target]})
 		target["hp"] += amount
 		var cured := Status.cleanse(target)
 		_refresh_unit(target)
+		Sfx.event("heal")
 		await _popup(target, ("+%d" % amount) + ("\nGegengift" if cured else ""), Color(0.4, 1, 0.5))
 		return
 	await _strike(u, target)
@@ -1636,6 +1828,7 @@ func _resolve(u: Dictionary, target: Dictionary) -> void:
 
 
 func _strike(att: Dictionary, def: Dictionary, mult := 1.0, ignore_def := 0.0, lunge := true, quick := false) -> void:
+	_actor = att
 	var fc := forecast(att, def, att["pos"], mult, ignore_def)
 	var dmg: int = fc["dmg"]
 	def["hp"] = maxi(0, def["hp"] - dmg)
@@ -1645,6 +1838,8 @@ func _strike(att: Dictionary, def: Dictionary, mult := 1.0, ignore_def := 0.0, l
 		_turn_towards(def, att["pos"])
 		if Grid.dist(att["pos"], def["pos"]) > 1:
 			await fx.basic_shot(att, def)
+		if Grid.dist(att["pos"], def["pos"]) <= 1:
+			Sfx.swing(att)
 		var n: Node3D = att["node"]
 		var start := n.position
 		var dir := to_world(def["pos"]) - start
@@ -1654,7 +1849,7 @@ func _strike(att: Dictionary, def: Dictionary, mult := 1.0, ignore_def := 0.0, l
 		tw.tween_property(n, "position", start + toward, 0.08)
 		tw.tween_property(n, "position", start, 0.1)
 		await tw.finished
-		fx.basic_hit(att, def)
+		fx.basic_hit(att, def, not fc["tags"].is_empty())
 	_refresh_unit(att)
 	_refresh_unit(def)
 	var tag_text := "\n" + ", ".join(fc["tags"]) if not fc["tags"].is_empty() else ""
@@ -1664,8 +1859,7 @@ func _strike(att: Dictionary, def: Dictionary, mult := 1.0, ignore_def := 0.0, l
 		await _popup(def, "-%d%s" % [dmg, tag_text], Color(1, 0.45, 0.35))
 	if def["hp"] <= 0:
 		units.erase(def)
-		_on_death(def)
-		fx.death(def)
+		await _down(def)
 
 
 func _popup(u: Dictionary, text: String, color: Color) -> void:
@@ -1699,6 +1893,8 @@ func goal_met() -> bool:
 	match goal.get("type", "rout"):
 		"survive":
 			return turn > int(goal["turns"])
+		"free":
+			return world.by_id(goal["id"])["state"] == "free"
 		"reach":
 			var t := Vector2i(goal["tile"][0], goal["tile"][1])
 			for u in units:
@@ -1720,6 +1916,7 @@ func _check_end() -> void:
 		_close_menu()
 		_hint.text = ""
 		_status.text = "Sieg!" if won else "Niederlage"
+		Sfx.event("victory" if won else "defeat")
 		await get_tree().create_timer(1.2).timeout
 		finished.emit(won)
 
@@ -1746,10 +1943,106 @@ func _run_triggers(kind: String, data: Variant, who := {}) -> void:
 
 ## Bedingung eines Ausloesers: {"object": {"id", "state"}} = Objekt hat diesen Zustand.
 func _cond_ok(c: Dictionary) -> bool:
+	for id: String in c.get("fled", []):        # diese Gegner sind in einer frueheren Mission geflohen
+		if not nemeses.has(id):
+			return false
+	for id: String in c.get("present", []):     # alle diese Figuren leben noch
+		if _find(id).is_empty():
+			return false
+	for id: String in c.get("absent", []):      # keine dieser Figuren lebt noch
+		if not _find(id).is_empty():
+			return false
 	if c.has("object"):
 		var o := world.by_id(c["object"]["id"])
 		return not o.is_empty() and o["state"] == c["object"]["state"]
 	return true
+
+
+# ------------------------------------------------------------------ Ereignisse
+
+## Erste lebende Einheit mit dieser ID ({} wenn keine).
+func _find(id: String) -> Dictionary:
+	for u in units:
+		if u["id"] == id:
+			return u
+	return {}
+
+
+func _note(kind: String, data: Dictionary) -> void:
+	var n := data.duplicate()
+	n["kind"] = kind
+	_notes.append(n)
+
+
+## Passt ein Ereignis (Notiz) zu "when"? Rueckgabe: ausloesende Figur oder {} (kein Treffer).
+func _match_note(w: Dictionary, n: Dictionary) -> Dictionary:
+	match n["kind"]:
+		"heal":
+			if w.has("heal"):
+				var c: Dictionary = w["heal"]
+				if c.get("by", "") in ["", n["by"]["id"]] and (n["healed"] as Array).size() >= int(c.get("targets", 1)):
+					return n["by"]
+		"ability":
+			if w.has("ability"):
+				var c2: Dictionary = w["ability"]
+				if c2.get("id", n["id"]) == n["id"] and c2.get("by", n["by"]["id"]) == n["by"]["id"]:
+					return n["by"]
+		"death":
+			var dead: Dictionary = n["unit"]
+			if dead["team"] == "e":
+				if w.has("kill") and (w["kill"] as Dictionary).get("id", dead["id"]) == dead["id"] \
+						and kills_total >= int((w["kill"] as Dictionary).get("count", 1)):
+					return n["by"] if not (n["by"] as Dictionary).is_empty() else dead
+				if w.has("first_kill") and kills_total == 1:
+					return n["by"] if not (n["by"] as Dictionary).is_empty() else dead
+			elif w.has("fall") and (w["fall"] as Dictionary).get("id", dead["id"]) == dead["id"]:
+				return dead
+	return {}
+
+
+## Ereignisse, die vom Zustand abhaengen (kein einzelnes Geschehen): Naehe, Leben, Zahl der Gegner.
+func _match_state(w: Dictionary) -> Dictionary:
+	if w.has("hp_below"):
+		var c: Dictionary = w["hp_below"]
+		var u := _find(c["id"])
+		if not u.is_empty() and float(u["hp"]) / float(u["maxhp"]) < float(c["ratio"]):
+			return u
+	if w.has("near"):
+		var c2: Dictionary = w["near"]
+		var a := _find(c2["a"])
+		if not a.is_empty():
+			for o in units:
+				var okb: bool = (c2["b"] == "any_enemy" and o["team"] != a["team"]) or o["id"] == c2["b"]
+				if okb and o != a and Grid.dist(a["pos"], o["pos"]) <= int(c2.get("dist", 3)):
+					return a
+	if w.has("enemies_left") and _count_team("e") <= int(w["enemies_left"]):
+		for u in units:
+			if u["team"] == "p":
+				return u
+	return {}
+
+
+## Alle neuen Ereignisse gegen die Ausloeser der Mission pruefen (nach jeder Aktion, jeder Phase).
+func _flush_events() -> void:
+	var notes := _notes.duplicate()
+	_notes.clear()
+	for t: Dictionary in triggers:
+		if t.get("fired", false):
+			continue
+		var w: Dictionary = t["when"]
+		var who: Dictionary = {}
+		for n: Dictionary in notes:
+			who = _match_note(w, n)
+			if not who.is_empty():
+				break
+		if who.is_empty():
+			who = _match_state(w)
+		if who.is_empty() or not _cond_ok(t.get("if", {})):
+			continue
+		t["fired"] = true
+		await _fire(t, who)
+		if state == State.OVER:
+			return
 
 
 ## "$hero" in Dialogzeilen wird durch die ausloesende Figur ersetzt; text_by waehlt den Text je Figur.
@@ -1781,6 +2074,12 @@ func _fire(t: Dictionary, who := {}) -> void:
 			var wo := world.by_id(step["world"]["id"])
 			if not wo.is_empty():
 				await _after_world_change(world.apply(wo, step["world"]["effect"]), step["world"].get("quiet", false))
+		if step.has("retreat"):   # {"retreat": "xiulan"}: Gegner zieht sich freiwillig zurueck (kein Tod, kehrt spaeter wieder)
+			var rt := _find(step["retreat"])
+			if not rt.is_empty():
+				units.erase(rt)
+				retreated.append(rt["id"])
+				await _flee(rt, false)
 		if step.has("spawn"):
 			for e: Dictionary in step["spawn"]:
 				var pos := _free_tile_near(Vector2i(e["pos"][0], e["pos"][1]), {"flying": false})
@@ -1930,6 +2229,8 @@ func _effect_targets(u: Dictionary, ab: Dictionary, target: Dictionary, to: Stri
 func _run_ability(u: Dictionary, id: String, target: Dictionary) -> void:
 	var ab: Dictionary = abilities[id]
 	u["cd"][id] = Items.cooldown_for(u, int(ab["cd"]))
+	_actor = u
+	_note("ability", {"id": id, "by": u})
 	if target != u:
 		_turn_towards(u, target["pos"])
 	if fx.has_fx(id):
@@ -1981,13 +2282,17 @@ func _apply_effect(u: Dictionary, ab: Dictionary, target: Dictionary, ef: Dictio
 				else:
 					await _popup(v, Status.NAMES[ef["id"]], Color(0.5, 1, 0.6) if good else Color(1, 0.7, 0.3))
 		"heal":
+			var healed: Array[Dictionary] = []
 			for v in victims:
 				var amount := mini(ef["amount"], v["maxhp"] - v["hp"])
+				if amount > 0 or Status.has(v, "poison"):
+					healed.append(v)
 				v["hp"] += amount
 				var cured: bool = ef.get("cleanse", false) and Status.cleanse(v)
 				_refresh_unit(v)
 				fx.on_heal(ab["id"], u, v, amount, cured)
 				await _popup(v, ("+%d" % amount) + ("\nGegengift" if cured else ""), Color(0.4, 1, 0.5))
+			_note("heal", {"by": u, "healed": healed})
 		"jump":
 			if units.has(target):
 				var land: Vector2i = target["pos"] + (target["pos"] - u["pos"])
@@ -2065,8 +2370,7 @@ func _deal(def: Dictionary, dmg: int, text: String) -> void:
 	await _popup(def, "-%d\n%s" % [dmg, text], Color(1, 0.45, 0.35))
 	if def["hp"] <= 0:
 		units.erase(def)
-		_on_death(def)
-		fx.death(def)
+		await _down(def)
 
 
 func _free_tile_near(p: Vector2i, mover: Dictionary) -> Vector2i:
@@ -2101,6 +2405,8 @@ func _return_from_polymorph(u: Dictionary) -> void:
 
 ## Beginn der Phase eines Teams: Gift tickt, Status laufen ab, Abklingzeiten sinken, Benommene setzen aus.
 func _begin_phase(team: String) -> void:
+	if team == "p":
+		Sfx.event("turn_start")
 	for u in (units + _away):
 		if u["team"] != team:
 			continue
@@ -2115,8 +2421,7 @@ func _begin_phase(team: String) -> void:
 				if u["hp"] <= 0:
 					units.erase(u)
 					_away.erase(u)
-					_on_death(u)
-					fx.death(u)
+					await _down(u)
 					break
 			elif ev["type"] == "expire" and ev["id"] == "polymorph":
 				await _return_from_polymorph(u)
@@ -2127,6 +2432,8 @@ func _begin_phase(team: String) -> void:
 				u["done"] = true
 			_refresh_unit(u)
 	_check_end()
+	if state != State.OVER:
+		await _flush_events()
 
 
 func _end_player_turn() -> void:
@@ -2200,6 +2507,27 @@ func _enemy_heal(e: Dictionary, reach_e: Dictionary, occupied: Dictionary) -> bo
 	return true
 
 
+## Faehigkeiten auf sich selbst (Befehl, Einschuechtern) setzt die Gegner-KI ein, wenn genug Ziele im Umkreis sind.
+func _enemy_self_ability(e: Dictionary) -> String:
+	for id: String in e["abilities"]:
+		var ab: Dictionary = abilities[id]
+		if ab["target"] != "self" or not ab.has("ai_self") or int(e["cd"].get(id, 0)) > 0:
+			continue
+		var tiles := _area_tiles(ab, e["pos"])
+		var n_allies := 0
+		var n_foes := 0
+		for o in units:
+			if o == e or not tiles.has(o["pos"]):
+				continue
+			if o["team"] == e["team"]:
+				n_allies += 1
+			elif not Status.has(o, "stealth"):
+				n_foes += 1
+		if n_allies >= int(ab["ai_self"].get("allies", 999)) or n_foes >= int(ab["ai_self"].get("enemies", 999)):
+			return id
+	return ""
+
+
 func _enemy_move(e: Dictionary) -> void:
 	var reach_e := grid.reachable(e["pos"], e["move"], e["flying"], _team_tiles("p"))
 	var occupied := {}
@@ -2267,9 +2595,15 @@ func _enemy_move(e: Dictionary) -> void:
 					best_tile = t
 	reach = reach_e
 	await _walk(e, best_tile)
+	var sid := _enemy_self_ability(e)
+	if sid != "":
+		await _run_ability(e, sid, e)
+		await _flush_events()
+		return
 	if not best_target.is_empty():
 		if best_ab != "":
 			await _run_ability(e, best_ab, best_target)
 		else:
 			await _resolve(e, best_target)
+	await _flush_events()
 	await get_tree().create_timer(0.15).timeout

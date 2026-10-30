@@ -95,6 +95,28 @@
     8,
     6
    ]
+  },
+  {
+   "id": "oskar",
+   "pos": [
+    7,
+    0
+   ],
+   "carry": {
+    "gold": 60
+   }
+  },
+  {
+   "id": "maja",
+   "pos": [
+    8,
+    1
+   ],
+   "carry": {
+    "items": {
+     "heiltrank": 1
+    }
+   }
   }
  ],
  "chests": [

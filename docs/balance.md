@@ -12,7 +12,7 @@ Erzeugt von `tools/balance.py` mit dem grafikfreien Simulator (`game/sim/`). Er 
 - Ausrüstung: stärkstes Stück Plattenpanzer (+8.4 Pp), schwächstes Magierrobe (-0.0 Pp)
 - Kapitel-1-Ausstattung hebt die Siegquote um +19.1 Pp
 - Verteidigen: Gruppen +3.2 Pp Siegquote, 16.5 Einsätze pro Kampf
-- Mission 3: ohne Löschen gehen im Schnitt 0.4 von 4 Häusern verloren, mit voller Löschung 0.0
+- Mission 3: ohne Löschen gehen im Schnitt 4.0 von 4 Häusern verloren, mit voller Löschung 0.0
 
 ## 1. Einzelwertung: Wert in Infanteristen
 
@@ -283,14 +283,14 @@ Zusatzgewinn durch den Spott (jeweils mit Verteidigen), Siegquote in Pp gegenüb
 
 ## 8. Mission 3: Feuer
 
-Aufstellung wie im Spiel (Albrecht, Mira, Brunhilde, Wendy, Elisabeth, Takeda gegen 3 Büttel, 1 Bogenschützen, 1 Reiter). Zahlen: Siegquote / durchschnittlich verlorene Häuser von 4, bei steigender Gegnerstärke (Leben und Angriff ×).
+Aufstellung wie im Spiel (Albrecht, Mira, Brunhilde, Wendy, Elisabeth, Takeda gegen 3 Büttel, 1 Bogenschützen, 1 Reiter und die Zwillinge Oskar und Maja). Zahlen: Siegquote / durchschnittlich verlorene Häuser von 4, bei steigender Gegnerstärke (Leben und Angriff ×).
 
 | Variante | ×1.0 | ×1.6 | ×2.2 |
 |---|--:|--:|--:|
-| Voll (Fasswurf + Löschen von Hand) | 100% / 0.0 | 100% / 0.0 | 100% / 0.0 |
-| Ohne Fasswurf (nur Löschen von Hand) | 100% / 0.0 | 100% / 0.0 | 99% / 0.2 |
-| Gar nicht löschen | 100% / 0.4 | 100% / 2.6 | 100% / 4.0 |
-| Ohne Brunhilde (Lin statt ihr, nur Löschen von Hand) | 100% / 0.0 | 100% / 0.0 | 98% / 0.4 |
+| Voll (Fasswurf + Löschen von Hand) | 100% / 0.0 | 59% / 0.8 | 0% / 0.7 |
+| Ohne Fasswurf (nur Löschen von Hand) | 100% / 0.1 | 47% / 1.5 | 0% / 1.6 |
+| Gar nicht löschen | 100% / 4.0 | 80% / 4.0 | 0% / 4.0 |
+| Ohne Brunhilde (Lin statt ihr, nur Löschen von Hand) | 100% / 0.0 | 48% / 0.5 | 0% / 1.5 |
 
 ## Grenzen
 

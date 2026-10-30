@@ -36,6 +36,11 @@ func _ready() -> void:
 		row.add_child(_button("Mit Einleitung", func() -> void: pick(i, false)))
 		row.add_child(_button("Direkt in den Kampf", func() -> void: pick(i, true)))
 		col.add_child(row)
+	col.add_child(_button("Soundlabor", _open_lab))
+
+
+func _open_lab() -> void:
+	add_child(SoundLab.new())
 
 
 func pick(index: int, skip_story: bool) -> void:

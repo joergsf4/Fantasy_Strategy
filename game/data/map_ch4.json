@@ -1,0 +1,150 @@
+{
+ "rows": [
+  "GGFGGGGGGFGG",
+  "GFFGGGGGGGFG",
+  "GGGGGGGGGGGG",
+  "GGGGGGGGGGGG",
+  "WWGGGGGGGGGG",
+  "WWGGGGGGGGFF",
+  "GGGGGGGGGGFF",
+  "GGGFGGGGGGGG",
+  "GGGGGGGGGGGG",
+  "GGGGGGGGGGGG"
+ ],
+ "players": [
+  {
+   "id": "maedchen_baer",
+   "pos": [
+    4,
+    7
+   ]
+  },
+  {
+   "id": "kungfu",
+   "pos": [
+    6,
+    7
+   ]
+  },
+  {
+   "id": "ritter",
+   "pos": [
+    5,
+    8
+   ]
+  },
+  {
+   "id": "wendy",
+   "pos": [
+    3,
+    8
+   ]
+  },
+  {
+   "id": "ninjas",
+   "pos": [
+    7,
+    8
+   ]
+  },
+  {
+   "id": "elisabeth",
+   "pos": [
+    2,
+    7
+   ]
+  }
+ ],
+ "enemies": [
+  {
+   "id": "soldat_infanterie",
+   "pos": [
+    3,
+    2
+   ]
+  },
+  {
+   "id": "soldat_infanterie",
+   "pos": [
+    7,
+    2
+   ],
+   "carry": {
+    "items": {
+     "heiltrank": 1
+    }
+   }
+  },
+  {
+   "id": "soldat_infanterie",
+   "pos": [
+    2,
+    4
+   ]
+  },
+  {
+   "id": "soldat_bogenschuetze",
+   "pos": [
+    8,
+    1
+   ]
+  },
+  {
+   "id": "soldat_beritten",
+   "pos": [
+    9,
+    4
+   ]
+  },
+  {
+   "id": "xiulan",
+   "pos": [
+    4,
+    3
+   ],
+   "carry": {
+    "gold": 50
+   }
+  }
+ ],
+ "objects": [
+  {
+   "id": "teehaus",
+   "type": "teahouse",
+   "pos": [
+    5,
+    1
+   ]
+  },
+  {
+   "id": "geisel",
+   "type": "hostage",
+   "pos": [
+    6,
+    1
+   ]
+  }
+ ],
+ "rewards": {
+  "gold": 100
+ },
+ "objectives": [
+  {
+   "id": "alle_gegner",
+   "text": "Alle Wachen besiegt",
+   "reward": {
+    "gold": 60
+   }
+  },
+  {
+   "id": "ueberzeugt",
+   "text": "Xiùlán zum Rückzug überzeugt",
+   "unit": "xiulan",
+   "reward": {
+    "items": {
+     "aether": 1
+    }
+   }
+  }
+ ]
+}

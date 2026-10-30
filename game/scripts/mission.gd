@@ -28,6 +28,8 @@ static func goal_text(goal: Dictionary, enemies_left: int, turn: int) -> String:
 	match goal.get("type", "rout"):
 		"survive":
 			return "Ziel: Haltet durch (Runde %d von %d)" % [mini(turn, int(goal["turns"])), int(goal["turns"])]
+		"free":
+			return "Ziel: Befreit die Geisel"
 		"reach":
 			return "Ziel: Erreicht das markierte Feld"
 		_:

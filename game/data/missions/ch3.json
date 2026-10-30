@@ -2,7 +2,7 @@
  "id": "ch3",
  "title": "Mühlbach in Flammen",
  "map": "res://data/map_ch3.json",
- "briefing": "Brandstifter des Regenten haben Mühlbach angezündet. Das Feuer springt von Haus zu Haus und in den Wald. Besiegt die Brandstifter und rettet, was zu retten ist. Löschen kann jeder, Brunhilde löscht mit Bier gleich mehrere Felder.",
+ "briefing": "Brandstifter des Regenten haben Mühlbach angezündet. Das Feuer springt von Haus zu Haus und in den Wald. Besiegt die Brandstifter und rettet, was zu retten ist. Löschen kann jeder, Brunhilde löscht mit Bier gleich mehrere Felder. Das Feuer ist das Werk der Zwillinge Oskar und Maja, Generäle des Regenten.",
  "goals": [
   {
    "type": "rout"
@@ -54,6 +54,367 @@
      ]
     }
    ]
+  },
+  {
+   "when": {
+    "ability": {
+     "id": "fasswurf",
+     "by": "braumeisterin"
+    }
+   },
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "braumeisterin",
+       "right": "ritter",
+       "speaker": "braumeisterin",
+       "left_expr": "lachend",
+       "text": "Prost, Flammen! Wer löscht, der darf auch trinken."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "heal": {
+     "by": "wendy",
+     "targets": 3
+    }
+   },
+   "if": {
+    "present": [
+     "ritter",
+     "braumeisterin"
+    ]
+   },
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "braumeisterin",
+       "right": "wendy",
+       "speaker": "braumeisterin",
+       "text": "Wendy, du bist ein Wunder! Drei gleichzeitig!",
+       "left_expr": "lachend"
+      },
+      {
+       "left": "braumeisterin",
+       "right": "wendy",
+       "speaker": "wendy",
+       "text": "Mäh… bitte nicht klatschen, sonst werde ich rot.",
+       "right_expr": "lachend"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "near": {
+     "a": "samurai",
+     "b": "soldat_beritten",
+     "dist": 3
+    }
+   },
+   "if": {
+    "present": [
+     "soldat_beritten"
+    ]
+   },
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "samurai",
+       "right": "soldat_beritten",
+       "speaker": "samurai",
+       "text": "Ein Reiter. Endlich ein Gegner, der einen Namen verdient."
+      },
+      {
+       "left": "samurai",
+       "right": "soldat_beritten",
+       "speaker": "soldat_beritten",
+       "text": "Ich heiße Heinz. Aber du darfst mich Herr Reiter nennen."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "fall": {}
+   },
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "braumeisterin",
+       "right": "wendy",
+       "speaker": "wendy",
+       "left_expr": "wuetend",
+       "text": "Nein! Das Feuer ist schon schlimm genug. Haltet durch!"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "near": {
+     "a": "oskar",
+     "b": "any_enemy",
+     "dist": 8
+    }
+   },
+   "if": {
+    "present": [
+     "maja",
+     "braumeisterin"
+    ]
+   },
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "oskar",
+       "right": "maja",
+       "speaker": "oskar",
+       "text": "Schwesterherz, sieh nur: Helden. Wie rührend. Und wie brennbar.",
+       "left_expr": "lachend"
+      },
+      {
+       "left": "oskar",
+       "right": "maja",
+       "speaker": "maja",
+       "text": "Brennbar ist mein Lieblingswort. Machen wir es kurz, Oskar, ich will noch zu Mittag essen.",
+       "right_expr": "lachend"
+      },
+      {
+       "left": "braumeisterin",
+       "right": "oskar",
+       "speaker": "braumeisterin",
+       "text": "Zwei Blondschöpfe im Gleichschritt. Wer von euch hat das Dorf angezündet?",
+       "left_expr": "wuetend"
+      },
+      {
+       "left": "braumeisterin",
+       "right": "oskar",
+       "speaker": "oskar",
+       "text": "Angezündet? Wir haben nur Atmosphäre geschaffen.",
+       "right_expr": "lachend"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "ability": {
+     "id": "einschuechtern",
+     "by": "maja"
+    }
+   },
+   "if": {
+    "present": [
+     "ritter"
+    ]
+   },
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "ritter",
+       "right": "maja",
+       "speaker": "maja",
+       "text": "Kniet nieder, ihr Kleingeister. Oder lauft. Mir ist beides recht.",
+       "right_expr": "lachend"
+      },
+      {
+       "left": "ritter",
+       "right": "maja",
+       "speaker": "ritter",
+       "text": "Ich habe Dämonen gesehen. Du bist hübscher und gruseliger."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "ability": {
+     "id": "befehl",
+     "by": "oskar"
+    }
+   },
+   "if": {
+    "present": [
+     "samurai"
+    ]
+   },
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "samurai",
+       "right": "oskar",
+       "speaker": "oskar",
+       "text": "Für den Regenten! Und für meine Frisur!",
+       "right_expr": "lachend"
+      },
+      {
+       "left": "samurai",
+       "right": "oskar",
+       "speaker": "samurai",
+       "text": "Er lobt seine Haare im Gefecht. Das ist würdelos."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "kill": {
+     "id": "oskar"
+    }
+   },
+   "if": {
+    "present": [
+     "maja"
+    ]
+   },
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "maedchen_baer",
+       "right": "maja",
+       "speaker": "maja",
+       "text": "OSKAR! Das zahlt ihr mir doppelt!",
+       "right_expr": "wuetend"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "kill": {
+     "id": "maja"
+    }
+   },
+   "if": {
+    "present": [
+     "oskar"
+    ]
+   },
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "maedchen_baer",
+       "right": "oskar",
+       "speaker": "oskar",
+       "text": "Maja! Dafür werdet ihr brennen. Ihr alle!",
+       "right_expr": "wuetend"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 3
+   },
+   "if": {
+    "fled": [
+     "wart"
+    ]
+   },
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "$hero",
+       "right": "wart",
+       "speaker": "wart",
+       "right_expr": "lachend",
+       "text": "HALT! Habt ihr meine Rakete vermisst? Ich hab mir neue gebaut, größere!"
+      },
+      {
+       "left": "$hero",
+       "right": "wart",
+       "speaker": "$hero",
+       "text": "Das Wildschwein vom Hohlweg! Der Regent schickt wohl alles, was Beine hat."
+      },
+      {
+       "left": "$hero",
+       "right": "wart",
+       "speaker": "wart",
+       "right_expr": "wuetend",
+       "text": "Erst brennen wir euer Dorf nieder, dann seid ihr dran!"
+      }
+     ]
+    },
+    {
+     "spawn": [
+      {
+       "id": "wart",
+       "pos": [
+        11,
+        0
+       ]
+      }
+     ]
+    }
+   ]
   }
- ]
+ ],
+ "flee": {
+  "oskar": [
+   {
+    "left": "$hero",
+    "right": "oskar",
+    "speaker": "oskar",
+    "right_expr": "wuetend",
+    "text": "Mein Haar! Mein schönes Haar riecht nach Rauch! Das vergesse ich euch nie!"
+   },
+   {
+    "left": "$hero",
+    "right": "oskar",
+    "speaker": "$hero",
+    "text": "Er läuft davon. Sein Haar ist ihm wichtiger als sein Heer."
+   },
+   {
+    "left": "$hero",
+    "right": "oskar",
+    "speaker": "oskar",
+    "right_expr": "wuetend",
+    "text": "Rückzug! Wir sehen uns wieder, und dann bin ich frisiert!"
+   }
+  ],
+  "maja": [
+   {
+    "left": "$hero",
+    "right": "maja",
+    "speaker": "maja",
+    "right_expr": "wuetend",
+    "text": "Ihr kleinen Würmer! Ich merke mir jedes eurer Gesichter. Jedes einzelne."
+   },
+   {
+    "left": "$hero",
+    "right": "maja",
+    "speaker": "$hero",
+    "text": "Ihr Blick hat sich ins Mark gebrannt. Aber sie flieht."
+   },
+   {
+    "left": "$hero",
+    "right": "maja",
+    "speaker": "maja",
+    "right_expr": "wuetend",
+    "text": "Das war der Anfang, nicht das Ende. Der Regent erfährt davon!"
+   }
+  ]
+ }
 }

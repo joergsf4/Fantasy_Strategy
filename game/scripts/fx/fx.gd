@@ -297,6 +297,7 @@ func squash(u: Dictionary, sx: float, sy: float, time := 0.2) -> void:
 
 ## Verteidigen: kurzes Zusammenducken, blauer Lichtblitz und Ring.
 func defend_fx(u: Dictionary) -> void:
+	Sfx.event("defend")
 	squash(u, 1.12, 0.86, 0.3)
 	light_flash(chest(u, 0.7), Color(0.4, 0.65, 1.0), 2.0, 3.0, 0.4)
 	shockwave((u["node"] as Node3D).position, 0.9, Color(0.45, 0.7, 1.0, 0.8), 0.4)
@@ -350,12 +351,13 @@ func flash_unit(u: Dictionary, color := Color(3, 3, 3), time := 0.18) -> void:
 
 ## Anlauf: Pose, Zielmarkierung, Funkeln.
 func windup(id: String, u: Dictionary, target: Dictionary) -> void:
+	Sfx.ability(id, "windup", u, target)
 	match id:
-		"kanone":
+		"kanone", "rakete":
 			await _kanone_windup(u, target)
 		"verspotten":
 			await _verspotten_windup(u)
-		"knochenwurf":
+		"knochenwurf", "gebiss":
 			await squash(u, 0.88, 1.14, 0.3)
 		_:
 			await ab.windup(id, u, target)
@@ -363,6 +365,7 @@ func windup(id: String, u: Dictionary, target: Dictionary) -> void:
 
 ## Fluegel/Wellen vor den Treffern (nur Faehigkeiten mit Flaeche).
 func cast(id: String, u: Dictionary, _target: Dictionary, tiles: Array[Vector2i]) -> void:
+	Sfx.ability(id, "cast", u, _target)
 	match id:
 		"verspotten":
 			var col: Array = c(id, "color", [1, 0.25, 0.15, 0.6])
@@ -373,19 +376,23 @@ func cast(id: String, u: Dictionary, _target: Dictionary, tiles: Array[Vector2i]
 
 ## Vor jedem einzelnen Treffer: Geschoss fliegt los (wartet bis zum Einschlag).
 func before_hit(id: String, u: Dictionary, v: Dictionary, i: int) -> void:
+	Sfx.ability(id, "shot", u, v)
 	match id:
-		"kanone":
+		"kanone", "rakete":
 			await _kanone_shot(u, v)
 		"knochenwurf":
 			await _bone_shot(u, v, i)
+		"gebiss":
+			await _gebiss_shot(u, v)
 		_:
 			await ab.before_hit(id, u, v, i)
 
 
 ## Im Moment des Einschlags (nicht blockierend): Explosion, Funken, Reaktion.
 func on_hit(id: String, u: Dictionary, v: Dictionary, i: int) -> void:
+	Sfx.ability(id, "hit", u, v)
 	match id:
-		"kanone":
+		"kanone", "rakete":
 			_explosion(chest(v, 0.4), 1.0)
 			for o in battle.units:
 				if o != v and o["team"] != u["team"] and Grid.dist(o["pos"], v["pos"]) == 1:
@@ -393,6 +400,8 @@ func on_hit(id: String, u: Dictionary, v: Dictionary, i: int) -> void:
 					get_tree().create_timer(0.12).timeout.connect(func() -> void: _explosion(pos, 0.55))
 		"knochenwurf":
 			_bonk(u, v, i)
+		"gebiss":
+			_gebiss_hit(u, v)
 		_:
 			ab.on_hit(id, u, v, i)
 
@@ -502,6 +511,23 @@ func _bone_shot(u: Dictionary, v: Dictionary, i: int) -> void:
 	var to := chest(v, 0.55) + Vector3(randf_range(-0.12, 0.12), randf_range(-0.1, 0.15), 0.0)
 	hop(u, 0.12, 0.15)
 	await projectile(c("knochenwurf", "bone", "fx_bone"), from, to, float(c("knochenwurf", "time", 0.32)), 0.7 + 0.2 * i, 0.75, 9.0 + 3.0 * i)
+
+
+## Xiulans Gebiss: fliegt wirbelnd im Bogen zum Ziel und beisst zu.
+func _gebiss_shot(u: Dictionary, v: Dictionary) -> void:
+	battle._turn_towards(u, v["pos"])
+	hop(u, 0.15, 0.18)
+	await projectile(c("gebiss", "sprite", "fx_gebiss"), chest(u, 0.7), chest(v, 0.55), float(c("gebiss", "time", 0.45)), 1.4, 0.8, 12.0)
+
+
+func _gebiss_hit(u: Dictionary, v: Dictionary) -> void:
+	var pos := chest(v, 0.55)
+	var star := make_sprite("fx_star", pos, 0.6, true)
+	pop(star, 1.9, 0.26, 0.4)
+	particles("soft", pos, 6, 2.2, 0.1, 0.4, 5.0, Color(1.0, 0.95, 0.85), true, 100.0)
+	shake(0.04, 0.12)
+	flash_unit(v, Color(2.2, 2.0, 2.0), 0.14)
+	knockback(v, (u["node"] as Node3D).position, 0.18, 0.2)
 
 
 ## "Bonk": Funkenstern, Ruck am Ziel, der Knochen prallt ab und faellt zu Boden.
@@ -643,14 +669,17 @@ func throw_anim(u: Dictionary, target: Dictionary, valid: Array, chosen_dir: int
 
 
 func polymorph_out(u: Dictionary, v: Dictionary) -> void:
+	Sfx.event("polymorph_out")
 	await ab.polymorph_out(u, v)
 
 
 func polymorph_in(u: Dictionary) -> void:
+	Sfx.event("polymorph_in")
 	await ab.polymorph_in(u)
 
 
 func on_heal(id: String, u: Dictionary, v: Dictionary, amount: int, cured: bool) -> void:
+	Sfx.ability(id, "heal", u, v)
 	ab.on_heal(id, u, v, amount, cured)
 
 
@@ -660,6 +689,7 @@ func after(id: String, u: Dictionary, target: Dictionary) -> void:
 
 ## Normaler Fernangriff: Geschoss je nach Figur.
 func basic_shot(att: Dictionary, def: Dictionary) -> void:
+	Sfx.shot(att)
 	var basic: Dictionary = cfg.get("_basic", {})
 	var sprite: String = basic.get(att["id"], basic.get("default", "fx_bolt"))
 	var spin := 10.0 if sprite == "fx_shuriken" else 0.0
@@ -667,8 +697,12 @@ func basic_shot(att: Dictionary, def: Dictionary) -> void:
 
 
 ## Normaler Treffer: Schlagblitz bzw. Funke.
-func basic_hit(att: Dictionary, def: Dictionary) -> void:
+func basic_hit(att: Dictionary, def: Dictionary, accent := false) -> void:
 	var pos := chest(def, 0.6)
+	if Grid.dist(att["pos"], def["pos"]) <= 1:
+		Sfx.melee(att, def, accent)
+	else:
+		Sfx.shot_hit(att, def, accent)
 	if Grid.dist(att["pos"], def["pos"]) <= 1:
 		var sl := make_sprite("fx_slash", pos, 1.0, true)
 		pop(sl, 1.35, 0.22, randf_range(-0.5, 0.5))
@@ -680,6 +714,7 @@ func basic_hit(att: Dictionary, def: Dictionary) -> void:
 
 ## Abgang einer besiegten Figur: Rauchwolke, Ausblenden, dann entfernen.
 func death(u: Dictionary) -> void:
+	Sfx.event("death")
 	var n := u["node"] as Node3D
 	if not is_instance_valid(n):
 		return

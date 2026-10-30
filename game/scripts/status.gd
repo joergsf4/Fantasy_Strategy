@@ -4,7 +4,7 @@ extends RefCounted
 
 const NAMES := {
 	"stun": "Benommen", "poison": "Gift", "taunt": "Spott", "stealth": "Verborgen",
-	"buff": "Gestärkt", "tired": "Erschöpft", "polymorph": "Verwandelt", "defend": "Verteidigt",
+	"buff": "Gestärkt", "tired": "Erschöpft", "polymorph": "Verwandelt", "defend": "Verteidigt", "scared": "Eingeschüchtert",
 }
 const GOOD := ["stealth", "buff", "defend"]
 

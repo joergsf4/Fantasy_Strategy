@@ -11,6 +11,7 @@ var inventory: Dictionary = {}     # Verbrauchsgegenstaende {id: Anzahl}
 var materials: Dictionary = {}     # Zutaten {id: Anzahl}
 var equipment: Dictionary = {}     # getragen: {Held: [Ausruestung]}
 var pool: Array = []               # besitzt, aber nicht getragen
+var nemesis: Array = []            # entkommene Gegner, tauchen in spaeteren Missionen wieder auf
 var bought: Dictionary = {}        # im aktuellen Lager gekauft {id: Anzahl} (Haendler hat nur festen Vorrat)
 
 
@@ -24,7 +25,7 @@ static func new_game() -> Party:
 
 ## Was ein Kampf zu Beginn bekommt.
 func loadout() -> Dictionary:
-	return {"inventory": inventory.duplicate(), "equipment": equipment.duplicate(true)}
+	return {"inventory": inventory.duplicate(), "equipment": equipment.duplicate(true), "nemesis": nemesis.duplicate()}
 
 
 static func _add(into: Dictionary, from: Dictionary) -> void:
@@ -38,6 +39,9 @@ func absorb(results: Dictionary) -> void:
 	_add(materials, results["materials"])
 	gold += int(results["gold"])
 	pool.append_array(results["equipment"])
+	for id: String in results.get("fled", []):
+		if not nemesis.has(id):
+			nemesis.append(id)
 	chapter += 1
 	bought = {}
 
@@ -55,7 +59,7 @@ func spend(price: int) -> bool:
 
 
 func to_dict() -> Dictionary:
-	return {"chapter": chapter, "gold": gold, "inventory": inventory, "materials": materials, "equipment": equipment, "pool": pool, "bought": bought}
+	return {"chapter": chapter, "gold": gold, "inventory": inventory, "materials": materials, "equipment": equipment, "pool": pool, "bought": bought, "nemesis": nemesis}
 
 
 static func from_dict(d: Dictionary) -> Party:
@@ -67,6 +71,7 @@ static func from_dict(d: Dictionary) -> Party:
 	p.equipment = (d.get("equipment", {}) as Dictionary).duplicate(true)
 	p.pool = (d.get("pool", []) as Array).duplicate()
 	p.bought = _ints(d.get("bought", {}))
+	p.nemesis = (d.get("nemesis", []) as Array).duplicate()
 	return p
 
 

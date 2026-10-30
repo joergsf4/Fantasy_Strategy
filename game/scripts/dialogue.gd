@@ -107,6 +107,7 @@ func _advance() -> void:
 		finished.emit()
 		queue_free()
 		return
+	Sfx.event("dialog")
 	var l: Dictionary = lines[_idx]
 	_set_portrait(_left, l.get("left", ""), l.get("left_expr", ""))
 	_set_portrait(_right, l.get("right", ""), l.get("right_expr", ""))

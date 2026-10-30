@@ -62,5 +62,25 @@
   "solutions": {
    "extinguish": "extinguish"
   }
+ },
+ "hostage": {
+  "name": "Geisel",
+  "start": "bound",
+  "active": "",
+  "blocks": [
+   "bound"
+  ],
+  "hp": 0,
+  "solutions": {}
+ },
+ "teahouse": {
+  "name": "Teehaus",
+  "start": "standing",
+  "active": "",
+  "blocks": [
+   "standing"
+  ],
+  "hp": 0,
+  "solutions": {}
  }
 }

@@ -33,11 +33,17 @@ func windup(id: String, u: Dictionary, target: Dictionary) -> void:
 			battle._popup(u, "GRRR!", Color(1.0, 0.7, 0.3))
 			fx.squash(u, 1.12, 0.82, 0.3)
 			await _wait(0.28)
-		"schlachtruf":
+		"schlachtruf", "befehl":
 			fx.hop(u, 0.3, 0.3)
 			fx.light_flash(fx.chest(u, 0.9), Color(1, 0.85, 0.4), 3.0, 5.0, 0.5)
 			fx.shockwave(_pos(u), 1.1, Color(1.0, 0.85, 0.4, 0.8), 0.45)
 			await _wait(0.25)
+		"einschuechtern":
+			battle._popup(u, "…", Color(0.8, 0.5, 0.95))
+			fx.squash(u, 0.92, 1.1, 0.3)
+			fx.light_flash(fx.chest(u, 0.9), Color(0.65, 0.3, 0.9), 2.5, 4.0, 0.5)
+			fx.shockwave(_pos(u), 1.0, Color(0.7, 0.35, 0.95, 0.8), 0.45)
+			await _wait(0.3)
 		"todeswirbel":
 			fx.squash(u, 1.1, 0.8, 0.3)
 			fx.light_flash(fx.chest(u, 0.7), Color(0.7, 0.85, 1.0), 2.0, 3.0, 0.35)
@@ -67,10 +73,12 @@ func windup(id: String, u: Dictionary, target: Dictionary) -> void:
 ## Wellen/Flaechen/Strahlen, die vor den Treffern ablaufen.
 func cast(id: String, u: Dictionary, target: Dictionary, tiles: Array[Vector2i]) -> void:
 	match id:
-		"schlachtruf":
+		"schlachtruf", "befehl":
 			await fx.tile_wave(u["pos"], tiles, _col(id, [1.0, 0.8, 0.25, 0.55]), 0.07, 0.45, true)
 		"gruppenheilung":
 			await fx.tile_wave(target["pos"], tiles, _col(id, [0.5, 1.0, 0.65, 0.55]), 0.08, 0.5, true)
+		"einschuechtern":
+			await fx.tile_wave(u["pos"], tiles, _col(id, [0.55, 0.2, 0.65, 0.6]), 0.09, 0.5, false)
 		"todeswirbel":
 			await _spin(u)
 		"roter_laser":
