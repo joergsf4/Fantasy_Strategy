@@ -1,0 +1,19 @@
+{
+  "_info": "Figur -> XTTS-Sprecher (erste Zuordnung, nach Hoerprobe anpassen). speed: Sprechtempo (1.0 normal).",
+  "maedchen_baer":  {"speaker": "Daisy Studious",      "speed": 1.05, "line": "Ich laufe nicht weg. Brumm und ich kommen mit. Stimmt's, Brumm?"},
+  "ritter":         {"speaker": "Baldur Sanjin",       "speed": 0.95, "line": "Rauch über dem Tal. Das ist Eichenfurt! Kind, lauf zurück und warne die anderen."},
+  "samurai":        {"speaker": "Damien Black",        "speed": 0.92, "line": "Meine Klinge schweigt, bis es Zeit ist zu sprechen."},
+  "kungfu":         {"speaker": "Craig Gutsy",         "speed": 1.05, "line": "Wer den Stab beherrscht, braucht keine Mauer."},
+  "ninjas":         {"speaker": "Tanja Adelina",       "speed": 1.1,  "line": "Wir waren nie hier. Und ihr habt uns nie gesehen."},
+  "elisabeth":      {"speaker": "Gracie Wise",         "speed": 1.05, "line": "Feuer frei! Ich ziele auf den, der am lautesten schreit."},
+  "museklaugust":   {"speaker": "Viktor Menelaos",     "speed": 0.9,  "line": "Bewundert meine Muskeln, ihr Würmer! Der Fürst höchstselbst bebt vor ihnen."},
+  "robo":           {"speaker": "Dionisio Schuyler",   "speed": 0.9,  "line": "Analyse abgeschlossen. Ihre Überlebenschance beträgt vierzehn Prozent."},
+  "hund":           {"speaker": "Andrew Chipper",      "speed": 1.05, "line": "Knochen sind zum Werfen da. Oder zum Schlagen. Oder zum Knabbern."},
+  "wendy":          {"speaker": "Annmarie Nele",       "speed": 0.95, "line": "Mäh, das Feuer ist aus. Seid ihr verletzt? Ich habe Kräutertee dabei."},
+  "claude":         {"speaker": "Badr Odhiambo",       "speed": 1.0,  "line": "Dein Wunsch sei mir Befehl. Naja, zumindest die ersten drei Wünsche."},
+  "bienenmaedchen": {"speaker": "Brenda Stern",        "speed": 0.95, "line": "Bsssss. Der Honig des Dorfes gehört jetzt der Königin. Und ihr gehört dem Stachel."},
+  "braumeisterin":  {"speaker": "Alison Dietlinde",    "speed": 1.0,  "line": "Ich hab was zu trinken mitgebracht. Und ein Fass zum Werfen."},
+  "soldat_infanterie": {"speaker": "Ludvig Milivoj",   "speed": 1.0,  "line": "Der Hauptmann schickt Nachschub! Für den Fürsten!"},
+  "fuerst":         {"speaker": "Torcull Diarmuid",    "speed": 0.9,  "line": "Brennt es noch nicht? Dann seid ihr zu früh gekommen."},
+  "haendler":       {"speaker": "Zacharie Aimilios",   "speed": 1.1,  "line": "Frische Ware, frisch vom Rücken! Nur heute, wie jeden Tag."}
+}

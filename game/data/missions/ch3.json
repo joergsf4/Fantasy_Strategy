@@ -1,0 +1,59 @@
+{
+ "id": "ch3",
+ "title": "Mühlbach in Flammen",
+ "map": "res://data/map_ch3.json",
+ "briefing": "Brandstifter des Regenten haben Mühlbach angezündet. Das Feuer springt von Haus zu Haus und in den Wald. Besiegt die Brandstifter und rettet, was zu retten ist. Löschen kann jeder, Brunhilde löscht mit Bier gleich mehrere Felder.",
+ "goals": [
+  {
+   "type": "rout"
+  }
+ ],
+ "triggers": [
+  {
+   "when": {
+    "turn": 2
+   },
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "wendy",
+       "right": "braumeisterin",
+       "speaker": "wendy",
+       "left_expr": "wuetend",
+       "text": "Mäh! Das Dorf brennt wie Zunder. Brunhilde, hast du noch ein Fass?"
+      },
+      {
+       "left": "wendy",
+       "right": "braumeisterin",
+       "speaker": "braumeisterin",
+       "right_expr": "lachend",
+       "text": "Für den Durst, nicht fürs Löschen. Aber gut. Dem Dorf zuliebe."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "object": {
+     "id": "f2",
+     "state": "out"
+    }
+   },
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "maedchen_baer",
+       "right": "braumeisterin",
+       "speaker": "braumeisterin",
+       "right_expr": "lachend",
+       "text": "Zisch! Das erste Feuer ist aus. Das nächste Fass kostet extra."
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

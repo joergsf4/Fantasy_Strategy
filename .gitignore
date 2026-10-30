@@ -1,0 +1,20 @@
+# Godot
+game/.godot/
+*.translation
+# Arbeitsordner mit Zwischenergebnissen, Videos, Browserprofil (enthaelt eine eingeloggte Google-Sitzung!) und Simulationsdaten
+out/
+# Sprachmodell-Experiment (verworfen): Python-Umgebung und Modell
+tools/voice/.venv/
+tools/voice/samples/
+tools/voice/*.log
+# Node
+node_modules/
+# Grosse Videos / Rohaufnahmen
+*.avi
+*.mp4
+# Sonstiges
+.DS_Store
+__pycache__/
+*.bak
+strategie/neu/_alt/
+strategie/neu/_fail_*.png

@@ -1,0 +1,12 @@
+import { connect } from './lib.mjs';
+const { b, page } = await connect();
+console.log('inputs:', await page.locator('input[type=file]').count());
+page.on('filechooser', fc => console.log('chooser event'));
+const btn = page.locator('[data-test-id="local-images-files-uploader-button"]');
+console.log('visible', await btn.isVisible());
+const p = page.waitForEvent('filechooser', { timeout: 8000 }).then(() => 'chooser ok').catch(() => 'no chooser');
+await btn.click({ timeout: 5000 }).catch(e => console.log('click err', e.message.split('\n')[0]));
+console.log(await p);
+console.log('inputs after:', await page.locator('input[type=file]').count());
+await page.screenshot({ path: process.argv[2] });
+await b.close();

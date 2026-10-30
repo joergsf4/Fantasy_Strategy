@@ -1,0 +1,188 @@
+{
+ "rows": [
+  "GGGGGGGGGGGG",
+  "GGGGGFFGGGGG",
+  "GGGGGFFGGGGG",
+  "GGGGGFGGGWWG",
+  "GGGGGGGGGWWG",
+  "GGGGGGGGGGGG",
+  "GGGGGGGGGGGG",
+  "GFFGGGGGGGGG",
+  "GGGGGGGGGGGG",
+  "GGGGGGGGGGGG"
+ ],
+ "players": [
+  {
+   "id": "ritter",
+   "pos": [
+    3,
+    7
+   ]
+  },
+  {
+   "id": "maedchen_baer",
+   "pos": [
+    4,
+    7
+   ]
+  },
+  {
+   "id": "braumeisterin",
+   "pos": [
+    2,
+    8
+   ]
+  },
+  {
+   "id": "wendy",
+   "pos": [
+    1,
+    7
+   ]
+  },
+  {
+   "id": "elisabeth",
+   "pos": [
+    3,
+    9
+   ]
+  },
+  {
+   "id": "samurai",
+   "pos": [
+    5,
+    8
+   ]
+  }
+ ],
+ "enemies": [
+  {
+   "id": "soldat_infanterie",
+   "pos": [
+    1,
+    3
+   ],
+   "carry": {
+    "items": {
+     "gegengift": 1
+    }
+   }
+  },
+  {
+   "id": "soldat_infanterie",
+   "pos": [
+    7,
+    1
+   ]
+  },
+  {
+   "id": "soldat_infanterie",
+   "pos": [
+    8,
+    3
+   ]
+  },
+  {
+   "id": "soldat_bogenschuetze",
+   "pos": [
+    9,
+    2
+   ]
+  },
+  {
+   "id": "soldat_beritten",
+   "pos": [
+    8,
+    6
+   ]
+  }
+ ],
+ "chests": [
+  {
+   "pos": [
+    1,
+    6
+   ],
+   "reward": {
+    "materials": {
+     "kraut": 1,
+     "hopfen": 1
+    },
+    "gold": 20
+   }
+  }
+ ],
+ "villages": [],
+ "objects": [
+  {
+   "id": "h1",
+   "type": "house",
+   "pos": [
+    2,
+    2
+   ]
+  },
+  {
+   "id": "h2",
+   "type": "house",
+   "pos": [
+    3,
+    2
+   ]
+  },
+  {
+   "id": "h3",
+   "type": "house",
+   "pos": [
+    2,
+    4
+   ]
+  },
+  {
+   "id": "h4",
+   "type": "house",
+   "pos": [
+    3,
+    4
+   ]
+  },
+  {
+   "id": "f1",
+   "type": "fire",
+   "pos": [
+    4,
+    2
+   ]
+  },
+  {
+   "id": "f2",
+   "type": "fire",
+   "pos": [
+    4,
+    4
+   ]
+  }
+ ],
+ "rewards": {
+  "gold": 120
+ },
+ "objectives": [
+  {
+   "id": "haeuser",
+   "text": "Kein Haus brennt ab",
+   "reward": {
+    "gold": 80
+   }
+  },
+  {
+   "id": "schnell",
+   "text": "In 7 Runden gewonnen",
+   "turns": 7,
+   "reward": {
+    "items": {
+     "aether": 1
+    }
+   }
+  }
+ ]
+}

@@ -1,0 +1,95 @@
+{
+ "kanone": {
+  "arc": 1.9,
+  "time": 0.56,
+  "ball": "fx_cannonball",
+  "fire": "fx_fireball",
+  "smoke": "fx_smoke",
+  "boom": 2.6,
+  "shake": 0.14,
+  "lunge": false
+ },
+ "verspotten": {
+  "color": [
+   1.0,
+   0.16,
+   0.1,
+   0.78
+  ],
+  "icon": "fx_exclaim",
+  "spark": "fx_star",
+  "lunge": false
+ },
+ "knochenwurf": {
+  "bone": "fx_bone",
+  "spark": "fx_star",
+  "time": 0.32,
+  "gap": 0.13,
+  "lunge": false
+ },
+ "baerenpranke": {
+  "claw": "fx_claw",
+  "lunge": false
+ },
+ "schlachtruf": {
+  "color": [
+   1.0,
+   0.8,
+   0.25,
+   0.55
+  ],
+  "lunge": false
+ },
+ "todeswirbel": {
+  "spins": 2,
+  "time": 0.65,
+  "radius": 0.95,
+  "lunge": false
+ },
+ "stabsprung": {
+  "height": 1.5,
+  "time": 0.64,
+  "lunge": false
+ },
+ "versteck": {
+  "lunge": false
+ },
+ "wurf": {
+  "height": 2.6,
+  "time": 0.7,
+  "lunge": false
+ },
+ "roter_laser": {
+  "beam_time": 0.4,
+  "width": 0.3,
+  "lunge": false
+ },
+ "gruener_laser": {
+  "lunge": false
+ },
+ "gruppenheilung": {
+  "color": [
+   0.5,
+   1.0,
+   0.65,
+   0.55
+  ],
+  "lunge": false
+ },
+ "polymorph": {
+  "hops": 3,
+  "lunge": false
+ },
+ "giftstachel": {
+  "lunge": false
+ },
+ "fasswurf": {
+  "lunge": false
+ },
+ "_basic": {
+  "default": "fx_bolt",
+  "soldat_bogenschuetze": "fx_arrow",
+  "ninjas": "fx_shuriken",
+  "elisabeth": "fx_cannonball"
+ }
+}

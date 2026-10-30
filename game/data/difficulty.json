@@ -1,0 +1,38 @@
+{
+ "_info": "Erzeugt von tools/balance.py (E3). Faktoren gelten für Leben und Angriff der Gegner; gemessen mit der Simulations-KI.",
+ "reference": "Kapitel 1",
+ "levels": [
+  {
+   "id": "leicht",
+   "name": "Leicht",
+   "enemy_hp_mult": 2.11,
+   "enemy_atk_mult": 2.11,
+   "target_win_rate": 0.9,
+   "measured_win_rate": 0.832
+  },
+  {
+   "id": "normal",
+   "name": "Normal",
+   "enemy_hp_mult": 2.28,
+   "enemy_atk_mult": 2.28,
+   "target_win_rate": 0.7,
+   "measured_win_rate": 0.832
+  },
+  {
+   "id": "schwer",
+   "name": "Schwer",
+   "enemy_hp_mult": 2.42,
+   "enemy_atk_mult": 2.42,
+   "target_win_rate": 0.45,
+   "measured_win_rate": 0.493
+  },
+  {
+   "id": "meister",
+   "name": "Meister",
+   "enemy_hp_mult": 2.53,
+   "enemy_atk_mult": 2.53,
+   "target_win_rate": 0.25,
+   "measured_win_rate": 0.13
+  }
+ ]
+}

@@ -1,0 +1,66 @@
+{
+ "_info": "Weltobjekte. solutions: Faehigkeitsmarke -> Wirkung (break = zerstoert, open = geoeffnet, toggle = umgelegt, pass = nur ueberwinden). active = Zustand, in dem die Loesungen gelten.",
+ "wall": {
+  "name": "Mauer",
+  "start": "intact",
+  "active": "intact",
+  "blocks": [
+   "intact"
+  ],
+  "hp": 0,
+  "solutions": {
+   "blast": "break",
+   "leap": "pass",
+   "throw_ally": "pass"
+  }
+ },
+ "gate": {
+  "name": "Tor",
+  "start": "closed",
+  "active": "closed",
+  "blocks": [
+   "closed"
+  ],
+  "hp": 36,
+  "def": 3,
+  "solutions": {
+   "blast": "break",
+   "melt": "open",
+   "smash": "break",
+   "leap": "pass"
+  }
+ },
+ "switch": {
+  "name": "Schalter",
+  "start": "off",
+  "active": "off",
+  "blocks": [],
+  "hp": 0,
+  "solutions": {
+   "ranged_hit": "toggle"
+  }
+ },
+ "fire": {
+  "name": "Feuer",
+  "start": "burning",
+  "active": "burning",
+  "blocks": [],
+  "hp": 0,
+  "solutions": {
+   "extinguish": "extinguish"
+  }
+ },
+ "house": {
+  "name": "Haus",
+  "start": "intact",
+  "active": "burning",
+  "blocks": [
+   "intact",
+   "burning"
+  ],
+  "hp": 0,
+  "solutions": {
+   "extinguish": "extinguish"
+  }
+ }
+}

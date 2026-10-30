@@ -1,0 +1,79 @@
+{
+ "intro": [
+  {
+   "left": "maedchen_baer",
+   "right": "ritter",
+   "speaker": "ritter",
+   "text": "Rauch über dem Tal... Das ist Eichenfurt! Kind, lauf zurück und warne die anderen."
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "ritter",
+   "speaker": "maedchen_baer",
+   "text": "Ich laufe nicht weg. Brumm und ich kommen mit. Stimmt's, Brumm?",
+   "left_expr": "wuetend"
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "soldat_beritten",
+   "speaker": "soldat_beritten",
+   "text": "Halt! Im Namen des Regenten: Dieses Dorf zahlt ab sofort Steuern. Rückwirkend. Mit Zinsen."
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "soldat_beritten",
+   "speaker": "maedchen_baer",
+   "text": "Und dafür musstet ihr es anzünden?",
+   "left_expr": "wuetend"
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "soldat_beritten",
+   "speaker": "soldat_beritten",
+   "text": "Das war... ein Wärmebonus. Angriff!"
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "ritter",
+   "speaker": "ritter",
+   "text": "Der Bär nickt tatsächlich. Na gut. Aber du bleibst hinter mir.",
+   "right_expr": "lachend"
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "bienenmaedchen",
+   "speaker": "bienenmaedchen",
+   "text": "Bsssss... Der Honig des Dorfes gehört jetzt der Königin. Und ihr gehört bald dem Stachel.",
+   "right_expr": "lachend"
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "bienenmaedchen",
+   "speaker": "maedchen_baer",
+   "text": "Brumm hat Hunger. Ich glaube, du hast gerade einen Fehler gemacht.",
+   "left_expr": "lachend"
+  }
+ ],
+ "outro": [
+  {
+   "left": "maedchen_baer",
+   "right": "wendy",
+   "speaker": "wendy",
+   "text": "Mäh... das Feuer ist aus. Seid ihr verletzt? Ich habe Kräutertee dabei.",
+   "right_expr": "lachend"
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "wendy",
+   "speaker": "maedchen_baer",
+   "text": "Nur Brumms Stolz. Er hat eine Biene gefressen und es bereut.",
+   "left_expr": "lachend"
+  },
+  {
+   "left": "ritter",
+   "right": "wendy",
+   "speaker": "ritter",
+   "text": "Das war nur ein Vorposten. Der Regent im Süden steckt dahinter. Wir brechen auf."
+  }
+ ]
+}

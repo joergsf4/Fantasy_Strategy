@@ -1,0 +1,18 @@
+{
+  "id": "ch1",
+  "title": "Eichenfurt brennt",
+  "map": "res://data/map_ch1.json",
+  "briefing": "Rauch über Eichenfurt. Der Regent schickt seine Büttel: schlagt sie zurück, bevor das Dorf fällt.",
+  "goals": [{"type": "rout"}],
+  "triggers": [
+    {"when": {"turn": 3},
+     "do": [
+       {"popup": "Verstärkung!"},
+       {"dialogue": [
+         {"left": "maedchen_baer", "right": "soldat_infanterie", "speaker": "soldat_infanterie", "text": "Der Hauptmann schickt Nachschub! Für den Regenten!"},
+         {"left": "maedchen_baer", "right": "soldat_infanterie", "speaker": "maedchen_baer", "left_expr": "wuetend", "text": "Brumm, die Nachzügler gehören dir."}
+       ]},
+       {"spawn": [{"id": "soldat_infanterie", "pos": [11, 4]}]}
+     ]}
+  ]
+}

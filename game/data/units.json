@@ -1,0 +1,301 @@
+{
+ "maedchen_baer": {
+  "name": "Mira & Brumm",
+  "hp": 30,
+  "atk": 7,
+  "def": 4,
+  "res": 1,
+  "move": 4,
+  "range_min": 1,
+  "range": 1,
+  "role": "tank",
+  "dmg_type": "body",
+  "abilities": [
+   "baerenpranke"
+  ]
+ },
+ "ritter": {
+  "name": "Ser Albrecht",
+  "hp": 34,
+  "atk": 8,
+  "def": 7,
+  "res": 2,
+  "move": 3,
+  "range_min": 1,
+  "range": 1,
+  "role": "tank",
+  "dmg_type": "body",
+  "abilities": [
+   "schlachtruf",
+   "verspotten"
+  ]
+ },
+ "samurai": {
+  "name": "Takeda",
+  "hp": 24,
+  "atk": 10,
+  "def": 4,
+  "res": 2,
+  "move": 4,
+  "range_min": 1,
+  "range": 1,
+  "role": "damage",
+  "dmg_type": "body",
+  "abilities": [
+   "todeswirbel"
+  ]
+ },
+ "kungfu": {
+  "name": "Meister Lin",
+  "hp": 24,
+  "atk": 7,
+  "def": 3,
+  "res": 2,
+  "move": 5,
+  "range_min": 1,
+  "range": 1,
+  "role": "melee",
+  "dmg_type": "body",
+  "abilities": [
+   "stabsprung"
+  ]
+ },
+ "ninjas": {
+  "name": "Die Kage-Schwestern",
+  "hp": 18,
+  "atk": 8,
+  "def": 2,
+  "res": 3,
+  "move": 6,
+  "range_min": 1,
+  "range": 2,
+  "role": "damage",
+  "dmg_type": "body",
+  "abilities": [
+   "versteck"
+  ],
+  "ranged_mult": 0.7
+ },
+ "elisabeth": {
+  "name": "Käpt’n Elisabeth",
+  "hp": 18,
+  "atk": 8,
+  "def": 2,
+  "res": 2,
+  "move": 3,
+  "range_min": 1,
+  "range": 2,
+  "role": "ranged",
+  "dmg_type": "body",
+  "abilities": [
+   "kanone"
+  ]
+ },
+ "museklaugust": {
+  "name": "Muskelaugust",
+  "hp": 38,
+  "atk": 11,
+  "def": 2,
+  "res": 1,
+  "move": 3,
+  "range_min": 1,
+  "range": 1,
+  "role": "damage",
+  "dmg_type": "body",
+  "abilities": [
+   "wurf"
+  ]
+ },
+ "robo": {
+  "name": "Robo",
+  "hp": 32,
+  "atk": 8,
+  "def": 8,
+  "res": 4,
+  "move": 3,
+  "range_min": 1,
+  "range": 2,
+  "role": "damage",
+  "dmg_type": "body",
+  "abilities": [
+   "roter_laser",
+   "gruener_laser"
+  ]
+ },
+ "hund": {
+  "name": "Blauer Hundsfreund",
+  "hp": 26,
+  "atk": 8,
+  "def": 4,
+  "res": 2,
+  "move": 4,
+  "range_min": 1,
+  "range": 1,
+  "role": "damage",
+  "dmg_type": "body",
+  "abilities": [
+   "knochenwurf"
+  ]
+ },
+ "wendy": {
+  "name": "Wendy Wolle",
+  "hp": 18,
+  "atk": 3,
+  "def": 2,
+  "res": 6,
+  "move": 3,
+  "range_min": 1,
+  "range": 2,
+  "role": "healer",
+  "dmg_type": "magic",
+  "heal": 8,
+  "abilities": [
+   "gruppenheilung"
+  ]
+ },
+ "claude": {
+  "name": "Claude",
+  "hp": 16,
+  "atk": 9,
+  "def": 1,
+  "res": 6,
+  "move": 3,
+  "range_min": 1,
+  "range": 3,
+  "role": "mage",
+  "dmg_type": "magic",
+  "abilities": [
+   "polymorph"
+  ]
+ },
+ "bienenmaedchen": {
+  "name": "Stachelia",
+  "hp": 18,
+  "atk": 6,
+  "def": 2,
+  "res": 3,
+  "move": 5,
+  "range_min": 1,
+  "range": 2,
+  "role": "damage",
+  "dmg_type": "body",
+  "flying": true,
+  "abilities": [
+   "giftstachel"
+  ]
+ },
+ "braumeisterin": {
+  "name": "Brunhilde Bräu",
+  "hp": 34,
+  "atk": 9,
+  "def": 5,
+  "res": 1,
+  "move": 3,
+  "range_min": 1,
+  "range": 1,
+  "role": "tank",
+  "dmg_type": "body",
+  "abilities": [
+   "fasswurf"
+  ]
+ },
+ "soldat_infanterie": {
+  "name": "Büttel des Regenten",
+  "hp": 16,
+  "atk": 5,
+  "def": 3,
+  "res": 1,
+  "move": 3,
+  "range_min": 1,
+  "range": 1,
+  "role": "soldier",
+  "dmg_type": "body",
+  "tags": [
+   "standard"
+  ],
+  "passives": [
+   "schildwall"
+  ]
+ },
+ "soldat_beritten": {
+  "name": "Reiter des Regenten",
+  "hp": 20,
+  "atk": 6,
+  "def": 2,
+  "res": 1,
+  "move": 5,
+  "range_min": 1,
+  "range": 1,
+  "role": "soldier",
+  "dmg_type": "body",
+  "tags": [
+   "standard"
+  ],
+  "passives": [
+   "sturmangriff"
+  ]
+ },
+ "soldat_bogenschuetze": {
+  "name": "Bogenschütze des Regenten",
+  "hp": 12,
+  "atk": 6,
+  "def": 1,
+  "res": 1,
+  "move": 3,
+  "range_min": 2,
+  "range": 3,
+  "role": "ranged",
+  "dmg_type": "body",
+  "tags": [
+   "standard"
+  ]
+ },
+ "soldat_priester": {
+  "name": "Priester des Regenten",
+  "hp": 14,
+  "atk": 3,
+  "def": 1,
+  "res": 4,
+  "move": 3,
+  "range_min": 1,
+  "range": 2,
+  "role": "healer",
+  "dmg_type": "magic",
+  "tags": [
+   "standard"
+  ],
+  "heal": 6
+ },
+ "fuerst": {
+  "name": "Regent Morgrim",
+  "hp": 60,
+  "atk": 12,
+  "def": 6,
+  "res": 4,
+  "move": 3,
+  "range_min": 1,
+  "range": 1,
+  "role": "boss",
+  "dmg_type": "body",
+  "tags": [
+   "boss"
+  ],
+  "abilities": []
+ },
+ "dummy": {
+  "name": "Trainingsattrappe",
+  "hp": 30,
+  "atk": 6,
+  "def": 3,
+  "res": 1,
+  "move": 2,
+  "range_min": 1,
+  "range": 1,
+  "role": "tank",
+  "dmg_type": "body",
+  "tags": [
+   "standard"
+  ],
+  "abilities": []
+ }
+}

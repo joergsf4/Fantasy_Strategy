@@ -1,0 +1,214 @@
+{
+ "equipment": {
+  "eisenschwert": {
+   "name": "Eisenschwert",
+   "slot": "waffe",
+   "mods": {
+    "atk": 2
+   },
+   "text": "+2 Angriff"
+  },
+  "schwere_axt": {
+   "name": "Schwere Axt",
+   "slot": "waffe",
+   "mods": {
+    "atk": 4,
+    "move": -1
+   },
+   "text": "+4 Angriff, −1 Bewegung"
+  },
+  "kristallstab": {
+   "name": "Kristallstab",
+   "slot": "waffe",
+   "mods": {
+    "atk": 3
+   },
+   "text": "+3 Angriff",
+   "req": "magic"
+  },
+  "lederwams": {
+   "name": "Lederwams",
+   "slot": "ruestung",
+   "mods": {
+    "def": 1,
+    "hp": 4
+   },
+   "text": "+1 Verteidigung, +4 Leben"
+  },
+  "kettenhemd": {
+   "name": "Kettenhemd",
+   "slot": "ruestung",
+   "mods": {
+    "def": 2
+   },
+   "text": "+2 Verteidigung"
+  },
+  "plattenpanzer": {
+   "name": "Plattenpanzer",
+   "slot": "ruestung",
+   "mods": {
+    "def": 4,
+    "move": -1
+   },
+   "text": "+4 Verteidigung, −1 Bewegung"
+  },
+  "magierrobe": {
+   "name": "Magierrobe",
+   "slot": "ruestung",
+   "mods": {
+    "res": 3
+   },
+   "text": "+3 Magieresistenz"
+  },
+  "windstiefel": {
+   "name": "Windstiefel",
+   "slot": "talisman",
+   "mods": {
+    "move": 1
+   },
+   "text": "+1 Bewegung"
+  },
+  "heilkraut": {
+   "name": "Heilkraut-Amulett",
+   "slot": "talisman",
+   "mods": {
+    "hp": 8
+   },
+   "text": "+8 Leben"
+  },
+  "fernrohr": {
+   "name": "Fernrohr",
+   "slot": "talisman",
+   "mods": {
+    "range": 1
+   },
+   "text": "+1 Reichweite",
+   "req": "ranged"
+  },
+  "zauberlampe": {
+   "name": "Zauberlampe",
+   "slot": "talisman",
+   "mods": {
+    "cd_bonus": 1
+   },
+   "text": "Fähigkeiten laden 1 Runde schneller"
+  },
+  "rubinring": {
+   "name": "Rubinring",
+   "slot": "talisman",
+   "mods": {
+    "atk": 1,
+    "def": 1
+   },
+   "text": "+1 Angriff, +1 Verteidigung"
+  }
+ },
+ "consumables": {
+  "heiltrank": {
+   "name": "Heiltrank",
+   "range": 1,
+   "text": "Heilt 12 Leben (Nachbar oder selbst)",
+   "effects": [
+    {
+     "type": "heal",
+     "amount": 12
+    }
+   ]
+  },
+  "gegengift": {
+   "name": "Gegengift",
+   "range": 1,
+   "text": "Entfernt Gift und heilt 3",
+   "effects": [
+    {
+     "type": "heal",
+     "amount": 3,
+     "cleanse": true
+    }
+   ]
+  },
+  "aether": {
+   "name": "Äther",
+   "range": 1,
+   "text": "Setzt alle Abklingzeiten des Ziels zurück",
+   "effects": [
+    {
+     "type": "reset_cd"
+    }
+   ]
+  },
+  "rauchbombe": {
+   "name": "Rauchbombe",
+   "range": 1,
+   "text": "Ziel und Nachbarn: 2 Runden verborgen",
+   "area": 1,
+   "effects": [
+    {
+     "type": "status",
+     "id": "stealth",
+     "turns": 2,
+     "to": "area_allies"
+    }
+   ]
+  },
+  "bier": {
+   "name": "Bier",
+   "range": 1,
+   "text": "Heilt 5, +3 Angriff, −1 Verteidigung (2 Runden). Löscht auch ein brennendes Nachbarfeld.",
+   "effects": [
+    {
+     "type": "heal",
+     "amount": 5
+    },
+    {
+     "type": "status",
+     "id": "buff",
+     "turns": 2,
+     "mods": {
+      "atk": 3,
+      "def": -1
+     }
+    }
+   ],
+   "douse": true
+  }
+ },
+ "loadout_chapter1": {
+  "inventory": {
+   "heiltrank": 2,
+   "gegengift": 1,
+   "aether": 1
+  },
+  "equipment": {
+   "ritter": [
+    "kettenhemd"
+   ],
+   "maedchen_baer": [
+    "lederwams"
+   ],
+   "kungfu": [
+    "windstiefel"
+   ],
+   "elisabeth": [
+    "fernrohr"
+   ],
+   "braumeisterin": [
+    "eisenschwert"
+   ],
+   "wendy": [
+    "heilkraut"
+   ]
+  }
+ },
+ "materials": {
+  "kraut": {
+   "name": "Kraut"
+  },
+  "hopfen": {
+   "name": "Hopfen"
+  },
+  "kristall": {
+   "name": "Kristall"
+  }
+ }
+}

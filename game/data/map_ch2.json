@@ -1,0 +1,277 @@
+{
+ "rows": [
+  "GGFGGGGGGFFG",
+  "GGGGGGGGGFGG",
+  "GFGGGGGGGGGG",
+  "GGGGGGGGGGFG",
+  "GGGGGGGGGGGG",
+  "GGGGGGGGGGGG",
+  "GGFGGGGGGFGG",
+  "GGGGGGGGGGGG",
+  "GGGGGGGGFGGG",
+  "GGGGGGGGGGGG"
+ ],
+ "players": [
+  {
+   "id": "maedchen_baer",
+   "pos": [
+    4,
+    7
+   ]
+  },
+  {
+   "id": "kungfu",
+   "pos": [
+    6,
+    7
+   ]
+  },
+  {
+   "id": "museklaugust",
+   "pos": [
+    5,
+    8
+   ]
+  },
+  {
+   "id": "elisabeth",
+   "pos": [
+    2,
+    8
+   ]
+  },
+  {
+   "id": "robo",
+   "pos": [
+    7,
+    8
+   ]
+  },
+  {
+   "id": "wendy",
+   "pos": [
+    3,
+    7
+   ]
+  }
+ ],
+ "enemies": [
+  {
+   "id": "soldat_infanterie",
+   "pos": [
+    3,
+    2
+   ],
+   "carry": {
+    "materials": {
+     "hopfen": 1
+    }
+   }
+  },
+  {
+   "id": "soldat_infanterie",
+   "pos": [
+    9,
+    2
+   ]
+  },
+  {
+   "id": "soldat_infanterie",
+   "pos": [
+    6,
+    1
+   ]
+  },
+  {
+   "id": "soldat_beritten",
+   "pos": [
+    8,
+    3
+   ]
+  },
+  {
+   "id": "soldat_bogenschuetze",
+   "pos": [
+    10,
+    2
+   ]
+  },
+  {
+   "id": "soldat_priester",
+   "pos": [
+    5,
+    0
+   ]
+  }
+ ],
+ "chests": [
+  {
+   "pos": [
+    1,
+    9
+   ],
+   "reward": {
+    "items": {
+     "rauchbombe": 1
+    },
+    "gold": 20
+   }
+  },
+  {
+   "pos": [
+    10,
+    0
+   ],
+   "reward": {
+    "materials": {
+     "kristall": 1
+    },
+    "gold": 15
+   }
+  }
+ ],
+ "villages": [],
+ "objects": [
+  {
+   "id": "w0",
+   "type": "wall",
+   "pos": [
+    0,
+    4
+   ],
+   "dir": "h"
+  },
+  {
+   "id": "w1",
+   "type": "wall",
+   "pos": [
+    1,
+    4
+   ],
+   "dir": "h"
+  },
+  {
+   "id": "w2",
+   "type": "wall",
+   "pos": [
+    2,
+    4
+   ],
+   "dir": "h"
+  },
+  {
+   "id": "w3",
+   "type": "wall",
+   "pos": [
+    3,
+    4
+   ],
+   "dir": "h"
+  },
+  {
+   "id": "w4",
+   "type": "wall",
+   "pos": [
+    4,
+    4
+   ],
+   "dir": "h"
+  },
+  {
+   "id": "w6",
+   "type": "wall",
+   "pos": [
+    6,
+    4
+   ],
+   "dir": "h"
+  },
+  {
+   "id": "w7",
+   "type": "wall",
+   "pos": [
+    7,
+    4
+   ],
+   "dir": "h"
+  },
+  {
+   "id": "w8",
+   "type": "wall",
+   "pos": [
+    8,
+    4
+   ],
+   "dir": "h"
+  },
+  {
+   "id": "w9",
+   "type": "wall",
+   "pos": [
+    9,
+    4
+   ],
+   "dir": "h"
+  },
+  {
+   "id": "w10",
+   "type": "wall",
+   "pos": [
+    10,
+    4
+   ],
+   "dir": "h"
+  },
+  {
+   "id": "w11",
+   "type": "wall",
+   "pos": [
+    11,
+    4
+   ],
+   "dir": "h"
+  },
+  {
+   "id": "gate1",
+   "type": "gate",
+   "pos": [
+    5,
+    4
+   ],
+   "dir": "h"
+  },
+  {
+   "id": "sw1",
+   "type": "switch",
+   "pos": [
+    1,
+    1
+   ],
+   "link": [
+    "gate1"
+   ]
+  }
+ ],
+ "rewards": {
+  "gold": 100
+ },
+ "objectives": [
+  {
+   "id": "alle_leben",
+   "text": "Kein Held f\u00e4llt",
+   "reward": {
+    "gold": 60
+   }
+  },
+  {
+   "id": "schnell",
+   "text": "In 8 Runden gewonnen",
+   "turns": 8,
+   "reward": {
+    "items": {
+     "aether": 1
+    }
+   }
+  }
+ ]
+}

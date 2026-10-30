@@ -1,0 +1,39 @@
+{
+ "intro": [
+  {
+   "left": "maedchen_baer",
+   "right": "wendy",
+   "speaker": "wendy",
+   "text": "Seht ihr den Rauch? Das ist Mühlbach. Das Dorf liegt in Flammen!"
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "wendy",
+   "speaker": "maedchen_baer",
+   "left_expr": "wuetend",
+   "text": "Der Regent schickt seine Brandstifter voraus. Los, bevor das Feuer in den Wald springt!"
+  },
+  {
+   "left": "braumeisterin",
+   "right": "ritter",
+   "speaker": "braumeisterin",
+   "left_expr": "lachend",
+   "text": "Brandstifter und Feuer. Für sowas gibt es Bier. Zum Löschen und zum Feiern."
+  }
+ ],
+ "outro": [
+  {
+   "left": "maedchen_baer",
+   "right": "wendy",
+   "speaker": "wendy",
+   "right_expr": "lachend",
+   "text": "Mäh, wir haben es geschafft. Die Rauchwolke wird kleiner."
+  },
+  {
+   "left": "braumeisterin",
+   "right": "ritter",
+   "speaker": "ritter",
+   "text": "Der Regent zündet Dörfer an, um uns aufzuhalten. Das wird er bereuen."
+  }
+ ]
+}

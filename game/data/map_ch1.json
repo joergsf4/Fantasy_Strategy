@@ -1,0 +1,164 @@
+{
+ "rows": [
+  "GGGGGFFMMMGG",
+  "GGFGGGFFMMGG",
+  "GGGGGGGGFMGG",
+  "VGGGWWGGGGGG",
+  "GGGGWWWGGFFG",
+  "GGGGGWWGGFFG",
+  "GFFGGGGGGGGG",
+  "GFFGGGGGGGCG",
+  "GGGGGFGGGGGG",
+  "GGGGGGGGGGGG"
+ ],
+ "players": [
+  {
+   "id": "ritter",
+   "pos": [
+    1,
+    8
+   ]
+  },
+  {
+   "id": "maedchen_baer",
+   "pos": [
+    2,
+    8
+   ]
+  },
+  {
+   "id": "wendy",
+   "pos": [
+    1,
+    9
+   ]
+  },
+  {
+   "id": "kungfu",
+   "pos": [
+    0,
+    8
+   ]
+  },
+  {
+   "id": "elisabeth",
+   "pos": [
+    2,
+    9
+   ]
+  },
+  {
+   "id": "braumeisterin",
+   "pos": [
+    0,
+    9
+   ]
+  }
+ ],
+ "enemies": [
+  {
+   "id": "soldat_infanterie",
+   "pos": [
+    7,
+    3
+   ]
+  },
+  {
+   "id": "soldat_infanterie",
+   "pos": [
+    8,
+    5
+   ]
+  },
+  {
+   "id": "bienenmaedchen",
+   "pos": [
+    9,
+    2
+   ]
+  },
+  {
+   "id": "soldat_infanterie",
+   "pos": [
+    10,
+    6
+   ],
+   "carry": {
+    "items": {
+     "gegengift": 1
+    }
+   }
+  },
+  {
+   "id": "soldat_beritten",
+   "pos": [
+    8,
+    7
+   ]
+  }
+ ],
+ "goal": "rout",
+ "chests": [
+  {
+   "pos": [
+    3,
+    8
+   ],
+   "reward": {
+    "materials": {
+     "kraut": 1
+    },
+    "gold": 25
+   }
+  },
+  {
+   "pos": [
+    9,
+    8
+   ],
+   "reward": {
+    "items": {
+     "heiltrank": 1
+    }
+   }
+  }
+ ],
+ "villages": [
+  {
+   "pos": [
+    0,
+    3
+   ],
+   "reward": {
+    "materials": {
+     "kraut": 2,
+     "hopfen": 1
+    },
+    "gold": 40
+   }
+  }
+ ],
+ "rewards": {
+  "gold": 80,
+  "items": {}
+ },
+ "objectives": [
+  {
+   "id": "alle_leben",
+   "text": "Kein Held f\u00e4llt",
+   "reward": {
+    "gold": 60
+   }
+  },
+  {
+   "id": "schnell",
+   "text": "In 6 Runden gewonnen",
+   "turns": 6,
+   "reward": {
+    "items": {
+     "aether": 1
+    }
+   }
+  }
+ ]
+}

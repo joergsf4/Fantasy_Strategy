@@ -1,0 +1,6 @@
+{
+  "bier":      {"crafter": "braumeisterin", "cost": {"hopfen": 2},  "line": "Brunhilde: „Für den Durst danach. Und davor.“"},
+  "heiltrank": {"crafter": "wendy",         "cost": {"kraut": 2},   "line": "Wendy: „Mäh… nicht schütteln, nur rühren.“"},
+  "gegengift": {"crafter": "wendy",         "cost": {"kraut": 1},   "line": "Wendy: „Schmeckt furchtbar, wirkt wunderbar.“"},
+  "aether":    {"crafter": "claude",        "cost": {"kristall": 2}, "line": "Claude: „Ein Hauch Magie, ein Schuss Lampenöl.“"}
+}

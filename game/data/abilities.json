@@ -1,0 +1,354 @@
+{
+ "baerenpranke": {
+  "name": "Bärenpranke",
+  "text": "Brumm haut zu (×1,3). Das Ziel muss 2 Runden Mira angreifen.",
+  "cd": 3,
+  "target": "enemy",
+  "range": [
+   1,
+   1
+  ],
+  "effects": [
+   {
+    "type": "damage",
+    "mult": 1.3
+   },
+   {
+    "type": "status",
+    "id": "taunt",
+    "turns": 2,
+    "to": "target"
+   }
+  ],
+  "ai_bonus": 6,
+  "caps": [
+   "smash",
+   "lure"
+  ]
+ },
+ "schlachtruf": {
+  "name": "Schlachtruf",
+  "text": "Verbündete im Umkreis 2: +3 ATK, +2 DEF für 2 Runden.",
+  "cd": 4,
+  "target": "self",
+  "area": {
+   "shape": "radius",
+   "r": 2
+  },
+  "effects": [
+   {
+    "type": "status",
+    "id": "buff",
+    "turns": 2,
+    "mods": {
+     "atk": 3,
+     "def": 2
+    },
+    "to": "area_allies"
+   }
+  ],
+  "caps": [
+   "rally"
+  ]
+ },
+ "verspotten": {
+  "name": "Verspotten",
+  "text": "Gegner im Umkreis 3 müssen 2 Runden Ser Albrecht angreifen.",
+  "cd": 4,
+  "target": "self",
+  "area": {
+   "shape": "radius",
+   "r": 3
+  },
+  "effects": [
+   {
+    "type": "status",
+    "id": "taunt",
+    "turns": 2,
+    "to": "area_enemies"
+   }
+  ],
+  "caps": [
+   "lure"
+  ]
+ },
+ "todeswirbel": {
+  "name": "Todeswirbel",
+  "text": "Wirbelt um sich: alle 8 Nachbarfelder (×1,6). Danach erschöpft (−2 DEF).",
+  "cd": 3,
+  "target": "self",
+  "area": {
+   "shape": "ring8"
+  },
+  "effects": [
+   {
+    "type": "damage",
+    "mult": 1.6,
+    "to": "area_enemies"
+   },
+   {
+    "type": "status",
+    "id": "tired",
+    "turns": 1,
+    "mods": {
+     "def": -2
+    },
+    "to": "self"
+   }
+  ],
+  "caps": [
+   "cut"
+  ]
+ },
+ "stabsprung": {
+  "name": "Stabsprung",
+  "text": "Springt über einen angrenzenden Gegner auf das Feld dahinter (×0,6). Verbraucht die Aktion nicht.",
+  "cd": 2,
+  "target": "enemy",
+  "range": [
+   1,
+   1
+  ],
+  "ends_turn": false,
+  "effects": [
+   {
+    "type": "jump"
+   },
+   {
+    "type": "damage",
+    "mult": 0.6
+   }
+  ],
+  "caps": [
+   "leap"
+  ]
+ },
+ "versteck": {
+  "name": "Versteck",
+  "text": "2 Runden unsichtbar und nicht angreifbar; der nächste Angriff aus dem Versteck: +30 %.",
+  "cd": 4,
+  "target": "self",
+  "effects": [
+   {
+    "type": "status",
+    "id": "stealth",
+    "turns": 2,
+    "to": "self"
+   }
+  ],
+  "caps": [
+   "sneak"
+  ]
+ },
+ "kanone": {
+  "name": "Kanone",
+  "text": "Große Kanone (×1,5). Gegner neben dem Ziel erhalten 50 % Schaden.",
+  "cd": 3,
+  "target": "enemy",
+  "range": [
+   2,
+   3
+  ],
+  "effects": [
+   {
+    "type": "damage",
+    "mult": 1.5
+   },
+   {
+    "type": "splash",
+    "mult": 0.5
+   }
+  ],
+  "ai_bonus": 4,
+  "caps": [
+   "blast",
+   "ranged_hit"
+  ]
+ },
+ "wurf": {
+  "name": "Wurf",
+  "text": "Wirft den Gegner bis zu 4 Felder weit in eine zufällige gültige Richtung, auch über Wasser und Figuren. Aufprall (×0,5), 1 Runde benommen.",
+  "cd": 4,
+  "target": "enemy",
+  "range": [
+   1,
+   1
+  ],
+  "effects": [
+   {
+    "type": "throw",
+    "dist": 4,
+    "mult": 0.5,
+    "stun": 1
+   }
+  ],
+  "caps": [
+   "throw_ally",
+   "smash"
+  ]
+ },
+ "roter_laser": {
+  "name": "Roter Laser",
+  "text": "Strahl in gerader Linie (Reichweite 2–4, ×1,8, ignoriert die Hälfte der Verteidigung). Trifft alle Gegner auf der Linie.",
+  "cd": 3,
+  "target": "enemy",
+  "range": [
+   2,
+   4
+  ],
+  "effects": [
+   {
+    "type": "damage",
+    "mult": 1.8,
+    "ignore_def": 0.5,
+    "to": "line_enemies"
+   }
+  ],
+  "ai_bonus": 4,
+  "shape": "line",
+  "caps": [
+   "melt"
+  ]
+ },
+ "gruener_laser": {
+  "name": "Grüner Laser",
+  "text": "Heilt 12 HP und entfernt Gift.",
+  "cd": 2,
+  "target": "ally",
+  "range": [
+   1,
+   3
+  ],
+  "effects": [
+   {
+    "type": "heal",
+    "amount": 12,
+    "cleanse": true,
+    "to": "target"
+   }
+  ],
+  "caps": [
+   "heal"
+  ]
+ },
+ "knochenwurf": {
+  "name": "Knochenwurf",
+  "text": "Serie von 3 Knochen (je ×0,5) auf ein Ziel bis 2 Felder entfernt.",
+  "cd": 2,
+  "target": "enemy",
+  "range": [
+   1,
+   2
+  ],
+  "effects": [
+   {
+    "type": "damage",
+    "mult": 0.5,
+    "hits": 3
+   }
+  ],
+  "ai_bonus": 3,
+  "caps": [
+   "ranged_hit"
+  ]
+ },
+ "gruppenheilung": {
+  "name": "Gruppenheilung",
+  "text": "Heilt Verbündete im Umkreis 1 um ein Ziel (bis 2 Felder) um 6 HP und entfernt Gift.",
+  "cd": 3,
+  "target": "ally_center",
+  "range": [
+   0,
+   2
+  ],
+  "area": {
+   "shape": "radius",
+   "r": 1
+  },
+  "effects": [
+   {
+    "type": "heal",
+    "amount": 6,
+    "cleanse": true,
+    "to": "area_allies"
+   }
+  ],
+  "caps": [
+   "heal"
+  ]
+ },
+ "polymorph": {
+  "name": "Polymorph",
+  "text": "Verwandelt eine normale Einheit (kein Held, kein Boss) für 3 Runden in nichts als einen Frosch: sie ist aus dem Spiel.",
+  "cd": 5,
+  "target": "enemy",
+  "range": [
+   2,
+   3
+  ],
+  "require_tag": "standard",
+  "effects": [
+   {
+    "type": "polymorph",
+    "turns": 3
+   }
+  ],
+  "ai_bonus": 0,
+  "caps": [
+   "transform"
+  ]
+ },
+ "giftstachel": {
+  "name": "Giftstachel",
+  "text": "Stich (×0,8) und Gift: 3, 4, 5 Schaden über 3 Runden. Heilung entfernt es.",
+  "cd": 2,
+  "target": "enemy",
+  "range": [
+   1,
+   2
+  ],
+  "effects": [
+   {
+    "type": "damage",
+    "mult": 0.8
+   },
+   {
+    "type": "status",
+    "id": "poison",
+    "turns": 3,
+    "to": "target"
+   }
+  ],
+  "ai_bonus": 10,
+  "caps": [
+   "poison"
+  ]
+ },
+ "fasswurf": {
+  "name": "Fasswurf",
+  "text": "Wirft ein Fass (×0,9). Das Ziel ist wütend und muss 2 Runden Brunhilde angreifen.",
+  "cd": 3,
+  "target": "enemy",
+  "range": [
+   1,
+   3
+  ],
+  "effects": [
+   {
+    "type": "damage",
+    "mult": 0.9
+   },
+   {
+    "type": "status",
+    "id": "taunt",
+    "turns": 2,
+    "to": "target"
+   }
+  ],
+  "ai_bonus": 4,
+  "caps": [
+   "extinguish",
+   "smash"
+  ]
+ }
+}

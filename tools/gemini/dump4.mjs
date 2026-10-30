@@ -1,0 +1,11 @@
+import { connect } from './lib.mjs';
+const { b, page } = await connect();
+await page.goto('https://gemini.google.com/app', { waitUntil: 'domcontentloaded' });
+await page.waitForTimeout(4000);
+const inputs = page.locator('input[type=file]');
+const n = await inputs.count();
+for (let i = 0; i < n; i++) console.log(i, await inputs.nth(i).evaluate(e => e.accept + ' | ' + e.multiple + ' | ' + e.parentElement?.className?.toString().slice(0, 50)));
+await inputs.first().setInputFiles(process.argv[3]);
+await page.waitForTimeout(3000);
+await page.screenshot({ path: process.argv[2] });
+await b.close();

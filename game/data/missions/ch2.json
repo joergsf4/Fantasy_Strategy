@@ -1,0 +1,102 @@
+{
+ "id": "ch2",
+ "title": "Der Hohlweg",
+ "map": "res://data/map_ch2.json",
+ "briefing": "Eine Mauer sperrt den Hohlweg, in der Mitte ein Tor. Springen, werfen, sprengen oder schmelzen bringt einen hinüber. Wer auf der anderen Seite am Tor steht, öffnet es von innen.",
+ "goals": [
+  {
+   "type": "rout"
+  }
+ ],
+ "triggers": [
+  {
+   "when": {
+    "enter": [
+     5,
+     3
+    ]
+   },
+   "if": {
+    "object": {
+     "id": "gate1",
+     "state": "closed"
+    }
+   },
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "$hero",
+       "speaker": "$hero",
+       "text_by": {
+        "default": "Ich mach das Tor von dieser Seite auf, bevor ich hier allein im Regen stehe!",
+        "maedchen_baer": "Brumm, halt dich fest! Ich öffne das Tor!",
+        "kungfu": "Einen Augenblick. Ich öffne euch das Tor.",
+        "museklaugust": "Ich öffne das Tor! Und niemand schaut auf meine Frisur.",
+        "elisabeth": "Aufgepasst, Landratten! Ich lüfte das Schloss!",
+        "robo": "Tor wird manuell entriegelt. Bitte warten. Oder auch nicht.",
+        "wendy": "Mäh… ich öffne das Tor. Bleibt ruhig, bitte."
+       }
+      }
+     ]
+    },
+    {
+     "world": {
+      "id": "gate1",
+      "effect": "open",
+      "quiet": true
+     }
+    }
+   ]
+  },
+  {
+   "when": {
+    "object": {
+     "id": "gate1",
+     "state": "open"
+    }
+   },
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "maedchen_baer",
+       "right": "kungfu",
+       "speaker": "kungfu",
+       "right_expr": "lachend",
+       "text": "Das Tor ist offen. Man muss nur wissen, wie man klopft."
+      },
+      {
+       "left": "maedchen_baer",
+       "right": "kungfu",
+       "speaker": "maedchen_baer",
+       "left_expr": "lachend",
+       "text": "Brumm hätte einfach gerempelt."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "object": {
+     "id": "gate1",
+     "state": "broken"
+    }
+   },
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "maedchen_baer",
+       "right": "museklaugust",
+       "speaker": "museklaugust",
+       "right_expr": "lachend",
+       "text": "So öffnet man ein Tor! Mit Schwung und ohne Schalter."
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}
