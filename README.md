@@ -21,5 +21,5 @@ godot --headless --path game --script tests/test_combat.gd
 (ebenso `test_abilities`, `test_sim`, `test_objects`, `test_fire`, `test_mission` und weitere in `game/tests/`)
 
 ## Hinweise
-- Die Musik (`game/assets/audio/`) stammt von Titeln, die der Autor selbst erzeugt hat.
+- **KI-generierte Inhalte:** Alle Figuren- und Effektbilder (`strategie/`, `game/assets/portraits|tokens|fx`) und die Musik (`game/assets/audio/`) wurden mit Google Gemini erzeugt. Programmcode und Daten entstanden mit Claude Code. Das Projekt ist ein nicht kommerzielles Hobbyprojekt.
 - Schriften: Cinzel Decorative und IM Fell English (SIL Open Font License, Lizenztexte im Ordner `game/assets/fonts/`).
