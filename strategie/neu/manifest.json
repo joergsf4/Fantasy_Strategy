@@ -107,5 +107,8 @@
  "bienenkrieger_chibi": true,
  "fx_honigtopf": true,
  "fx_honig": true,
- "fx_schiff": true
+ "fx_schiff": true,
+ "fx_kiste": true,
+ "fx_fass": true,
+ "fx_saecke": true
 }

@@ -1334,15 +1334,7 @@ func _make_ch5_object(o: Dictionary) -> void:
 		"orphanage":
 			terrain._house(k, Vector3.ZERO, Vector3(0.55, 0.3, 0.4), 0.0, Color(0.5, 0.28, 0.16), Color(0.92, 0.88, 0.76), 2)
 		"crate":
-			var seed_: int = (int(o["pos"].x) * 5 + int(o["pos"].y) * 3) % 3
-			if seed_ == 0:     # Fass
-				k.frustum(Vector3(0, 0, 0), 0.2, 0.2, 0.42, wood.darkened(0.05), wood, 10, true)
-				for hy in [0.1, 0.32]:
-					k.frustum(Vector3(0, hy, 0), 0.21, 0.21, 0.03, Color(0.25, 0.25, 0.3), Color(0.3, 0.3, 0.35), 10)
-			else:              # Kiste mit Querlatte
-				k.box(Vector3(0, 0.22, 0), Vector3(0.46, 0.44, 0.46), wood.lightened(0.1))
-				k.box(Vector3(0, 0.22, 0.235), Vector3(0.48, 0.07, 0.02), wood.darkened(0.25))
-				k.box(Vector3(0, 0.22, 0.235), Vector3(0.07, 0.46, 0.02), wood.darkened(0.25))
+			pass     # Sprite (Kisten, Faesser, Saecke), siehe unten
 		"ship":
 			pass
 	var mat := StandardMaterial3D.new()
@@ -1353,6 +1345,13 @@ func _make_ch5_object(o: Dictionary) -> void:
 	mi.material_override = mat
 	root.add_child(mi)
 	parts["body"] = mi
+	if o["type"] == "crate":     # Hafen-Hindernis: je Feld eines von drei Pixel-Sprites (Kistenstapel, Faesser, Saecke)
+		var kinds := ["fx_kiste", "fx_fass", "fx_saecke"]
+		var sizes := [1.0, 1.05, 1.0]
+		var v: int = (int(o["pos"].x) + 2 * int(o["pos"].y)) % 3
+		var cs := fx.make_sprite(kinds[v], Vector3(0, float(sizes[v]) * 0.46, 0), float(sizes[v]), false, Color.WHITE, 0, root)
+		mi.visible = false
+		parts["body"] = cs
 	if o["type"] == "ship":     # Elisabeths Piratenschiff: Sprite (Seitenansicht), auf dem Wasser, leicht schaukelnd
 		if ResourceLoader.exists("res://assets/fx/fx_schiff.png"):
 			var sh := fx.make_sprite("fx_schiff", Vector3(0, 0.9, 0), 2.8, false, Color.WHITE, 0, root)

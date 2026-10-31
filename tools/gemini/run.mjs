@@ -158,6 +158,15 @@ jobs.push({ name: 'fx_honig', refs: [path.join(OUT, 'fx_fireball.jpg')], prompt:
 // Kapitel 6: Elisabeths Piratenschiff als Karten-Sprite (Seitenansicht, schraeg von vorn).
 jobs.push({ name: 'fx_schiff', refs: [path.join(OUT, 'fx_fireball.jpg')], prompt: 'Create Captain Elisabeth\'s pirate ship: a small, charming wooden pirate sailing ship with two masts, patched cream-colored sails with a skull-and-crossed-cutlasses emblem, a carved figurehead, a row of black cannons along the side, rope rigging, a little crow\'s nest and a red-gold stern with lanterns, seen from the side slightly from the front, floating (no water around it). Game sprite.' + FX_STYLE });
 
+// Hafen-Hindernisse (Kapitel 6): drei Sprites statt einfacher Klotz-Modelle.
+const HAFEN = {
+  fx_kiste: 'a stack of three weathered wooden cargo crates with iron corner brackets, stenciled harbor marks, a coil of rope and a torn canvas cloth on top, harbor barricade',
+  fx_fass: 'two large tarred wooden barrels with black iron hoops standing side by side, one with a wooden lid and a rope around it, a small crate leaning against them, harbor barricade',
+  fx_saecke: 'a pile of plump burlap grain sacks tied with string, a small crate and a rolled fishing net beside them, harbor barricade',
+};
+for (const [name, d] of Object.entries(HAFEN))
+  jobs.push({ name, refs: [path.join(OUT, 'fx_fireball.jpg')], prompt: `Create ${d}, game sprite, seen slightly from above and the front, sturdy and chunky, readable at small size.` + FX_STYLE });
+
 async function generate(page, job) {
   await page.goto('https://gemini.google.com/app', { waitUntil: 'domcontentloaded' });
   await page.waitForSelector('div[role=textbox], .ql-editor', { timeout: 30000 });
