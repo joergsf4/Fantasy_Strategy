@@ -6,6 +6,7 @@ render_mode specular_disabled;
 uniform float water_level = -0.08;
 uniform vec4 map_rect = vec4(-0.5, -0.5, 11.5, 9.5);
 uniform float grid_strength : hint_range(0.0, 1.0) = 0.2;
+uniform float desert : hint_range(0.0, 1.0) = 0.0;     // Biom Wueste: Gras und Waldboden werden zu Sand
 
 varying vec3 wpos;
 varying vec3 wnrm;
@@ -55,6 +56,11 @@ void fragment() {
 	float strata = vnoise(vec2(p.x * 2.0 + p.y * 1.3, wpos.y * 14.0));
 	vec3 rock = mix(vec3(0.36, 0.34, 0.32), vec3(0.58, 0.55, 0.50), mid * 0.6 + strata * 0.4) * (0.9 + 0.2 * fine);
 	vec3 sand = mix(vec3(0.62, 0.55, 0.37), vec3(0.72, 0.65, 0.46), mid) * (0.92 + 0.16 * fine);
+
+	vec3 dune = mix(vec3(0.80, 0.66, 0.42), vec3(0.91, 0.78, 0.52), smoothstep(0.25, 0.75, large * 0.7 + mid * 0.3));
+	dune *= (0.94 + 0.12 * fine) * (0.96 + 0.08 * sin(p.x * 5.0 + p.y * 2.2 + large * 7.0));
+	grass = mix(grass, dune, desert);
+	forest = mix(forest, dune * vec3(0.84, 0.72, 0.62), desert);
 
 	float slope = 1.0 - clamp(wnrm.y, 0.0, 1.0);
 	float w_rock = clamp(wts.b + smoothstep(0.28, 0.5, slope), 0.0, 1.0);

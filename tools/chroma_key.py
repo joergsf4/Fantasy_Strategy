@@ -133,6 +133,12 @@ def fx_sprites() -> None:
     out_dir.mkdir(parents=True, exist_ok=True)
     for f in sorted((SRC / "neu").glob("fx_*.jpg")):
         out = largest_component(key_image(Image.open(f)), grow=14)
+        if f.stem == "fx_zelt":      # Gruenes Hintergrund-Loch im Zelteingang (nicht mit dem Rand verbunden) wird dunkler Innenraum
+            a = np.array(out)
+            i = a.astype(np.int16)
+            g = (i[..., 1] > 100) & (i[..., 1] > i[..., 0] + 55) & (i[..., 1] > i[..., 2] + 40) & (i[..., 3] > 0)
+            a[g] = [38, 26, 20, 255]
+            out = Image.fromarray(a)
         out.thumbnail((512, 512))
         out.save(out_dir / f"{f.stem}.png")
         print(f"fx {f.stem}: {out.size}")

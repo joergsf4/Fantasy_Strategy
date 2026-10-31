@@ -1,15 +1,17 @@
 # Backlog
 
+**Stand 2026-11-01:** Die Punkte 1 bis 4 sind umgesetzt (siehe unten, jeweils mit Hinweis). Offene Reste stehen am Ende.
+
 Ideen und offene Punkte, noch nicht gebaut. Stand: 2026-10-31. Entscheidungen des Nutzers sind als solche markiert.
 
-## 1. Mission 7: Der Hafen der Ankunft (neues Biom Wüste)
+## 1. Mission 7: Der Hafen der Ankunft (neues Biom Wüste) — umgesetzt als „Sandhafen“, `docs/missionen.md`
 - Das Schiff aus Mission 6 legt an, die Gruppe betritt ein **neues Biom: Wüste**.
 - **Gegner:** Die **Zwillinge Oskar und Maja** sind da und **müssen besiegt werden** (nicht entkommen). Im Spiel fliehen benannte Gegner sonst (`flees`), also braucht die Mission eine Ausnahme (z. B. Missionsfeld `no_flee: ["oskar", "maja"]`, sie sterben dann wirklich oder ziehen sich geschlagen zurück, nach Entscheidung).
 - **Biom-Bausteine:** Geländetyp „Sand/Düne“ (z. B. Bewegung teurer), Oase als Heilfeld, Felsen und Kakteen als Deckung, Gelände-Textur und Farbstimmung, Hitzeflimmern und Sandsturm als mögliche Würze. Neue Tiles brauchen Einträge in `Grid.TERRAIN`, `TerrainView` (H, AMP, WT) und Streuobjekte (Kakteen, Palmen) als Sprites.
 - **Mechanik-Idee:** Sandsturm verdeckt Sicht (Stealth-ähnlich), Oase als Ziel, Zwillinge nutzen Befehl (Oskar) und Eisigen Blick (Maja), die Gruppe braucht gegenseitige Deckung.
 - Offen: Rolle der Trainingsattrappe (aktuell unbenutzt, Einheit liegt in den Daten), Finale auf der Regenten-Insel als Mission 8.
 
-## 2. Statistik am Ende eines Kampfes
+## 2. Statistik am Ende eines Kampfes — umgesetzt (Belohnungsbildschirm: Tabelle je Figur, Auszeichnungen; Rest der Ideen offen: Verlaufskurve, JSON-Export)
 Anzeige im Belohnungsbildschirm (`reward_screen.gd`). Der Simulator führt solche Zähler schon je Figur (`SimBattle` `st`: Schaden, erlittener Schaden, Heilung, Besiegte, Fähigkeits-Einsätze). Im Spiel müssten sie in `_strike`, `_deal`, `_apply_effect`, Heilung und Verteidigen mitgezählt werden.
 
 Vorschläge, nach Nutzen sortiert:
@@ -20,21 +22,21 @@ Vorschläge, nach Nutzen sortiert:
 - **Verlauf:** Kurve „Leben der Gruppe pro Runde“ oder Balken der Gegnerzahl pro Runde.
 - Für das spätere Balancing: Export als JSON neben dem Spielstand, damit echte Spieldaten gegen die Simulation verglichen werden können.
 
-## 3. Gruppe vor der Mission bearbeiten
+## 3. Gruppe vor der Mission bearbeiten — umgesetzt (Lager, Reiter „Aufstellung“)
 - Zu Beginn jeder Mission kann man die Gruppe ändern. **Figuren, die in der Mission keinen Dialog haben, sind frei wechselbar**, Figuren mit Dialogrolle sind fest (Entscheidung des Nutzers, ersetzt „feste Gruppe pro Mission“ teilweise).
 - Technik: Pro Mission ermitteln, welche Figuren sprechen (Sprecher in `story_*.json` und in den Auslösern der Mission, `left`/`right`/`speaker`, `$hero` zählt nicht). Der Dialog-Editor (`tools/dialog_editor`) kann das schon auswerten. Dazu ein Wahlbildschirm im Lager (`camp.gd`, Reiter „Aufstellung“ ist bisher nur eine Anzeige).
 - Offen: Gruppengröße (heute 6), Mindestanzahl Heiler, Startpositionen der Wahlfiguren, Balancing (die Simulation misst feste Gruppen), Wendy „zu oft dabei“ (Wunsch nach Abwechslung).
 ### 3.1 Ausrüstung abwesender Figuren
 - Wer nicht mitkommt, gibt seine **Ausrüstung** frei: sie geht in den Pool zurück (`Party.pool`) und lässt sich neu verteilen. Rückgabe automatisch beim Entfernen aus der Gruppe, beim Zurückholen wird neu ausgerüstet.
 
-## 4. Mehr Heiler
+## 4. Mehr Heiler — umgesetzt (Lumi Sternenglanz, Dr. Humbug, ab Mission 7)
 Vorschläge des Nutzers: **Magical Girl** und/oder **Quaksalber-Arzt**. Heute heilen Wendy (Heilen), Robo (Grüner Laser) und Claude (Äther) bzw. Brunhilde über Tränke.
 - **Magical Girl:** Verwandlungs-Heilerin. Idee: Fähigkeit „Glitzerregen“ (Fläche, heilt alle Verbündeten im Umkreis 1 um ein Ziel) plus kleiner Schutzzauber. Kontrast zu Wendy, die einzeln heilt. Grafik: Porträt mit Emotionen, Karten-Figur.
 - **Quaksalber-Arzt:** Komische Heilung mit **berechenbarer** Nebenwirkung (das Spiel hat keinen Zufall). Idee: „Wundersalbe“ heilt viel (14), aber das Ziel ist eine Runde lang „benommen“ vom Geruch (−2 Bewegung). Alternativ „Aderlass“ gegen Gift. Grafik: Porträt mit Emotionen, Karten-Figur.
 - Balancing: Heiler-Wert im Simulator messen (E0), nicht stärker als Wendy plus Robo, Gruppen mit zwei Heilern gegen eine messen.
 
 ## Weitere offene Punkte (aus der Sitzung)
-- **Spielstand laden:** Das Spiel speichert nach jedem Kapitel, lädt aber beim Start nichts. Entkommene Gegner (Wart, Zwillinge) gehen bei Neustart verloren. „Fortsetzen“ im Startbildschirm fehlt.
+- ~~Spielstand laden~~ umgesetzt: Das Spiel lädt beim Start den Spielstand, die Kapitelwahl zeigt ihn und kann ihn zurücksetzen.
 - **Stachelias Spezialfähigkeit:** Bienen rufen und Heilhonig fallen lassen, später im Team (Entscheidung offen: tritt sie nach Kapitel 5 bei?).
 - **Schwierigkeitswahl** (`difficulty.json` ist gemessen, aber nicht verdrahtet) und **Lautstärkeregler** für Musik und Effekte.
 - **Brabbel-Laute** beim Dialogtext (Charakter-Laute statt Sprache), Lichtstimmung der Karte überarbeiten.

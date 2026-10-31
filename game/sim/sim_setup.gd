@@ -77,7 +77,7 @@ static func build(spec: Dictionary, seed_: int) -> SimBattle:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = seed_ * 2654435761 + 17
 	var mname: String = spec.get("map", "open")
-	var use_ch1: bool = mname in ["ch1", "ch2", "ch3", "ch5", "ch6"]
+	var use_ch1: bool = mname in ["ch1", "ch2", "ch3", "ch5", "ch6", "ch7"]
 	var mdata: Dictionary = mission_map(mname) if use_ch1 else {}
 	var rows: Array = mdata["rows"] if use_ch1 else random_rows(rng)
 	var b := SimBattle.new(rows, seed_)

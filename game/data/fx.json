@@ -140,5 +140,17 @@
   "time": 0.65,
   "radius": 0.95,
   "lunge": false
+ },
+ "sternensegen": {
+  "lunge": false,
+  "color": [
+   1.0,
+   0.7,
+   0.9,
+   0.55
+  ]
+ },
+ "wundersalbe": {
+  "lunge": false
  }
 }

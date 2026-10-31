@@ -10,6 +10,7 @@ const TERRAIN := {
 	"V": {"name": "Dorf", "cost": 1, "def": 1},
 	"C": {"name": "Burg", "cost": 1, "def": 2},
 	"P": {"name": "Holzsteg", "cost": 1, "def": 0},
+	"D": {"name": "Düne", "cost": 2, "def": 0},
 }
 const DIRS := [Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0, -1)]
 

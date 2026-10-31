@@ -198,6 +198,15 @@
   "wirbel": {
    "windup": "whoosh_l",
    "hit": "@melee"
+  },
+  "sternensegen": {
+   "heal": "heal"
+  },
+  "wundersalbe": {
+   "heal": [
+    "heal",
+    "item_use"
+   ]
   }
  },
  "events": {

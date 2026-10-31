@@ -1,0 +1,85 @@
+{
+ "intro": [
+  {
+   "left": "elisabeth",
+   "right": "maedchen_baer",
+   "speaker": "elisabeth",
+   "text": "Anker werfen! Das ist der Sandhafen, die letzte Station vor der Insel des Regenten.",
+   "left_expr": "lachend"
+  },
+  {
+   "left": "hund",
+   "right": "elisabeth",
+   "speaker": "hund",
+   "text": "Festes Land! Und kein Schwanken mehr. Ich küsse den Sand."
+  },
+  {
+   "left": "magical_girl",
+   "right": "maedchen_baer",
+   "speaker": "magical_girl",
+   "text": "Hallo, ihr Helden! Ich bin Lumi Sternenglanz. Die Sterne haben mir verraten, dass ihr Hilfe braucht.",
+   "left_expr": "lachend"
+  },
+  {
+   "left": "magical_girl",
+   "right": "maedchen_baer",
+   "speaker": "maedchen_baer",
+   "text": "Und was kannst du so?"
+  },
+  {
+   "left": "magical_girl",
+   "right": "maedchen_baer",
+   "speaker": "magical_girl",
+   "text": "Ich heile und beschütze! Sternensegen!",
+   "left_expr": "lachend"
+  },
+  {
+   "left": "quacksalber",
+   "right": "elisabeth",
+   "speaker": "quacksalber",
+   "text": "Und ich bin Dr. Humbug, Wunderheiler! Mein Elixier kuriert alles. Die Nebenwirkungen sind überschaubar."
+  },
+  {
+   "left": "quacksalber",
+   "right": "elisabeth",
+   "speaker": "elisabeth",
+   "text": "Überschaubar? Ich nehme zwei Flaschen.",
+   "right_expr": "lachend"
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "oskar",
+   "speaker": "oskar",
+   "text": "Wie rührend: eine Heldenrunde im Sand. Maja, sieh nur.",
+   "right_expr": "lachend"
+  }
+ ],
+ "outro": [
+  {
+   "left": "elisabeth",
+   "right": "maedchen_baer",
+   "speaker": "elisabeth",
+   "text": "Die Zwillinge sind erledigt. Der Weg zur Insel ist frei!",
+   "left_expr": "lachend"
+  },
+  {
+   "left": "magical_girl",
+   "right": "quacksalber",
+   "speaker": "magical_girl",
+   "text": "Das war aufregend! Dr. Humbug, du hast tatsächlich jemanden geheilt!"
+  },
+  {
+   "left": "magical_girl",
+   "right": "quacksalber",
+   "speaker": "quacksalber",
+   "text": "Ich heile immer. Manchmal sogar ohne Nebenwirkungen.",
+   "right_expr": "lachend"
+  },
+  {
+   "left": "hund",
+   "right": "elisabeth",
+   "speaker": "hund",
+   "text": "Dann nichts wie zurück aufs Schiff. Obwohl ... ich sehe schon wieder grün aus."
+  }
+ ]
+}

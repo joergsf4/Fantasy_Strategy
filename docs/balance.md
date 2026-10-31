@@ -16,6 +16,7 @@ Erzeugt von `tools/balance.py` mit dem grafikfreien Simulator (`game/sim/`). Er 
 - Mission 5: bei ×1,0 gewinnt die Gruppe 100%, Kinder werden in 27% der Kämpfe gestochen (ohne Glocke und Stöcke: 94% / 77%)
 - Mission 6: bei ×1,0 gewinnt die Gruppe 100% in 6.5 Runden (ohne Breitseite 100%)
 - Warten (wachsam, +2 Angriff): Siegquote 61.0% gegen 62.9% ohne Bonus (Verteidigen an)
+- Mission 7: bei ×1,0 gewinnt die Gruppe mit den neuen Heilern 100% (mit Wendy und Robo 100%)
 
 ## 1. Einzelwertung: Wert in Infanteristen
 
@@ -325,6 +326,15 @@ Aufstellung wie im Spiel (Hundsfreund, Mira, Elisabeth, Albrecht, Robo, Takeda g
 | +2 Angriff | 58.1% | 61.0% | 22.6 | 17.3 |
 | +3 Angriff | 57.8% | 61.3% | 23.2 | 17.8 |
 Die Simulations-KI wartet nur, wenn sie nichts zu tun hat, und nutzt Gegenschläge nicht gezielt. Der Bonus ist hier deshalb neutral (innerhalb des Messrauschens von etwa ±1,5 Pp), er verschiebt das Gleichgewicht nicht. Die Wirkung zeigt sich erst im bewussten Spiel. Für Gegner gilt der Bonus nicht.
+
+## 12. Mission 7: Sandhafen (Wüste, Zwillinge)
+
+Aufstellung der Karte: Elisabeth, Hundsfreund, Mira, Albrecht und je zwei Heiler gegen Oskar (36 Leben), Maja (32 Leben), 3 Büttel, 1 Bogenschützen und 2 Büttel Verstärkung aus der Wüste in Runde 4. Mit den alten Heilern (Wendy und Robo, Robo ist ein Tank) ist die Mission viel leichter: Lumi und Dr. Humbug sind reine Heiler, deshalb liegt die Schwierigkeit mit ihnen höher. Zahlen: Siegquote / durchschnittliche Runden, bei steigender Gegnerstärke.
+
+| Heiler | ×1.0 | ×1.25 | ×1.5 |
+|---|--:|--:|--:|
+| Mit Lumi und Dr. Humbug | 100% / 12.5 | 86% / 16.3 | 17% / 16.7 |
+| Mit Wendy und Robo | 100% / 9.8 | 100% / 12.0 | 90% / 15.1 |
 
 ## Grenzen
 

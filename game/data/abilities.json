@@ -506,5 +506,65 @@
   "ai_self": {
    "enemies": 2
   }
+ },
+ "sternensegen": {
+  "name": "Sternensegen",
+  "text": "Heilt 7 HP und schützt 2 Runden (+2 Verteidigung).",
+  "cd": 3,
+  "target": "ally",
+  "range": [
+   1,
+   3
+  ],
+  "effects": [
+   {
+    "type": "heal",
+    "amount": 7,
+    "cleanse": false,
+    "to": "target"
+   },
+   {
+    "type": "status",
+    "id": "buff",
+    "turns": 2,
+    "mods": {
+     "def": 2
+    },
+    "to": "target"
+   }
+  ],
+  "caps": [
+   "heal"
+  ]
+ },
+ "wundersalbe": {
+  "name": "Wundersalbe",
+  "text": "Heilt 14 HP und entfernt Gift. Der Geruch macht das Ziel 1 Runde erschöpft (−2 Verteidigung).",
+  "cd": 2,
+  "target": "ally",
+  "range": [
+   1,
+   2
+  ],
+  "effects": [
+   {
+    "type": "heal",
+    "amount": 14,
+    "cleanse": true,
+    "to": "target"
+   },
+   {
+    "type": "status",
+    "id": "tired",
+    "turns": 1,
+    "mods": {
+     "def": -2
+    },
+    "to": "target"
+   }
+  ],
+  "caps": [
+   "heal"
+  ]
  }
 }

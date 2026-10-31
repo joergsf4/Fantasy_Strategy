@@ -323,3 +323,16 @@ Falls du dazu schon Ideen hast, schreib sie hier hin:
 
 **Deine Notizen:**
 
+
+
+## Neue Heiler (Mission 7)
+
+### Lumi Sternenglanz (Magical Girl)
+`magical_girl` · Chibi: `game/assets/tokens/magical_girl.png` · Porträts normal, lachend, wütend
+Aktuell (Platzhalter): HP 24 · Angriff 3 · Verteidigung 3 · Resistenz 6 · Bewegung 4 · Reichweite 1–2 · Heilen 6 · Magie
+**Spezialfähigkeit: Sternensegen** (Abklingzeit 3, Reichweite 1–3): heilt 7 HP und schützt 2 Runden (+2 Verteidigung). Gegenstück zu Wendys Gruppenheilung: einzelne Verbündete heilen und stärken statt der ganzen Gruppe.
+
+### Dr. Humbug (Quaksalber-Arzt)
+`quacksalber` · Chibi: `game/assets/tokens/quacksalber.png` · Porträts normal, lachend, wütend
+Aktuell (Platzhalter): HP 26 · Angriff 4 · Verteidigung 3 · Resistenz 3 · Bewegung 3 · Reichweite 1–2 · Heilen 5
+**Spezialfähigkeit: Wundersalbe** (Abklingzeit 2, Reichweite 1–2): heilt 14 HP und entfernt Gift, der Geruch macht das Ziel 1 Runde erschöpft (−2 Verteidigung). Berechenbare Nebenwirkung statt Zufall.

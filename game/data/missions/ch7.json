@@ -1,0 +1,253 @@
+{
+ "id": "ch7",
+ "title": "Sandhafen",
+ "map": "res://data/map_ch7.json",
+ "no_flee": [
+  "oskar",
+  "maja"
+ ],
+ "briefing": "Das Schiff hat im Sandhafen angelegt, der letzten Station vor der Insel des Regenten. Die Wüste ist neu: Dünen (Bewegung kostet 2) und Kakteen bremsen, die Oase und die Zelte geben Deckung. Hier warten die Zwillinge Oskar und Maja, die Generäle des Regenten. Diesmal fliehen sie nicht: Besiegt sie beide. Lumi und Dr. Humbug stoßen als neue Heiler zur Gruppe.",
+ "goals": [
+  {
+   "type": "rout"
+  }
+ ],
+ "triggers": [
+  {
+   "when": {
+    "turn": 2
+   },
+   "note": "Lumi weist auf ihre Fähigkeit hin",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "magical_girl",
+       "right": "maedchen_baer",
+       "speaker": "magical_girl",
+       "text": "Wen ich mit dem Sternensegen berühre, den trifft eine Weile nichts so leicht. Sagt Bescheid, wenn jemand Schutz braucht!",
+       "left_expr": "lachend"
+      },
+      {
+       "left": "magical_girl",
+       "right": "maedchen_baer",
+       "speaker": "maedchen_baer",
+       "text": "Das klingt nach einer Menge Glitzer."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "near": {
+     "a": "oskar",
+     "b": "any_enemy",
+     "dist": 8
+    }
+   },
+   "if": {
+    "present": [
+     "maja"
+    ]
+   },
+   "note": "Die Zwillinge begrüßen die Helden",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "oskar",
+       "right": "maja",
+       "speaker": "oskar",
+       "text": "Schwesterherz, sieh nur: dieselbe Heldenbande, nur mit mehr Sand in den Schuhen.",
+       "left_expr": "lachend"
+      },
+      {
+       "left": "oskar",
+       "right": "maja",
+       "speaker": "maja",
+       "text": "Diesmal brennt nichts, Oskar. Diesmal verdursten sie.",
+       "right_expr": "lachend"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "heal": {
+     "by": "quacksalber",
+     "targets": 1
+    }
+   },
+   "note": "Dr. Humbug behandelt",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "quacksalber",
+       "right": "elisabeth",
+       "speaker": "quacksalber",
+       "text": "Wundersalbe nach Hausrezept! Nebenwirkungen: Müdigkeit, Juckreiz, ein leichter Hang zum Lügen.",
+       "left_expr": "lachend"
+      },
+      {
+       "left": "quacksalber",
+       "right": "elisabeth",
+       "speaker": "elisabeth",
+       "text": "Das Zeug riecht nach einer Piratenkombüse."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "ability": {
+     "id": "befehl",
+     "by": "oskar"
+    }
+   },
+   "if": {
+    "present": [
+     "elisabeth"
+    ]
+   },
+   "note": "Oskars Befehl",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "elisabeth",
+       "right": "oskar",
+       "speaker": "oskar",
+       "text": "Truppen, in Formation! Wir haben Sand, Sonne und den besseren Haarschnitt!",
+       "right_expr": "lachend"
+      },
+      {
+       "left": "elisabeth",
+       "right": "oskar",
+       "speaker": "elisabeth",
+       "text": "Käpt'n Elisabeth hat noch nie vor einem Schönling gekniet."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "ability": {
+     "id": "einschuechtern",
+     "by": "maja"
+    }
+   },
+   "if": {
+    "present": [
+     "magical_girl"
+    ]
+   },
+   "note": "Majas Eisiger Blick",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "magical_girl",
+       "right": "maja",
+       "speaker": "maja",
+       "text": "Verlasst diesen Strand. Oder ich lasse euch ihn nie wieder verlassen.",
+       "right_expr": "lachend"
+      },
+      {
+       "left": "magical_girl",
+       "right": "maja",
+       "speaker": "magical_girl",
+       "text": "Du hast ein ziemlich schlechtes Stimmungsbild, weißt du das?",
+       "left_expr": "wuetend"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "kill": {
+     "id": "oskar"
+    }
+   },
+   "if": {
+    "present": [
+     "maja"
+    ]
+   },
+   "note": "Maja sieht ihren Bruder fallen",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "hund",
+       "right": "maja",
+       "speaker": "maja",
+       "text": "OSKAR! Das büßt ihr! Alle!",
+       "right_expr": "wuetend"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "kill": {
+     "id": "maja"
+    }
+   },
+   "if": {
+    "present": [
+     "oskar"
+    ]
+   },
+   "note": "Oskar sieht seine Schwester fallen",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "hund",
+       "right": "oskar",
+       "speaker": "oskar",
+       "text": "Maja! Dafür zahlt ihr, und zwar mit Zinsen!",
+       "right_expr": "wuetend"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 4
+   },
+   "note": "Verstärkung aus der Wüste",
+   "do": [
+    {
+     "popup": "Verstärkung aus der Wüste!"
+    },
+    {
+     "spawn": [
+      {
+       "id": "soldat_infanterie",
+       "pos": [
+        11,
+        8
+       ]
+      },
+      {
+       "id": "soldat_infanterie",
+       "pos": [
+        11,
+        9
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

@@ -221,3 +221,11 @@ Benannte Gegner (`"flees": true` in `units.json`: Wart, Oskar, Maja) sterben nic
 - **Gruppe:** Hundsfreund, Mira, Elisabeth, Albrecht, Robo (Heiler), Takeda.
 - **Neue Bausteine:** Terrain `P` (Holzsteg, laufbar), Objekte `ship` (Sprite) und `crate` (Kisten und Fässer, zerstörbar), Missionsfeld `grants`, goldene Zielmarkierung.
 - **Simulator:** abgebildet (Ziel, Grants, Breitseite, Runden-Spawns der Mission mit Vorgeschichte `nemesis`). Messung in `docs/balance.md`, Abschnitt 10.
+
+## Mission 7: Sandhafen (Wüste, Zwillinge)
+
+- **Ort:** Der Hafen, an dem das Schiff aus Mission 6 ankommt. **Neues Biom Wüste** (Kartenfeld `biome: "wueste"`): Sandboden im Shader, Dünen (`D`, Bewegung 2), Kakteen auf `F`-Feldern, Oase mit Palmen (`decor`), Zelte (`tent`) als Hindernisse, Lehmhäuser.
+- **Ziel:** alle Gegner besiegen. Die **Zwillinge Oskar (36 Leben) und Maja (32 Leben) fliehen diesmal nicht** (Missionsfeld `no_flee: ["oskar", "maja"]`), sie müssen fallen. Beim Fall des einen reagiert der andere.
+- **Gruppe:** Elisabeth, Hundsfreund, Mira, Albrecht (tauschbar) und die neuen Heiler **Lumi Sternenglanz** und **Dr. Humbug**, die in der Einleitung zur Gruppe stoßen.
+- **Verstärkung:** Runde 4 aus der Wüste (zwei Büttel, rechts unten).
+- **Simulator:** abgebildet (E11, `docs/balance.md` Abschnitt 12).

@@ -1,0 +1,195 @@
+{
+ "biome": "wueste",
+ "rows": [
+  "GGFGGGDDGGVG",
+  "GDDGGGGGGGGG",
+  "GGGGVGGGFGGG",
+  "GGGFGGGGGGDD",
+  "GGGGGWWGGGGG",
+  "GGGGGWWGGFGG",
+  "GGDGGGGVGGGG",
+  "WGGGGGGGGGGG",
+  "WPPPGGGGGFGG",
+  "WWWWGGGGGGGG"
+ ],
+ "players": [
+  {
+   "id": "elisabeth",
+   "pos": [
+    1,
+    8
+   ]
+  },
+  {
+   "id": "hund",
+   "pos": [
+    2,
+    8
+   ]
+  },
+  {
+   "id": "maedchen_baer",
+   "pos": [
+    3,
+    8
+   ]
+  },
+  {
+   "id": "ritter",
+   "pos": [
+    2,
+    7
+   ]
+  },
+  {
+   "id": "magical_girl",
+   "pos": [
+    3,
+    7
+   ]
+  },
+  {
+   "id": "quacksalber",
+   "pos": [
+    4,
+    8
+   ]
+  }
+ ],
+ "enemies": [
+  {
+   "id": "oskar",
+   "pos": [
+    9,
+    1
+   ],
+   "hp": 36,
+   "carry": {
+    "gold": 120
+   }
+  },
+  {
+   "id": "maja",
+   "pos": [
+    10,
+    3
+   ],
+   "hp": 32,
+   "carry": {
+    "items": {
+     "heilhonig": 2
+    }
+   }
+  },
+  {
+   "id": "soldat_infanterie",
+   "pos": [
+    6,
+    2
+   ]
+  },
+  {
+   "id": "soldat_infanterie",
+   "pos": [
+    7,
+    4
+   ]
+  },
+  {
+   "id": "soldat_infanterie",
+   "pos": [
+    8,
+    5
+   ]
+  },
+  {
+   "id": "soldat_bogenschuetze",
+   "pos": [
+    8,
+    0
+   ]
+  }
+ ],
+ "objects": [
+  {
+   "id": "schiff",
+   "type": "ship",
+   "pos": [
+    1,
+    9
+   ]
+  },
+  {
+   "id": "zelt1",
+   "type": "tent",
+   "pos": [
+    3,
+    5
+   ]
+  },
+  {
+   "id": "zelt2",
+   "type": "tent",
+   "pos": [
+    8,
+    2
+   ]
+  },
+  {
+   "id": "zelt3",
+   "type": "tent",
+   "pos": [
+    9,
+    6
+   ]
+  }
+ ],
+ "decor": [
+  {
+   "sprite": "fx_palme",
+   "pos": [
+    4,
+    4
+   ],
+   "size": 1.5
+  },
+  {
+   "sprite": "fx_palme",
+   "pos": [
+    7,
+    5
+   ],
+   "size": 1.5
+  },
+  {
+   "sprite": "fx_palme",
+   "pos": [
+    5,
+    6
+   ],
+   "size": 1.4
+  }
+ ],
+ "rewards": {
+  "gold": 150
+ },
+ "objectives": [
+  {
+   "id": "alle_leben",
+   "text": "Kein Held fällt",
+   "reward": {
+    "gold": 80
+   }
+  },
+  {
+   "id": "schnell",
+   "text": "In 10 Runden gewonnen",
+   "turns": 10,
+   "reward": {
+    "items": {
+     "heilhonig": 1
+    }
+   }
+  }
+ ]
+}

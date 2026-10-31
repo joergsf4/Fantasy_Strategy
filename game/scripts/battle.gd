@@ -105,6 +105,7 @@ func _ready() -> void:
 	world = World.new(map_data.get("objects", []))
 	grid.blocked = world.blocked()
 	terrain = TerrainView.new()
+	terrain.biome = map_data.get("biome", "wiese")
 	terrain.setup(grid)
 	add_child(terrain)
 	_build_environment()
@@ -113,6 +114,7 @@ func _ready() -> void:
 	fx.setup(self)
 	_build_loot()
 	_build_objects()
+	_build_decor()
 	for fy in grid.height:
 		for fx_ in grid.width:
 			if grid.terrain(Vector2i(fx_, fy)) == "F":
@@ -1051,7 +1053,7 @@ func _on_death(def: Dictionary) -> void:
 ## zurueck, alle anderen sterben.
 func _down(def: Dictionary) -> void:
 	_on_death(def)
-	if def["team"] == "e" and unit_defs[def["id"]].get("flees", false):
+	if def["team"] == "e" and unit_defs[def["id"]].get("flees", false) and not (map_data.get("no_flee", []) as Array).has(def["id"]):
 		await _flee(def)
 	else:
 		fx.death(def)
@@ -1176,6 +1178,32 @@ func results() -> Dictionary:
 
 # ------------------------------------------------------------------ Weltobjekte
 
+## Dekoration ohne Spielwirkung: im Biom Wueste Kakteen auf "F"-Feldern (und vereinzelt auf Sand), dazu die "decor"-Liste der Karte
+## ([{sprite, pos, size}], z. B. Palmen an der Oase). Alles Pixel-Sprites.
+func _build_decor() -> void:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 4242
+	var spots: Array = []     # [Sprite, Feld, Groesse]
+	if map_data.get("biome", "") == "wueste":
+		for y in grid.height:
+			for x in grid.width:
+				var p := Vector2i(x, y)
+				if grid.blocked.has(p) or world.at(p) != {}:
+					continue
+				var t := grid.terrain(p)
+				if t == "F":
+					spots.append(["fx_kaktus", p, 1.0])
+				elif t == "G" and rng.randf() < 0.06:
+					spots.append(["fx_kaktus", p, 0.6])
+	for d: Dictionary in map_data.get("decor", []):
+		spots.append([d["sprite"], Vector2i(d["pos"][0], d["pos"][1]), float(d.get("size", 1.0))])
+	for sp: Array in spots:
+		var root := Node3D.new()
+		root.position = to_world(sp[1]) + Vector3(rng.randf_range(-0.12, 0.12), 0, rng.randf_range(-0.1, 0.1))
+		add_child(root)
+		_object_sprite(sp[0], sp[2], root)
+
+
 func _build_objects() -> void:
 	for o in world.objects:
 		_make_object(o)
@@ -1189,7 +1217,7 @@ func _make_object(o: Dictionary) -> void:
 	if o["type"] == "hostage":
 		_make_hostage(o)
 		return
-	if o["type"] in ["hive", "bell", "orphanage", "ship", "crate", "teahouse"]:
+	if o["type"] in ["hive", "bell", "orphanage", "ship", "crate", "teahouse", "tent"]:
 		_make_ch5_object(o)
 		return
 	var stone := Color(0.52, 0.5, 0.54)
@@ -1356,7 +1384,7 @@ func _refresh_object(o: Dictionary, animate: bool) -> void:
 
 ## Karten-Objekte als Pixel-Sprites (Gemini, freigestellt): Bienenstock, Glocke, Waisenhaus, Teehaus, Schiff, Hafen-Hindernisse.
 ## Die Spiellogik (Sperren, Zustaende) steckt in World, hier nur die Optik.
-const OBJ_SPRITE := {"hive": ["fx_bienenstock", 1.0], "bell": ["fx_glocke", 1.6], "orphanage": ["fx_waisenhaus", 1.9], "teahouse": ["fx_teehaus", 1.7]}
+const OBJ_SPRITE := {"hive": ["fx_bienenstock", 1.0], "bell": ["fx_glocke", 1.6], "orphanage": ["fx_waisenhaus", 1.9], "teahouse": ["fx_teehaus", 1.7], "tent": ["fx_zelt", 1.6]}
 const CRATE_SPRITES := [["fx_kiste", 1.0], ["fx_fass", 1.05], ["fx_saecke", 1.0]]
 
 

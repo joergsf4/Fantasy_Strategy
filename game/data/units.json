@@ -456,5 +456,45 @@
   ],
   "weapon": "metal",
   "body": "flesh"
+ },
+ "magical_girl": {
+  "name": "Lumi Sternenglanz",
+  "hp": 24,
+  "atk": 3,
+  "def": 3,
+  "res": 6,
+  "move": 4,
+  "range_min": 1,
+  "range": 2,
+  "role": "healer",
+  "dmg_type": "magic",
+  "heal": 6,
+  "abilities": [
+   "sternensegen"
+  ],
+  "weapon": "wood",
+  "body": "flesh",
+  "hero": true,
+  "from": 7
+ },
+ "quacksalber": {
+  "name": "Dr. Humbug",
+  "hp": 26,
+  "atk": 4,
+  "def": 3,
+  "res": 3,
+  "move": 3,
+  "range_min": 1,
+  "range": 2,
+  "role": "healer",
+  "dmg_type": "body",
+  "heal": 5,
+  "abilities": [
+   "wundersalbe"
+  ],
+  "weapon": "wood",
+  "body": "flesh",
+  "hero": true,
+  "from": 7
  }
 }

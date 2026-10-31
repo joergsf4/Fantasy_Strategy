@@ -8,15 +8,16 @@ const RES := 5               # Gitterpunkte pro Kachel im Bodenmesh
 const WATER_LEVEL := -0.08
 
 # Zielhoehe und Rauigkeit je Gelaendetyp (an den Kachelmitten, dazwischen weich interpoliert)
-const H := {"G": 0.0, "F": 0.03, "M": 1.0, "W": -0.5, "V": 0.02, "C": 0.05, "P": 0.0}
-const AMP := {"G": 0.035, "F": 0.05, "M": 0.3, "W": 0.04, "V": 0.0, "C": 0.0, "P": 0.0}
+const H := {"G": 0.0, "F": 0.03, "M": 1.0, "W": -0.5, "V": 0.02, "C": 0.05, "P": 0.0, "D": 0.16}
+const AMP := {"G": 0.035, "F": 0.05, "M": 0.3, "W": 0.04, "V": 0.0, "C": 0.0, "P": 0.0, "D": 0.07}
 # Bodengewichte: R Gras, G Waldboden, B Fels, A Pfad
 const WT := {
 	"G": Color(1, 0, 0, 0), "F": Color(0.35, 0.65, 0, 0), "M": Color(0.1, 0, 0.9, 0),
-	"W": Color(1, 0, 0, 0), "V": Color(0.7, 0, 0, 0.6), "C": Color(0, 0, 0.7, 0.3), "P": Color(1, 0, 0, 0),
+	"W": Color(1, 0, 0, 0), "V": Color(0.7, 0, 0, 0.6), "C": Color(0, 0, 0.7, 0.3), "P": Color(1, 0, 0, 0), "D": Color(1, 0, 0, 0),
 }
 
 var grid: Grid
+var biome := "wiese"          # "wueste": Sand statt Gras, keine Baeume und Blumen (Karten-Feld "biome")
 var _noise := FastNoiseLite.new()
 var _noise_hills := FastNoiseLite.new()
 var _noise_forest := FastNoiseLite.new()
@@ -220,6 +221,7 @@ func _build_ground() -> void:
 	var mat := ShaderMaterial.new()
 	mat.shader = load("res://shaders/ground.gdshader")
 	mat.set_shader_parameter("water_level", WATER_LEVEL)
+	mat.set_shader_parameter("desert", 1.0 if biome == "wueste" else 0.0)
 	mat.set_shader_parameter("map_rect", Vector4(-0.5, -0.5, grid.width - 0.5, grid.height - 0.5))
 	var mi := MeshInstance3D.new()
 	mi.mesh = m
@@ -387,6 +389,10 @@ func _scatter() -> void:
 			var inside := ti >= 0 and tj >= 0 and ti < grid.width and tj < grid.height
 			var t := _tt(ti, tj)
 			var d := dist_outside(ti, tj)
+			if biome == "wueste":     # nur Steine und trockene Buesche, Kakteen und Palmen setzt der Kampf als Sprites
+				if height_at(ti, tj) > WATER_LEVEL + 0.03 and _rng.randf() < (0.16 if inside else 0.1):
+					_place("rock%d" % _rng.randi_range(0, 1), _jit(ti, 0.45), _jit(tj, 0.45), _rng.randf_range(0.5, 1.1), _tint(0.12))
+				continue
 			if inside:
 				_scatter_tile(ti, tj, t)
 			else:
@@ -587,6 +593,9 @@ func _village(ti: int, tj: int) -> void:
 	var timber := Color(0.36, 0.23, 0.13)
 	var plaster := [Color(0.9, 0.84, 0.68), Color(0.86, 0.78, 0.6), Color(0.92, 0.88, 0.76)]
 	var roofs := [Color(0.62, 0.2, 0.14), Color(0.5, 0.28, 0.16), Color(0.7, 0.3, 0.18)]
+	if biome == "wueste":      # Lehmhaeuser: sandfarbene Waende, flache braune und tuerkise Daecher
+		plaster = [Color(0.88, 0.74, 0.52), Color(0.82, 0.66, 0.46), Color(0.92, 0.8, 0.6)]
+		roofs = [Color(0.55, 0.38, 0.25), Color(0.25, 0.5, 0.5), Color(0.62, 0.45, 0.3)]
 	var houses := [
 		[Vector3(-0.3, 0, -0.27), Vector3(0.28, 0.19, 0.22), 0.12, 2],
 		[Vector3(0.3, 0, -0.22), Vector3(0.26, 0.17, 0.24), -0.2, 1],

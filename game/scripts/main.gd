@@ -3,7 +3,7 @@ extends Node
 
 const TITLE_MUSIC := "res://assets/audio/title_theme.mp3"
 const BATTLE_MUSIC := "res://assets/audio/battle_theme.mp3"
-const CHAPTERS := ["ch1", "ch2", "ch3", "ch4", "ch5", "ch6"]
+const CHAPTERS := ["ch1", "ch2", "ch3", "ch4", "ch5", "ch6", "ch7"]
 const MUSIC_DB := -6.0
 
 var units: Dictionary
@@ -490,6 +490,18 @@ func _screenshot_mode() -> void:
 		for i in 40:
 			await get_tree().process_frame
 		await get_tree().create_timer(1.0).timeout
+		get_viewport().get_texture().get_image().save_png(OS.get_environment("SHOT_OUT"))
+		get_tree().quit()
+		return
+	if mode == "wueste":   # Mission 7 (Sandhafen)
+		var bw7 := Battle.new()
+		bw7.setup(Mission.load_mission("ch7"), units)
+		bw7.loadout = Items.defs()["loadout_chapter1"]
+		add_child(bw7)
+		await get_tree().process_frame
+		for i in 30:
+			await get_tree().process_frame
+		await get_tree().create_timer(0.8).timeout
 		get_viewport().get_texture().get_image().save_png(OS.get_environment("SHOT_OUT"))
 		get_tree().quit()
 		return

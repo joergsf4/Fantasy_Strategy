@@ -134,5 +134,15 @@
   "solutions": {
    "blast": "break"
   }
+ },
+ "tent": {
+  "name": "Zelt",
+  "start": "intact",
+  "active": "",
+  "blocks": [
+   "intact"
+  ],
+  "hp": 0,
+  "solutions": {}
  }
 }
