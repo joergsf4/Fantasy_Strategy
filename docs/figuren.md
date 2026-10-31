@@ -188,7 +188,7 @@ Tank
 ## Weitere Figuren
 
 ### Kampfsport-Trainingsattrappe
-*Der persönliche Trainingspartner des Regenten, in Mission 6 („Möwenbucht“) als **Gegenspieler** ausgeschickt, um die Überfahrt zu verhindern. Bilder: Porträt und Karten-Figur fertig.*
+*Der persönliche Trainingspartner des Regenten. Zeitweise als Gegenspieler in Mission 6 („Möwenbucht“) gebaut, dort wieder entfernt (Wart übernimmt). Bilder: Porträt und Karten-Figur fertig. Einheit und Wirbel bleiben für später in den Daten.*
 `dummy` · Chibi: `game/assets/tokens/dummy.png`
 Aktuell (Platzhalter): HP 34 · Angriff 8 · Verteidigung 4 · Bewegung 3 · Reichweite 1 · Boss
 
@@ -196,7 +196,7 @@ Aktuell (Platzhalter): HP 34 · Angriff 8 · Verteidigung 4 · Bewegung 3 · Rei
 
 **Spezialattacke / Fähigkeit:** **Wirbel**: trifft alle 8 Nachbarfelder (×1,5), danach erschöpft (−2 Verteidigung), Abklingzeit 3. Die Gegner-KI setzt ihn ein, wenn mindestens 2 Helden daneben stehen.
 
-**Sonstiges:** Greift in Mission 6 in Runde 4 von hinten ein (Stadttor). Flieht wütend statt zu sterben und kehrt im Finale zurück.
+**Sonstiges:** Aktuell in keiner Mission eingesetzt. Flieht wütend statt zu sterben (`flees`).
 
 ---
 

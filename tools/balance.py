@@ -342,15 +342,13 @@ def e9_harbor():
     party = ["hund", "maedchen_baer", "elisabeth", "ritter", "robo", "samurai"]
     mission = json.loads((GAME / "data" / "map_ch6.json").read_text())
     foes = [e["id"] for e in mission["enemies"]]
-    base = dict(enemy={"fixed": foes}, nemesis=["wart"])
+    base = dict(enemy={"fixed": foes})
     variants = {
-        "voll": base,                                               # Wart, Puppe und Beiboot, mit Breitseite
+        "voll": base,                                               # Wart (Runde 3) und Beiboot (Runde 5), mit Breitseite
         "ohne_breitseite": dict(base, disabled={"elisabeth": ["breitseite"]}),
-        "ohne_wart": dict(base, nemesis=[]),                        # z. B. Levelwaehler ohne Vorgeschichte
     }
     mults = [1.0, 1.5, 2.0]
     if os.environ.get("E9_QUICK"):
-        variants = {k: variants[k] for k in ("voll",)}
         mults = [1.0, 1.5, 1.75]
     cells = []
     for v, spec in variants.items():
@@ -777,9 +775,9 @@ def report():
     e9 = R.get("e9")
     if e9:
         cells = e9["cells"]
-        nm = {"voll": "Voll (Wart, Puppe, Beiboot, Breitseite)", "ohne_breitseite": "Ohne Breitseite", "ohne_wart": "Ohne Wart (keine Vorgeschichte)"}
+        nm = {"voll": "Voll (Wart, Beiboot, Breitseite)", "ohne_breitseite": "Ohne Breitseite"}
         w("## 10. Mission 6: Hafenstadt, Ziel Schiff\n")
-        w("Aufstellung wie im Spiel (Hundsfreund, Mira, Elisabeth, Albrecht, Robo, Takeda gegen die Aufstellung der Karte: Büttel, Bogenschützen und Reiter, Wachen auf dem Steg, Kisten-Sperre). Die Auslöser der Mission sind nachgebildet: Wart Runde 3 auf dem Steg, die Trainingspuppe Runde 4 von hinten, das Beiboot mit Verstärkung Runde 5. "
+        w("Aufstellung wie im Spiel (Hundsfreund, Mira, Elisabeth, Albrecht, Robo, Takeda gegen die Aufstellung der Karte: Büttel, Bogenschützen und Reiter, Wachen auf dem Steg, Kisten-Sperre). Die Auslöser der Mission sind nachgebildet: Wart Runde 3 auf dem Steg (immer), das Beiboot mit Verstärkung Runde 5. "
           "Zahlen: Siegquote / durchschnittliche Runden bis zum Schiff, bei steigender Gegnerstärke.\n")
         w("| Variante | " + " | ".join(f"×{m}" for m in e9["mults"]) + " |")
         w("|---|" + "--:|" * len(e9["mults"]))

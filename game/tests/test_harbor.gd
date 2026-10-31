@@ -71,20 +71,20 @@ func run_tests(defs: Dictionary, m: Dictionary) -> void:
 		if b.grid.blocked.has(Vector2i(6, y)):
 			blocked_col += 1
 	check(blocked_col == b.grid.height - 1 and not b.grid.blocked.has(Vector2i(6, 5)), "Kisten-Sperre mit genau einer Luecke bei y = 5")
-	# Gegenspieler: Trainingspuppe mit Wirbel, Auftritt von hinten in Runde 4, Beiboot in Runde 5
-	var dm: Dictionary = defs["dummy"]
-	check((dm["tags"] as Array).has("boss") and dm.get("flees", false) and (dm["abilities"] as Array).has("wirbel"), "Puppe: Boss mit Wirbel, flieht statt zu sterben")
-	var wi: Dictionary = b.abilities["wirbel"]
-	check(wi["area"]["shape"] == "ring8" and int(wi["cd"]) == 3 and wi["target"] == "self", "Wirbel: alle 8 Nachbarfelder, Abklingzeit 3")
+	# Wart wartet in Runde 3 sicher auf dem Steg, auch ohne Vorgeschichte; die Trainingspuppe ist nicht mehr dabei
 	var b3 := Battle.new()
 	b3.setup(Mission.load_mission("ch6"), defs)
 	b3.dialogue_runner = func(_l: Array) -> void: pass
 	root.add_child(b3)
 	await process_frame
+	check(b3._find("wart").is_empty() and b3._find("dummy").is_empty(), "zu Beginn weder Wart noch Puppe")
+	b3.turn = 3
+	await b3._run_triggers("turn", 3)
+	var wart: Dictionary = b3._find("wart")
+	check(not wart.is_empty() and wart["pos"].x >= 6, "Wart erscheint in Runde 3 auf dem Kai/Steg")
 	b3.turn = 4
 	await b3._run_triggers("turn", 4)
-	var puppe: Dictionary = b3._find("dummy")
-	check(not puppe.is_empty() and puppe["pos"].x <= 1, "Puppe erscheint in Runde 4 hinter der Gruppe (Stadttor)")
+	check(b3._find("dummy").is_empty(), "Runde 4: keine Trainingspuppe")
 	var before: int = b3._count_team("e")
 	b3.turn = 5
 	await b3._run_triggers("turn", 5)
@@ -94,35 +94,11 @@ func run_tests(defs: Dictionary, m: Dictionary) -> void:
 		if e["team"] == "e" and e["id"] == "soldat_infanterie" and e["pos"].y >= 7 and e["pos"].x < 7:
 			harbor = false
 	check(harbor, "Verstaerkung kommt vom Hafen (rechts unten), nicht vom Stadttor")
-	# Puppe wirbelt: trifft zwei Helden neben ihr
-	var h1: Dictionary = b3._find("ritter")
-	var h2: Dictionary = b3._find("samurai")
-	puppe["pos"] = Vector2i(2, 7)
-	h1["pos"] = Vector2i(1, 7)
-	h2["pos"] = Vector2i(3, 7)
-	var hp1: int = h1["hp"]
-	var hp2: int = h2["hp"]
-	await b3._run_ability(puppe, "wirbel", puppe)
-	check(h1["hp"] < hp1 and h2["hp"] < hp2, "Wirbel trifft beide Helden neben der Puppe")
-	# Wart nur mit Vorgeschichte
-	var b2 := Battle.new()
-	b2.setup(Mission.load_mission("ch6"), defs)
-	b2.loadout = {"nemesis": ["wart"]}
-	b2.dialogue_runner = func(_l: Array) -> void: pass
-	root.add_child(b2)
-	await process_frame
-	check(b2._cond_ok({"fled": ["wart"]}), "mit Vorgeschichte ist Wart bekannt")
-	b2.turn = 3
-	await b2._run_triggers("turn", 3)
-	check(not b2._find("wart").is_empty(), "Wart erscheint in Runde 3 auf dem Kai")
-	check(not b._cond_ok({"fled": ["wart"]}), "ohne Vorgeschichte kein Wart")
 	# Simulator: Reach-Ziel und Breitseite
-	var sb := SimSetup.build({"map": "ch6", "players": [], "enemies": [], "nemesis": ["wart"]}, 7)
+	var sb := SimSetup.build({"map": "ch6", "players": [], "enemies": []}, 7)
 	check(sb.goal_tile == gt, "Simulator kennt das Zielfeld")
 	var late_ids: Array = sb.late.map(func(l: Dictionary) -> String: return l["id"])
-	check(late_ids.has("wart") and late_ids.has("dummy") and late_ids.count("soldat_infanterie") == 2, "Simulator spawnt Wart, Puppe und Beiboot aus den Ausloesern")
-	var sb2 := SimSetup.build({"map": "ch6", "players": [], "enemies": []}, 7)
-	check(not (sb2.late.map(func(l: Dictionary) -> String: return l["id"])).has("wart"), "ohne Vorgeschichte kein Wart im Simulator")
+	check(late_ids.has("wart") and not late_ids.has("dummy") and late_ids.count("soldat_infanterie") == 2, "Simulator spawnt Wart und Beiboot (ohne Vorgeschichte), keine Puppe")
 	var seen := 0
 	for u in sb.units:
 		if u["team"] == "p" and (u["abilities"] as Array).has("breitseite"):

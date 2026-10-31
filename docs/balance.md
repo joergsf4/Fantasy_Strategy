@@ -14,7 +14,7 @@ Erzeugt von `tools/balance.py` mit dem grafikfreien Simulator (`game/sim/`). Er 
 - Verteidigen: Gruppen +3.2 Pp Siegquote, 16.5 Einsätze pro Kampf
 - Mission 3: ohne Löschen gehen im Schnitt 4.0 von 4 Häusern verloren, mit voller Löschung 0.0
 - Mission 5: bei ×1,0 gewinnt die Gruppe 100%, Kinder werden in 27% der Kämpfe gestochen (ohne Glocke und Stöcke: 94% / 77%)
-- Mission 6: bei ×1,0 gewinnt die Gruppe 100% in 7.3 Runden (ohne Breitseite 100%)
+- Mission 6: bei ×1,0 gewinnt die Gruppe 100% in 6.5 Runden (ohne Breitseite 100%)
 - Warten (wachsam, +2 Angriff): Siegquote 61.0% gegen 62.9% ohne Bonus (Verteidigen an)
 
 ## 1. Einzelwertung: Wert in Infanteristen
@@ -308,13 +308,12 @@ Aufstellung wie im Spiel (Mira, Albrecht, Wendy, Elisabeth, Kage-Schwestern, Tak
 
 ## 10. Mission 6: Hafenstadt, Ziel Schiff
 
-Aufstellung wie im Spiel (Hundsfreund, Mira, Elisabeth, Albrecht, Robo, Takeda gegen die Aufstellung der Karte: Büttel, Bogenschützen und Reiter, Wachen auf dem Steg, Kisten-Sperre). Die Auslöser der Mission sind nachgebildet: Wart Runde 3 auf dem Steg, die Trainingspuppe Runde 4 von hinten, das Beiboot mit Verstärkung Runde 5. Zahlen: Siegquote / durchschnittliche Runden bis zum Schiff, bei steigender Gegnerstärke.
+Aufstellung wie im Spiel (Hundsfreund, Mira, Elisabeth, Albrecht, Robo, Takeda gegen die Aufstellung der Karte: Büttel, Bogenschützen und Reiter, Wachen auf dem Steg, Kisten-Sperre). Die Auslöser der Mission sind nachgebildet: Wart Runde 3 auf dem Steg (immer), das Beiboot mit Verstärkung Runde 5. Zahlen: Siegquote / durchschnittliche Runden bis zum Schiff, bei steigender Gegnerstärke.
 
 | Variante | ×1.0 | ×1.5 | ×2.0 |
 |---|--:|--:|--:|
-| Voll (Wart, Puppe, Beiboot, Breitseite) | 100% / 7.3 | 46% / 15.4 | 0% / 9.7 |
-| Ohne Breitseite | 100% / 8.0 | 21% / 16.1 | 0% / 9.9 |
-| Ohne Wart (keine Vorgeschichte) | 100% / 5.7 | 100% / 10.4 | 26% / 13.5 |
+| Voll (Wart, Beiboot, Breitseite) | 100% / 6.5 | 93% / 13.1 | 1% / 14.4 |
+| Ohne Breitseite | 100% / 6.9 | 68% / 15.9 | 0% / 13.8 |
 
 ## 11. Warten (wachsam) und Verteidigen
 
