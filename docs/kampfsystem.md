@@ -106,6 +106,13 @@ Im Kampf: Menü **Gegenstand** neben **Angriff / Fähigkeit / Warten**. Nicht be
 - **Speichern:** `user://save.json` (Gold, Rucksack, Zutaten, Ausrüstung, Vorrat des Händlers).
 
 
+## Warten (wachsam) und Verteidigen
+Beide beenden den Zug der Figur, haben aber verschiedene Rollen:
+- **Warten:** macht **wachsam**, bis zur nächsten eigenen Phase **+2 Angriff** (`Combat.WAIT_ATK`). Das zählt nur für den Gegenschlag, die Figur behält ihn. Gedacht für harte Konterer (Takeda, Mira, Muskelaugust). Gilt auch für Gegner, die keine Aktion haben. Sichtbar als goldener Ring am Boden und Popup „Wachsam“.
+- **Verteidigen:** Schutzhaltung, siehe unten (halber Schaden, kein Gegenschlag). Kein Abklingzeit-Zwang: es bleibt die Grundoption statt Warten.
+- Die Gegner-KI rechnet den Gegenschlag in ihre Zielwahl ein und meidet wachsame Konterer.
+- Messung und Wahl des Bonus: `docs/balance.md`, Abschnitt 11.
+
 ## Verteidigen
 Neue Aktion im Menü (wie Angriff oder Warten, der Zug der Figur endet):
 - bis zur nächsten eigenen Phase **halber Schaden** (aufgerundet, mindestens 1), **Tanks nur ×0,4**;

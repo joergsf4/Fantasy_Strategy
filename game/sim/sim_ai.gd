@@ -35,6 +35,10 @@ static func execute(b: SimBattle, u: Dictionary, act: Dictionary, moved: bool) -
 			b.use_item(u, act["item"], act["target"])
 		"defend":
 			b.defend(u)
+		"wait":
+			b._ab_stat(u, "_wait")["uses"] += 1
+			if SimBattle.wait_atk > 0 and u["team"] == "p":    # nur die Spielerseite: Warten ist dort eine bewusste Wahl
+				Status.add(u, "wachsam", 1, {"atk": SimBattle.wait_atk})    # wie im Spiel: Warten macht wachsam
 		"hive":
 			b.attack_hive(u, act["obj"])
 		"douse":

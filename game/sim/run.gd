@@ -75,6 +75,7 @@ func _units(ids: Array, mods: Dictionary) -> Array:
 
 func run_cell(cell: Dictionary) -> Dictionary:
 	SimBattle.reset_defs()
+	SimBattle.wait_atk = int(cell.get("wait_atk", Combat.WAIT_ATK))
 	if cell.has("ab_status_turns"):
 		SimBattle.override_status_turns(cell["ab_status_turns"])
 	var max_turns := int(cell.get("max_turns", SimBattle.MAX_TURNS))

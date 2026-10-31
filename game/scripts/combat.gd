@@ -12,6 +12,11 @@ const DEFEND_FACTOR_TANK := 0.4    # Tanks halten besser
 
 
 ## Wert inkl. Buffs/Debuffs aus Status (u["status"][i]["mods"][key]).
+## Warten macht wachsam: bis zur naechsten eigenen Phase +WAIT_ATK Angriff, also ein haerterer Gegenschlag.
+## Verteidigen ist das Gegenstueck (halber Schaden, kein Gegenschlag).
+const WAIT_ATK := 2
+
+
 static func stat(u: Dictionary, key: String) -> int:
 	var v: int = u.get(key, 0)
 	for s: Dictionary in u.get("status", []):

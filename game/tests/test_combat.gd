@@ -94,5 +94,15 @@ func _init() -> void:
 	# nach einer Runde ist es vorbei
 	var ev_def := Status.tick_phase_start(ward)
 	check(not Status.has(ward, "defend") and ev_def.size() == 1 and ev_def[0]["type"] == "expire", "Verteidigen endet zu Beginn der eigenen Phase")
+	# Warten macht wachsam: haerterer Gegenschlag, Verteidigen bleibt ohne Gegenschlag
+	var waiter := unit(8, 2)
+	var attacker := unit(6, 3)
+	var plain := Combat.damage(waiter, attacker, 0, 0.0)
+	Status.add(waiter, "wachsam", 1, {"atk": Combat.WAIT_ATK})
+	check(Combat.damage(waiter, attacker, 0, 0.0) == plain + Combat.WAIT_ATK, "wachsam: Gegenschlag +%d Schaden" % Combat.WAIT_ATK)
+	check(Combat.can_counter(waiter, 1), "wachsam kontert weiter")
+	check(Combat.damage(attacker, waiter, 0, 0.0) == Combat.damage(attacker, unit(8, 2), 0, 0.0), "wachsam aendert die eigene Verteidigung nicht")
+	var ev_w := Status.tick_phase_start(waiter)
+	check(not Status.has(waiter, "wachsam") and ev_w.size() == 1, "wachsam endet zu Beginn der eigenen Phase")
 	print("Tests fertig, Fehler: ", fails)
 	quit(1 if fails > 0 else 0)

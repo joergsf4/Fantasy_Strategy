@@ -4,9 +4,9 @@ extends RefCounted
 
 const NAMES := {
 	"stun": "Benommen", "poison": "Gift", "taunt": "Spott", "stealth": "Verborgen",
-	"buff": "Gestärkt", "tired": "Erschöpft", "polymorph": "Verwandelt", "defend": "Verteidigt", "scared": "Eingeschüchtert",
+	"buff": "Gestärkt", "tired": "Erschöpft", "polymorph": "Verwandelt", "defend": "Verteidigt", "scared": "Eingeschüchtert", "wachsam": "Wachsam",
 }
-const GOOD := ["stealth", "buff", "defend"]
+const GOOD := ["stealth", "buff", "defend", "wachsam"]
 
 
 static func add(u: Dictionary, id: String, turns: int, mods := {}, src := "") -> void:

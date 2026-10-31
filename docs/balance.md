@@ -15,6 +15,7 @@ Erzeugt von `tools/balance.py` mit dem grafikfreien Simulator (`game/sim/`). Er 
 - Mission 3: ohne Löschen gehen im Schnitt 4.0 von 4 Häusern verloren, mit voller Löschung 0.0
 - Mission 5: bei ×1,0 gewinnt die Gruppe 100%, Kinder werden in 27% der Kämpfe gestochen (ohne Glocke und Stöcke: 94% / 77%)
 - Mission 6: bei ×1,0 gewinnt die Gruppe 100% in 6.6 Runden (ohne Breitseite 100%)
+- Warten (wachsam, +2 Angriff): Siegquote 61.0% gegen 62.9% ohne Bonus (Verteidigen an)
 
 ## 1. Einzelwertung: Wert in Infanteristen
 
@@ -315,6 +316,17 @@ Aufstellung wie im Spiel (Hundsfreund, Mira, Elisabeth, Albrecht, Robo, Takeda g
 | Ohne Breitseite | 100% / 6.8 | 100% / 8.7 | 99% / 12.8 |
 | Mit Wart (von Beginn an) | 100% / 8.2 | 98% / 12.0 | 23% / 10.3 |
 | Mit Wart, ohne Breitseite | 100% / 8.8 | 94% / 13.0 | 12% / 9.9 |
+
+## 11. Warten (wachsam) und Verteidigen
+
+„Warten“ gibt bis zur nächsten eigenen Phase +N Angriff, der nur für den Gegenschlag zählt. Zufällige Gruppen aus 6 Helden gegen 12 Soldaten (Stärke ×1.5). Siegquote, mit Verteidigen aus und an; Einsätze pro Kampf von Warten und Verteidigen.
+
+| Bonus Warten | Verteidigen aus | Verteidigen an | Warten-Einsätze (an) | Verteidigen-Einsätze (an) |
+|---|--:|--:|--:|--:|
+| +0 Angriff | 58.0% | 62.9% | 21.1 | 16.3 |
+| +2 Angriff | 58.1% | 61.0% | 22.6 | 17.3 |
+| +3 Angriff | 57.8% | 61.3% | 23.2 | 17.8 |
+Die Simulations-KI wartet nur, wenn sie nichts zu tun hat, und nutzt Gegenschläge nicht gezielt. Der Bonus ist hier deshalb neutral (innerhalb des Messrauschens von etwa ±1,5 Pp), er verschiebt das Gleichgewicht nicht. Die Wirkung zeigt sich erst im bewussten Spiel. Für Gegner gilt der Bonus nicht.
 
 ## Grenzen
 

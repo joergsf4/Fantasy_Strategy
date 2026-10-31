@@ -769,6 +769,11 @@ func _status_holder(id: String, n: Node3D) -> Node3D:
 			twd.tween_property(bubble, "scale", bubble.scale * 1.1, 0.7).set_trans(Tween.TRANS_SINE)
 			twd.tween_property(bubble, "scale", bubble.scale, 0.7).set_trans(Tween.TRANS_SINE)
 			twd.parallel().tween_property(glow, "scale", glow.scale * 1.08, 0.7).set_trans(Tween.TRANS_SINE)
+		"wachsam":   # goldener Ring am Boden, pulsiert leicht
+			var wr_ := make_sprite("ring", Vector3(0, 0.07, 0), 0.9, true, Color(1.0, 0.85, 0.3, 0.9), 1, root)
+			var tww := root.create_tween().set_loops()
+			tww.tween_property(wr_, "scale", wr_.scale * 1.12, 0.8).set_trans(Tween.TRANS_SINE)
+			tww.tween_property(wr_, "scale", wr_.scale, 0.8).set_trans(Tween.TRANS_SINE)
 		"stun":    # drei Sterne kreisen ueber dem Kopf
 			var stars: Array[MeshInstance3D] = []
 			for i in 3:

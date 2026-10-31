@@ -290,6 +290,22 @@ def e6_defend():
     print(f"   Gruppen: ohne Verteidigen {wr(g0):.1%}, mit {wr(g1):.1%}")
 
 
+def e10_wait():
+    """Warten (wachsam, +N Angriff fuer den Gegenschlag) gegen Verteidigen: Gruppen mit zufaelligen Helden."""
+    n_enemy, m = enemy_count(), enemy_mult()
+    print("E10: Warten = wachsam")
+    base = {"map": "open", "seed": 810000, "enemy": {"pool": ENEMY_POOL, "count": n_enemy}, "e_mods": {"hp": m, "atk": m},
+            "party": {"pool": HEROES, "size": 6}}
+    cells = []
+    for w in (0, 2, 3):
+        for d in (0, 1):
+            cells.append(dict(base, name=f"wait|{w}|{d}", n=2000, wait_atk=w, p_ai={"defend": bool(d)}))
+    res = run_cells(cells)
+    save("e10", {"cells": res, "enemy_count": n_enemy, "mult": m})
+    for w in (0, 2, 3):
+        print("  ", f"+{w} Angriff:", [(d, round(wr(res[f'wait|{w}|{d}']), 3)) for d in (0, 1)])
+
+
 def e8_bees():
     """Mission 5 (Waisenhaus): Siegquote, gestochene Kinder, Glocke und Stoecke bei steigender Gegnerstaerke."""
     print("E8: Mission 5, Bienenstoecke, Glocke und Hundsfreund")
@@ -776,6 +792,25 @@ def report():
         a0, a1 = cells["voll|1.0"], cells["ohne_breitseite|1.0"]
         notes.append(f"Mission 6: bei ×1,0 gewinnt die Gruppe {wr(a0):.0%} in {a0['turns'] / a0['n']:.1f} Runden (ohne Breitseite {wr(a1):.0%})")
 
+    # ---- E10
+    e10 = R.get("e10")
+    if e10:
+        cells = e10["cells"]
+        w("## 11. Warten (wachsam) und Verteidigen\n")
+        w("„Warten“ gibt bis zur nächsten eigenen Phase +N Angriff, der nur für den Gegenschlag zählt. Zufällige Gruppen aus 6 Helden gegen "
+          f"{e10['enemy_count']} Soldaten (Stärke ×{e10['mult']}). Siegquote, mit Verteidigen aus und an; Einsätze pro Kampf von Warten und Verteidigen.\n")
+        w("| Bonus Warten | Verteidigen aus | Verteidigen an | Warten-Einsätze (an) | Verteidigen-Einsätze (an) |")
+        w("|---|--:|--:|--:|--:|")
+        for wv in (0, 2, 3):
+            a0, a1 = cells[f"wait|{wv}|0"], cells[f"wait|{wv}|1"]
+            def uses(a, tag):
+                return sum(v["uses"] for k, v in a["abs"].items() if k.endswith("/" + tag) and k.split("/")[0] in HEROES) / a["n"]
+            w(f"| +{wv} Angriff | {wr(a0):.1%} | {wr(a1):.1%} | {uses(a1, '_wait'):.1f} | {uses(a1, '_defend'):.1f} |")
+        w("Die Simulations-KI wartet nur, wenn sie nichts zu tun hat, und nutzt Gegenschläge nicht gezielt. Der Bonus ist hier deshalb neutral (innerhalb des Messrauschens von etwa ±1,5 Pp), er verschiebt das Gleichgewicht nicht. Die Wirkung zeigt sich erst im bewussten Spiel. Für Gegner gilt der Bonus nicht.")
+        w("")
+        a2, a0 = cells["wait|2|1"], cells["wait|0|1"]
+        notes.append(f"Warten (wachsam, +2 Angriff): Siegquote {wr(a2):.1%} gegen {wr(a0):.1%} ohne Bonus (Verteidigen an)")
+
     # ---- Kurzfassung oben
     head = ["## Kurzfassung\n"] + [f"- {n}" for n in notes] + [""]
     L[2:2] = head if notes else []
@@ -795,7 +830,7 @@ def report():
 
 
 STEPS = {"calib": calib, "e0": e0_ratings, "e1": e1_contribution, "e2": e2_ablation, "e3": e3_difficulty,
-         "e3base": lambda: e3_difficulty(False), "e4": e4_power_ratio, "e5": e5_items, "e6": e6_defend, "e7": e7_fire, "e8": e8_bees, "e9": e9_harbor, "report": report}
+         "e3base": lambda: e3_difficulty(False), "e4": e4_power_ratio, "e5": e5_items, "e6": e6_defend, "e7": e7_fire, "e8": e8_bees, "e9": e9_harbor, "e10": e10_wait, "report": report}
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()

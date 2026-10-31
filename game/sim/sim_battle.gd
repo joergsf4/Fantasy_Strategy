@@ -6,6 +6,7 @@ extends RefCounted
 ## beide Seiten werden von SimAI gesteuert (Spott wirkt auch auf die Spielerseite).
 
 const MAX_TURNS := 40
+static var wait_atk := Combat.WAIT_ATK     # Bonus fuer "Warten" (wachsam); nur das Balancing aendert ihn
 
 static var _unit_defs: Dictionary = {}
 static var _ability_defs: Dictionary = {}

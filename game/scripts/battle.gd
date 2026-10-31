@@ -850,8 +850,11 @@ func _enter_action(show_abilities := false, show_items := false) -> void:
 			if not vl.is_empty() and not vl["visited"]:
 				_menu_button(box, "Dorf besuchen", true, func() -> void: _collect(sel, vl, "village"))
 		_menu_button(box, "Verteidigen", true, func() -> void: _defend(sel))
-		_menu_button(box, "Warten", true, func() -> void:
+		_menu_button(box, "Warten (wachsam)", true, func() -> void:
 			_close_menu()
+			Status.add(sel, "wachsam", 1, {"atk": Combat.WAIT_ATK})
+			_refresh_unit(sel)
+			_popup(sel, "Wachsam", Color(1.0, 0.9, 0.5))
 			_finish_unit(sel))
 	_hud_root.add_child(_menu)
 	var sp := cam.unproject_position((sel["node"] as Node3D).position + Vector3(0.7, 1.0, 0))
