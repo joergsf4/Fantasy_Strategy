@@ -14,6 +14,12 @@ Nach „Press Start“ erscheint eine Kapitelauswahl (Testmenü). Steuerung: Mau
 - `tools/` Hilfswerkzeuge: Freistellen der Bilder (`chroma_key.py`), UI-Texturen (`make_ui.py`), Gemini-Automatisierung (`gemini/`), Balancing (`balance.py` mit grafikfreiem Simulator in `game/sim/`), Trailer und Thumbnail
 - `strategie/` Original-Bilder (Gemini) auf Greenscreen
 
+## Dialog-Editor
+```
+python3 tools/dialog_editor/server.py     # dann http://127.0.0.1:8765 im Browser öffnen
+```
+Weboberfläche für alle Gespräche (Einleitung, Abschluss, Gespräche im Kampf mit Auslösern, Rückzug benannter Gegner): Texte bearbeiten, Figuren per Drag-and-Drop zuordnen, Zeilen umsortieren, Vorschau wie im Spiel, neue Gespräche aus einer Beschreibung entwerfen (braucht die Claude-CLI). Nur Python-Standardbibliothek. Test: `python3 -m unittest tools/dialog_editor/test_server.py`.
+
 ## Tests
 ```
 godot --headless --path game --script tests/test_combat.gd

@@ -1,0 +1,606 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dialog-Editor</title>
+<link rel="icon" href="data:,">
+<style>
+@font-face { font-family: "Cinzel"; src: url("/assets/fonts/CinzelDecorative-Bold.ttf"); font-weight: 700; }
+@font-face { font-family: "IM Fell"; src: url("/assets/fonts/IMFeENrm28P.ttf"); }
+:root {
+  --bg: #12111c; --panel: #1b1a2a; --panel2: #232238; --line: #34324f; --text: #ece6d6; --muted: #a39fb8;
+  --gold: #e8c066; --gold-d: #b8913a; --red: #e07070; --green: #7fd08f; --blue: #7aa8e8; --focus: #8fc1ff;
+  --r: 10px;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body { background: var(--bg); color: var(--text); font: 15px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
+button, select, input, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+h1, h2, h3 { font-family: "Cinzel", serif; margin: 0; letter-spacing: .02em; }
+button { cursor: pointer; }
+.btn { background: var(--panel2); border: 1px solid var(--line); border-radius: 8px; padding: 6px 12px; display: inline-flex; gap: 6px; align-items: center; }
+.btn:hover { border-color: var(--gold-d); }
+.btn.primary { background: var(--gold); color: #2a2110; border-color: var(--gold-d); font-weight: 600; }
+.btn.primary:disabled { opacity: .45; cursor: default; }
+.btn.ghost { background: transparent; border-color: transparent; color: var(--muted); padding: 4px 8px; }
+.btn.ghost:hover { color: var(--text); background: var(--panel2); }
+.btn.danger:hover { color: var(--red); }
+input, select, textarea { background: #12111c; border: 1px solid var(--line); border-radius: 8px; padding: 6px 9px; }
+input:hover, select:hover, textarea:hover { border-color: #4a4770; }
+
+/* Raster: Kopfleiste, Kapitel links, Inhalt, Figuren rechts */
+#app { display: grid; grid-template-columns: 250px minmax(0, 1fr) 270px; grid-template-rows: 56px minmax(0, 1fr); height: 100vh; }
+header.top { grid-column: 1 / -1; display: flex; align-items: center; gap: 12px; padding: 0 16px; background: var(--panel); border-bottom: 1px solid var(--line); }
+header.top h1 { font-size: 20px; color: var(--gold); margin-right: auto; }
+#status { color: var(--muted); font-size: 13px; }
+#status.dirty { color: var(--gold); }
+nav.chapters { background: var(--panel); border-right: 1px solid var(--line); overflow: auto; padding: 12px 8px; }
+nav.chapters h2 { font-size: 12px; color: var(--muted); padding: 4px 10px 8px; text-transform: uppercase; letter-spacing: .1em; font-family: system-ui; }
+.ch { display: block; width: 100%; text-align: left; background: none; border: 1px solid transparent; border-radius: 8px; padding: 8px 10px; margin-bottom: 2px; }
+.ch:hover { background: var(--panel2); }
+.ch[aria-current="true"] { background: var(--panel2); border-color: var(--gold-d); }
+.ch .n { color: var(--gold); font-family: "Cinzel", serif; }
+.ch small { display: block; color: var(--muted); }
+.dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--gold); margin-left: 6px; }
+main { overflow: auto; padding: 18px 26px 80px; scroll-behavior: smooth; }
+aside.pal { background: var(--panel); border-left: 1px solid var(--line); overflow: auto; padding: 12px; }
+aside.pal h2 { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .1em; font-family: system-ui; margin: 14px 0 8px; }
+aside.pal input { width: 100%; }
+.hint { color: var(--muted); font-size: 12.5px; }
+.tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.tile { background: var(--panel2); border: 1px solid var(--line); border-radius: 8px; padding: 6px 4px; text-align: center; cursor: grab; user-select: none; }
+.tile:hover { border-color: var(--gold-d); }
+.tile .av { margin: 0 auto 3px; }
+.tile span { font-size: 11.5px; display: block; line-height: 1.2; overflow-wrap: anywhere; }
+
+.av { width: 52px; height: 52px; border-radius: 50%; background: #0c0b14 center top / cover no-repeat; border: 2px solid var(--line); overflow: hidden; display: grid; place-items: center; color: var(--gold); font-family: "Cinzel"; flex: none; }
+.av img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 12%; }
+.av.sm { width: 28px; height: 28px; border-width: 1px; font-size: 13px; margin-left: -8px; }
+
+section.block { margin-bottom: 34px; }
+.block > .bh { display: flex; align-items: center; gap: 10px; margin: 0 0 12px; position: sticky; top: -18px; background: linear-gradient(var(--bg) 80%, transparent); padding: 12px 0 8px; z-index: 5; }
+.block > .bh h2 { font-size: 20px; color: var(--gold); }
+.count { background: var(--panel2); border-radius: 20px; padding: 0 9px; color: var(--muted); font-size: 12px; }
+.bh .sp { margin-left: auto; }
+.empty { border: 1px dashed var(--line); border-radius: var(--r); padding: 18px; text-align: center; color: var(--muted); }
+
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); margin-bottom: 14px; }
+.card.hide { display: none; }
+.card > header { display: flex; align-items: center; gap: 10px; padding: 10px 12px; cursor: pointer; }
+.card > header .tt { flex: 1; min-width: 0; }
+.card > header h3 { font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.card > header .sub { color: var(--muted); font-size: 12.5px; }
+.cast { display: flex; padding-left: 8px; }
+.chev { transition: transform .15s; color: var(--muted); }
+.card.open .chev { transform: rotate(90deg); }
+.card .body { display: none; padding: 4px 14px 14px; border-top: 1px solid var(--line); }
+.card.open .body { display: block; }
+.badge { font-size: 11px; background: #3b2f12; color: var(--gold); border-radius: 6px; padding: 1px 7px; margin-left: 6px; font-family: system-ui; }
+
+details.trig { background: var(--panel2); border: 1px solid var(--line); border-radius: 8px; margin: 12px 0; }
+details.trig > summary { padding: 8px 12px; cursor: pointer; color: var(--gold); }
+details.trig .in { padding: 4px 12px 12px; display: grid; gap: 10px; }
+.row { display: flex; gap: 8px; flex-wrap: wrap; align-items: end; }
+label.f { display: grid; gap: 3px; font-size: 12px; color: var(--muted); }
+label.f select, label.f input { min-width: 120px; }
+.chips { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.chip { background: #12111c; border: 1px solid var(--line); border-radius: 20px; padding: 2px 4px 2px 10px; display: inline-flex; align-items: center; gap: 4px; font-size: 13px; }
+.chip button { background: none; border: 0; color: var(--muted); padding: 0 6px; }
+.chip button:hover { color: var(--red); }
+.note { width: 100%; }
+
+.line { display: grid; grid-template-columns: 22px 92px 92px minmax(0, 1fr) 32px; gap: 10px; align-items: start; padding: 10px 0; border-top: 1px solid var(--line); position: relative; }
+.line:first-child { border-top: 0; }
+.line.over-top::before, .line.over-bot::after { content: ""; position: absolute; left: 0; right: 0; height: 3px; background: var(--gold); border-radius: 2px; }
+.line.over-top::before { top: -2px; } .line.over-bot::after { bottom: -2px; }
+.line.dragging { opacity: .4; }
+.grip { cursor: grab; color: var(--muted); text-align: center; padding-top: 14px; user-select: none; }
+.slot { text-align: center; border: 2px dashed transparent; border-radius: 10px; padding: 3px; }
+.slot.drop { border-color: var(--gold); background: #2a2412; }
+.slot .av { margin: 0 auto; cursor: pointer; width: 56px; height: 56px; }
+.slot.speaking .av { border-color: var(--gold); box-shadow: 0 0 0 2px #e8c06644; }
+.slot .nm { font-size: 12px; line-height: 1.2; margin-top: 3px; max-width: 92px; margin-inline: auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.slot .nm.none { color: var(--muted); }
+.slot .tools { display: flex; gap: 2px; justify-content: center; margin-top: 2px; }
+.slot .tools button { background: none; border: 0; padding: 1px 4px; border-radius: 5px; color: var(--muted); font-size: 12px; }
+.slot .tools button:hover { background: var(--panel2); color: var(--text); }
+.slot.speaking .tools .say { color: var(--gold); }
+.slot select { font-size: 11px; padding: 1px 3px; margin-top: 2px; max-width: 88px; }
+.txt { width: 100%; resize: none; overflow: hidden; min-height: 60px; font-family: "IM Fell", Georgia, serif; font-size: 17px; line-height: 1.4; }
+.tb { display: grid; gap: 4px; }
+.tb label { display: grid; grid-template-columns: 90px 1fr; gap: 6px; align-items: start; font-size: 12px; color: var(--muted); }
+.tb textarea { min-height: 40px; line-height: 1.35; font-family: "IM Fell", Georgia, serif; font-size: 16px; resize: none; overflow: hidden; }
+.add { border: 2px dashed var(--line); border-radius: 8px; padding: 10px; text-align: center; color: var(--muted); background: none; width: 100%; margin-top: 8px; }
+.add:hover, .add.drop { border-color: var(--gold); color: var(--gold); }
+
+.ideas { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+.ideas li { background: var(--panel); border: 1px dashed var(--gold-d); border-radius: 8px; padding: 10px 12px; display: flex; gap: 8px; align-items: center; }
+.ideas li span { flex: 1; }
+
+/* Overlays */
+.modal-bg { position: fixed; inset: 0; background: #0009; display: grid; place-items: center; z-index: 50; padding: 20px; }
+.modal { background: var(--panel); border: 1px solid var(--gold-d); border-radius: 14px; max-width: 640px; width: 100%; padding: 20px; max-height: 92vh; overflow: auto; }
+.modal h2 { color: var(--gold); margin-bottom: 8px; }
+.modal textarea { width: 100%; min-height: 110px; }
+.modal .acts { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; margin-top: 14px; }
+.picker { position: fixed; z-index: 60; background: var(--panel); border: 1px solid var(--gold-d); border-radius: 10px; width: 240px; padding: 8px; box-shadow: 0 10px 30px #000a; }
+.picker input { width: 100%; margin-bottom: 6px; }
+.picker ul { list-style: none; padding: 0; margin: 0; max-height: 280px; overflow: auto; }
+.picker li { display: flex; gap: 8px; align-items: center; padding: 4px 6px; border-radius: 6px; cursor: pointer; }
+.picker li .av { width: 28px; height: 28px; border-width: 1px; }
+.picker li.sel, .picker li:hover { background: var(--panel2); }
+#toast { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%); display: grid; gap: 8px; z-index: 80; }
+.t { background: var(--panel2); border: 1px solid var(--gold-d); border-radius: 10px; padding: 8px 14px; display: flex; gap: 12px; align-items: center; box-shadow: 0 8px 24px #000a; }
+.t.err { border-color: var(--red); }
+.pv { position: fixed; inset: 0; background: #07060dee; z-index: 70; display: grid; grid-template-rows: 1fr auto; padding: 20px; }
+.pv .stage { position: relative; display: flex; justify-content: space-between; align-items: end; max-width: 1100px; width: 100%; margin: 0 auto; }
+.pv .stage img, .pv .stage .ph { height: min(62vh, 560px); max-width: 44%; object-fit: contain; transition: filter .2s, opacity .2s; }
+.pv .stage .ph { width: 300px; display: grid; place-items: center; font: 120px "Cinzel"; color: var(--gold); }
+.pv .stage .dim { filter: brightness(.45); }
+.pv .stage .r { transform: scaleX(-1); }
+.pv .box { max-width: 1100px; width: 100%; margin: 12px auto 0; background: var(--panel); border: 1px solid var(--gold-d); border-radius: 14px; padding: 18px 24px; min-height: 130px; position: relative; }
+.pv .box .who { position: absolute; top: -16px; background: var(--panel2); border: 1px solid var(--gold-d); border-radius: 20px; padding: 2px 18px; font-family: "Cinzel"; color: var(--gold); }
+.pv .box p { margin: 6px 0 0; font: 24px/1.4 "IM Fell", Georgia, serif; }
+.pv .ctl { position: absolute; right: 14px; bottom: 8px; color: var(--muted); font-size: 12px; }
+.spin { width: 16px; height: 16px; border: 2px solid var(--line); border-top-color: var(--gold); border-radius: 50%; animation: sp 0.8s linear infinite; display: inline-block; }
+@keyframes sp { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }
+@media (max-width: 1150px) { #app { grid-template-columns: 210px minmax(0, 1fr); } aside.pal { display: none; } body.pal-open aside.pal { display: block; position: fixed; right: 0; top: 56px; bottom: 0; width: 270px; z-index: 40; } }
+@media (min-width: 1151px) { #togglePal { display: none; } }
+@media (max-width: 760px) { #app { grid-template-columns: minmax(0, 1fr); } nav.chapters { display: none; } .line { grid-template-columns: 22px 80px 80px minmax(0, 1fr); } .line .del { grid-column: 4; justify-self: end; } }
+</style>
+</head>
+<body>
+<div id="app">
+  <header class="top">
+    <h1>Dialog-Editor</h1>
+    <input id="q" type="search" placeholder="Texte durchsuchen …" aria-label="Gespräche durchsuchen" style="width:240px">
+    <span id="status" role="status" aria-live="polite"></span>
+    <button class="btn ghost" id="togglePal" title="Figuren ein- oder ausblenden">Figuren</button>
+    <button class="btn" id="undo" title="Rückgängig (Strg+Z)" aria-label="Rückgängig">↶ Rückgängig</button>
+    <button class="btn" id="redo" title="Wiederholen (Strg+Y)" aria-label="Wiederholen">↷</button>
+    <button class="btn primary" id="save" title="Speichern (Strg+S)">Speichern</button>
+  </header>
+  <nav class="chapters" id="nav" aria-label="Kapitel"></nav>
+  <main id="main" tabindex="-1"></main>
+  <aside class="pal" aria-label="Figuren">
+    <input id="palq" type="search" placeholder="Figur suchen …" aria-label="Figur suchen">
+    <p class="hint">Figur auf einen <b>Platz</b> in einer Zeile ziehen, oder auf <b>+ Zeile</b>, um eine neue Zeile anzulegen. Zeilen lassen sich am Griff ⋮⋮ umsortieren, auch in andere Gespräche.</p>
+    <div id="pal"></div>
+  </aside>
+</div>
+<div id="toast" aria-live="polite"></div>
+
+<script>
+"use strict";
+const $ = (s, r = document) => r.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const clone = x => JSON.parse(JSON.stringify(x));
+const EXPR = { "": "Normal", lachend: "Lachend", wuetend: "Wütend" };
+const STATES = { wall: ["intact", "broken"], gate: ["closed", "open", "broken"], switch: ["off", "on"], fire: ["burning", "out"], house: ["intact", "burning", "ruin"], hostage: ["bound", "free"], teahouse: ["standing"] };
+const STATE_DE = { intact: "heil", broken: "zerstört", closed: "geschlossen", open: "offen", off: "aus", on: "umgelegt", burning: "brennt", out: "gelöscht", ruin: "Ruine", bound: "gefesselt", free: "befreit", standing: "steht" };
+
+let DB, chapters = [], saved = {}, cur = "", hist = [], fut = [], canDraft = false, typingSnap = false, filter = "", open = {};
+
+// ---- Zustand, Rückgängig, Speichern
+const part = c => JSON.stringify({ intro: c.intro, outro: c.outro, triggers: c.triggers, flee: c.flee, ideas: c.ideas });
+const ch = () => chapters.find(c => c.id === cur);
+const dirtyIds = () => chapters.filter(c => part(c) !== saved[c.id]).map(c => c.id);
+function push() { hist.push(JSON.stringify(chapters)); if (hist.length > 200) hist.shift(); fut = []; }
+function restore(from, to) { if (!from.length) return; to.push(JSON.stringify(chapters)); chapters = JSON.parse(from.pop()); render(); }
+const undo = () => restore(hist, fut), redo = () => restore(fut, hist);
+function change(fn) { push(); fn(); render(); }
+function updateStatus() {
+  const n = dirtyIds().length, s = $("#status");
+  s.textContent = n ? `● Ungespeicherte Änderungen in ${n} Kapitel${n > 1 ? "n" : ""}` : "Alles gespeichert";
+  s.className = n ? "dirty" : "";
+  $("#save").disabled = !n; $("#undo").disabled = !hist.length; $("#redo").disabled = !fut.length;
+  document.querySelectorAll(".ch").forEach(b => { const d = dirtyIds().includes(b.dataset.id); b.querySelector(".dot")?.remove(); if (d) b.querySelector(".n").insertAdjacentHTML("afterend", '<span class="dot" title="Ungespeichert"></span>'); });
+}
+async function save() {
+  for (const id of dirtyIds()) {
+    const c = chapters.find(x => x.id === id);
+    const r = await fetch(`/api/chapter/${id}`, { method: "PUT", body: JSON.stringify({ intro: c.intro, outro: c.outro, triggers: c.triggers, flee: c.flee, ideas: c.ideas }) });
+    if (!r.ok) return toast(`Speichern fehlgeschlagen (${c.title}): ${(await r.json()).error}`, "err");
+    saved[id] = part(c);
+  }
+  toast("Gespeichert"); updateStatus();
+}
+function toast(msg, kind, undoFn) {
+  const t = document.createElement("div"); t.className = "t " + (kind || ""); t.textContent = msg;
+  if (undoFn) { const b = document.createElement("button"); b.className = "btn"; b.textContent = "Rückgängig"; b.onclick = () => { undoFn(); t.remove(); }; t.append(b); }
+  $("#toast").append(t); setTimeout(() => t.remove(), undoFn ? 7000 : kind === "err" ? 9000 : 2600);
+}
+
+// ---- Beschreibungen in Alltagssprache
+const U = id => id === "any_enemy" ? "irgendein Gegner" : id === "$hero" ? "die auslösende Figur" : DB.units[id]?.name || id || "?";
+const A = id => DB.abilities[id] || id;
+function describeWhen(w) {
+  if ("turn" in w) return `Runde ${w.turn} beginnt`;
+  if (w.enter) return `Eine Figur betritt das Feld (${w.enter[0]}, ${w.enter[1]})`;
+  if (w.object) return `${w.object.id} ist „${STATE_DE[w.object.state] || w.object.state}“`;
+  if (w.heal) return `${w.heal.by ? U(w.heal.by) : "Jemand"} heilt mindestens ${w.heal.targets || 1} Verbündete`;
+  if (w.ability) return `${w.ability.by ? U(w.ability.by) : "Jemand"} setzt ${A(w.ability.id)} ein`;
+  if (w.kill) return `${w.kill.id ? U(w.kill.id) + " wird besiegt" : "Ein Gegner wird besiegt"}${w.kill.count ? ` (insgesamt ${w.kill.count} Gegner)` : ""}`;
+  if (w.first_kill) return "Der erste Gegner wird besiegt";
+  if (w.fall) return w.fall.id ? `${U(w.fall.id)} fällt` : "Ein Held fällt";
+  if (w.hp_below) return `${U(w.hp_below.id)} hat weniger als ${Math.round(w.hp_below.ratio * 100)} % Leben`;
+  if (w.near) return `${U(w.near.a)} und ${U(w.near.b)} sind höchstens ${w.near.dist} Felder entfernt`;
+  if ("enemies_left" in w) return `Höchstens ${w.enemies_left} Gegner übrig`;
+  return JSON.stringify(w);
+}
+function describeIf(c) {
+  const out = [];
+  if (c.present?.length) out.push(`${c.present.map(U).join(", ")} ${c.present.length > 1 ? "leben" : "lebt"} noch`);
+  if (c.absent?.length) out.push(`${c.absent.map(U).join(", ")} ${c.absent.length > 1 ? "sind" : "ist"} nicht mehr im Kampf`);
+  if (c.fled?.length) out.push(`${c.fled.map(U).join(", ")} ${c.fled.length > 1 ? "sind" : "ist"} früher entkommen`);
+  if (c.object) out.push(`${c.object.id} ist „${STATE_DE[c.object.state] || c.object.state}“`);
+  return out.join(" · ");
+}
+
+// ---- Auslöser-Felder (Pfade im JSON, damit eine Tabelle alle Typen beschreibt)
+const unitOpts = (extra = []) => [...extra, ...Object.keys(DB.units).filter(k => !DB.units[k].special)];
+const WHEN = {
+  turn: { label: "Eine Runde beginnt", f: [{ p: ["turn"], l: "Runde", t: "int", d: 2 }] },
+  near: { label: "Zwei Figuren kommen sich nahe", f: [{ p: ["near", "a"], l: "Figur A", t: "unit", d: "ritter" }, { p: ["near", "b"], l: "Figur B", t: "unit+", d: "any_enemy" }, { p: ["near", "dist"], l: "höchstens … Felder", t: "int", d: 3 }] },
+  ability: { label: "Eine Fähigkeit wird eingesetzt", f: [{ p: ["ability", "id"], l: "Fähigkeit", t: "ability", d: "kanone" }, { p: ["ability", "by"], l: "Von (optional)", t: "unit?", d: "" }] },
+  heal: { label: "Jemand heilt Verbündete", f: [{ p: ["heal", "by"], l: "Heiler/in", t: "unit?", d: "wendy" }, { p: ["heal", "targets"], l: "mind. Ziele", t: "int", d: 3 }] },
+  kill: { label: "Ein Gegner wird besiegt", f: [{ p: ["kill", "id"], l: "Gegner (optional)", t: "unit?", d: "" }, { p: ["kill", "count"], l: "insgesamt (optional)", t: "int?", d: "" }] },
+  first_kill: { label: "Der erste Gegner wird besiegt", f: [], make: () => ({ first_kill: true }) },
+  fall: { label: "Ein Held fällt", f: [{ p: ["fall", "id"], l: "Held (leer = irgendeiner)", t: "unit?", d: "" }], make: () => ({ fall: {} }) },
+  hp_below: { label: "Eine Figur hat wenig Leben", f: [{ p: ["hp_below", "id"], l: "Figur", t: "unit", d: "ritter" }, { p: ["hp_below", "ratio"], l: "Anteil (0–1)", t: "float", d: 0.5 }] },
+  object: { label: "Ein Objekt ändert sich (Tor, Geisel …)", f: [{ p: ["object", "id"], l: "Objekt", t: "obj", d: "" }, { p: ["object", "state"], l: "Zustand", t: "state", d: "" }] },
+  enter: { label: "Eine Figur betritt ein Feld", f: [{ p: ["enter", 0], l: "x", t: "int", d: 5 }, { p: ["enter", 1], l: "y", t: "int", d: 3 }] },
+  enemies_left: { label: "Nur noch wenige Gegner übrig", f: [{ p: ["enemies_left"], l: "höchstens", t: "int", d: 2 }] },
+};
+const whenType = w => Object.keys(WHEN).find(k => k in w) || "turn";
+const getP = (o, p) => p.reduce((x, k) => x?.[k], o);
+function setP(o, p, v) {
+  for (let i = 0; i < p.length - 1; i++) o = o[p[i]] ??= typeof p[i + 1] === "number" ? [] : {};
+  const k = p.at(-1);
+  if (v === "" || v === undefined) delete o[k]; else o[k] = v;
+}
+function makeWhen(type, c) {
+  const def = WHEN[type];
+  if (def.make) return def.make();
+  const w = {};
+  const objs = chapters.find(x => x.id === c)?.objects || [];
+  def.f.forEach(f => setP(w, f.p, f.t === "obj" ? objs[0]?.id : f.t === "state" ? STATES[objs[0]?.type]?.[0] : f.d));
+  return w;
+}
+
+// ---- Bausteine der Darstellung
+const portrait = (id, expr) => {
+  if (!id) return "";
+  const u = DB.units[id];
+  if (!u?.portrait) return "";
+  return `/assets/portraits/${id}${expr && u.exprs.includes(expr) ? "_" + expr : ""}.png`;
+};
+const avatar = (id, expr, cls = "") => {
+  const src = portrait(id, expr);
+  return `<div class="av ${cls}" title="${esc(U(id))}">${src ? `<img src="${src}" alt="" loading="lazy">` : id ? "?" : ""}</div>`;
+};
+function convs(c) {
+  const out = [{ key: "intro", kind: "intro" }, { key: "outro", kind: "outro" }];
+  c.triggers.forEach((t, i) => out.push({ key: "t:" + i, kind: "trig", t, i }));
+  Object.keys(c.flee).forEach(k => out.push({ key: "f:" + k, kind: "flee", uid: k }));
+  return out;
+}
+function linesOf(c, key, create = true) {
+  if (key === "intro" || key === "outro") return c[key];
+  if (key.startsWith("f:")) return c.flee[key.slice(2)];
+  const t = c.triggers[+key.slice(2)];
+  let s = t.do.find(x => x.dialogue);
+  if (!s && create) t.do.push(s = { dialogue: [] });
+  return s?.dialogue || [];
+}
+const castOf = lines => [...new Set(lines.flatMap(l => [l.left, l.right]).filter(Boolean))];
+const textOf = l => l.text ?? Object.values(l.text_by || {}).join(" ");
+const hay = (c, cv) => (linesOf(c, cv.key, false).map(textOf).join(" ") + " " + (cv.t ? describeWhen(cv.t.when) + (cv.t.note || "") : cv.kind) + " " + castOf(linesOf(c, cv.key, false)).map(U).join(" ")).toLowerCase();
+
+function slotHtml(l, side) {
+  const id = l[side], speaking = l.speaker && l.speaker === id, u = DB.units[id], ex = l[side + "_expr"] || "";
+  return `<div class="slot ${speaking ? "speaking" : ""}" data-side="${side}" data-drop="slot">
+    <div data-act="pick" tabindex="0" role="button" aria-label="${side === "left" ? "Linke" : "Rechte"} Figur wählen">${id ? avatar(id, ex) : '<div class="av" title="Figur wählen">+</div>'}</div>
+    <div class="nm ${id ? "" : "none"}">${id ? esc(U(id)) : "leer"}</div>
+    ${id && u?.exprs.length ? `<select data-bind="expr" aria-label="Gesichtsausdruck">${Object.entries(EXPR).filter(([k]) => !k || u.exprs.includes(k)).map(([k, v]) => `<option value="${k}" ${k === ex ? "selected" : ""}>${v}</option>`).join("")}</select>` : ""}
+    <div class="tools">${id ? `<button class="say" data-act="speaker" title="Diese Figur spricht">💬${speaking ? " spricht" : ""}</button><button data-act="clear" title="Figur entfernen" aria-label="Figur entfernen">✕</button>` : ""}</div>
+  </div>`;
+}
+function lineHtml(l, i) {
+  const body = l.text_by
+    ? `<div class="tb">${Object.entries(l.text_by).map(([k, v]) => `<label>${esc(k === "default" ? "Standard" : U(k))}<textarea data-bind="tb" data-k="${esc(k)}" rows="1">${esc(v)}</textarea></label>`).join("")}</div>`
+    : `<textarea class="txt" data-bind="text" rows="2" placeholder="Was wird gesagt? …" aria-label="Text">${esc(l.text)}</textarea>`;
+  return `<div class="line" data-i="${i}" data-drop="line">
+    <div class="grip" draggable="true" data-drag="line" title="Zum Umsortieren ziehen" aria-hidden="true">⋮⋮</div>
+    ${slotHtml(l, "left")}${slotHtml(l, "right")}${body}
+    <button class="btn ghost danger del" data-act="delline" title="Zeile löschen" aria-label="Zeile löschen">🗑</button></div>`;
+}
+function whenEditor(cv, c) {
+  const t = cv.t, type = whenType(t.when);
+  const field = f => {
+    const v = getP(t.when, f.p) ?? "";
+    const b = `data-bind="field" data-p="${esc(JSON.stringify(f.p))}" data-t="${f.t}"`;
+    if (f.t.startsWith("unit")) return `<select ${b}>${f.t.endsWith("?") ? '<option value="">— egal —</option>' : ""}${(f.t === "unit+" ? unitOpts(["any_enemy"]) : unitOpts()).map(k => `<option value="${k}" ${k === v ? "selected" : ""}>${esc(U(k))}</option>`).join("")}</select>`;
+    if (f.t === "ability") return `<select ${b}>${Object.entries(DB.abilities).map(([k, n]) => `<option value="${k}" ${k === v ? "selected" : ""}>${esc(n)}</option>`).join("")}</select>`;
+    if (f.t === "obj") return `<select ${b}>${c.objects.map(o => `<option value="${o.id}" ${o.id === v ? "selected" : ""}>${esc(o.id)} (${o.type})</option>`).join("") || `<option value="${esc(v)}">${esc(v)}</option>`}</select>`;
+    if (f.t === "state") { const ty = c.objects.find(o => o.id === t.when.object?.id)?.type; return `<select ${b}>${(STATES[ty] || [v]).map(s => `<option value="${s}" ${s === v ? "selected" : ""}>${STATE_DE[s] || s}</option>`).join("")}</select>`; }
+    return `<input ${b} type="number" step="${f.t === "float" ? "0.05" : "1"}" value="${esc(v)}" style="width:100px">`;
+  };
+  const cond = t.if || {};
+  const chips = (k, label) => cond[k]?.length ? `<div class="chips"><span class="hint">${label}</span>${cond[k].map((id, j) => `<span class="chip">${esc(U(id))}<button data-act="rmcond" data-k="${k}" data-j="${j}" aria-label="Entfernen">✕</button></span>`).join("")}</div>` : "";
+  return `<details class="trig" ${open["w" + cv.i] ? "open" : ""} data-w="${cv.i}"><summary>Auslöser: ${esc(describeWhen(t.when))}${t.if && Object.keys(t.if).length ? " · nur wenn …" : ""}</summary><div class="in">
+    <div class="row"><label class="f">Wann?<select data-bind="whentype">${Object.entries(WHEN).map(([k, v]) => `<option value="${k}" ${k === type ? "selected" : ""}>${v.label}</option>`).join("")}</select></label>
+      ${WHEN[type].f.map(f => `<label class="f">${f.l}${field(f)}</label>`).join("")}</div>
+    <div><div class="hint" style="margin-bottom:4px">Nur wenn … (optional)</div>${chips("present", "leben noch:")}${chips("absent", "nicht mehr da:")}${chips("fled", "früher entkommen:")}
+      ${cond.object ? `<div class="chips"><span class="hint">Objekt:</span><span class="chip">${esc(cond.object.id)} = ${esc(STATE_DE[cond.object.state] || cond.object.state)}<button data-act="rmcond" data-k="object" aria-label="Entfernen">✕</button></span></div>` : ""}
+      <div class="row" style="margin-top:6px"><button class="btn" data-act="addcond" data-k="present">+ lebt noch</button><button class="btn" data-act="addcond" data-k="absent">+ nicht mehr da</button><button class="btn" data-act="addcond" data-k="fled">+ früher entkommen</button></div></div>
+    ${t.draft ? '<div class="row"><button class="btn" data-act="accept">✓ Entwurf übernehmen</button><span class="hint">Auslöser und Zeilen sind von Claude vorgeschlagen. Bitte prüfen und anpassen.</span></div>' : ""}
+    <label class="f">Warum? (Notiz zur Idee, hilft beim späteren Überarbeiten)<input class="note" data-bind="note" value="${esc(t.note)}" placeholder="z. B. Meister Lin kennt Großmütter aus seinem Dorf"></label>
+  </div></details>`;
+}
+function cardHtml(c, cv) {
+  const lines = linesOf(c, cv.key, false), cast = castOf(lines);
+  const title = cv.kind === "intro" ? "Einleitung" : cv.kind === "outro" ? "Abschluss" : cv.kind === "flee" ? `Rückzug: ${U(cv.uid)}` : describeWhen(cv.t.when);
+  const sub = cv.kind === "trig" ? describeIf(cv.t.if || {}) || cv.t.note || "" : cv.kind === "flee" ? "Wenn die Figur besiegt wird, flieht sie mit diesem Gespräch" : "";
+  const draft = cv.t?.draft ? '<span class="badge">Entwurf, bitte prüfen</span>' : "";
+  return `<section class="card ${open[cv.key] ? "open" : ""}" data-c="${cv.key}">
+    <header tabindex="0" role="button" aria-expanded="${!!open[cv.key]}" data-act="toggle"><span class="chev">▶</span>
+      <div class="cast">${cast.map(id => avatar(id, "", "sm")).join("")}</div>
+      <div class="tt"><h3>${esc(title)}${draft}</h3><div class="sub">${lines.length} Zeile${lines.length === 1 ? "" : "n"}${sub ? " · " + esc(sub) : ""}</div></div>
+      <button class="btn ghost" data-act="preview" title="Wie im Spiel ansehen">▶ Vorschau</button>
+      ${cv.kind === "trig" || cv.kind === "flee" ? `<button class="btn ghost" data-act="dup" title="Duplizieren" aria-label="Duplizieren">⧉</button><button class="btn ghost danger" data-act="delconv" title="Gespräch löschen" aria-label="Gespräch löschen">🗑</button>` : ""}
+    </header>
+    <div class="body">${cv.kind === "trig" ? whenEditor(cv, c) : ""}
+      <div class="lines">${lines.map(lineHtml).join("")}</div>
+      <button class="add" data-act="addline" data-drop="add">+ Zeile hinzufügen <span class="hint">(oder Figur hierher ziehen)</span></button>
+    </div></section>`;
+}
+const fit = el => { el.style.height = "auto"; el.style.height = el.scrollHeight + 2 + "px"; };
+const fitAll = () => document.querySelectorAll(".card.open textarea").forEach(fit);
+function render() {
+  const c = ch();
+  $("#nav").innerHTML = `<h2>Kapitel</h2>` + chapters.map((x, i) => `<button class="ch" data-id="${x.id}" aria-current="${x.id === cur}"><span class="n">${i + 1}</span> ${esc(x.title)}<small>${x.triggers.length} Gespräche im Kampf</small></button>`).join("");
+  const cs = convs(c), q = filter.toLowerCase();
+  const sec = (title, kinds, extra = "", emptyMsg = "") => {
+    const list = cs.filter(cv => kinds.includes(cv.kind));
+    const html = list.map(cv => cardHtml(c, cv).replace('class="card', q && !hay(c, cv).includes(q) ? 'class="card hide' : 'class="card')).join("");
+    return `<section class="block"><div class="bh"><h2>${title}</h2><span class="count">${list.length}</span><span class="sp">${extra}</span></div>${html || `<div class="empty">${emptyMsg}</div>`}</section>`;
+  };
+  const fleeable = Object.entries(DB.units).filter(([k, u]) => u.flees && !(k in c.flee));
+  $("#main").innerHTML = `<p class="hint" style="margin:0 0 6px">${esc(c.briefing)}</p>
+    ${sec("Einleitung", ["intro"])}
+    ${sec("Im Kampf", ["trig"], '<button class="btn primary" data-act="newconv">+ Neues Gespräch</button>', "Noch keine Gespräche im Kampf. Mit „Neues Gespräch“ anlegen.")}
+    ${c.ideas.length ? `<section class="block"><div class="bh"><h2>Ideen</h2><span class="count">${c.ideas.length}</span></div><p class="hint">Noch nicht umgesetzt. Sag Claude Code: „Setze die Ideen im Dialog-Editor um“.</p><ul class="ideas">${c.ideas.map((x, i) => `<li><span>${esc(x.text)}</span><button class="btn" data-act="idea2conv" data-i="${i}" ${canDraft ? "" : "disabled title='Claude-CLI nicht gefunden'"}>Entwurf erzeugen</button><button class="btn ghost danger" data-act="delidea" data-i="${i}" aria-label="Idee löschen">🗑</button></li>`).join("")}</ul></section>` : ""}
+    ${sec("Rückzug benannter Gegner", ["flee"], fleeable.length ? `<select id="addflee" aria-label="Rückzugsgespräch hinzufügen"><option value="">+ Rückzug für …</option>${fleeable.map(([k, u]) => `<option value="${k}">${esc(u.name)}</option>`).join("")}</select>` : "", "Kein Rückzugsgespräch in diesem Kapitel.")}
+    ${sec("Abschluss", ["outro"])}`;
+  updateStatus();
+  fitAll();
+}
+function renderPalette() {
+  const q = $("#palq").value.toLowerCase();
+  const groups = [["Helden", Object.entries(DB.units).filter(([, u]) => u.hero)], ["Gegner", Object.entries(DB.units).filter(([, u]) => !u.hero && !u.special)], ["Sonstige", Object.entries(DB.units).filter(([, u]) => u.special)]];
+  $("#pal").innerHTML = groups.map(([n, list]) => { const l = list.filter(([k, u]) => !q || u.name.toLowerCase().includes(q) || k.includes(q)); return l.length ? `<h2>${n}</h2><div class="tiles">${l.map(([k, u]) => `<div class="tile" draggable="true" data-drag="char" data-id="${k}" title="${esc(u.name)}">${avatar(k)}<span>${esc(u.name)}</span></div>`).join("")}</div>` : ""; }).join("");
+}
+
+// ---- Figurenauswahl (Tastatur- und Mausalternative zum Ziehen)
+function openPicker(anchor, onPick, allowNone) {
+  closePicker();
+  const r = anchor.getBoundingClientRect(), p = document.createElement("div");
+  p.className = "picker"; p.id = "picker"; p.style.left = Math.min(r.left, innerWidth - 260) + "px"; p.style.top = Math.min(r.bottom + 4, innerHeight - 380) + "px";
+  p.innerHTML = `<input type="search" placeholder="Figur suchen …" aria-label="Figur suchen"><ul role="listbox"></ul>`;
+  document.body.append(p);
+  let sel = 0, items = [];
+  const list = () => {
+    const q = $("input", p).value.toLowerCase();
+    items = Object.entries(DB.units).filter(([k, u]) => !q || u.name.toLowerCase().includes(q) || k.includes(q));
+    $("ul", p).innerHTML = items.map(([k, u], i) => `<li role="option" data-id="${k}" class="${i === sel ? "sel" : ""}">${avatar(k)}${esc(u.name)}</li>`).join("");
+  };
+  list();
+  $("input", p).focus();
+  $("input", p).oninput = () => { sel = 0; list(); };
+  $("input", p).onkeydown = e => {
+    if (e.key === "ArrowDown") { sel = Math.min(sel + 1, items.length - 1); list(); e.preventDefault(); }
+    else if (e.key === "ArrowUp") { sel = Math.max(sel - 1, 0); list(); e.preventDefault(); }
+    else if (e.key === "Enter" && items[sel]) { onPick(items[sel][0]); closePicker(); }
+    else if (e.key === "Escape") closePicker();
+  };
+  $("ul", p).onclick = e => { const li = e.target.closest("li"); if (li) { onPick(li.dataset.id); closePicker(); } };
+}
+const closePicker = () => $("#picker")?.remove();
+
+// ---- Bearbeiten
+const lineCtx = (el, create = false) => { const c = ch(), card = el.closest(".card"), li = el.closest(".line"); return { c, key: card.dataset.c, i: li ? +li.dataset.i : -1, lines: linesOf(c, card.dataset.c, create) }; };
+function setChar(lines, i, side, id) {
+  const l = lines[i], was = l[side];
+  l[side] = id;
+  if (l.speaker === was || !l.speaker) l.speaker = id;
+  if (!l[side + "_expr"]) delete l[side + "_expr"];
+  else if (!DB.units[id]?.exprs.includes(l[side + "_expr"])) delete l[side + "_expr"];
+}
+function newLine(lines, id) {
+  const prev = lines.at(-1) || {}, l = {};
+  if (prev.left) l.left = prev.left;
+  if (prev.right) l.right = prev.right;
+  if (id !== l.left && id !== l.right) l[l.left ? "right" : "left"] = id;
+  lines.push({ ...l, speaker: id, text: "" });
+}
+const acts = {
+  toggle(el) { const card = el.closest(".card"), k = card.dataset.c; open[k] = !open[k]; card.classList.toggle("open", open[k]); el.setAttribute("aria-expanded", !!open[k]); fitAll(); },
+  pick(el) { const { c, lines, i } = lineCtx(el), side = el.closest(".slot").dataset.side; openPicker(el, id => change(() => setChar(lines, i, side, id))); },
+  speaker(el) { const { lines, i } = lineCtx(el), l = lines[i]; change(() => l.speaker = l[el.closest(".slot").dataset.side]); },
+  clear(el) { const { lines, i } = lineCtx(el), side = el.closest(".slot").dataset.side; change(() => { const l = lines[i]; if (l.speaker === l[side]) l.speaker = l[side === "left" ? "right" : "left"]; delete l[side]; delete l[side + "_expr"]; }); },
+  addline(el) { const { lines, key } = lineCtx(el, true), prev = lines.at(-1) || {}; change(() => lines.push({ ...(prev.left ? { left: prev.left } : {}), ...(prev.right ? { right: prev.right } : {}), ...(prev.left ? { speaker: prev.left } : {}), text: "" })); setTimeout(() => $(`.card[data-c="${key}"] .line:last-child textarea`)?.focus(), 0); },
+  accept(el) { const { c, key } = lineCtx(el); change(() => delete c.triggers[+key.slice(2)].draft); },
+  delline(el) { const { lines, i } = lineCtx(el), l = lines[i]; change(() => lines.splice(i, 1)); toast("Zeile gelöscht", "", undo); },
+  delconv(el) { const { c, key } = lineCtx(el); change(() => { if (key.startsWith("f:")) delete c.flee[key.slice(2)]; else c.triggers.splice(+key.slice(2), 1); }); toast("Gespräch gelöscht", "", undo); },
+  dup(el) { const { c, key } = lineCtx(el); change(() => { if (key.startsWith("t:")) { const t = clone(c.triggers[+key.slice(2)]); t.note = (t.note ? t.note + " " : "") + "(Kopie)"; c.triggers.splice(+key.slice(2) + 1, 0, t); } }); },
+  preview(el) { const { c, key } = lineCtx(el); const cv = convs(c).find(x => x.key === key); preview(linesOf(c, key, false), cv.t); },
+  rmcond(el) { const { c, key } = lineCtx(el), t = c.triggers[+key.slice(2)], k = el.dataset.k; change(() => { if (k === "object") delete t.if.object; else t.if[k].splice(+el.dataset.j, 1); if (!t.if[k]?.length) delete t.if[k]; if (!Object.keys(t.if).length) delete t.if; }); },
+  addcond(el) { const { c, key } = lineCtx(el), t = c.triggers[+key.slice(2)], k = el.dataset.k; openPicker(el, id => { open["w" + key.slice(2)] = true; change(() => { t.if ??= {}; (t.if[k] ??= []).includes(id) || t.if[k].push(id); }); }); },
+  newconv() { newConvDialog(); },
+  delidea(el) { const c = ch(); change(() => c.ideas.splice(+el.dataset.i, 1)); },
+  idea2conv(el) { const c = ch(), idea = c.ideas[+el.dataset.i]; newConvDialog(idea.text, +el.dataset.i); },
+};
+function onMove(from, to) {   // Zeile verschieben: "kartenschlüssel|index" -> Zielkarte, Zielindex
+  const c = ch(), [fk, fi] = from.split("|"), src = linesOf(c, fk), dst = linesOf(c, to.key);
+  change(() => { const [l] = src.splice(+fi, 1); let idx = to.idx; if (fk === to.key && +fi < idx) idx--; dst.splice(idx, 0, l); });
+}
+
+// ---- Neues Gespräch (Beschreibung -> Entwurf)
+function modal(html) {
+  const bg = document.createElement("div"); bg.className = "modal-bg"; bg.innerHTML = `<div class="modal" role="dialog" aria-modal="true">${html}</div>`;
+  bg.addEventListener("mousedown", e => { if (e.target === bg) bg.remove(); });
+  bg.addEventListener("keydown", e => { if (e.key === "Escape") bg.remove(); });
+  document.body.append(bg); return bg;
+}
+function newConvDialog(text = "", ideaIdx = -1) {
+  const c = ch();
+  const m = modal(`<h2>Neues Gespräch</h2>
+    <p class="hint">Beschreibe in einem Satz, <b>wann</b> und <b>warum</b> das Gespräch ausgelöst wird, zum Beispiel: „Wenn Meister Lin Xiùlán begegnet, erkennt er in ihr seine Großmutter-Lehrerin und verbeugt sich, sie macht sich darüber lustig.“</p>
+    <textarea id="ndesc" placeholder="Wann und warum wird das Gespräch ausgelöst?">${esc(text)}</textarea>
+    <p class="hint" id="nmsg">${canDraft ? "Claude schreibt daraus Auslöser und Zeilen als Entwurf. Das verbraucht Token. Du kannst alles danach ändern." : "Die Claude-CLI wurde nicht gefunden, daher kein automatischer Entwurf. „Als Idee merken“ speichert die Beschreibung, damit Claude Code sie später umsetzt."}</p>
+    <div class="acts"><button class="btn" data-x="cancel">Abbrechen</button><button class="btn" data-x="empty">Leer anlegen</button><button class="btn" data-x="idea">Als Idee merken</button><button class="btn primary" data-x="draft" ${canDraft ? "" : "disabled"}>Entwurf erzeugen</button></div>`);
+  const d = $("#ndesc", m); d.focus();
+  const base = () => ({ left: c.players[0], right: c.players[1] });
+  m.addEventListener("click", async e => {
+    const x = e.target.dataset.x; if (!x) return;
+    const desc = d.value.trim();
+    if (x === "cancel") return m.remove();
+    if (!desc && x !== "empty") { d.focus(); return; }
+    if (x === "idea") { m.remove(); return change(() => { if (ideaIdx < 0) c.ideas.push({ text: desc }); }); }
+    if (x === "empty") { m.remove(); return addConv({ when: makeWhen("turn", c.id), do: [{ dialogue: [{ ...base(), speaker: base().left, text: "" }] }], ...(desc ? { note: desc } : {}) }, ideaIdx); }
+    e.target.disabled = true; $("#nmsg", m).innerHTML = '<span class="spin"></span> Claude schreibt den Entwurf … (kann eine Minute dauern)';
+    try {
+      const r = await fetch("/api/draft", { method: "POST", body: JSON.stringify({ text: desc, chapter: c.title }) }), j = await r.json();
+      if (!r.ok) throw new Error(j.error);
+      m.remove();
+      const t = { when: j.when, ...(j.if && Object.keys(j.if).length ? { if: j.if } : {}), note: desc, draft: true, do: [{ dialogue: j.lines }] };
+      addConv(t, ideaIdx);
+    } catch (err) { e.target.disabled = false; $("#nmsg", m).textContent = "Entwurf fehlgeschlagen: " + err.message; }
+  });
+}
+function addConv(t, ideaIdx) {
+  const c = ch();
+  change(() => { c.triggers.push(t); if (ideaIdx >= 0) c.ideas.splice(ideaIdx, 1); const k = "t:" + (c.triggers.length - 1); open[k] = true; open["w" + (c.triggers.length - 1)] = true; });
+  setTimeout(() => $(`.card[data-c="t:${c.triggers.length - 1}"]`)?.scrollIntoView({ block: "center" }), 50);
+}
+
+// ---- Vorschau wie im Spiel
+function preview(lines, t) {
+  if (!lines.length) return toast("Keine Zeilen zum Anzeigen");
+  const hero = t ? (getP(t.when, ["near", "a"]) || getP(t.when, ["heal", "by"]) || getP(t.when, ["ability", "by"]) || getP(t.when, ["hp_below", "id"]) || getP(t.when, ["fall", "id"]) || "") : "";
+  const real = id => id === "$hero" ? hero : id;
+  let i = 0;
+  const bg = document.createElement("div"); bg.className = "pv"; bg.tabIndex = 0; bg.setAttribute("role", "dialog"); bg.setAttribute("aria-label", "Vorschau");
+  const side = (id, ex, speaking, cls) => { const r = real(id), src = portrait(r, ex); return src ? `<img class="${cls} ${speaking ? "" : "dim"}" src="${src}" alt="${esc(U(id))}">` : id ? `<div class="ph ${speaking ? "" : "dim"}">?</div>` : `<div></div>`; };
+  const show = () => {
+    const l = lines[i], who = l.speaker, text = l.text ?? l.text_by?.[real(who)] ?? l.text_by?.default ?? "";
+    bg.innerHTML = `<div class="stage">${side(l.left, l.left_expr, who === l.left, "l")}${side(l.right, l.right_expr, who === l.right, "r")}</div>
+      <div class="box"><span class="who">${esc(who === "$hero" && hero ? U(hero) : U(who))}</span><p>${esc(text) || '<span class="hint">(noch kein Text)</span>'}</p><span class="ctl">${i + 1} / ${lines.length} · Klick, Leertaste oder → weiter · ← zurück · Esc schließt</span></div>`;
+  };
+  bg.onclick = () => (++i >= lines.length ? bg.remove() : show());
+  bg.onkeydown = e => { if (e.key === "Escape") bg.remove(); else if (e.key === "ArrowLeft") { i = Math.max(0, i - 1); show(); } else if ([" ", "Enter", "ArrowRight"].includes(e.key)) { e.preventDefault(); bg.onclick(); } };
+  show(); document.body.append(bg); bg.focus();
+}
+
+// ---- Ereignisse
+document.addEventListener("click", e => {
+  const b = e.target.closest("[data-act]");
+  if (b && b.closest("#main")) { if (b.dataset.act === "toggle" && e.target.closest("button:not([data-act=toggle])")) return; e.stopPropagation(); acts[b.dataset.act]?.(b); return; }
+  const n = e.target.closest(".ch"); if (n) { cur = n.dataset.id; render(); $("#main").scrollTop = 0; }
+  if (!e.target.closest("#picker")) closePicker();
+});
+document.addEventListener("keydown", e => {
+  const mod = e.ctrlKey || e.metaKey, inField = /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName);
+  if (mod && e.key === "s") { e.preventDefault(); save(); }
+  else if (mod && e.key === "z" && !inField) { e.preventDefault(); e.shiftKey ? redo() : undo(); }
+  else if (mod && e.key === "y" && !inField) { e.preventDefault(); redo(); }
+  else if ((e.key === "Enter" || e.key === " ") && e.target.matches?.("[data-act=pick], [data-act=toggle]") && e.target === document.activeElement) { e.preventDefault(); acts[e.target.dataset.act](e.target); }
+});
+document.addEventListener("focusin", e => { if (e.target.matches("textarea, input[data-bind]")) typingSnap = true; });
+document.addEventListener("input", e => {
+  const el = e.target, bind = el.dataset.bind; if (!bind) return;
+  const grow = () => el.tagName === "TEXTAREA" && fit(el);
+  if (["text", "tb", "note"].includes(bind)) {
+    if (typingSnap) { push(); typingSnap = false; }
+    const { c, lines, i, key } = lineCtx(el);
+    if (bind === "text") lines[i].text = el.value;
+    else if (bind === "tb") lines[i].text_by[el.dataset.k] = el.value;
+    else if (key.startsWith("t:")) { const t = c.triggers[+key.slice(2)]; el.value ? t.note = el.value : delete t.note; }
+    grow(); updateStatus();
+  }
+});
+document.addEventListener("change", e => {
+  const el = e.target, bind = el.dataset.bind;
+  if (el.id === "addflee" && el.value) { const c = ch(), k = el.value; change(() => { c.flee[k] = [{ left: "$hero", right: k, speaker: k, right_expr: "wuetend", text: "" }]; open["f:" + k] = true; }); return; }
+  if (!bind || !el.closest("#main")) return;
+  const { c, lines, i, key } = lineCtx(el);
+  if (bind === "expr") change(() => { const side = el.closest(".slot").dataset.side; el.value ? lines[i][side + "_expr"] = el.value : delete lines[i][side + "_expr"]; });
+  else if (bind === "whentype") { const t = c.triggers[+key.slice(2)]; open["w" + key.slice(2)] = true; change(() => t.when = makeWhen(el.value, c.id)); }
+  else if (bind === "field") {
+    const t = c.triggers[+key.slice(2)], p = JSON.parse(el.dataset.p), ty = el.dataset.t; open["w" + key.slice(2)] = true;
+    change(() => {
+      let v = el.value;
+      if (ty === "int" || ty === "int?") v = v === "" ? "" : parseInt(v, 10);
+      else if (ty === "float") v = parseFloat(v);
+      setP(t.when, p, v);
+      if (t.when.fall && !Object.keys(t.when.fall).length) t.when.fall = {};
+      if (p[0] === "object" && p[1] === "id") { const ty2 = c.objects.find(o => o.id === v)?.type; t.when.object.state = STATES[ty2]?.[0]; }
+    });
+  }
+});
+document.addEventListener("toggle", e => { const d = e.target; if (d.matches?.("details.trig")) open["w" + d.dataset.w] = d.open; }, true);
+
+// Ziehen und Ablegen
+let dragInfo = null;
+document.addEventListener("dragstart", e => {
+  const el = e.target.closest("[data-drag]"); if (!el) return;
+  if (el.dataset.drag === "char") dragInfo = { type: "char", id: el.dataset.id };
+  else { const { key, i } = lineCtx(el), li = el.closest(".line"); dragInfo = { type: "line", from: key + "|" + i }; li.classList.add("dragging"); e.dataTransfer.setDragImage(li, 20, 20); }
+  e.dataTransfer.setData("text/plain", "x"); e.dataTransfer.effectAllowed = "move";
+});
+document.addEventListener("dragend", () => { dragInfo = null; document.querySelectorAll(".dragging,.over-top,.over-bot,.drop").forEach(x => x.classList.remove("dragging", "over-top", "over-bot", "drop")); });
+document.addEventListener("dragover", e => {
+  if (!dragInfo) return;
+  const z = e.target.closest(dragInfo.type === "line" ? ".line, [data-drop=add]" : "[data-drop]"); if (!z) return;
+  const k = z.dataset.drop;
+  if (dragInfo.type === "char" && (k === "slot" || k === "add")) { e.preventDefault(); document.querySelectorAll(".drop").forEach(x => x.classList.remove("drop")); z.classList.add("drop"); }
+  if (dragInfo.type === "line" && (k === "line" || k === "add")) {
+    e.preventDefault(); document.querySelectorAll(".over-top,.over-bot").forEach(x => x.classList.remove("over-top", "over-bot"));
+    if (k === "line") { const r = z.getBoundingClientRect(); z.classList.add(e.clientY < r.top + r.height / 2 ? "over-top" : "over-bot"); }
+  }
+});
+document.addEventListener("drop", e => {
+  if (!dragInfo) return;
+  const z = e.target.closest(dragInfo.type === "line" ? ".line, [data-drop=add]" : "[data-drop]"); if (!z) return;
+  e.preventDefault();
+  const k = z.dataset.drop, { c, key, i, lines } = lineCtx(z, true);
+  if (dragInfo.type === "char") {
+    const id = dragInfo.id;
+    if (k === "slot") change(() => setChar(lines, i, z.dataset.side, id));
+    else if (k === "add") change(() => newLine(lines, id));
+  } else if (k === "line") { const r = z.getBoundingClientRect(); onMove(dragInfo.from, { key, idx: e.clientY < r.top + r.height / 2 ? i : i + 1 }); }
+  else if (k === "add") onMove(dragInfo.from, { key, idx: lines.length });
+  dragInfo = null;
+});
+
+$("#q").oninput = e => { filter = e.target.value; render(); };
+$("#undo").onclick = undo; $("#redo").onclick = redo; $("#save").onclick = save; $("#palq").oninput = renderPalette;
+$("#togglePal").onclick = () => document.body.classList.toggle("pal-open");
+addEventListener("beforeunload", e => { if (dirtyIds().length) { e.preventDefault(); e.returnValue = ""; } });
+
+(async () => {
+  DB = await (await fetch("/api/data")).json();
+  canDraft = (await (await fetch("/api/draft/available")).json()).available;
+  chapters = DB.chapters; chapters.forEach(c => saved[c.id] = part(c)); cur = chapters[0].id;
+  open.intro = true;
+  renderPalette(); render();
+  document.fonts.ready.then(fitAll);   // Schrift laedt spaeter: Hoehe danach neu berechnen
+})();
+addEventListener("resize", () => fitAll());
+</script>
+</body>
+</html>

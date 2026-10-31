@@ -70,7 +70,7 @@
        "right": "ritter",
        "speaker": "braumeisterin",
        "left_expr": "lachend",
-       "text": "Prost, Flammen! Wer löscht, der darf auch trinken."
+       "text": "Hicks! Wer löscht, der darf auch trinken."
       }
      ]
     }
@@ -130,13 +130,13 @@
        "left": "samurai",
        "right": "soldat_beritten",
        "speaker": "samurai",
-       "text": "Ein Reiter. Endlich ein Gegner, der einen Namen verdient."
+       "text": "Seid auf der Hut! Der Feind hat berittene Truppen."
       },
       {
        "left": "samurai",
        "right": "soldat_beritten",
        "speaker": "soldat_beritten",
-       "text": "Ich heiße Heinz. Aber du darfst mich Herr Reiter nennen."
+       "text": "Genau, nehmt euch in Acht vor den Hufen meines Rosses!"
       }
      ]
     }
@@ -235,7 +235,7 @@
        "left": "ritter",
        "right": "maja",
        "speaker": "ritter",
-       "text": "Ich habe Dämonen gesehen. Du bist hübscher und gruseliger."
+       "text": "Ich habe gegen Dämonen aus der Hölle gekämpft. Du bist hübscher und gruseliger."
       }
      ]
     }

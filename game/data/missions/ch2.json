@@ -33,7 +33,7 @@
         "maedchen_baer": "Brumm, halt dich fest! Ich öffne das Tor!",
         "kungfu": "Einen Augenblick. Ich öffne euch das Tor.",
         "museklaugust": "Ich öffne das Tor! Und niemand schaut auf meine Frisur.",
-        "elisabeth": "Aufgepasst, Landratten! Ich lüfte das Schloss!",
+        "elisabeth": "Aufgepasst, Landratten! Ich knacke das Schloss!",
         "robo": "Tor wird manuell entriegelt. Bitte warten. Oder auch nicht.",
         "wendy": "Mäh… ich öffne das Tor. Bleibt ruhig, bitte."
        }
@@ -261,7 +261,7 @@
        "left": "museklaugust",
        "right": "wart",
        "speaker": "wart",
-       "text": "Und ich dachte, Kurfürsten wären größer. Raketen frei!",
+       "text": "Keine Ahnung, wer du bist, Perückenaugust. Raketen frei!",
        "right_expr": "lachend"
       }
      ]
