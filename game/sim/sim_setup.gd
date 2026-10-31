@@ -86,8 +86,6 @@ static func build(spec: Dictionary, seed_: int) -> SimBattle:
 		var g0: Dictionary = (mdata.get("goals", [{"type": "rout"}]) as Array)[0]
 		if g0.get("type", "rout") == "reach":
 			b.goal_tile = Vector2i(g0["tile"][0], g0["tile"][1])
-			b.goal_all = bool(g0.get("all", false))
-			b.goal_within = int(g0.get("within", 0))
 	for k: String in spec.get("disabled", {}):          # {Held: [Faehigkeiten]} -> {Held: {Faehigkeit: true}}
 		var set := {}
 		for a: String in spec["disabled"][k]:
@@ -96,6 +94,19 @@ static func build(spec: Dictionary, seed_: int) -> SimBattle:
 	b.ai_cfg["p"] = spec.get("p_ai", {})
 	b.ai_cfg["e"] = spec.get("e_ai", {})
 	b.inventory["p"] = (spec.get("inventory", {}) as Dictionary).duplicate()
+	if use_ch1:       # Spawn-Schritte der Mission (Runden-Ausloeser), Rueckkehrer nur mit passender Vorgeschichte
+		var em: Dictionary = spec.get("e_mods", {})
+		for t: Dictionary in mdata.get("triggers", []):
+			if not (t["when"] as Dictionary).has("turn"):
+				continue
+			var need: Array = (t.get("if", {}) as Dictionary).get("fled", [])
+			if not need.all(func(id: String) -> bool: return (spec.get("nemesis", []) as Array).has(id)):
+				continue
+			for step: Dictionary in t["do"]:
+				for sp: Dictionary in step.get("spawn", []):
+					b.late.append({"turn": int(t["when"]["turn"]), "id": sp["id"], "team": sp.get("team", "e"),
+						"pos": Vector2i(sp["pos"][0], sp["pos"][1]), "hp": float(em.get("hp", 1.0)) if sp.get("team", "e") == "e" else 1.0,
+						"atk": float(em.get("atk", 1.0)) if sp.get("team", "e") == "e" else 1.0})
 	var players: Array = spec["players"]
 	var enemies: Array = spec["enemies"]
 	if use_ch1:

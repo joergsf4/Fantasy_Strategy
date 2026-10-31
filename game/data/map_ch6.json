@@ -92,7 +92,7 @@
   {
    "id": "soldat_bogenschuetze",
    "pos": [
-    6,
+    7,
     2
    ]
   },
@@ -106,22 +106,29 @@
   {
    "id": "soldat_beritten",
    "pos": [
-    6,
+    7,
     7
-   ]
-  },
-  {
-   "id": "soldat_priester",
-   "pos": [
-    8,
-    3
    ]
   },
   {
    "id": "soldat_infanterie",
    "pos": [
-    5,
+    8,
     6
+   ]
+  },
+  {
+   "id": "soldat_infanterie",
+   "pos": [
+    9,
+    6
+   ]
+  },
+  {
+   "id": "soldat_bogenschuetze",
+   "pos": [
+    8,
+    5
    ]
   }
  ],
@@ -143,7 +150,47 @@
    ]
   },
   {
-   "id": "kiste2",
+   "id": "kiste4",
+   "type": "crate",
+   "pos": [
+    5,
+    7
+   ]
+  },
+  {
+   "id": "sperre0",
+   "type": "crate",
+   "pos": [
+    6,
+    0
+   ]
+  },
+  {
+   "id": "sperre1",
+   "type": "crate",
+   "pos": [
+    6,
+    1
+   ]
+  },
+  {
+   "id": "sperre2",
+   "type": "crate",
+   "pos": [
+    6,
+    2
+   ]
+  },
+  {
+   "id": "sperre3",
+   "type": "crate",
+   "pos": [
+    6,
+    3
+   ]
+  },
+  {
+   "id": "sperre4",
    "type": "crate",
    "pos": [
     6,
@@ -151,19 +198,35 @@
    ]
   },
   {
-   "id": "kiste3",
+   "id": "sperre6",
    "type": "crate",
    "pos": [
     6,
-    5
+    6
    ]
   },
   {
-   "id": "kiste4",
+   "id": "sperre7",
    "type": "crate",
    "pos": [
-    5,
+    6,
     7
+   ]
+  },
+  {
+   "id": "sperre8",
+   "type": "crate",
+   "pos": [
+    6,
+    8
+   ]
+  },
+  {
+   "id": "sperre9",
+   "type": "crate",
+   "pos": [
+    6,
+    9
    ]
   }
  ],

@@ -475,5 +475,36 @@
    "blast",
    "ranged_hit"
   ]
+ },
+ "wirbel": {
+  "name": "Wirbel",
+  "text": "Wirbelt um sich: alle 8 Nachbarfelder (×1,5). Danach erschöpft (−2 DEF).",
+  "cd": 3,
+  "target": "self",
+  "area": {
+   "shape": "ring8"
+  },
+  "effects": [
+   {
+    "type": "damage",
+    "mult": 1.5,
+    "to": "area_enemies"
+   },
+   {
+    "type": "status",
+    "id": "tired",
+    "turns": 1,
+    "mods": {
+     "def": -2
+    },
+    "to": "self"
+   }
+  ],
+  "caps": [
+   "cut"
+  ],
+  "ai_self": {
+   "enemies": 2
+  }
  }
 }

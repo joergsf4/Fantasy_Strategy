@@ -129,8 +129,8 @@
   "blocks": [
    "intact"
   ],
-  "hp": 10,
-  "def": 0,
+  "hp": 14,
+  "def": 1,
   "solutions": {
    "blast": "break"
   }

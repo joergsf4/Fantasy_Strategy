@@ -134,5 +134,11 @@
   "boom": 2.6,
   "shake": 0.14,
   "lunge": false
+ },
+ "wirbel": {
+  "spins": 2,
+  "time": 0.65,
+  "radius": 0.95,
+  "lunge": false
  }
 }

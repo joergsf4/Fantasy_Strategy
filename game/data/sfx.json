@@ -194,6 +194,10 @@
   "breitseite": {
    "shot": "cannon",
    "hit": "explosion"
+  },
+  "wirbel": {
+   "windup": "whoosh_l",
+   "hit": "@melee"
   }
  },
  "events": {

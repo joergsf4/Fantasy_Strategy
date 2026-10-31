@@ -2,16 +2,14 @@
  "id": "ch6",
  "title": "Möwenbucht",
  "map": "res://data/map_ch6.json",
- "briefing": "Die Gruppe hat erfahren, dass der Regent sich auf einer Insel im Meer aufhält. In der Hafenstadt Möwenbucht liegt Käpt'n Elisabeths Piratenschiff. Kämpft euch durch die Gassen zum Steg und bringt alle Helden zum Schiff (goldenes Feld und die Felder in drei Schritten Umkreis). Elisabeth kann vom Schiff aus die Breitseite feuern: ein Ziel in 3 bis 9 Feldern Entfernung, jede dritte Runde.",
+ "briefing": "Die Gruppe hat erfahren, dass der Regent sich auf einer Insel im Meer aufhält. In der Hafenstadt Möwenbucht liegt Käpt'n Elisabeths Piratenschiff. Ein Held muss das goldene Feld am Ende des Stegs erreichen. Eine Kisten-Sperre riegelt die Gasse zum Kai ab (nur eine Lücke), auf dem Steg stehen Wachen. Elisabeth kann vom Schiff aus die Breitseite feuern: ein Ziel in 3 bis 9 Feldern Entfernung, jede dritte Runde, auch auf Kisten. Der Regent hat seinen Trainingspartner geschickt, ihn aufzuhalten.",
  "goals": [
   {
    "type": "reach",
    "tile": [
     9,
     6
-   ],
-   "all": true,
-   "within": 3
+   ]
   }
  ],
  "triggers": [
@@ -176,35 +174,6 @@
   },
   {
    "when": {
-    "turn": 4
-   },
-   "note": "Verstärkung vom Stadttor",
-   "do": [
-    {
-     "popup": "Alarm! Verstärkung am Stadttor."
-    },
-    {
-     "spawn": [
-      {
-       "id": "soldat_infanterie",
-       "pos": [
-        0,
-        5
-       ]
-      },
-      {
-       "id": "soldat_bogenschuetze",
-       "pos": [
-        0,
-        6
-       ]
-      }
-     ]
-    }
-   ]
-  },
-  {
-   "when": {
     "enemies_left": 2
    },
    "note": "Der Weg ist fast frei",
@@ -217,6 +186,80 @@
        "speaker": "elisabeth",
        "text": "Der Weg zum Steg wird frei! Schnell, bevor die Flut die Planken schluckt.",
        "right_expr": "lachend"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 4
+   },
+   "note": "Die Trainingspuppe greift von hinten ein",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "ritter",
+       "right": "dummy",
+       "speaker": "dummy",
+       "text": "Der Regent lässt ausrichten: Das Training ist noch nicht vorbei! Übungsrunde zwei!"
+      },
+      {
+       "left": "ritter",
+       "right": "dummy",
+       "speaker": "ritter",
+       "text": "Die Trainingspuppe des Regenten! Und sie steht hinter uns!"
+      },
+      {
+       "left": "samurai",
+       "right": "dummy",
+       "speaker": "samurai",
+       "text": "Holz. Ich hatte gehofft, mein Schwert für Würdigeres zu ziehen."
+      }
+     ]
+    },
+    {
+     "spawn": [
+      {
+       "id": "dummy",
+       "pos": [
+        0,
+        5
+       ],
+       "carry": {
+        "gold": 80
+       },
+       "label": "Die Trainingspuppe!"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 5
+   },
+   "note": "Verstärkung kommt per Beiboot vom Hafen",
+   "do": [
+    {
+     "popup": "Ein Beiboot legt am Kai an!"
+    },
+    {
+     "spawn": [
+      {
+       "id": "soldat_infanterie",
+       "pos": [
+        8,
+        8
+       ]
+      },
+      {
+       "id": "soldat_infanterie",
+       "pos": [
+        7,
+        8
+       ]
       }
      ]
     }
@@ -243,6 +286,28 @@
     "right": "wart",
     "speaker": "wart",
     "text": "Ich komme wieder! Mit einem Boot! Und mit Senf!",
+    "right_expr": "wuetend"
+   }
+  ],
+  "dummy": [
+   {
+    "left": "$hero",
+    "right": "dummy",
+    "speaker": "dummy",
+    "text": "Das... war... nur eine Übungsstunde! Ich gebe dem Regenten Bericht!",
+    "right_expr": "wuetend"
+   },
+   {
+    "left": "$hero",
+    "right": "dummy",
+    "speaker": "$hero",
+    "text": "Eine Holzpuppe rennt davon. Auch das sieht man nicht oft."
+   },
+   {
+    "left": "$hero",
+    "right": "dummy",
+    "speaker": "dummy",
+    "text": "Ich bin nicht aus Holz! Ich bin aus... Eichenholz!",
     "right_expr": "wuetend"
    }
   ]

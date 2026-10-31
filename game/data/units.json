@@ -321,21 +321,24 @@
  },
  "dummy": {
   "name": "Trainingsattrappe",
-  "hp": 30,
-  "atk": 6,
-  "def": 3,
+  "hp": 34,
+  "atk": 8,
+  "def": 4,
   "res": 1,
-  "move": 2,
+  "move": 3,
   "range_min": 1,
   "range": 1,
   "role": "tank",
   "dmg_type": "body",
   "tags": [
-   "standard"
+   "boss"
   ],
-  "abilities": [],
+  "abilities": [
+   "wirbel"
+  ],
   "weapon": "wood",
-  "body": "wood"
+  "body": "wood",
+  "flees": true
  },
  "wart": {
   "name": "Wart",

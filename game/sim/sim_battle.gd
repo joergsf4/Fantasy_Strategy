@@ -23,9 +23,8 @@ var inventory := {"p": {}, "e": {}}      # Rucksack je Team: {Gegenstand: Anzahl
 var _uid := 1
 var world := World.new([])                # Weltobjekte (Feuer, Haeuser ...); leer = keine
 var flammable: Dictionary = {}            # Waldfelder
-var goal_tile := Vector2i(-1, -1)          # Ziel "reach": ein Held (oder alle bei goal_all) nahe diesem Feld gewinnt
-var goal_all := false
-var goal_within := 0
+var goal_tile := Vector2i(-1, -1)          # Ziel "reach": ein Held auf diesem Feld gewinnt
+var late: Array = []                      # Missions-Spawns nach Runde: {turn, id, team, pos, hp, atk}
 var kids_stung := 0                       # Kapitel 5: Bienen am Waisenhaus
 var retreated: Array = []                 # Gegner, die sich zurueckgezogen haben (Stachelia)
 var bell_rung_turn := -1                  # Kapitel 5: Runde, in der die Glocke geläutet wurde
@@ -139,6 +138,14 @@ func maybe_ring() -> bool:
 		best["done"] = true
 		return true
 	return false
+
+
+## Spawns aus den Missions-Ausloesern (Verstaerkung, Rueckkehrer) zu Beginn ihrer Runde, wie _fire im Spiel.
+func run_late() -> void:
+	for l: Dictionary in late.filter(func(x: Dictionary) -> bool: return int(x["turn"]) == turn):
+		var fly: bool = defs()[l["id"]].get("flying", false)
+		var pos := free_tile_near(l["pos"], {"flying": fly})
+		spawn(l["id"], l["team"], pos, l["hp"], l["atk"])
 
 
 func run_scheduled() -> void:
@@ -638,16 +645,13 @@ func begin_phase(team: String) -> void:
 func winner() -> String:
 	var p := 0
 	var e := 0
-	var at_goal := 0
 	for u in units + away:
 		if u["team"] == "p":
 			p += 1
-			if goal_tile.x >= 0 and Grid.dist(u["pos"], goal_tile) <= goal_within:
-				at_goal += 1
+			if u["pos"] == goal_tile:
+				return "p"
 		else:
 			e += 1
-	if goal_tile.x >= 0 and p > 0 and ((not goal_all and at_goal > 0) or (goal_all and at_goal == p)):
-		return "p"
 	if e == 0 and goal_tile.x < 0:
 		return "p"
 	if p == 0:
@@ -712,6 +716,7 @@ func play(max_turns := MAX_TURNS) -> String:
 		if winner() != "":
 			return winner()
 		turn += 1
+		run_late()
 		run_scheduled()
 	return "timeout"
 

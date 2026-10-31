@@ -213,9 +213,11 @@ Benannte Gegner (`"flees": true` in `units.json`: Wart, Oskar, Maja) sterben nic
 
 ## Mission 6: Möwenbucht (Hafenstadt, Ziel: Schiff)
 
-- **Ziel:** alle Helden zum Schiff (`reach` mit `all: true`, `within: 3` um das goldene Feld am Steg-Ende). Das Zielfeld ist golden markiert. Verloren: alle Helden gefallen.
-- **Breitseite:** Elisabeth bekommt in dieser Mission (`grants` in `missions/ch6.json`) die Fähigkeit `breitseite`: ein Gegner in 3 bis 9 Feldern Entfernung, ×1,4 Schaden plus Nachbarn 50 %, Abklingzeit 3. Der Schuss startet am Schiff in der Bucht (Objekt `ship`).
+- **Ziel:** **ein Held** erreicht das goldene Feld am Ende des Stegs (`reach`). Ein „Alle Helden“-Ziel ging nicht, weil das Feld besetzt ist, sobald ein Held darauf steht. Verloren: alle Helden gefallen.
+- **Härte:** Das Zielfeld und der Steg sind von Büttel und Bogenschützen besetzt, eine **Kisten-Sperre** (Fässer, hp 14) riegelt die Gasse bei x = 6 ab und lässt nur bei y = 5 eine Lücke. Die Breitseite räumt Kisten weg.
+- **Breitseite:** Elisabeth bekommt in dieser Mission (`grants` in `missions/ch6.json`) die Fähigkeit `breitseite`: ein Gegner (oder eine Kiste) in 3 bis 9 Feldern Entfernung, ×1,4 Schaden plus Nachbarn 50 %, Abklingzeit 3. Der Schuss startet am Schiff (Objekt `ship`).
+- **Gegenspieler:** die **Trainingsattrappe** (`dummy`, Boss mit Wirbel) erscheint in Runde 4 von hinten am Stadttor. **Wart** kehrt in Runde 3 auf dem Steg zurück, wenn er früher entkommen ist (`if: {fled: ["wart"]}`). Da benannte Gegner nie sterben, ist das in einem normalen Durchlauf immer der Fall.
+- **Verstärkung** kommt per Beiboot vom Hafen (Runde 5, rechts unten), nicht mehr vom Stadttor.
 - **Gruppe:** Hundsfreund, Mira, Elisabeth, Albrecht, Robo (Heiler), Takeda.
-- **Wart** kehrt in Runde 3 auf dem Steg zurück, wenn er früher entkommen ist (`if: {fled: ["wart"]}`). Da benannte Gegner nie sterben, ist das in einem normalen Durchlauf immer der Fall.
-- **Neue Bausteine:** Terrain `P` (Holzsteg, laufbar), Objekte `ship` (Sprite) und `crate` (Kisten und Fässer, zerstörbar), Missionsfeld `grants`, `reach`-Ziel mit `all`/`within`.
-- **Simulator:** abgebildet (Ziel, Grants, Breitseite). Messung in `docs/balance.md`, Abschnitt 10.
+- **Neue Bausteine:** Terrain `P` (Holzsteg, laufbar), Objekte `ship` (Sprite) und `crate` (Kisten und Fässer, zerstörbar), Missionsfeld `grants`, goldene Zielmarkierung.
+- **Simulator:** abgebildet (Ziel, Grants, Breitseite, Runden-Spawns der Mission mit Vorgeschichte `nemesis`). Messung in `docs/balance.md`, Abschnitt 10.

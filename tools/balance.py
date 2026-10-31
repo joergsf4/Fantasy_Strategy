@@ -336,24 +336,26 @@ def e8_bees():
 
 
 def e9_harbor():
-    """Mission 6 (Hafenstadt, Ziel: Schiff erreichen): Siegquote mit/ohne Breitseite, mit/ohne Wart bei steigender Gegnerstaerke."""
+    """Mission 6 (Hafenstadt, Ziel: ein Held erreicht das Schiff): Siegquote mit/ohne Breitseite, Wart und Trainingspuppe bei steigender Gegnerstaerke.
+    Spawns der Mission (Wart Runde 3, Puppe Runde 4, Beiboot Runde 5) kommen aus den Ausloesern in missions/ch6.json."""
     print("E9: Mission 6, Hafenstadt und Breitseite")
     party = ["hund", "maedchen_baer", "elisabeth", "ritter", "robo", "samurai"]
     mission = json.loads((GAME / "data" / "map_ch6.json").read_text())
     foes = [e["id"] for e in mission["enemies"]]
+    base = dict(enemy={"fixed": foes}, nemesis=["wart"])
     variants = {
-        "voll": dict(enemy={"fixed": foes}),
-        "ohne_breitseite": dict(enemy={"fixed": foes}, disabled={"elisabeth": ["breitseite"]}),
-        "mit_wart": dict(enemy={"fixed": foes + ["wart"]}),
-        "mit_wart_ohne_breitseite": dict(enemy={"fixed": foes + ["wart"]}, disabled={"elisabeth": ["breitseite"]}),
+        "voll": base,                                               # Wart, Puppe und Beiboot, mit Breitseite
+        "ohne_breitseite": dict(base, disabled={"elisabeth": ["breitseite"]}),
+        "ohne_wart": dict(base, nemesis=[]),                        # z. B. Levelwaehler ohne Vorgeschichte
     }
     mults = [1.0, 1.5, 2.0]
     if os.environ.get("E9_QUICK"):
-        variants = {k: variants[k] for k in ("mit_wart", "mit_wart_ohne_breitseite")}
+        variants = {k: variants[k] for k in ("voll",)}
+        mults = [1.0, 1.5, 1.75]
     cells = []
     for v, spec in variants.items():
         for m in mults:
-            cells.append(dict({"name": f"{v}|{m}", "n": 500, "seed": 990000, "map": "ch6", "party": {"fixed": party},
+            cells.append(dict({"name": f"{v}|{m}", "n": 250 if os.environ.get("E9_QUICK") else 500, "seed": 990000, "map": "ch6", "party": {"fixed": party},
                                "e_mods": {"hp": m, "atk": m}, "e_ai": {}}, **spec))
     res = run_cells(cells)
     if os.environ.get("E9_QUICK"):
@@ -775,10 +777,9 @@ def report():
     e9 = R.get("e9")
     if e9:
         cells = e9["cells"]
-        nm = {"voll": "Voll (mit Breitseite)", "ohne_breitseite": "Ohne Breitseite", "mit_wart": "Mit Wart (von Beginn an)",
-              "mit_wart_ohne_breitseite": "Mit Wart, ohne Breitseite"}
+        nm = {"voll": "Voll (Wart, Puppe, Beiboot, Breitseite)", "ohne_breitseite": "Ohne Breitseite", "ohne_wart": "Ohne Wart (keine Vorgeschichte)"}
         w("## 10. Mission 6: Hafenstadt, Ziel Schiff\n")
-        w("Aufstellung wie im Spiel (Hundsfreund, Mira, Elisabeth, Albrecht, Robo, Takeda gegen 4 Büttel, 2 Bogenschützen und 1 Reiter). Wart erscheint im Spiel erst in Runde 3, hier steht er von Beginn an (strenger). "
+        w("Aufstellung wie im Spiel (Hundsfreund, Mira, Elisabeth, Albrecht, Robo, Takeda gegen die Aufstellung der Karte: Büttel, Bogenschützen und Reiter, Wachen auf dem Steg, Kisten-Sperre). Die Auslöser der Mission sind nachgebildet: Wart Runde 3 auf dem Steg, die Trainingspuppe Runde 4 von hinten, das Beiboot mit Verstärkung Runde 5. "
           "Zahlen: Siegquote / durchschnittliche Runden bis zum Schiff, bei steigender Gegnerstärke.\n")
         w("| Variante | " + " | ".join(f"×{m}" for m in e9["mults"]) + " |")
         w("|---|" + "--:|" * len(e9["mults"]))

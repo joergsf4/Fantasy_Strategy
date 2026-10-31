@@ -2125,16 +2125,10 @@ func goal_met() -> bool:
 			return world.by_id(goal["id"])["state"] == "free"
 		"reach":
 			var t := Vector2i(goal["tile"][0], goal["tile"][1])
-			var near := int(goal.get("within", 0))
-			var any := false
 			for u in units:
-				if u["team"] != "p":
-					continue
-				var at: bool = Grid.dist(u["pos"], t) <= near
-				if goal.get("all", false) and not at:
-					return false          # "all": jeder lebende Held muss am Ziel sein
-				any = any or at
-			return any
+				if u["team"] == "p" and u["pos"] == t:
+					return true
+			return false
 		_:
 			return _count_team("e") == 0
 

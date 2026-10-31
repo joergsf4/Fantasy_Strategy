@@ -188,11 +188,15 @@ Tank
 ## Weitere Figuren
 
 ### Kampfsport-Trainingsattrappe
-*Übernimmt den Stil eines verbündeten Nachbarn 1:1 (kein eigener Stil). **Bild fehlt noch.***
+*Der persönliche Trainingspartner des Regenten, in Mission 6 („Möwenbucht“) als **Gegenspieler** ausgeschickt, um die Überfahrt zu verhindern. Bilder: Porträt und Karten-Figur fertig.*
+`dummy` · Chibi: `game/assets/tokens/dummy.png`
+Aktuell (Platzhalter): HP 34 · Angriff 8 · Verteidigung 4 · Bewegung 3 · Reichweite 1 · Boss
 
-**Typ:** 
+**Typ:** Nahkampf, zäher Brocken aus Eichenholz („Ich bin nicht aus Holz, ich bin aus … Eichenholz!“)
 
-**Spezialattacke / Fähigkeit:** 
+**Spezialattacke / Fähigkeit:** **Wirbel**: trifft alle 8 Nachbarfelder (×1,5), danach erschöpft (−2 Verteidigung), Abklingzeit 3. Die Gegner-KI setzt ihn ein, wenn mindestens 2 Helden daneben stehen.
+
+**Sonstiges:** Greift in Mission 6 in Runde 4 von hinten ein (Stadttor). Flieht wütend statt zu sterben und kehrt im Finale zurück.
 
 ---
 

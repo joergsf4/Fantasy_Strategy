@@ -44,7 +44,7 @@ func windup(id: String, u: Dictionary, target: Dictionary) -> void:
 			fx.light_flash(fx.chest(u, 0.9), Color(0.65, 0.3, 0.9), 2.5, 4.0, 0.5)
 			fx.shockwave(_pos(u), 1.0, Color(0.7, 0.35, 0.95, 0.8), 0.45)
 			await _wait(0.3)
-		"todeswirbel":
+		"todeswirbel", "wirbel":
 			fx.squash(u, 1.1, 0.8, 0.3)
 			fx.light_flash(fx.chest(u, 0.7), Color(0.7, 0.85, 1.0), 2.0, 3.0, 0.35)
 			await _wait(0.28)
@@ -79,7 +79,7 @@ func cast(id: String, u: Dictionary, target: Dictionary, tiles: Array[Vector2i])
 			await fx.tile_wave(target["pos"], tiles, _col(id, [0.5, 1.0, 0.65, 0.55]), 0.08, 0.5, true)
 		"einschuechtern":
 			await fx.tile_wave(u["pos"], tiles, _col(id, [0.55, 0.2, 0.65, 0.6]), 0.09, 0.5, false)
-		"todeswirbel":
+		"todeswirbel", "wirbel":
 			await _spin(u)
 		"roter_laser":
 			await _laser_fire(u, target)
@@ -103,7 +103,7 @@ func on_hit(id: String, u: Dictionary, v: Dictionary, _i: int) -> void:
 	match id:
 		"baerenpranke":
 			_claw(u, v)
-		"todeswirbel":
+		"todeswirbel", "wirbel":
 			_slash_hit(u, v)
 		"roter_laser":
 			_laser_hit(u, v)
