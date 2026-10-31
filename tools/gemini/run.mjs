@@ -167,6 +167,16 @@ const HAFEN = {
 for (const [name, d] of Object.entries(HAFEN))
   jobs.push({ name, refs: [path.join(OUT, 'fx_fireball.jpg')], prompt: `Create ${d}, game sprite, seen slightly from above and the front, sturdy and chunky, readable at small size.` + FX_STYLE });
 
+// Karten-Gebaeude und -Objekte als Pixel-Sprites (konsistente Optik, statt Klotz-Modellen).
+const GEBAEUDE = {
+  fx_teehaus: 'a small Chinese-style roadside tea house: red wooden pillars, cream plaster walls, a two-tier dark-red curved tiled roof with golden ridge ornaments, hanging red paper lanterns, a tea sign and a little porch with steps',
+  fx_waisenhaus: 'a cozy but shabby orphanage house: two-story half-timbered cottage with patched brown roof, a smoking chimney, round windows with warm light, a wooden sign with a small teddy bear on it, a tiny garden fence and a few flower pots',
+  fx_bienenstock: 'a traditional straw beehive (bee skep) on a small wooden stand, with an entrance hole, a few bees buzzing around it and a drip of golden honey',
+  fx_glocke: 'a tall wooden bell post: two thick posts with a crossbeam on top and a big golden bell with a rope hanging from the beam, too high to reach, small moss on the wood',
+};
+for (const [name, d] of Object.entries(GEBAEUDE))
+  jobs.push({ name, refs: [path.join(OUT, 'fx_fireball.jpg')], prompt: `Create ${d}, game sprite, seen slightly from above and the front, sturdy and chunky, readable at small size.` + FX_STYLE });
+
 async function generate(page, job) {
   await page.goto('https://gemini.google.com/app', { waitUntil: 'domcontentloaded' });
   await page.waitForSelector('div[role=textbox], .ql-editor', { timeout: 30000 });

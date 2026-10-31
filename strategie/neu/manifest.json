@@ -110,5 +110,9 @@
  "fx_schiff": true,
  "fx_kiste": true,
  "fx_fass": true,
- "fx_saecke": true
+ "fx_saecke": true,
+ "fx_teehaus": true,
+ "fx_waisenhaus": true,
+ "fx_bienenstock": true,
+ "fx_glocke": true
 }

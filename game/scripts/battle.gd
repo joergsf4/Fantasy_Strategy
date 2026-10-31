@@ -1142,10 +1142,10 @@ func _make_object(o: Dictionary) -> void:
 	if o["type"] == "fire" or o["type"] == "house":
 		_make_burnable(o)
 		return
-	if o["type"] == "teahouse" or o["type"] == "hostage":
-		_make_teahouse(o) if o["type"] == "teahouse" else _make_hostage(o)
+	if o["type"] == "hostage":
+		_make_hostage(o)
 		return
-	if o["type"] in ["hive", "bell", "orphanage", "ship", "crate"]:
+	if o["type"] in ["hive", "bell", "orphanage", "ship", "crate", "teahouse"]:
 		_make_ch5_object(o)
 		return
 	var stone := Color(0.52, 0.5, 0.54)
@@ -1268,7 +1268,7 @@ func _refresh_object(o: Dictionary, animate: bool) -> void:
 				if animate:
 					Sfx.event("bell")
 					var swing := create_tween()
-					for a: float in [30.0, -26.0, 20.0, -14.0, 8.0, 0.0]:
+					for a: float in [5.0, -4.5, 3.5, -2.5, 1.2, 0.0]:
 						swing.tween_property(p["lever"], "rotation_degrees:z", a, 0.22)
 				else:
 					(p["lever"] as Node3D).rotation_degrees.z = 0.0
@@ -1310,74 +1310,49 @@ func _refresh_object(o: Dictionary, animate: bool) -> void:
 		(p["rubble"] as Node3D).visible = false
 
 
-## Bienenstock (Strohkorb), Glocke (hoher Pfosten) und Waisenhaus (Haus mit drei Kindern davor).
+## Karten-Objekte als Pixel-Sprites (Gemini, freigestellt): Bienenstock, Glocke, Waisenhaus, Teehaus, Schiff, Hafen-Hindernisse.
+## Die Spiellogik (Sperren, Zustaende) steckt in World, hier nur die Optik.
+const OBJ_SPRITE := {"hive": ["fx_bienenstock", 1.0], "bell": ["fx_glocke", 1.6], "orphanage": ["fx_waisenhaus", 1.9], "teahouse": ["fx_teehaus", 1.7]}
+const CRATE_SPRITES := [["fx_kiste", 1.0], ["fx_fass", 1.05], ["fx_saecke", 1.0]]
+
+
+## Sprite mit dem Fuss auf dem Feld (Mitte unten), size = laengste Kante in Feldern.
+func _object_sprite(name: String, size: float, parent: Node3D) -> MeshInstance3D:
+	var s: Vector2 = fx.tex(name).get_size()
+	var h := s.y * size / maxf(s.x, s.y)
+	return fx.make_sprite(name, Vector3(0, h * 0.5 - 0.04, 0), size, false, Color.WHITE, 0, parent)
+
+
 func _make_ch5_object(o: Dictionary) -> void:
 	var root := Node3D.new()
 	root.position = to_world(o["pos"])
-	root.scale = Vector3.ONE * {"orphanage": 1.35, "hive": 1.25, "bell": 1.0, "ship": 1.0, "crate": 1.1}[o["type"]]
 	add_child(root)
-	var k := MeshKit.new()
 	var parts := {"root": root, "body": null, "rubble": null, "doors": [], "lever": null}
-	var straw := Color(0.86, 0.68, 0.28)
-	var wood := Color(0.42, 0.26, 0.13)
 	match o["type"]:
-		"hive":
-			k.box(Vector3(0, 0.06, 0), Vector3(0.5, 0.12, 0.5), wood)
-			k.frustum(Vector3(0, 0.12, 0), 0.26, 0.2, 0.2, straw.darkened(0.1), straw)
-			k.frustum(Vector3(0, 0.32, 0), 0.2, 0.13, 0.18, straw, straw.lightened(0.1))
-			k.frustum(Vector3(0, 0.5, 0), 0.13, 0.04, 0.14, straw.lightened(0.1), straw.lightened(0.2))
-			k.box(Vector3(0, 0.2, 0.2), Vector3(0.12, 0.08, 0.04), Color(0.1, 0.07, 0.04))
-		"bell":
-			k.box(Vector3(-0.3, 0.6, 0), Vector3(0.07, 1.2, 0.07), wood)
-			k.box(Vector3(0.3, 0.6, 0), Vector3(0.07, 1.2, 0.07), wood)
-			k.box(Vector3(0, 1.17, 0), Vector3(0.7, 0.07, 0.07), wood)
-		"orphanage":
-			terrain._house(k, Vector3.ZERO, Vector3(0.55, 0.3, 0.4), 0.0, Color(0.5, 0.28, 0.16), Color(0.92, 0.88, 0.76), 2)
-		"crate":
-			pass     # Sprite (Kisten, Faesser, Saecke), siehe unten
-		"ship":
-			pass
-	var mat := StandardMaterial3D.new()
-	mat.vertex_color_use_as_albedo = true
-	mat.roughness = 1.0
-	var mi := MeshInstance3D.new()
-	mi.mesh = k.build()
-	mi.material_override = mat
-	root.add_child(mi)
-	parts["body"] = mi
-	if o["type"] == "crate":     # Hafen-Hindernis: je Feld eines von drei Pixel-Sprites (Kistenstapel, Faesser, Saecke)
-		var kinds := ["fx_kiste", "fx_fass", "fx_saecke"]
-		var sizes := [1.0, 1.05, 1.0]
-		var v: int = (int(o["pos"].x) + 2 * int(o["pos"].y)) % 3
-		var cs := fx.make_sprite(kinds[v], Vector3(0, float(sizes[v]) * 0.46, 0), float(sizes[v]), false, Color.WHITE, 0, root)
-		mi.visible = false
-		parts["body"] = cs
-	if o["type"] == "ship":     # Elisabeths Piratenschiff: Sprite (Seitenansicht), auf dem Wasser, leicht schaukelnd
-		if ResourceLoader.exists("res://assets/fx/fx_schiff.png"):
+		"crate":     # je Feld eines von drei Sprites (Kistenstapel, Faesser, Saecke)
+			var c: Array = CRATE_SPRITES[(int(o["pos"].x) + 2 * int(o["pos"].y)) % 3]
+			parts["body"] = _object_sprite(c[0], c[1], root)
+		"ship":      # Elisabeths Piratenschiff auf dem Wasser, leicht schaukelnd
 			var sh := fx.make_sprite("fx_schiff", Vector3(0, 0.9, 0), 2.8, false, Color.WHITE, 0, root)
 			var rock := sh.create_tween().set_loops()
-			rock.tween_property(sh, "position:y", 1.02, 1.6).set_trans(Tween.TRANS_SINE)
-			rock.tween_property(sh, "position:y", 0.92, 1.6).set_trans(Tween.TRANS_SINE)
+			rock.tween_property(sh, "position:y", 0.97, 1.6).set_trans(Tween.TRANS_SINE)
+			rock.tween_property(sh, "position:y", 0.83, 1.6).set_trans(Tween.TRANS_SINE)
 			parts["body"] = sh
-	if o["type"] == "bell":
-		var piv := Node3D.new()
-		piv.position = Vector3(0, 1.14, 0)
-		root.add_child(piv)
-		var bk := MeshKit.new()
-		bk.frustum(Vector3(0, -0.34, 0), 0.17, 0.08, 0.3, Color(0.95, 0.78, 0.25), Color(0.8, 0.6, 0.15))
-		bk.box(Vector3(0, -0.04, 0), Vector3(0.03, 0.08, 0.03), Color(0.3, 0.3, 0.34))
-		var bi := MeshInstance3D.new()
-		bi.mesh = bk.build()
-		bi.material_override = mat
-		piv.add_child(bi)
-		parts["lever"] = piv
+		"bell":      # der ganze Sprite wackelt beim Laeuten um den Fuss
+			var piv := Node3D.new()
+			root.add_child(piv)
+			parts["body"] = _object_sprite("fx_glocke", 1.6, piv)
+			parts["lever"] = piv
+		_:
+			var def: Array = OBJ_SPRITE[o["type"]]
+			parts["body"] = _object_sprite(def[0], def[1], root)
 	if o["type"] == "orphanage":
-		var offs := [Vector3(-0.3, 0, 0.5), Vector3(0.0, 0, 0.58), Vector3(0.3, 0, 0.5)]
+		var offs := [Vector3(-0.42, 0, 0.62), Vector3(0.0, 0, 0.7), Vector3(0.42, 0, 0.62)]
 		for j in 3:
 			var tex := _portrait_tex(["kind_lotte", "kind_pip", "kind_mia"][j])
 			var sp := Sprite3D.new()
 			sp.texture = tex
-			sp.pixel_size = (0.55 if j < 2 else 0.4) / maxf(tex.get_width(), tex.get_height()) * (1.0 if j < 2 else 1.0)
+			sp.pixel_size = (0.75 if j < 2 else 0.55) / maxf(tex.get_width(), tex.get_height())
 			sp.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 			sp.shaded = false
 			sp.alpha_cut = SpriteBase3D.ALPHA_CUT_OPAQUE_PREPASS
@@ -1385,43 +1360,6 @@ func _make_ch5_object(o: Dictionary) -> void:
 			sp.position = (offs[j] as Vector3) + Vector3(0, 0.08, 0)
 			root.add_child(sp)
 	_obj_nodes[o["id"]] = parts
-
-
-## Teehaus: rote Saeulen, zwei geschwungene Daecher, goldene Spitze und Laternen. Nur Kulisse und gesperrtes Feld.
-func _make_teahouse(o: Dictionary) -> void:
-	var root := Node3D.new()
-	root.position = to_world(o["pos"])
-	root.scale = Vector3.ONE * 1.3
-	add_child(root)
-	var k := MeshKit.new()
-	var red := Color(0.62, 0.13, 0.1)
-	var roof := Color(0.58, 0.14, 0.11)
-	var cream := Color(0.93, 0.87, 0.7)
-	var gold := Color(0.95, 0.78, 0.25)
-	k.box(Vector3(0, 0.04, 0), Vector3(0.94, 0.08, 0.8), Color(0.52, 0.5, 0.47))
-	k.box(Vector3(0, 0.27, 0), Vector3(0.62, 0.38, 0.5), cream)
-	for sx in [-1, 1]:
-		for sz in [-1, 1]:
-			k.box(Vector3(sx * 0.33, 0.27, sz * 0.27), Vector3(0.06, 0.4, 0.06), red)
-	k.box(Vector3(0, 0.22, 0.255), Vector3(0.16, 0.26, 0.02), Color(0.28, 0.17, 0.09))
-	for wx in [-0.2, 0.2]:
-		k.box(Vector3(wx, 0.3, 0.255), Vector3(0.12, 0.14, 0.02), Color(0.98, 0.84, 0.45))
-	k.gable_roof(Vector3(0, 0.46, 0), Vector3(1.0, 0, 0.84), 0.16, roof)
-	k.box(Vector3(0, 0.47, 0.0), Vector3(1.02, 0.03, 0.04), gold)
-	k.box(Vector3(0, 0.55, 0), Vector3(0.36, 0.16, 0.3), cream)
-	k.gable_roof(Vector3(0, 0.63, 0), Vector3(0.6, 0, 0.5), 0.13, roof)
-	k.box(Vector3(0, 0.79, 0), Vector3(0.05, 0.14, 0.05), gold)
-	for sx in [-1, 1]:
-		k.box(Vector3(sx * 0.4, 0.36, 0.38), Vector3(0.08, 0.12, 0.08), red)
-		k.box(Vector3(sx * 0.4, 0.43, 0.38), Vector3(0.1, 0.02, 0.1), gold)
-	var mat := StandardMaterial3D.new()
-	mat.vertex_color_use_as_albedo = true
-	mat.roughness = 1.0
-	var mi := MeshInstance3D.new()
-	mi.mesh = k.build()
-	mi.material_override = mat
-	root.add_child(mi)
-	_obj_nodes[o["id"]] = {"root": root, "body": mi, "rubble": null, "doors": [], "lever": null}
 
 
 ## Gefesselte Geisel: Figur an einem Pfosten. Befreit rennt sie davon (_refresh_object).
