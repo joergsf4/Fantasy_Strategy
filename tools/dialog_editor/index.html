@@ -179,8 +179,8 @@ const $ = (s, r = document) => r.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const clone = x => JSON.parse(JSON.stringify(x));
 const EXPR = { "": "Normal", lachend: "Lachend", wuetend: "Wütend" };
-const STATES = { wall: ["intact", "broken"], gate: ["closed", "open", "broken"], switch: ["off", "on"], fire: ["burning", "out"], house: ["intact", "burning", "ruin"], hostage: ["bound", "free"], teahouse: ["standing"], hive: ["active", "broken"], bell: ["ready", "rung"], orphanage: ["standing"] };
-const STATE_DE = { intact: "heil", broken: "zerstört", closed: "geschlossen", open: "offen", off: "aus", on: "umgelegt", burning: "brennt", out: "gelöscht", ruin: "Ruine", bound: "gefesselt", free: "befreit", standing: "steht", active: "aktiv", ready: "bereit", rung: "geläutet" };
+const STATES = { wall: ["intact", "broken"], gate: ["closed", "open", "broken"], switch: ["off", "on"], fire: ["burning", "out"], house: ["intact", "burning", "ruin"], hostage: ["bound", "free"], teahouse: ["standing"], hive: ["active", "broken"], bell: ["ready", "rung"], orphanage: ["standing"], ship: ["anchored"], crate: ["intact", "broken"] };
+const STATE_DE = { intact: "heil", broken: "zerstört", closed: "geschlossen", open: "offen", off: "aus", on: "umgelegt", burning: "brennt", out: "gelöscht", ruin: "Ruine", bound: "gefesselt", free: "befreit", standing: "steht", active: "aktiv", ready: "bereit", rung: "geläutet", anchored: "vor Anker" };
 
 let DB, chapters = [], saved = {}, cur = "", hist = [], fut = [], canDraft = false, typingSnap = false, filter = "", open = {};
 

@@ -1,0 +1,250 @@
+{
+ "id": "ch6",
+ "title": "Möwenbucht",
+ "map": "res://data/map_ch6.json",
+ "briefing": "Die Gruppe hat erfahren, dass der Regent sich auf einer Insel im Meer aufhält. In der Hafenstadt Möwenbucht liegt Käpt'n Elisabeths Piratenschiff. Kämpft euch durch die Gassen zum Steg und bringt alle Helden zum Schiff (goldenes Feld und die Felder in drei Schritten Umkreis). Elisabeth kann vom Schiff aus die Breitseite feuern: ein Ziel in 3 bis 9 Feldern Entfernung, jede dritte Runde.",
+ "goals": [
+  {
+   "type": "reach",
+   "tile": [
+    9,
+    6
+   ],
+   "all": true,
+   "within": 3
+  }
+ ],
+ "triggers": [
+  {
+   "when": {
+    "turn": 2
+   },
+   "note": "Elisabeth weist auf die Breitseite hin",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "ritter",
+       "right": "elisabeth",
+       "speaker": "elisabeth",
+       "text": "Mein Schiff liegt hinten am Steg. Von der Bucht aus kann ich es feuern lassen. Nennt mir ein Ziel, und die Möwe antwortet!",
+       "right_expr": "lachend"
+      },
+      {
+       "left": "ritter",
+       "right": "elisabeth",
+       "speaker": "ritter",
+       "text": "Dann zeig, was deine Möwe kann, Kapitänin."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "ability": {
+     "id": "breitseite",
+     "by": "elisabeth"
+    }
+   },
+   "note": "Erster Einsatz der Breitseite",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "ritter",
+       "right": "elisabeth",
+       "speaker": "elisabeth",
+       "text": "Feuer frei! Das ist für jeden Zoll meiner Planken!",
+       "right_expr": "lachend"
+      },
+      {
+       "left": "ritter",
+       "right": "elisabeth",
+       "speaker": "ritter",
+       "text": "Ich bin froh, dass sie auf unserer Seite steht."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "near": {
+     "a": "robo",
+     "b": "soldat_infanterie",
+     "dist": 3
+    }
+   },
+   "if": {
+    "present": [
+     "robo"
+    ]
+   },
+   "note": "Robo trifft die Büttel",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "robo",
+       "right": "soldat_infanterie",
+       "speaker": "robo",
+       "text": "Büttel erkannt. Wahrscheinlichkeit, dass sie freiwillig weichen: niedrig."
+      },
+      {
+       "left": "robo",
+       "right": "soldat_infanterie",
+       "speaker": "soldat_infanterie",
+       "text": "Was sagt der Blechkasten da?"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "enter": [
+     8,
+     6
+    ]
+   },
+   "note": "Der Hundsfreund auf dem Steg",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "hund",
+       "right": "elisabeth",
+       "speaker": "hund",
+       "text": "Wir müssen da wirklich drauf? Der Steg wackelt!"
+      },
+      {
+       "left": "hund",
+       "right": "elisabeth",
+       "speaker": "elisabeth",
+       "text": "Das ist ein Steg. Mein Schiff wackelt noch viel mehr.",
+       "right_expr": "lachend"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 3
+   },
+   "if": {
+    "fled": [
+     "wart"
+    ]
+   },
+   "note": "Wart kehrt zurück und wartet auf dem Steg",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "elisabeth",
+       "right": "wart",
+       "speaker": "wart",
+       "text": "Piratenmädel! Hier wartet jemand auf dich. Mit einer größeren Rakete!",
+       "right_expr": "lachend"
+      },
+      {
+       "left": "elisabeth",
+       "right": "wart",
+       "speaker": "elisabeth",
+       "text": "Dann hast du dich in der Größe vertan. Mein Schiff hat die größeren Kanonen."
+      }
+     ]
+    },
+    {
+     "spawn": [
+      {
+       "id": "wart",
+       "pos": [
+        8,
+        6
+       ],
+       "carry": {
+        "gold": 50
+       },
+       "label": "Wart!"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 4
+   },
+   "note": "Verstärkung vom Stadttor",
+   "do": [
+    {
+     "popup": "Alarm! Verstärkung am Stadttor."
+    },
+    {
+     "spawn": [
+      {
+       "id": "soldat_infanterie",
+       "pos": [
+        0,
+        5
+       ]
+      },
+      {
+       "id": "soldat_bogenschuetze",
+       "pos": [
+        0,
+        6
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "enemies_left": 2
+   },
+   "note": "Der Weg ist fast frei",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "ritter",
+       "right": "elisabeth",
+       "speaker": "elisabeth",
+       "text": "Der Weg zum Steg wird frei! Schnell, bevor die Flut die Planken schluckt.",
+       "right_expr": "lachend"
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "flee": {
+  "wart": [
+   {
+    "left": "$hero",
+    "right": "wart",
+    "speaker": "wart",
+    "text": "Meine Raketen! Mein Stolz! Und jetzt auch noch die Piratin!",
+    "right_expr": "wuetend"
+   },
+   {
+    "left": "$hero",
+    "right": "wart",
+    "speaker": "$hero",
+    "text": "Er schwimmt davon. Hoffentlich nicht zu unserem Schiff."
+   },
+   {
+    "left": "$hero",
+    "right": "wart",
+    "speaker": "wart",
+    "text": "Ich komme wieder! Mit einem Boot! Und mit Senf!",
+    "right_expr": "wuetend"
+   }
+  ]
+ }
+}

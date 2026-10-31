@@ -3,7 +3,7 @@ extends Node
 
 const TITLE_MUSIC := "res://assets/audio/title_theme.mp3"
 const BATTLE_MUSIC := "res://assets/audio/battle_theme.mp3"
-const CHAPTERS := ["ch1", "ch2", "ch3", "ch4", "ch5"]
+const CHAPTERS := ["ch1", "ch2", "ch3", "ch4", "ch5", "ch6"]
 const MUSIC_DB := -6.0
 
 var units: Dictionary
@@ -467,6 +467,23 @@ func _screenshot_mode() -> void:
 		for i in 40:
 			await get_tree().process_frame
 		await get_tree().create_timer(1.0).timeout
+		get_viewport().get_texture().get_image().save_png(OS.get_environment("SHOT_OUT"))
+		get_tree().quit()
+		return
+	if mode.begins_with("hafen"):   # Mission 6: hafen | hafen_breitseite (Schuss vom Schiff im Flug)
+		var bh := Battle.new()
+		bh.setup(Mission.load_mission("ch6"), units)
+		bh.loadout = Items.defs()["loadout_chapter1"]
+		add_child(bh)
+		await get_tree().process_frame
+		if mode == "hafen_breitseite":
+			var eli: Dictionary = bh._find("elisabeth")
+			bh._run_ability(eli, "breitseite", bh._find("soldat_infanterie"))
+			await get_tree().create_timer(0.75).timeout
+		else:
+			for i in 30:
+				await get_tree().process_frame
+			await get_tree().create_timer(0.8).timeout
 		get_viewport().get_texture().get_image().save_png(OS.get_environment("SHOT_OUT"))
 		get_tree().quit()
 		return

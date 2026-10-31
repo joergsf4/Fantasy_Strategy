@@ -190,6 +190,10 @@
      "db": -4
     }
    ]
+  },
+  "breitseite": {
+   "shot": "cannon",
+   "hit": "explosion"
   }
  },
  "events": {

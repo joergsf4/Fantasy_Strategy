@@ -319,6 +319,36 @@ def e8_bees():
         print("  ", v, [(m, round(wr(res[f'{v}|{m}']), 2), round(res[f'{v}|{m}']['stung_battles'] / res[f'{v}|{m}']['n'], 2)) for m in mults])
 
 
+def e9_harbor():
+    """Mission 6 (Hafenstadt, Ziel: Schiff erreichen): Siegquote mit/ohne Breitseite, mit/ohne Wart bei steigender Gegnerstaerke."""
+    print("E9: Mission 6, Hafenstadt und Breitseite")
+    party = ["hund", "maedchen_baer", "elisabeth", "ritter", "robo", "samurai"]
+    mission = json.loads((GAME / "data" / "map_ch6.json").read_text())
+    foes = [e["id"] for e in mission["enemies"]]
+    variants = {
+        "voll": dict(enemy={"fixed": foes}),
+        "ohne_breitseite": dict(enemy={"fixed": foes}, disabled={"elisabeth": ["breitseite"]}),
+        "mit_wart": dict(enemy={"fixed": foes + ["wart"]}),
+        "mit_wart_ohne_breitseite": dict(enemy={"fixed": foes + ["wart"]}, disabled={"elisabeth": ["breitseite"]}),
+    }
+    mults = [1.0, 1.5, 2.0]
+    if os.environ.get("E9_QUICK"):
+        variants = {k: variants[k] for k in ("mit_wart", "mit_wart_ohne_breitseite")}
+    cells = []
+    for v, spec in variants.items():
+        for m in mults:
+            cells.append(dict({"name": f"{v}|{m}", "n": 500, "seed": 990000, "map": "ch6", "party": {"fixed": party},
+                               "e_mods": {"hp": m, "atk": m}, "e_ai": {}}, **spec))
+    res = run_cells(cells)
+    if os.environ.get("E9_QUICK"):
+        for v in variants:
+            print("  ", v, [(m, round(wr(res[f'{v}|{m}']), 2), round(res[f'{v}|{m}']['turns'] / res[f'{v}|{m}']['n'], 1)) for m in mults])
+        return
+    save("e9", {"cells": res, "mults": mults, "variants": list(variants)})
+    for v in variants:
+        print("  ", v, [(m, round(wr(res[f'{v}|{m}']), 2), round(res[f'{v}|{m}']['turns'] / res[f'{v}|{m}']['n'], 1)) for m in mults])
+
+
 def e7_fire():
     """Mission 3 (Feuer): Siegquote und gerettete Haeuser mit/ohne Loeschen, mit/ohne Brunhilde, bei steigender Gegnerstaerke."""
     print("E7: Mission 3, Feuer und Loeschen")
@@ -725,6 +755,27 @@ def report():
         a0, a1 = cells["voll|1.0"], cells["weder_noch|1.0"]
         notes.append(f"Mission 5: bei ×1,0 gewinnt die Gruppe {wr(a0):.0%}, Kinder werden in {a0['stung_battles'] / a0['n']:.0%} der Kämpfe gestochen (ohne Glocke und Stöcke: {wr(a1):.0%} / {a1['stung_battles'] / a1['n']:.0%})")
 
+    # ---- E9
+    e9 = R.get("e9")
+    if e9:
+        cells = e9["cells"]
+        nm = {"voll": "Voll (mit Breitseite)", "ohne_breitseite": "Ohne Breitseite", "mit_wart": "Mit Wart (von Beginn an)",
+              "mit_wart_ohne_breitseite": "Mit Wart, ohne Breitseite"}
+        w("## 10. Mission 6: Hafenstadt, Ziel Schiff\n")
+        w("Aufstellung wie im Spiel (Hundsfreund, Mira, Elisabeth, Albrecht, Robo, Takeda gegen 4 Büttel, 2 Bogenschützen und 1 Reiter). Wart erscheint im Spiel erst in Runde 3, hier steht er von Beginn an (strenger). "
+          "Zahlen: Siegquote / durchschnittliche Runden bis zum Schiff, bei steigender Gegnerstärke.\n")
+        w("| Variante | " + " | ".join(f"×{m}" for m in e9["mults"]) + " |")
+        w("|---|" + "--:|" * len(e9["mults"]))
+        for v in e9["variants"]:
+            row = []
+            for m in e9["mults"]:
+                a = cells[f"{v}|{m}"]
+                row.append(f"{wr(a):.0%} / {a['turns'] / a['n']:.1f}")
+            w(f"| {nm[v]} | " + " | ".join(row) + " |")
+        w("")
+        a0, a1 = cells["voll|1.0"], cells["ohne_breitseite|1.0"]
+        notes.append(f"Mission 6: bei ×1,0 gewinnt die Gruppe {wr(a0):.0%} in {a0['turns'] / a0['n']:.1f} Runden (ohne Breitseite {wr(a1):.0%})")
+
     # ---- Kurzfassung oben
     head = ["## Kurzfassung\n"] + [f"- {n}" for n in notes] + [""]
     L[2:2] = head if notes else []
@@ -744,7 +795,7 @@ def report():
 
 
 STEPS = {"calib": calib, "e0": e0_ratings, "e1": e1_contribution, "e2": e2_ablation, "e3": e3_difficulty,
-         "e3base": lambda: e3_difficulty(False), "e4": e4_power_ratio, "e5": e5_items, "e6": e6_defend, "e7": e7_fire, "e8": e8_bees, "report": report}
+         "e3base": lambda: e3_difficulty(False), "e4": e4_power_ratio, "e5": e5_items, "e6": e6_defend, "e7": e7_fire, "e8": e8_bees, "e9": e9_harbor, "report": report}
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()

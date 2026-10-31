@@ -14,6 +14,7 @@ Erzeugt von `tools/balance.py` mit dem grafikfreien Simulator (`game/sim/`). Er 
 - Verteidigen: Gruppen +3.2 Pp Siegquote, 16.5 Einsätze pro Kampf
 - Mission 3: ohne Löschen gehen im Schnitt 4.0 von 4 Häusern verloren, mit voller Löschung 0.0
 - Mission 5: bei ×1,0 gewinnt die Gruppe 100%, Kinder werden in 27% der Kämpfe gestochen (ohne Glocke und Stöcke: 94% / 77%)
+- Mission 6: bei ×1,0 gewinnt die Gruppe 100% in 6.6 Runden (ohne Breitseite 100%)
 
 ## 1. Einzelwertung: Wert in Infanteristen
 
@@ -303,6 +304,17 @@ Aufstellung wie im Spiel (Mira, Albrecht, Wendy, Elisabeth, Kage-Schwestern, Tak
 | Ohne Glocke (kein Hundsfreund) | 100% / 32% / 6.9 | 93% / 48% / 13.4 | 19% / 89% / 14.5 |
 | Stöcke ignoriert | 100% / 84% / 8.5 | 51% / 71% / 18.9 | 17% / 91% / 15.9 |
 | Weder Glocke noch Stöcke | 94% / 77% / 12.6 | 17% / 69% / 21.5 | 19% / 94% / 16.3 |
+
+## 10. Mission 6: Hafenstadt, Ziel Schiff
+
+Aufstellung wie im Spiel (Hundsfreund, Mira, Elisabeth, Albrecht, Robo, Takeda gegen 4 Büttel, 2 Bogenschützen und 1 Reiter). Wart erscheint im Spiel erst in Runde 3, hier steht er von Beginn an (strenger). Zahlen: Siegquote / durchschnittliche Runden bis zum Schiff, bei steigender Gegnerstärke.
+
+| Variante | ×1.0 | ×1.5 | ×2.0 |
+|---|--:|--:|--:|
+| Voll (mit Breitseite) | 100% / 6.6 | 100% / 8.3 | 99% / 11.4 |
+| Ohne Breitseite | 100% / 6.8 | 100% / 8.7 | 99% / 12.8 |
+| Mit Wart (von Beginn an) | 100% / 8.2 | 98% / 12.0 | 23% / 10.3 |
+| Mit Wart, ohne Breitseite | 100% / 8.8 | 94% / 13.0 | 12% / 9.9 |
 
 ## Grenzen
 

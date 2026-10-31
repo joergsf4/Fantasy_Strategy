@@ -1,0 +1,63 @@
+{
+ "intro": [
+  {
+   "left": "maedchen_baer",
+   "right": "elisabeth",
+   "speaker": "maedchen_baer",
+   "text": "Die Insel des Regenten liegt weit draußen im Meer. Wie kommen wir dort hin?"
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "elisabeth",
+   "speaker": "elisabeth",
+   "text": "Das trifft sich gut. Mein Schiff liegt in der Möwenbucht, ganz in der Nähe. Die Rostige Möwe schwimmt, solange niemand hinschaut.",
+   "right_expr": "lachend"
+  },
+  {
+   "left": "hund",
+   "right": "elisabeth",
+   "speaker": "hund",
+   "text": "Schwimmt? Ich dachte, Schiffe schwimmen immer."
+  },
+  {
+   "left": "hund",
+   "right": "elisabeth",
+   "speaker": "elisabeth",
+   "text": "Immer. Meistens. Fast."
+  },
+  {
+   "left": "ritter",
+   "right": "elisabeth",
+   "speaker": "ritter",
+   "text": "Die Stadt ist voller Büttel des Regenten. Wir müssen uns bis zum Steg durchschlagen."
+  }
+ ],
+ "outro": [
+  {
+   "left": "hund",
+   "right": "elisabeth",
+   "speaker": "hund",
+   "text": "Wir sind an Bord. Und alles schwankt. Wieso schwankt alles?",
+   "left_expr": "wuetend"
+  },
+  {
+   "left": "hund",
+   "right": "elisabeth",
+   "speaker": "elisabeth",
+   "text": "Das nennt man Meer, Landratte. Hisst die Segel!",
+   "right_expr": "lachend"
+  },
+  {
+   "left": "robo",
+   "right": "elisabeth",
+   "speaker": "robo",
+   "text": "Insel in Sicht. Windstärke gering. Schwankungsfaktor: unangenehm."
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "elisabeth",
+   "speaker": "maedchen_baer",
+   "text": "Dort drüben wartet der Regent. Haltet durch, wir sind gleich da."
+  }
+ ]
+}

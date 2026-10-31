@@ -120,6 +120,15 @@ func _ready() -> void:
 	add_child(_fire_preview)
 	_update_fire_preview()
 	goal = (map_data.get("goals", [{"type": "rout"}]) as Array)[0]
+	if goal.get("type", "rout") == "reach":      # Zielfeld golden markieren, leicht pulsierend
+		var gt := Vector2i(goal["tile"][0], goal["tile"][1])
+		var gm := MeshInstance3D.new()
+		gm.mesh = terrain.tile_mesh(gt, 0.48, 0.07)
+		gm.material_override = _mat(Color(1.0, 0.82, 0.25, 0.55), true, true)
+		add_child(gm)
+		var pulse := gm.create_tween().set_loops()
+		pulse.tween_property(gm, "transparency", 0.5, 0.8).set_trans(Tween.TRANS_SINE)
+		pulse.tween_property(gm, "transparency", 0.0, 0.8).set_trans(Tween.TRANS_SINE)
 	triggers = (map_data.get("triggers", []) as Array).duplicate(true)
 	_hl_root = Node3D.new()
 	add_child(_hl_root)
@@ -244,6 +253,9 @@ func _spawn(id: String, team: String, pos: Vector2i, extra := {}) -> void:
 	if extra.has("hp"):
 		u["hp"] = int(extra["hp"])
 		u["maxhp"] = int(extra["hp"])
+	if team == "p":     # Faehigkeiten, die nur diese Mission gewaehrt ("grants": {Held: [Faehigkeit]}), z. B. Breitseite
+		for ab_id: String in (map_data.get("grants", {}) as Dictionary).get(id, []):
+			(u["abilities"] as Array).append(ab_id)
 	u["carry"] = extra.get("carry", {})
 	u["guard"] = extra.get("guard", false)    # Wache: bleibt auf dem Posten, bis ein Held nahe kommt
 	if team == "p":
@@ -1130,7 +1142,7 @@ func _make_object(o: Dictionary) -> void:
 	if o["type"] == "teahouse" or o["type"] == "hostage":
 		_make_teahouse(o) if o["type"] == "teahouse" else _make_hostage(o)
 		return
-	if o["type"] == "hive" or o["type"] == "bell" or o["type"] == "orphanage":
+	if o["type"] in ["hive", "bell", "orphanage", "ship", "crate"]:
 		_make_ch5_object(o)
 		return
 	var stone := Color(0.52, 0.5, 0.54)
@@ -1236,6 +1248,13 @@ func _refresh_object(o: Dictionary, animate: bool) -> void:
 				lv.create_tween().tween_property(lv, "rotation_degrees:z", tilt, 0.25).set_trans(Tween.TRANS_BACK)
 			else:
 				lv.rotation_degrees.z = tilt
+		"crate":
+			(p["body"] as Node3D).visible = st == "intact"
+			if animate and st == "broken":
+				fx.particles("fx_smoke", to_world(o["pos"]) + Vector3(0, 0.3, 0), 6, 1.3, 0.4, 0.6, 1.0, Color(0.7, 0.55, 0.35), false, 90.0)
+				Sfx.event("wall_break")
+		"ship":
+			pass
 		"hive":
 			(p["body"] as Node3D).visible = st == "active"
 			if animate and st == "broken":
@@ -1292,7 +1311,7 @@ func _refresh_object(o: Dictionary, animate: bool) -> void:
 func _make_ch5_object(o: Dictionary) -> void:
 	var root := Node3D.new()
 	root.position = to_world(o["pos"])
-	root.scale = Vector3.ONE * {"orphanage": 1.35, "hive": 1.25, "bell": 1.0}[o["type"]]
+	root.scale = Vector3.ONE * {"orphanage": 1.35, "hive": 1.25, "bell": 1.0, "ship": 1.0, "crate": 1.1}[o["type"]]
 	add_child(root)
 	var k := MeshKit.new()
 	var parts := {"root": root, "body": null, "rubble": null, "doors": [], "lever": null}
@@ -1311,6 +1330,18 @@ func _make_ch5_object(o: Dictionary) -> void:
 			k.box(Vector3(0, 1.17, 0), Vector3(0.7, 0.07, 0.07), wood)
 		"orphanage":
 			terrain._house(k, Vector3.ZERO, Vector3(0.55, 0.3, 0.4), 0.0, Color(0.5, 0.28, 0.16), Color(0.92, 0.88, 0.76), 2)
+		"crate":
+			var seed_: int = (int(o["pos"].x) * 5 + int(o["pos"].y) * 3) % 3
+			if seed_ == 0:     # Fass
+				k.frustum(Vector3(0, 0, 0), 0.2, 0.2, 0.42, wood.darkened(0.05), wood, 10, true)
+				for hy in [0.1, 0.32]:
+					k.frustum(Vector3(0, hy, 0), 0.21, 0.21, 0.03, Color(0.25, 0.25, 0.3), Color(0.3, 0.3, 0.35), 10)
+			else:              # Kiste mit Querlatte
+				k.box(Vector3(0, 0.22, 0), Vector3(0.46, 0.44, 0.46), wood.lightened(0.1))
+				k.box(Vector3(0, 0.22, 0.235), Vector3(0.48, 0.07, 0.02), wood.darkened(0.25))
+				k.box(Vector3(0, 0.22, 0.235), Vector3(0.07, 0.46, 0.02), wood.darkened(0.25))
+		"ship":
+			pass
 	var mat := StandardMaterial3D.new()
 	mat.vertex_color_use_as_albedo = true
 	mat.roughness = 1.0
@@ -1319,6 +1350,13 @@ func _make_ch5_object(o: Dictionary) -> void:
 	mi.material_override = mat
 	root.add_child(mi)
 	parts["body"] = mi
+	if o["type"] == "ship":     # Elisabeths Piratenschiff: Sprite (Seitenansicht), auf dem Wasser, leicht schaukelnd
+		if ResourceLoader.exists("res://assets/fx/fx_schiff.png"):
+			var sh := fx.make_sprite("fx_schiff", Vector3(0, 0.9, 0), 2.8, false, Color.WHITE, 0, root)
+			var rock := sh.create_tween().set_loops()
+			rock.tween_property(sh, "position:y", 1.02, 1.6).set_trans(Tween.TRANS_SINE)
+			rock.tween_property(sh, "position:y", 0.92, 1.6).set_trans(Tween.TRANS_SINE)
+			parts["body"] = sh
 	if o["type"] == "bell":
 		var piv := Node3D.new()
 		piv.position = Vector3(0, 1.14, 0)
@@ -2084,10 +2122,16 @@ func goal_met() -> bool:
 			return world.by_id(goal["id"])["state"] == "free"
 		"reach":
 			var t := Vector2i(goal["tile"][0], goal["tile"][1])
+			var near := int(goal.get("within", 0))
+			var any := false
 			for u in units:
-				if u["team"] == "p" and u["pos"] == t:
-					return true
-			return false
+				if u["team"] != "p":
+					continue
+				var at: bool = Grid.dist(u["pos"], t) <= near
+				if goal.get("all", false) and not at:
+					return false          # "all": jeder lebende Held muss am Ziel sein
+				any = any or at
+			return any
 		_:
 			return _count_team("e") == 0
 

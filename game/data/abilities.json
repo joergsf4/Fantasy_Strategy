@@ -451,5 +451,29 @@
   "caps": [
    "ranged_hit"
   ]
+ },
+ "breitseite": {
+  "name": "Breitseite",
+  "text": "Das Schiff feuert aus der Bucht (×1,4, Reichweite 3–9). Gegner neben dem Ziel erhalten 50 %.",
+  "cd": 3,
+  "target": "enemy",
+  "range": [
+   3,
+   9
+  ],
+  "effects": [
+   {
+    "type": "damage",
+    "mult": 1.4
+   },
+   {
+    "type": "splash",
+    "mult": 0.5
+   }
+  ],
+  "caps": [
+   "blast",
+   "ranged_hit"
+  ]
  }
 }

@@ -113,5 +113,26 @@
   ],
   "hp": 0,
   "solutions": {}
+ },
+ "ship": {
+  "name": "Schiff",
+  "start": "anchored",
+  "active": "",
+  "blocks": [],
+  "hp": 0,
+  "solutions": {}
+ },
+ "crate": {
+  "name": "Kiste",
+  "start": "intact",
+  "active": "intact",
+  "blocks": [
+   "intact"
+  ],
+  "hp": 10,
+  "def": 0,
+  "solutions": {
+   "blast": "break"
+  }
  }
 }

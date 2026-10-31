@@ -353,7 +353,7 @@ func flash_unit(u: Dictionary, color := Color(3, 3, 3), time := 0.18) -> void:
 func windup(id: String, u: Dictionary, target: Dictionary) -> void:
 	Sfx.ability(id, "windup", u, target)
 	match id:
-		"kanone", "rakete":
+		"kanone", "rakete", "breitseite":
 			await _kanone_windup(u, target)
 		"verspotten":
 			await _verspotten_windup(u)
@@ -378,8 +378,8 @@ func cast(id: String, u: Dictionary, _target: Dictionary, tiles: Array[Vector2i]
 func before_hit(id: String, u: Dictionary, v: Dictionary, i: int) -> void:
 	Sfx.ability(id, "shot", u, v)
 	match id:
-		"kanone", "rakete":
-			await _kanone_shot(u, v)
+		"kanone", "rakete", "breitseite":
+			await _kanone_shot(u, v, id)
 		"knochenwurf":
 			await _bone_shot(u, v, i)
 		"gebiss":
@@ -392,7 +392,7 @@ func before_hit(id: String, u: Dictionary, v: Dictionary, i: int) -> void:
 func on_hit(id: String, u: Dictionary, v: Dictionary, i: int) -> void:
 	Sfx.ability(id, "hit", u, v)
 	match id:
-		"kanone", "rakete":
+		"kanone", "rakete", "breitseite":
 			_explosion(chest(v, 0.4), 1.0)
 			for o in battle.units:
 				if o != v and o["team"] != u["team"] and Grid.dist(o["pos"], v["pos"]) == 1:
@@ -434,8 +434,12 @@ func _kanone_windup(u: Dictionary, target: Dictionary) -> void:
 	await get_tree().create_timer(0.4).timeout
 
 
-func _kanone_shot(u: Dictionary, v: Dictionary) -> void:
+func _kanone_shot(u: Dictionary, v: Dictionary, id := "kanone") -> void:
 	var from := chest(u, 0.55)
+	if id == "breitseite":     # Schuss kommt vom Schiff in der Bucht, nicht von der Kapitaenin
+		for o in battle.world.objects:
+			if o["type"] == "ship":
+				from = battle.to_world(o["pos"]) + Vector3(0, 0.9, 0)
 	var to := chest(v, 0.35)
 	var dir := (to - from)
 	dir.y = 0.0
@@ -447,7 +451,8 @@ func _kanone_shot(u: Dictionary, v: Dictionary) -> void:
 	particles(c("kanone", "smoke", "fx_smoke"), muzzle, 7, 1.4, 0.7, 0.8, -0.6, Color(0.85, 0.85, 0.85), false, 70.0)
 	light_flash(muzzle, Color(1.0, 0.7, 0.3), 2.5, 3.0, 0.2)
 	shake(0.04, 0.15)
-	knockback(u, to, 0.25, 0.3)
+	if id != "breitseite":
+		knockback(u, to, 0.25, 0.3)
 	await projectile(c("kanone", "ball", "fx_cannonball"), muzzle, to, float(c("kanone", "time", 0.62)), float(c("kanone", "arc", 2.4)), 0.45, 4.0, c("kanone", "smoke", "fx_smoke"))
 
 

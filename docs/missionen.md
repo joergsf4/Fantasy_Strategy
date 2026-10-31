@@ -210,3 +210,12 @@ Benannte Gegner (`"flees": true` in `units.json`: Wart, Oskar, Maja) sterben nic
 - **Stachelia:** 40 Leben, Wendung bei unter 50 % (die Kinder bitten sie), dann Rückzug. Später als Spezialfähigkeit: Bienen rufen und Heilhonig fallen lassen.
 - **Neue Technik:** `later`-Schritt (zeitversetztes Ereignis), `spawn` mit `team: p`, `hp`-Überschreibung für Gegner, Wachen-Marke `schwarm`.
 - Simulator: abgebildet (Stöcke, Glocke, Hundsfreund, Stiche, Rückzug), Messung in `docs/balance.md` Abschnitt 9. Startaufstellung: Stachelia (40 Leben) und 5 Bienenkrieger.
+
+## Mission 6: Möwenbucht (Hafenstadt, Ziel: Schiff)
+
+- **Ziel:** alle Helden zum Schiff (`reach` mit `all: true`, `within: 3` um das goldene Feld am Steg-Ende). Das Zielfeld ist golden markiert. Verloren: alle Helden gefallen.
+- **Breitseite:** Elisabeth bekommt in dieser Mission (`grants` in `missions/ch6.json`) die Fähigkeit `breitseite`: ein Gegner in 3 bis 9 Feldern Entfernung, ×1,4 Schaden plus Nachbarn 50 %, Abklingzeit 3. Der Schuss startet am Schiff in der Bucht (Objekt `ship`).
+- **Gruppe:** Hundsfreund, Mira, Elisabeth, Albrecht, Robo (Heiler), Takeda.
+- **Wart** kehrt in Runde 3 auf dem Steg zurück, wenn er früher entkommen ist (`if: {fled: ["wart"]}`). Da benannte Gegner nie sterben, ist das in einem normalen Durchlauf immer der Fall.
+- **Neue Bausteine:** Terrain `P` (Holzsteg, laufbar), Objekte `ship` (Sprite) und `crate` (Kisten und Fässer, zerstörbar), Missionsfeld `grants`, `reach`-Ziel mit `all`/`within`.
+- **Simulator:** abgebildet (Ziel, Grants, Breitseite). Messung in `docs/balance.md`, Abschnitt 10.

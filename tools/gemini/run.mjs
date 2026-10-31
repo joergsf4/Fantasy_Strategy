@@ -155,6 +155,9 @@ jobs.push({ name: 'bienenkrieger_chibi', refs: [path.join(OUT, 'bienenmaedchen_c
 jobs.push({ name: 'fx_honigtopf', refs: [path.join(OUT, 'fx_fireball.jpg')], prompt: 'Create a single clay honey pot overflowing with thick golden honey that drips down its sides, with a small wooden honey dipper, game sprite.' + FX_STYLE });
 jobs.push({ name: 'fx_honig', refs: [path.join(OUT, 'fx_fireball.jpg')], prompt: 'Create a single splash of golden sticky honey: a glossy amber blob with drips and a few flying droplets, game VFX sprite.' + FX_STYLE });
 
+// Kapitel 6: Elisabeths Piratenschiff als Karten-Sprite (Seitenansicht, schraeg von vorn).
+jobs.push({ name: 'fx_schiff', refs: [path.join(OUT, 'fx_fireball.jpg')], prompt: 'Create Captain Elisabeth\'s pirate ship: a small, charming wooden pirate sailing ship with two masts, patched cream-colored sails with a skull-and-crossed-cutlasses emblem, a carved figurehead, a row of black cannons along the side, rope rigging, a little crow\'s nest and a red-gold stern with lanterns, seen from the side slightly from the front, floating (no water around it). Game sprite.' + FX_STYLE });
+
 async function generate(page, job) {
   await page.goto('https://gemini.google.com/app', { waitUntil: 'domcontentloaded' });
   await page.waitForSelector('div[role=textbox], .ql-editor', { timeout: 30000 });

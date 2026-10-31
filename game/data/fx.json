@@ -124,5 +124,15 @@
   "sprite": "fx_gebiss",
   "time": 0.45,
   "lunge": false
+ },
+ "breitseite": {
+  "arc": 1.9,
+  "time": 0.56,
+  "ball": "fx_cannonball",
+  "fire": "fx_fireball",
+  "smoke": "fx_smoke",
+  "boom": 2.6,
+  "shake": 0.14,
+  "lunge": false
  }
 }

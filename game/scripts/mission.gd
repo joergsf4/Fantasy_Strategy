@@ -31,6 +31,6 @@ static func goal_text(goal: Dictionary, enemies_left: int, turn: int) -> String:
 		"free":
 			return "Ziel: Befreit die Geisel"
 		"reach":
-			return "Ziel: Erreicht das markierte Feld"
+			return "Ziel: Alle Helden zum Schiff (goldenes Feld)" if goal.get("all", false) else "Ziel: Erreicht das markierte Feld"
 		_:
 			return "Ziel: Besiegt alle Gegner (%d übrig)" % enemies_left

@@ -22,6 +22,9 @@ var inventory := {"p": {}, "e": {}}      # Rucksack je Team: {Gegenstand: Anzahl
 var _uid := 1
 var world := World.new([])                # Weltobjekte (Feuer, Haeuser ...); leer = keine
 var flammable: Dictionary = {}            # Waldfelder
+var goal_tile := Vector2i(-1, -1)          # Ziel "reach": ein Held (oder alle bei goal_all) nahe diesem Feld gewinnt
+var goal_all := false
+var goal_within := 0
 var kids_stung := 0                       # Kapitel 5: Bienen am Waisenhaus
 var retreated: Array = []                 # Gegner, die sich zurueckgezogen haben (Stachelia)
 var bell_rung_turn := -1                  # Kapitel 5: Runde, in der die Glocke geläutet wurde
@@ -634,12 +637,17 @@ func begin_phase(team: String) -> void:
 func winner() -> String:
 	var p := 0
 	var e := 0
+	var at_goal := 0
 	for u in units + away:
 		if u["team"] == "p":
 			p += 1
+			if goal_tile.x >= 0 and Grid.dist(u["pos"], goal_tile) <= goal_within:
+				at_goal += 1
 		else:
 			e += 1
-	if e == 0:
+	if goal_tile.x >= 0 and p > 0 and ((not goal_all and at_goal > 0) or (goal_all and at_goal == p)):
+		return "p"
+	if e == 0 and goal_tile.x < 0:
 		return "p"
 	if p == 0:
 		return "e"

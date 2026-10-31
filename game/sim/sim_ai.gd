@@ -264,6 +264,8 @@ static func best_action_at(b: SimBattle, u: Dictionary, t: Vector2i, targets: Ar
 
 ## Wohin soll gelaufen werden, wenn nichts anzugreifen ist? [Zielfeld, gewuenschte Entfernung]
 static func _goal(b: SimBattle, u: Dictionary, targets: Array[Dictionary], friends: Array[Dictionary], caution: float) -> Array:
+	if u["team"] == "p" and b.goal_tile.x >= 0:      # Ziel erreichen: wer nichts angreifen kann, laeuft zum Zielfeld
+		return [b.goal_tile, 0]
 	if u["team"] == "p" and b.ai_cfg["p"].get("douse", true):   # wer Feuer loeschen kann, laeuft zum naechsten Brand
 		var can := false
 		for id: String in u["abilities"]:

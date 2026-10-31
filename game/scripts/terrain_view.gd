@@ -8,12 +8,12 @@ const RES := 5               # Gitterpunkte pro Kachel im Bodenmesh
 const WATER_LEVEL := -0.08
 
 # Zielhoehe und Rauigkeit je Gelaendetyp (an den Kachelmitten, dazwischen weich interpoliert)
-const H := {"G": 0.0, "F": 0.03, "M": 1.0, "W": -0.5, "V": 0.02, "C": 0.05}
-const AMP := {"G": 0.035, "F": 0.05, "M": 0.3, "W": 0.04, "V": 0.0, "C": 0.0}
+const H := {"G": 0.0, "F": 0.03, "M": 1.0, "W": -0.5, "V": 0.02, "C": 0.05, "P": 0.0}
+const AMP := {"G": 0.035, "F": 0.05, "M": 0.3, "W": 0.04, "V": 0.0, "C": 0.0, "P": 0.0}
 # Bodengewichte: R Gras, G Waldboden, B Fels, A Pfad
 const WT := {
 	"G": Color(1, 0, 0, 0), "F": Color(0.35, 0.65, 0, 0), "M": Color(0.1, 0, 0.9, 0),
-	"W": Color(1, 0, 0, 0), "V": Color(0.7, 0, 0, 0.6), "C": Color(0, 0, 0.7, 0.3),
+	"W": Color(1, 0, 0, 0), "V": Color(0.7, 0, 0, 0.6), "C": Color(0, 0, 0.7, 0.3), "P": Color(1, 0, 0, 0),
 }
 
 var grid: Grid
@@ -508,6 +508,8 @@ func _build_structures() -> void:
 				_village(i, j)
 			elif t == "C":
 				_castle(i, j)
+			elif t == "P":
+				_planks(i, j)
 
 
 func _build_mesh_at(k: MeshKit, x: float, y: float, z: float, name: String) -> void:
@@ -552,6 +554,32 @@ func _house(k: MeshKit, c: Vector3, size: Vector3, rot: float, roof: Color, wall
 	var ch := bs * Vector3(size.x * 0.28, 0, -size.z * 0.15)
 	k.box(Vector3(c.x + ch.x, c.y + 0.06 + h + ridge * 0.6 + 0.07, c.z + ch.z), Vector3(0.06, 0.14, 0.06), stone.darkened(0.15), rot)   # Schornstein
 	k.box(Vector3(c.x + ch.x, c.y + 0.06 + h + ridge * 0.6 + 0.15, c.z + ch.z), Vector3(0.08, 0.02, 0.08), stone.darkened(0.3), rot)
+
+
+## Holzsteg: Bohlen quer zur Laufrichtung, Querbalken und Pfosten, die ins Wasser ragen.
+func _planks(ti: int, tj: int) -> void:
+	var k := MeshKit.new()
+	var wood := Color(0.55, 0.38, 0.2)
+	var dark := Color(0.34, 0.22, 0.12)
+	var along_x: bool = grid.inside(Vector2i(ti + 1, tj)) and grid.terrain(Vector2i(ti + 1, tj)) == "P" or grid.inside(Vector2i(ti - 1, tj)) and grid.terrain(Vector2i(ti - 1, tj)) == "P"
+	var y0 := 0.05
+	for n in 7:
+		var u := -0.42 + n * 0.14
+		var tint := wood.lightened(0.06 * float(n % 2)) if n % 3 else wood.darkened(0.08)
+		if along_x:
+			k.box(Vector3(u, y0, 0), Vector3(0.12, 0.035, 0.96), tint)
+		else:
+			k.box(Vector3(0, y0, u), Vector3(0.96, 0.035, 0.12), tint)
+	for s in [-1, 1]:
+		if along_x:
+			k.box(Vector3(0, y0 - 0.04, s * 0.34), Vector3(0.96, 0.04, 0.05), dark)
+			for e in [-1, 1]:
+				k.box(Vector3(e * 0.46, -0.15, s * 0.44), Vector3(0.06, 0.45, 0.06), dark)
+		else:
+			k.box(Vector3(s * 0.34, y0 - 0.04, 0), Vector3(0.05, 0.04, 0.96), dark)
+			for e in [-1, 1]:
+				k.box(Vector3(s * 0.44, -0.15, e * 0.46), Vector3(0.06, 0.45, 0.06), dark)
+	_build_mesh_at(k, ti, height_at(ti, tj), tj, "Pier_%d_%d" % [ti, tj])
 
 
 func _village(ti: int, tj: int) -> void:

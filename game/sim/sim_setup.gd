@@ -77,12 +77,17 @@ static func build(spec: Dictionary, seed_: int) -> SimBattle:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = seed_ * 2654435761 + 17
 	var mname: String = spec.get("map", "open")
-	var use_ch1: bool = mname in ["ch1", "ch2", "ch3", "ch5"]
+	var use_ch1: bool = mname in ["ch1", "ch2", "ch3", "ch5", "ch6"]
 	var mdata: Dictionary = mission_map(mname) if use_ch1 else {}
 	var rows: Array = mdata["rows"] if use_ch1 else random_rows(rng)
 	var b := SimBattle.new(rows, seed_)
 	if use_ch1:
 		b.setup_world(mdata.get("objects", []))
+		var g0: Dictionary = (mdata.get("goals", [{"type": "rout"}]) as Array)[0]
+		if g0.get("type", "rout") == "reach":
+			b.goal_tile = Vector2i(g0["tile"][0], g0["tile"][1])
+			b.goal_all = bool(g0.get("all", false))
+			b.goal_within = int(g0.get("within", 0))
 	for k: String in spec.get("disabled", {}):          # {Held: [Faehigkeiten]} -> {Held: {Faehigkeit: true}}
 		var set := {}
 		for a: String in spec["disabled"][k]:
@@ -98,7 +103,9 @@ static func build(spec: Dictionary, seed_: int) -> SimBattle:
 		var pi := 0
 		for e: Dictionary in m["players"]:
 			var d: Dictionary = players[pi] if pi < players.size() else {}
-			b.spawn(d.get("id", e["id"]), "p", Vector2i(e["pos"][0], e["pos"][1]), d.get("hp", 1.0), d.get("atk", 1.0), d.get("equip", []))
+			var hero := b.spawn(d.get("id", e["id"]), "p", Vector2i(e["pos"][0], e["pos"][1]), d.get("hp", 1.0), d.get("atk", 1.0), d.get("equip", []))
+			for ab_id: String in (m.get("grants", {}) as Dictionary).get(hero["id"], []):
+				(hero["abilities"] as Array).append(ab_id)    # Faehigkeiten, die nur diese Mission gewaehrt (Breitseite)
 			pi += 1
 		var ei := 0
 		for e: Dictionary in m["enemies"]:
