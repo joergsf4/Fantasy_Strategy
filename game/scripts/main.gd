@@ -3,7 +3,7 @@ extends Node
 
 const TITLE_MUSIC := "res://assets/audio/title_theme.mp3"
 const BATTLE_MUSIC := "res://assets/audio/battle_theme.mp3"
-const CHAPTERS := ["ch1", "ch2", "ch3", "ch4"]
+const CHAPTERS := ["ch1", "ch2", "ch3", "ch4", "ch5"]
 const MUSIC_DB := -6.0
 
 var units: Dictionary
@@ -32,6 +32,7 @@ func _names() -> Dictionary:
 	var n := {}
 	for id: String in units:
 		n[id] = units[id]["name"]
+	n["waisenkinder"] = "Die Waisenkinder"
 	n["mutter"] = "Lieselotte"     # Geisel aus Mission 4 (Platzhaltername), keine Kampfeinheit
 	return n
 
@@ -466,6 +467,27 @@ func _screenshot_mode() -> void:
 		for i in 40:
 			await get_tree().process_frame
 		await get_tree().create_timer(1.0).timeout
+		get_viewport().get_texture().get_image().save_png(OS.get_environment("SHOT_OUT"))
+		get_tree().quit()
+		return
+	if mode.begins_with("waisenhaus"):   # Mission 5: waisenhaus | waisenhaus_menu (Glocke läuten) | waisenhaus_stock (Schwarm nach 4 Phasen)
+		var bw := Battle.new()
+		bw.setup(Mission.load_mission("ch5"), units)
+		bw.loadout = Items.defs()["loadout_chapter1"]
+		add_child(bw)
+		await get_tree().process_frame
+		if mode == "waisenhaus_menu":
+			var hw: Dictionary = bw._find("maedchen_baer")
+			hw["pos"] = Vector2i(4, 3)
+			(hw["node"] as Node3D).position = bw.to_world(hw["pos"])
+			bw._select(hw)
+			bw._enter_action()
+		if mode == "waisenhaus_stock":
+			for n in 4:
+				await bw._hive_phase()
+		for i in 30:
+			await get_tree().process_frame
+		await get_tree().create_timer(0.8).timeout
 		get_viewport().get_texture().get_image().save_png(OS.get_environment("SHOT_OUT"))
 		get_tree().quit()
 		return

@@ -378,6 +378,16 @@ def fire_loop(rng):
     return x
 
 
+def bell(rng):
+    return modal(rng, [392, 988, 1568, 2349], [1.6, 1.0, 0.6, 0.3], [1, 0.7, 0.4, 0.2], 2.2, 0.004) + 0.5 * np.pad(click(rng, 0.01, 2500), (0, int(SR * 2.2) - int(SR * 0.01)))
+
+
+def buzz(rng):
+    t = t_(0.5)
+    x = tone(230, 0.5, "saw", vib=0.05, vib_rate=40) * (0.55 + 0.45 * np.sin(2 * np.pi * 70 * t))
+    return fade(filt(x, "band", [150, 1800]) * np.sin(np.pi * t / 0.5) ** 0.6 * 0.6)
+
+
 # Oberflaeche
 def ui_click(rng):
     return modal(rng, [1200, 1800], [0.03, 0.02], [1, 0.4], 0.08)
@@ -439,7 +449,7 @@ SOUNDS = {
     "wall_break": (wall_break, 1, -4), "gate_open": (gate_open, 1, -8), "switch": (switch, 1, -8), "chest_open": (chest_open, 1, -8),
     "coin": (coin, 1, -9), "extinguish": (extinguish, 1, -9), "rope": (rope, 1, -9), "baby": (baby, 2, -9), "fire_loop": (fire_loop, 1, -18),
     "ui_click": (ui_click, 1, -9), "ui_hover": (ui_hover, 1, -16), "ui_back": (ui_back, 1, -11), "dialog_tick": (dialog_tick, 3, -18),
-    "turn_start": (turn_start, 1, -9), "victory": (victory, 1, -7), "defeat": (defeat, 1, -8), "item_use": (item_use, 1, -9), "pickup": (pickup, 1, -9),
+    "bell": (bell, 1, -6), "buzz": (buzz, 2, -12), "turn_start": (turn_start, 1, -9), "victory": (victory, 1, -7), "defeat": (defeat, 1, -8), "item_use": (item_use, 1, -9), "pickup": (pickup, 1, -9),
 }
 
 

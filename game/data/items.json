@@ -171,6 +171,18 @@
     }
    ],
    "douse": true
+  },
+  "heilhonig": {
+   "name": "Heilhonig",
+   "range": 1,
+   "text": "Heilt 10 Leben und entfernt Gift (Nachbar oder selbst)",
+   "effects": [
+    {
+     "type": "heal",
+     "amount": 10,
+     "cleanse": true
+    }
+   ]
   }
  },
  "loadout_chapter1": {

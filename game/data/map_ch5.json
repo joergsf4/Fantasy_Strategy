@@ -1,0 +1,186 @@
+{
+ "rows": [
+  "GGFGGGGGGFGG",
+  "GFFGGGGGGGFG",
+  "GGGGGGGGGGGG",
+  "GGGGGGGGGGGG",
+  "GGGGGGWWGGGG",
+  "GGGFGGWWGGGG",
+  "GGGGGGGGGGFF",
+  "GGGGGGGGGGGG",
+  "GGGGGGGGGGGG",
+  "GGGGGGGGGGGG"
+ ],
+ "players": [
+  {
+   "id": "maedchen_baer",
+   "pos": [
+    4,
+    7
+   ]
+  },
+  {
+   "id": "ritter",
+   "pos": [
+    3,
+    8
+   ]
+  },
+  {
+   "id": "wendy",
+   "pos": [
+    5,
+    8
+   ]
+  },
+  {
+   "id": "elisabeth",
+   "pos": [
+    2,
+    7
+   ]
+  },
+  {
+   "id": "ninjas",
+   "pos": [
+    6,
+    7
+   ]
+  },
+  {
+   "id": "samurai",
+   "pos": [
+    7,
+    8
+   ]
+  }
+ ],
+ "enemies": [
+  {
+   "id": "bienenmaedchen",
+   "pos": [
+    6,
+    3
+   ],
+   "hp": 34,
+   "carry": {
+    "gold": 60,
+    "items": {
+     "heilhonig": 1
+    }
+   }
+  },
+  {
+   "id": "bienenkrieger",
+   "pos": [
+    3,
+    2
+   ]
+  },
+  {
+   "id": "bienenkrieger",
+   "pos": [
+    7,
+    3
+   ]
+  },
+  {
+   "id": "bienenkrieger",
+   "pos": [
+    10,
+    2
+   ]
+  }
+ ],
+ "objects": [
+  {
+   "id": "waisenhaus",
+   "type": "orphanage",
+   "pos": [
+    5,
+    1
+   ]
+  },
+  {
+   "id": "glocke",
+   "type": "bell",
+   "pos": [
+    4,
+    2
+   ]
+  },
+  {
+   "id": "stock1",
+   "type": "hive",
+   "pos": [
+    2,
+    3
+   ]
+  },
+  {
+   "id": "stock2",
+   "type": "hive",
+   "pos": [
+    9,
+    3
+   ]
+  },
+  {
+   "id": "stock3",
+   "type": "hive",
+   "pos": [
+    5,
+    4
+   ]
+  }
+ ],
+ "chests": [
+  {
+   "pos": [
+    1,
+    6
+   ],
+   "look": "honey",
+   "reward": {
+    "items": {
+     "heilhonig": 1
+    }
+   }
+  },
+  {
+   "pos": [
+    10,
+    5
+   ],
+   "look": "honey",
+   "reward": {
+    "items": {
+     "heilhonig": 1
+    },
+    "gold": 20
+   }
+  }
+ ],
+ "rewards": {
+  "gold": 120
+ },
+ "objectives": [
+  {
+   "id": "keine_stiche",
+   "text": "Kein Kind wird gestochen",
+   "reward": {
+    "gold": 70
+   }
+  },
+  {
+   "id": "ueberzeugt",
+   "text": "Stachelia zum Rückzug überzeugt",
+   "unit": "bienenmaedchen",
+   "reward": {
+    "items": {
+     "heilhonig": 2
+    }
+   }
+  }
+ ]
+}

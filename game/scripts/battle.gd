@@ -61,6 +61,8 @@ var fallen: Array[String] = []         # gefallene Helden (fuer Bonusziele)
 var _start_inventory: Dictionary = {}
 var _results: Dictionary = {}
 var goal: Dictionary = {"type": "rout"}
+var _scheduled: Array = []                # zeitversetzte Ereignisse {turn, id}
+var kids_stung := 0                     # wie oft Bienen das Waisenhaus erreicht haben
 var triggers: Array = []                 # {when, do, fired}
 var _notes: Array = []                    # Ereignisse seit der letzten Pruefung: {kind, ...}
 var kills_total := 0                      # besiegte Gegner insgesamt
@@ -128,7 +130,7 @@ func _ready() -> void:
 	for e: Dictionary in map_data["players"]:
 		_spawn(e["id"], "p", Vector2i(e["pos"][0], e["pos"][1]))
 	for e: Dictionary in map_data["enemies"]:
-		_spawn(e["id"], "e", Vector2i(e["pos"][0], e["pos"][1]), {"carry": e.get("carry", {}), "guard": e.get("guard", false)})
+		_spawn(e["id"], "e", Vector2i(e["pos"][0], e["pos"][1]), {"carry": e.get("carry", {}), "guard": e.get("guard", false), "hp": e.get("hp")} if e.has("hp") else {"carry": e.get("carry", {}), "guard": e.get("guard", false)})
 	_build_hud()
 	_update_status()
 
@@ -239,6 +241,9 @@ func _spawn(id: String, team: String, pos: Vector2i, extra := {}) -> void:
 		"weapon": d.get("weapon", "fist"), "body": d.get("body", "flesh"),
 	}
 	_next_uid += 1
+	if extra.has("hp"):
+		u["hp"] = int(extra["hp"])
+		u["maxhp"] = int(extra["hp"])
 	u["carry"] = extra.get("carry", {})
 	u["guard"] = extra.get("guard", false)    # Wache: bleibt auf dem Posten, bis ein Held nahe kommt
 	if team == "p":
@@ -822,6 +827,9 @@ func _enter_action(show_abilities := false, show_items := false) -> void:
 			var so := world.at(sel["pos"])
 			if not so.is_empty() and so["type"] == "switch" and so["state"] == "off":
 				_menu_button(box, "Schalter umlegen", true, func() -> void: _use_switch(sel, so))
+			for ob in world.objects:
+				if ob["type"] == "bell" and ob["state"] == "ready" and Grid.dist(sel["pos"], ob["pos"]) == 1:
+					_menu_button(box, "Glocke läuten", true, func() -> void: _ring_bell(sel, ob))
 			var hs := _hostage_near(sel["pos"])
 			if not hs.is_empty():
 				var ho := _hostage_option(hs)
@@ -864,7 +872,7 @@ func _close_menu() -> void:
 func _build_loot() -> void:
 	for c: Dictionary in map_data.get("chests", []):
 		var pos := Vector2i(c["pos"][0], c["pos"][1])
-		var entry := {"pos": pos, "reward": c["reward"], "open": false, "node": null, "lid": null}
+		var entry := {"pos": pos, "reward": c["reward"], "open": false, "node": null, "lid": null, "look": c.get("look", "chest")}
 		_make_chest(entry)
 		chests.append(entry)
 	for v: Dictionary in map_data.get("villages", []):
@@ -887,6 +895,13 @@ func _village_at(p: Vector2i) -> Dictionary:
 
 ## Truhe aus Holz mit Eisenbaendern, Deckel und goldenem Schloss.
 func _make_chest(entry: Dictionary) -> void:
+	if entry["look"] == "honey":     # Honigtopf statt Truhe: Sprite, wird beim Einsammeln ausgeblendet
+		var hroot := Node3D.new()
+		hroot.position = to_world(entry["pos"])
+		add_child(hroot)
+		fx.make_sprite("fx_honigtopf", Vector3(0, 0.3, 0), 0.6, false, Color.WHITE, 0, hroot)
+		entry["node"] = hroot
+		return
 	var wood := Color(0.45, 0.28, 0.14)
 	var dark := Color(0.30, 0.18, 0.09)
 	var iron := Color(0.42, 0.42, 0.48)
@@ -983,8 +998,10 @@ func _collect(u: Dictionary, entry: Dictionary, kind: String) -> void:
 	_update_status()
 	if kind == "chest":
 		entry["open"] = true
-		var tw := create_tween()
-		tw.tween_property(entry["lid"], "rotation_degrees:x", -105.0, 0.4).set_trans(Tween.TRANS_BACK)
+		if entry["lid"] != null:
+			create_tween().tween_property(entry["lid"], "rotation_degrees:x", -105.0, 0.4).set_trans(Tween.TRANS_BACK)
+		elif entry["node"] != null:
+			(entry["node"] as Node3D).visible = false
 	else:
 		entry["visited"] = true
 	var lines := _grant(entry["reward"])
@@ -1069,6 +1086,8 @@ func results() -> Dictionary:
 				ok = turn <= int(o["turns"])
 			"haeuser":
 				ok = world.houses_lost() == 0
+			"keine_stiche":
+				ok = kids_stung == 0
 			"alle_gegner":
 				ok = _count_team("e") == 0
 			"ueberzeugt":
@@ -1110,6 +1129,9 @@ func _make_object(o: Dictionary) -> void:
 		return
 	if o["type"] == "teahouse" or o["type"] == "hostage":
 		_make_teahouse(o) if o["type"] == "teahouse" else _make_hostage(o)
+		return
+	if o["type"] == "hive" or o["type"] == "bell" or o["type"] == "orphanage":
+		_make_ch5_object(o)
 		return
 	var stone := Color(0.52, 0.5, 0.54)
 	var dark := Color(0.38, 0.37, 0.42)
@@ -1214,6 +1236,20 @@ func _refresh_object(o: Dictionary, animate: bool) -> void:
 				lv.create_tween().tween_property(lv, "rotation_degrees:z", tilt, 0.25).set_trans(Tween.TRANS_BACK)
 			else:
 				lv.rotation_degrees.z = tilt
+		"hive":
+			(p["body"] as Node3D).visible = st == "active"
+			if animate and st == "broken":
+				fx.particles("fx_smoke", to_world(o["pos"]) + Vector3(0, 0.3, 0), 8, 1.5, 0.5, 0.8, -0.2, Color(0.9, 0.8, 0.4), false, 80.0)
+				Sfx.event("wall_break")
+		"bell":
+			if st == "rung":
+				if animate:
+					Sfx.event("bell")
+					var swing := create_tween()
+					for a: float in [30.0, -26.0, 20.0, -14.0, 8.0, 0.0]:
+						swing.tween_property(p["lever"], "rotation_degrees:z", a, 0.22)
+				else:
+					(p["lever"] as Node3D).rotation_degrees.z = 0.0
 		"hostage":
 			if st == "free":
 				if animate:
@@ -1250,6 +1286,65 @@ func _refresh_object(o: Dictionary, animate: bool) -> void:
 				fx.particles("fx_smoke", to_world(o["pos"]) + Vector3(0, 0.3, 0), 10, 1.5, 0.7, 1.0, -0.3, Color(0.3, 0.3, 0.3), false, 70.0)
 	if not ["gate", "wall", "house"].has(o["type"]) and p["rubble"] != null:
 		(p["rubble"] as Node3D).visible = false
+
+
+## Bienenstock (Strohkorb), Glocke (hoher Pfosten) und Waisenhaus (Haus mit drei Kindern davor).
+func _make_ch5_object(o: Dictionary) -> void:
+	var root := Node3D.new()
+	root.position = to_world(o["pos"])
+	root.scale = Vector3.ONE * {"orphanage": 1.35, "hive": 1.25, "bell": 1.0}[o["type"]]
+	add_child(root)
+	var k := MeshKit.new()
+	var parts := {"root": root, "body": null, "rubble": null, "doors": [], "lever": null}
+	var straw := Color(0.86, 0.68, 0.28)
+	var wood := Color(0.42, 0.26, 0.13)
+	match o["type"]:
+		"hive":
+			k.box(Vector3(0, 0.06, 0), Vector3(0.5, 0.12, 0.5), wood)
+			k.frustum(Vector3(0, 0.12, 0), 0.26, 0.2, 0.2, straw.darkened(0.1), straw)
+			k.frustum(Vector3(0, 0.32, 0), 0.2, 0.13, 0.18, straw, straw.lightened(0.1))
+			k.frustum(Vector3(0, 0.5, 0), 0.13, 0.04, 0.14, straw.lightened(0.1), straw.lightened(0.2))
+			k.box(Vector3(0, 0.2, 0.2), Vector3(0.12, 0.08, 0.04), Color(0.1, 0.07, 0.04))
+		"bell":
+			k.box(Vector3(-0.3, 0.6, 0), Vector3(0.07, 1.2, 0.07), wood)
+			k.box(Vector3(0.3, 0.6, 0), Vector3(0.07, 1.2, 0.07), wood)
+			k.box(Vector3(0, 1.17, 0), Vector3(0.7, 0.07, 0.07), wood)
+		"orphanage":
+			terrain._house(k, Vector3.ZERO, Vector3(0.55, 0.3, 0.4), 0.0, Color(0.5, 0.28, 0.16), Color(0.92, 0.88, 0.76), 2)
+	var mat := StandardMaterial3D.new()
+	mat.vertex_color_use_as_albedo = true
+	mat.roughness = 1.0
+	var mi := MeshInstance3D.new()
+	mi.mesh = k.build()
+	mi.material_override = mat
+	root.add_child(mi)
+	parts["body"] = mi
+	if o["type"] == "bell":
+		var piv := Node3D.new()
+		piv.position = Vector3(0, 1.14, 0)
+		root.add_child(piv)
+		var bk := MeshKit.new()
+		bk.frustum(Vector3(0, -0.34, 0), 0.17, 0.08, 0.3, Color(0.95, 0.78, 0.25), Color(0.8, 0.6, 0.15))
+		bk.box(Vector3(0, -0.04, 0), Vector3(0.03, 0.08, 0.03), Color(0.3, 0.3, 0.34))
+		var bi := MeshInstance3D.new()
+		bi.mesh = bk.build()
+		bi.material_override = mat
+		piv.add_child(bi)
+		parts["lever"] = piv
+	if o["type"] == "orphanage":
+		var offs := [Vector3(-0.3, 0, 0.5), Vector3(0.0, 0, 0.58), Vector3(0.3, 0, 0.5)]
+		for j in 3:
+			var tex := _portrait_tex(["kind_lotte", "kind_pip", "kind_mia"][j])
+			var sp := Sprite3D.new()
+			sp.texture = tex
+			sp.pixel_size = (0.55 if j < 2 else 0.4) / maxf(tex.get_width(), tex.get_height()) * (1.0 if j < 2 else 1.0)
+			sp.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+			sp.shaded = false
+			sp.alpha_cut = SpriteBase3D.ALPHA_CUT_OPAQUE_PREPASS
+			sp.offset = Vector2(0, tex.get_height() / 2.0)
+			sp.position = (offs[j] as Vector3) + Vector3(0, 0.08, 0)
+			root.add_child(sp)
+	_obj_nodes[o["id"]] = parts
 
 
 ## Teehaus: rote Saeulen, zwei geschwungene Daecher, goldene Spitze und Laternen. Nur Kulisse und gesperrtes Feld.
@@ -1569,6 +1664,19 @@ func _use_switch(u: Dictionary, o: Dictionary) -> void:
 	_show_tiles({})
 	_update_status()
 	await _after_world_change(world.apply(o, "toggle"))
+	_check_end()
+	if state == State.OVER:
+		return
+	_finish_unit_after(u)
+
+
+func _ring_bell(u: Dictionary, o: Dictionary) -> void:
+	_close_menu()
+	state = State.BUSY
+	_show_tiles({})
+	_update_status()
+	_actor = u
+	await _after_world_change(world.apply(o, "ring"))
 	_check_end()
 	if state == State.OVER:
 		return
@@ -2153,6 +2261,8 @@ func _fire(t: Dictionary, who := {}) -> void:
 			var wo := world.by_id(step["world"]["id"])
 			if not wo.is_empty():
 				await _after_world_change(world.apply(wo, step["world"]["effect"]), step["world"].get("quiet", false))
+		if step.has("later"):   # {"later": {"turns": 2, "fire": "id"}}: nach N Runden das Ereignis mit dieser id ausloesen
+			_scheduled.append({"turn": turn + int(step["later"]["turns"]), "id": step["later"]["fire"]})
 		if step.has("retreat"):   # {"retreat": "xiulan"}: Gegner zieht sich freiwillig zurueck (kein Tod, kehrt spaeter wieder)
 			var rt := _find(step["retreat"])
 			if not rt.is_empty():
@@ -2162,9 +2272,10 @@ func _fire(t: Dictionary, who := {}) -> void:
 		if step.has("spawn"):
 			for e: Dictionary in step["spawn"]:
 				var pos := _free_tile_near(Vector2i(e["pos"][0], e["pos"][1]), {"flying": false})
-				_spawn(e["id"], "e", pos, {"carry": e.get("carry", {})})
+				_spawn(e["id"], e.get("team", "e"), pos, {"carry": e.get("carry", {})})
 				var u: Dictionary = units.back()
-				await _popup(u, "Verstärkung", Color(1.0, 0.6, 0.4))
+				Sfx.event("buzz" if e["id"] == "bienenkrieger" else "")
+				await _popup(u, e.get("label", "Verstärkung"), Color(0.6, 1.0, 0.6) if e.get("team", "e") == "p" else Color(1.0, 0.6, 0.4))
 	_update_status()
 
 
@@ -2532,12 +2643,15 @@ func _end_player_turn() -> void:
 	await _fire_phase()
 	if state == State.OVER:
 		return
+	await _hive_phase()
 	for e in units.filter(func(u: Dictionary) -> bool: return u["team"] == "e"):
 		if not units.has(e) or e["done"]:
 			continue
 		if e["guard"] and not _alarm(e):
 			continue
 		await _enemy_move(e)
+		if units.has(e):
+			await _sting_check(e)
 		if state == State.OVER:
 			return
 	turn += 1
@@ -2545,6 +2659,7 @@ func _end_player_turn() -> void:
 	if state == State.OVER:
 		return
 	await _run_triggers("turn", turn)
+	await _run_scheduled()
 	_check_end()
 	if state == State.OVER:
 		return
@@ -2563,6 +2678,41 @@ func _alarm(e: Dictionary) -> bool:
 			e["guard"] = false
 			return true
 	return false
+
+
+func _run_scheduled() -> void:
+	for s: Dictionary in _scheduled.filter(func(x: Dictionary) -> bool: return x["turn"] <= turn):
+		_scheduled.erase(s)
+		for t: Dictionary in triggers:
+			if t.get("id", "") == s["id"] and not t.get("fired", false):
+				t["fired"] = true
+				await _fire(t)
+
+
+## Bienenstoecke: alle 2 Gegnerphasen schluepft ein Bienenkrieger (hoechstens 6 gleichzeitig).
+func _hive_phase() -> void:
+	for o in world.objects:
+		if o["type"] != "hive" or o["state"] != "active":
+			continue
+		o["clock"] = int(o.get("clock", 0)) + 1
+		var alive := units.filter(func(u: Dictionary) -> bool: return u["id"] == "bienenkrieger").size()
+		if int(o["clock"]) % 2 != 0 or alive >= 6:
+			continue
+		var pos := _free_tile_near(o["pos"], {"flying": true})
+		_spawn("bienenkrieger", "e", pos, {})
+		Sfx.event("buzz")
+		await _popup(units.back(), "Bzzz!", Color(1.0, 0.85, 0.3))
+
+
+## Bienen am Waisenhaus: jede stoert die Kinder (Bonusziel "Kein Kind gestochen").
+func _sting_check(e: Dictionary) -> void:
+	if not (e["tags"] as Array).has("schwarm") and e["id"] != "bienenmaedchen":
+		return
+	for o in world.objects:
+		if o["type"] == "orphanage" and Grid.dist(e["pos"], o["pos"]) == 1:
+			kids_stung += 1
+			await _popup({"pos": o["pos"]}, "Autsch! Die Kinder werden gestochen", Color(1.0, 0.5, 0.4))
+			return
 
 
 func _taunter(e: Dictionary) -> Dictionary:
@@ -2678,11 +2828,16 @@ func _enemy_move(e: Dictionary) -> void:
 	if best_target.is_empty():
 		# Kein Ziel in Reichweite: auf den naechsten sichtbaren Spieler zulaufen.
 		var best_d := 9999.0
+		var goals: Array = players.map(func(u: Dictionary) -> Vector2i: return u["pos"])
+		if (e["tags"] as Array).has("schwarm"):
+			for o in world.objects:
+				if o["type"] == "orphanage":
+					goals = [o["pos"]]       # der Schwarm geht aufs Waisenhaus, wenn kein Held erreichbar ist
 		for t: Vector2i in reach_e:
 			if occupied.has(t):
 				continue
-			for p in players:
-				var dd := Grid.dist(t, p["pos"]) - grid.def_bonus(t) * 0.1
+			for gp: Vector2i in goals:
+				var dd := Grid.dist(t, gp) - grid.def_bonus(t) * 0.1
 				if dd < best_d:
 					best_d = dd
 					best_tile = t

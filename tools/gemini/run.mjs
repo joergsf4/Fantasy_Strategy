@@ -136,6 +136,25 @@ for (const [e, t] of Object.entries(MOTHER_EMO))
 jobs.push({ name: 'mutter_chibi', refs: [path.join(OUT, 'ritter_chibi.jpg')], prompt: `Create ${MOTHER}.` + CHIBI_TAIL + ' NO ground line, NO floor strip, NO shadow under the feet.' });
 jobs.push({ name: 'fx_gebiss', refs: [path.join(OUT, 'fx_fireball.jpg')], prompt: 'Create a single set of cartoon false teeth (dentures): pink gums with two rows of white teeth, slightly open as if chomping, with a short white motion streak, game sprite.' + FX_STYLE });
 
+// Kapitel 5 (Waisenhaus): Waisenkinder als Gruppen-Portrait (drei Kinder, alle Emotionen) und drei Karten-Figuren.
+const KIDS = 'three orphan children huddled close together: a girl of about ten with two brown braids and a patched green dress (Lotte, the oldest, protective), a small boy of about six with messy red hair, a too-big flat cap and a missing front tooth (Pip), and a tiny girl of about four with curly blond hair holding a worn teddy bear (Mia); all in poor, patched, mended clothes, big expressive eyes';
+const KIDS_EMO = { '': 'scared but brave, clinging to each other, looking up wide-eyed', lachend: 'laughing and cheering with joy and relief, big happy smiles', wuetend: 'angry and defiant, fists clenched and sticking out their tongues at an unseen enemy' };
+const KIDS_TAIL = ' Same pixel-art style, framing and composition as the attached image (use it ONLY as a style reference, do NOT draw its character): the children on the left side of the image, upper body, facing right, nothing on the right half. Output exactly these three children, no duplicates or ghost copies. Solid bright green background, no text, no border.';
+for (const [e, t] of Object.entries(KIDS_EMO))
+  jobs.push({ name: e ? `waisenkinder_${e}` : 'waisenkinder', refs: [ref(STYLE_REF)], prompt: `Create a dialogue portrait of ${KIDS}, ${t}.` + KIDS_TAIL });
+const KID = {
+  kind_lotte: 'Lotte, a girl of about ten with two brown braids and a patched green dress, protective, hands on hips',
+  kind_pip: 'Pip, a small boy of about six with messy red hair, a too-big flat cap and a missing front tooth, patched trousers, holding a wooden toy sword',
+  kind_mia: 'Mia, a tiny girl of about four with curly blond hair in a patched yellow dress, hugging a worn teddy bear',
+};
+for (const [name, d] of Object.entries(KID))
+  jobs.push({ name: `${name}_chibi`, refs: [path.join(OUT, 'ritter_chibi.jpg')], prompt: `Create ${d}.` + CHIBI_TAIL + ' NO ground line, NO floor strip, NO shadow under the feet.' });
+
+// Kapitel 5: Bienenkrieger (Schwarm-Gegner), Honigtopf und Honig-Effekt. Stachelia-Chibi dient als Stilvorlage.
+jobs.push({ name: 'bienenkrieger_chibi', refs: [path.join(OUT, 'bienenmaedchen_chibi.jpg')], prompt: 'Create a small bee warrior soldier in exactly the same pixel-art style as the attached image (use it ONLY as a style reference, do NOT draw its character): a humanoid bee with a striped yellow-and-black body, translucent wings, two antennae, a tiny helmet made of a honeycomb, a small round amber shield and a short stinger-spear, hovering slightly above the ground. Chibi proportions, strict FULL BODY, nothing cropped, facing right. Output exactly ONE character. NO ground line, NO shadow. ' + GREEN });
+jobs.push({ name: 'fx_honigtopf', refs: [path.join(OUT, 'fx_fireball.jpg')], prompt: 'Create a single clay honey pot overflowing with thick golden honey that drips down its sides, with a small wooden honey dipper, game sprite.' + FX_STYLE });
+jobs.push({ name: 'fx_honig', refs: [path.join(OUT, 'fx_fireball.jpg')], prompt: 'Create a single splash of golden sticky honey: a glossy amber blob with drips and a few flying droplets, game VFX sprite.' + FX_STYLE });
+
 async function generate(page, job) {
   await page.goto('https://gemini.google.com/app', { waitUntil: 'domcontentloaded' });
   await page.waitForSelector('div[role=textbox], .ql-editor', { timeout: 30000 });

@@ -22,7 +22,7 @@ DATA = ROOT / "game" / "data"
 ASSETS = ROOT / "game" / "assets"
 WEB = Path(__file__).resolve().parent
 PORT = int(os.environ.get("PORT", "8765"))
-EXTRA_SPEAKERS = {"mutter": "Lieselotte", "$hero": "Auslösende Figur"}   # Sprecher ohne Kampfeinheit
+EXTRA_SPEAKERS = {"mutter": "Lieselotte", "waisenkinder": "Die Waisenkinder", "$hero": "Auslösende Figur"}   # Sprecher ohne Kampfeinheit
 CHAPTER_RE = re.compile(r"^ch\d+$")
 
 

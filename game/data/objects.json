@@ -82,5 +82,36 @@
   ],
   "hp": 0,
   "solutions": {}
+ },
+ "hive": {
+  "name": "Bienenstock",
+  "start": "active",
+  "active": "active",
+  "blocks": [
+   "active"
+  ],
+  "hp": 22,
+  "def": 1,
+  "solutions": {
+   "blast": "break"
+  }
+ },
+ "bell": {
+  "name": "Glocke",
+  "start": "ready",
+  "active": "",
+  "blocks": [],
+  "hp": 0,
+  "solutions": {}
+ },
+ "orphanage": {
+  "name": "Waisenhaus",
+  "start": "standing",
+  "active": "",
+  "blocks": [
+   "standing"
+  ],
+  "hp": 0,
+  "solutions": {}
  }
 }

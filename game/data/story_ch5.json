@@ -1,0 +1,56 @@
+{
+ "intro": [
+  {
+   "left": "maedchen_baer",
+   "right": "wendy",
+   "speaker": "wendy",
+   "text": "Mäh, hört ihr das Summen? Das kommt vom Waisenhaus hinter dem Hügel."
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "wendy",
+   "speaker": "maedchen_baer",
+   "text": "Und ich kenne dieses Summen. Stachelia."
+  },
+  {
+   "left": "ritter",
+   "right": "wendy",
+   "speaker": "ritter",
+   "text": "Ein Waisenhaus im Namen des Regenten zu bedrohen. Das ist selbst für Gesindel tief gesunken.",
+   "left_expr": "wuetend"
+  },
+  {
+   "left": "ritter",
+   "right": "waisenkinder",
+   "speaker": "waisenkinder",
+   "text": "Hilfe! Die Bienen sind überall! Bitte helft uns!"
+  }
+ ],
+ "outro": [
+  {
+   "left": "hund",
+   "right": "waisenkinder",
+   "speaker": "waisenkinder",
+   "text": "Hundsfreund! Hundsfreund! Sie haben uns gerettet!",
+   "right_expr": "lachend"
+  },
+  {
+   "left": "hund",
+   "right": "maedchen_baer",
+   "speaker": "hund",
+   "text": "Ich war nur kurz auf dem Markt, und schon bricht die Hölle los. Ich schulde euch etwas."
+  },
+  {
+   "left": "hund",
+   "right": "maedchen_baer",
+   "speaker": "maedchen_baer",
+   "text": "Der Regent schickt Stachelia, um Kinder zu erschrecken. Wir gehen jetzt zu ihm und beenden das."
+  },
+  {
+   "left": "hund",
+   "right": "maedchen_baer",
+   "speaker": "hund",
+   "text": "Dann komme ich mit. Die Kinder sind bei der Nachbarin sicher. Der Regent bekommt meine Knochen zu spüren."
+  }
+ ]
+}

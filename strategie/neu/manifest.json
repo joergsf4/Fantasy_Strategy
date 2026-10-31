@@ -97,5 +97,14 @@
  "mutter_lachend": true,
  "mutter_wuetend": true,
  "mutter_chibi": true,
- "fx_gebiss": true
+ "fx_gebiss": true,
+ "waisenkinder": true,
+ "waisenkinder_lachend": true,
+ "kind_lotte_chibi": true,
+ "kind_pip_chibi": true,
+ "kind_mia_chibi": true,
+ "waisenkinder_wuetend": true,
+ "bienenkrieger_chibi": true,
+ "fx_honigtopf": true,
+ "fx_honig": true
 }

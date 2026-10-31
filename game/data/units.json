@@ -206,7 +206,8 @@
    "giftstachel"
   ],
   "weapon": "metal",
-  "body": "flesh"
+  "body": "flesh",
+  "flees": true
  },
  "braumeisterin": {
   "name": "Brunhilde Bräu",
@@ -420,6 +421,24 @@
   ],
   "flees": true,
   "weapon": "fist",
+  "body": "flesh"
+ },
+ "bienenkrieger": {
+  "name": "Bienenkrieger",
+  "hp": 12,
+  "atk": 5,
+  "def": 1,
+  "res": 2,
+  "move": 5,
+  "range_min": 1,
+  "range": 1,
+  "role": "damage",
+  "dmg_type": "body",
+  "flying": true,
+  "tags": [
+   "schwarm"
+  ],
+  "weapon": "metal",
   "body": "flesh"
  }
 }

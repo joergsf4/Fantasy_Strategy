@@ -1,0 +1,277 @@
+{
+ "id": "ch5",
+ "title": "Stachelias Rückkehr",
+ "map": "res://data/map_ch5.json",
+ "briefing": "Stachelia ist zurück und bedroht im Namen des Regenten ein Waisenhaus. Drei Bienenstöcke um das Haus lassen alle zwei Runden einen Bienenkrieger schlüpfen. Zerstört die Stöcke, bevor der Schwarm die Kinder erreicht. Die Glocke am Haus ruft den Hundsfreund, der das Waisenhaus beschützt, aber die Kinder sind zu klein, um sie zu läuten. Honigtöpfe auf der Karte heilen.",
+ "goals": [
+  {
+   "type": "rout"
+  }
+ ],
+ "triggers": [
+  {
+   "when": {
+    "turn": 2
+   },
+   "if": {
+    "object": {
+     "id": "glocke",
+     "state": "ready"
+    }
+   },
+   "note": "Die Kinder weisen auf die Glocke hin",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "maedchen_baer",
+       "right": "waisenkinder",
+       "speaker": "waisenkinder",
+       "text": "Hilfe! Die Bienen! Wenn jemand die Glocke am Haus läutet, hört der Hundsfreund sie bis ins Tal!"
+      },
+      {
+       "left": "maedchen_baer",
+       "right": "waisenkinder",
+       "speaker": "maedchen_baer",
+       "text": "Der Hundsfreund? Wer ist das?"
+      },
+      {
+       "left": "maedchen_baer",
+       "right": "waisenkinder",
+       "speaker": "waisenkinder",
+       "text": "Er passt auf uns auf. Aber er ist gerade unterwegs, und wir sind zu klein für die Glocke."
+      },
+      {
+       "left": "wendy",
+       "right": "waisenkinder",
+       "speaker": "wendy",
+       "text": "Mäh, die hängt ja hoch. Einer von uns muss sie läuten."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 4
+   },
+   "if": {
+    "object": {
+     "id": "glocke",
+     "state": "ready"
+    }
+   },
+   "note": "Zweiter Hinweis, falls niemand die Glocke läutet",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "ritter",
+       "right": "waisenkinder",
+       "speaker": "waisenkinder",
+       "text": "Bitte läutet die Glocke! Der Hundsfreund hilft immer, wenn wir in Not sind!",
+       "right_expr": "wuetend"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "object": {
+     "id": "glocke",
+     "state": "rung"
+    }
+   },
+   "note": "Die Glocke ruft den Hundsfreund",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "maedchen_baer",
+       "right": "waisenkinder",
+       "speaker": "waisenkinder",
+       "text": "Bimm, bamm! Er hat sie gehört! Er kommt bestimmt!",
+       "right_expr": "lachend"
+      }
+     ]
+    },
+    {
+     "later": {
+      "turns": 2,
+      "fire": "hund"
+     }
+    }
+   ]
+  },
+  {
+   "id": "hund",
+   "when": {
+    "manual": true
+   },
+   "note": "Zwei Runden nach der Glocke: der Hundsfreund kommt",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "hund",
+       "right": "waisenkinder",
+       "speaker": "hund",
+       "text": "Wer wagt es, meine Kinder zu bedrohen? Ich bin gleich da!"
+      },
+      {
+       "left": "hund",
+       "right": "waisenkinder",
+       "speaker": "waisenkinder",
+       "text": "Hundsfreund! Hundsfreund!",
+       "right_expr": "lachend"
+      }
+     ]
+    },
+    {
+     "spawn": [
+      {
+       "id": "hund",
+       "team": "p",
+       "pos": [
+        11,
+        8
+       ],
+       "label": "Der Hundsfreund!"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "near": {
+     "a": "maedchen_baer",
+     "b": "bienenmaedchen",
+     "dist": 3
+    }
+   },
+   "if": {
+    "present": [
+     "bienenmaedchen"
+    ]
+   },
+   "note": "Mira trifft Stachelia wieder",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "maedchen_baer",
+       "right": "bienenmaedchen",
+       "speaker": "bienenmaedchen",
+       "text": "Mira und ihr Bär. Der Regent hat mir Honig versprochen, wenn ich dieses Haus räume.",
+       "right_expr": "lachend"
+      },
+      {
+       "left": "maedchen_baer",
+       "right": "bienenmaedchen",
+       "speaker": "maedchen_baer",
+       "text": "Das sind Kinder!"
+      },
+      {
+       "left": "maedchen_baer",
+       "right": "bienenmaedchen",
+       "speaker": "bienenmaedchen",
+       "text": "Kinder sind laut. Ich mag Ruhe."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "object": {
+     "id": "stock1",
+     "state": "broken"
+    }
+   },
+   "note": "Erster Bienenstock zerstört",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "elisabeth",
+       "right": "bienenmaedchen",
+       "speaker": "elisabeth",
+       "text": "Ein Stock weniger! Käpt'n Elisabeth lässt keine Honigdiebe an Bord."
+      },
+      {
+       "left": "elisabeth",
+       "right": "bienenmaedchen",
+       "speaker": "bienenmaedchen",
+       "text": "Mein Stock! Das bezahlst du mit deinem Hut!",
+       "right_expr": "wuetend"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "hp_below": {
+     "id": "bienenmaedchen",
+     "ratio": 0.5
+    }
+   },
+   "note": "Stachelia zögert wegen der Kinder und zieht sich zurück",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "maedchen_baer",
+       "right": "waisenkinder",
+       "speaker": "waisenkinder",
+       "text": "Bitte nicht, Frau Biene! Wir tun dir nichts!"
+      },
+      {
+       "left": "maedchen_baer",
+       "right": "bienenmaedchen",
+       "speaker": "bienenmaedchen",
+       "text": "Tsss. Der Regent hat nicht gesagt, dass sie weinen.",
+       "right_expr": "wuetend"
+      },
+      {
+       "left": "maedchen_baer",
+       "right": "bienenmaedchen",
+       "speaker": "bienenmaedchen",
+       "text": "Ich bin raus. Aber wir sehen uns wieder, Bärenmädchen.",
+       "right_expr": "wuetend"
+      }
+     ]
+    },
+    {
+     "retreat": "bienenmaedchen"
+    }
+   ]
+  }
+ ],
+ "flee": {
+  "bienenmaedchen": [
+   {
+    "left": "$hero",
+    "right": "bienenmaedchen",
+    "speaker": "bienenmaedchen",
+    "text": "Autsch! Das hat gesessen. Der Regent kriegt meinen Stachel zu spüren, nicht eurer!",
+    "right_expr": "wuetend"
+   },
+   {
+    "left": "$hero",
+    "right": "bienenmaedchen",
+    "speaker": "$hero",
+    "text": "Sie flieht mit ihrem Honig. Das war ein Stachel zu viel."
+   },
+   {
+    "left": "$hero",
+    "right": "bienenmaedchen",
+    "speaker": "bienenmaedchen",
+    "text": "Ich komme wieder. Mit mehr Bienen!",
+    "right_expr": "wuetend"
+   }
+  ]
+ }
+}

@@ -179,8 +179,8 @@ const $ = (s, r = document) => r.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const clone = x => JSON.parse(JSON.stringify(x));
 const EXPR = { "": "Normal", lachend: "Lachend", wuetend: "Wütend" };
-const STATES = { wall: ["intact", "broken"], gate: ["closed", "open", "broken"], switch: ["off", "on"], fire: ["burning", "out"], house: ["intact", "burning", "ruin"], hostage: ["bound", "free"], teahouse: ["standing"] };
-const STATE_DE = { intact: "heil", broken: "zerstört", closed: "geschlossen", open: "offen", off: "aus", on: "umgelegt", burning: "brennt", out: "gelöscht", ruin: "Ruine", bound: "gefesselt", free: "befreit", standing: "steht" };
+const STATES = { wall: ["intact", "broken"], gate: ["closed", "open", "broken"], switch: ["off", "on"], fire: ["burning", "out"], house: ["intact", "burning", "ruin"], hostage: ["bound", "free"], teahouse: ["standing"], hive: ["active", "broken"], bell: ["ready", "rung"], orphanage: ["standing"] };
+const STATE_DE = { intact: "heil", broken: "zerstört", closed: "geschlossen", open: "offen", off: "aus", on: "umgelegt", burning: "brennt", out: "gelöscht", ruin: "Ruine", bound: "gefesselt", free: "befreit", standing: "steht", active: "aktiv", ready: "bereit", rung: "geläutet" };
 
 let DB, chapters = [], saved = {}, cur = "", hist = [], fut = [], canDraft = false, typingSnap = false, filter = "", open = {};
 
@@ -218,6 +218,7 @@ function toast(msg, kind, undoFn) {
 const U = id => id === "any_enemy" ? "irgendein Gegner" : id === "$hero" ? "die auslösende Figur" : DB.units[id]?.name || id || "?";
 const A = id => DB.abilities[id] || id;
 function describeWhen(w) {
+  if (w.manual) return "Wird von einem anderen Gespräch zeitverzögert ausgelöst";
   if ("turn" in w) return `Runde ${w.turn} beginnt`;
   if (w.enter) return `Eine Figur betritt das Feld (${w.enter[0]}, ${w.enter[1]})`;
   if (w.object) return `${w.object.id} ist „${STATE_DE[w.object.state] || w.object.state}“`;
@@ -253,6 +254,7 @@ const WHEN = {
   hp_below: { label: "Eine Figur hat wenig Leben", f: [{ p: ["hp_below", "id"], l: "Figur", t: "unit", d: "ritter" }, { p: ["hp_below", "ratio"], l: "Anteil (0–1)", t: "float", d: 0.5 }] },
   object: { label: "Ein Objekt ändert sich (Tor, Geisel …)", f: [{ p: ["object", "id"], l: "Objekt", t: "obj", d: "" }, { p: ["object", "state"], l: "Zustand", t: "state", d: "" }] },
   enter: { label: "Eine Figur betritt ein Feld", f: [{ p: ["enter", 0], l: "x", t: "int", d: 5 }, { p: ["enter", 1], l: "y", t: "int", d: 3 }] },
+  manual: { label: "Von einem anderen Gespräch verzögert ausgelöst", f: [], make: () => ({ manual: true }) },
   enemies_left: { label: "Nur noch wenige Gegner übrig", f: [{ p: ["enemies_left"], l: "höchstens", t: "int", d: 2 }] },
 };
 const whenType = w => Object.keys(WHEN).find(k => k in w) || "turn";

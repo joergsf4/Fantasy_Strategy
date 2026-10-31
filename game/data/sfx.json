@@ -218,6 +218,8 @@
   "victory": "victory",
   "defeat": "defeat",
   "baby": "baby",
-  "dialog": "dialog_tick"
+  "dialog": "dialog_tick",
+  "bell": "bell",
+  "buzz": "buzz"
  }
 }

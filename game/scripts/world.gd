@@ -73,6 +73,9 @@ func apply(o: Dictionary, effect: String) -> Array[Dictionary]:
 		"open":
 			o["state"] = "open"
 			changed.append(o)
+		"ring":
+			o["state"] = "rung"
+			changed.append(o)
 		"free":
 			o["state"] = "free"
 			changed.append(o)
