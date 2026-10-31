@@ -35,6 +35,8 @@ static func execute(b: SimBattle, u: Dictionary, act: Dictionary, moved: bool) -
 			b.use_item(u, act["item"], act["target"])
 		"defend":
 			b.defend(u)
+		"hive":
+			b.attack_hive(u, act["obj"])
 		"douse":
 			b.douse(u, act["obj"])
 		"ab_obj":
@@ -233,6 +235,14 @@ static func best_action_at(b: SimBattle, u: Dictionary, t: Vector2i, targets: Ar
 				if sa > best_s:
 					best_s = sa
 					best = {"kind": "ab_obj", "ab": id, "obj": o, "free": false}
+	if u["team"] == "p" and b.ai_cfg["p"].get("hive", true):   # Bienenstoecke zerstoeren, damit keine Bienen nachschluepfen
+		for o in b.world.objects:
+			if o["type"] == "hive" and o["state"] == "active" and Combat.in_range(u, Grid.dist(t, o["pos"])):
+				var hd: int = World.hit_damage(o, Combat.stat(u, "atk"))
+				var sh := minf(float(hd), float(o["hp"])) * 0.8 + (8.0 if hd >= int(o["hp"]) else 0.0) - 0.5
+				if sh > best_s:
+					best_s = sh
+					best = {"kind": "hive", "obj": o}
 	var inv: Dictionary = b.inventory.get(u["team"], {})
 	for iid: String in inv:
 		if int(inv[iid]) <= 0:

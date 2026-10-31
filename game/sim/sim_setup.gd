@@ -77,7 +77,7 @@ static func build(spec: Dictionary, seed_: int) -> SimBattle:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = seed_ * 2654435761 + 17
 	var mname: String = spec.get("map", "open")
-	var use_ch1: bool = mname in ["ch1", "ch2", "ch3"]
+	var use_ch1: bool = mname in ["ch1", "ch2", "ch3", "ch5"]
 	var mdata: Dictionary = mission_map(mname) if use_ch1 else {}
 	var rows: Array = mdata["rows"] if use_ch1 else random_rows(rng)
 	var b := SimBattle.new(rows, seed_)
@@ -103,7 +103,10 @@ static func build(spec: Dictionary, seed_: int) -> SimBattle:
 		var ei := 0
 		for e: Dictionary in m["enemies"]:
 			var d2: Dictionary = enemies[ei] if ei < enemies.size() else {}
-			b.spawn(d2.get("id", e["id"]), "e", Vector2i(e["pos"][0], e["pos"][1]), d2.get("hp", 1.0), d2.get("atk", 1.0))
+			var base_hp: float = float(d2.get("hp", 1.0))
+			if e.has("hp"):   # Karte setzt absolute Leben (Stachelia 34): als Faktor auf die Grundwerte
+				base_hp *= float(e["hp"]) / float(SimBattle.defs()[d2.get("id", e["id"])]["hp"])
+			b.spawn(d2.get("id", e["id"]), "e", Vector2i(e["pos"][0], e["pos"][1]), base_hp, d2.get("atk", 1.0))
 			ei += 1
 		for k in range(ei, enemies.size()):   # zusaetzliche Gegner: freie Felder rechts
 			var free := _start_tiles(b, b.grid.width - 4, b.grid.width - 1, rng)

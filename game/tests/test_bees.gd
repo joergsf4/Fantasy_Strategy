@@ -40,10 +40,10 @@ func run_tests(defs: Dictionary) -> void:
 	await b._hive_phase()
 	check(bees.call() == start, "erste Phase: noch kein Schluepfen")
 	await b._hive_phase()
-	check(bees.call() == start + 3, "zweite Phase: aus jedem der 3 Stoecke schluepft eine Biene")
+	check(bees.call() == mini(start + 3, Battle.HIVE_CAP), "zweite Phase: aus den Stoecken schluepfen Bienen, bis die Obergrenze erreicht ist (%d)" % bees.call())
 	for i in 6:
 		await b._hive_phase()
-	check(bees.call() <= 6, "hoechstens 6 Bienen gleichzeitig (%d)" % bees.call())
+	check(bees.call() <= Battle.HIVE_CAP, "hoechstens %d Bienen gleichzeitig (%d)" % [Battle.HIVE_CAP, bees.call()])
 	# zerstoerter Stock schluepft nicht mehr
 	var hive := b.world.by_id("stock1")
 	b.world.damage(hive, 99)
@@ -75,7 +75,7 @@ func run_tests(defs: Dictionary) -> void:
 	check(b._count_team("p") == before + 1 and not b._find("hund").is_empty() and b._find("hund")["team"] == "p", "Hundsfreund kaempft als Held mit")
 	# Stachelia: Wendung bei 50 %, Rueckzug zaehlt als ueberzeugt
 	var stachelia: Dictionary = b._find("bienenmaedchen")
-	check(stachelia["maxhp"] == 34, "Stachelia ist als Boss gestaerkt (34 Leben)")
+	check(stachelia["maxhp"] == 40, "Stachelia ist als Boss gestaerkt (40 Leben)")
 	stachelia["hp"] = 10
 	await b._flush_events()
 	check(b._find("bienenmaedchen").is_empty() and b.retreated.has("bienenmaedchen"), "Stachelia zieht sich bei unter 50 % zurueck")

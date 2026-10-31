@@ -2689,14 +2689,16 @@ func _run_scheduled() -> void:
 				await _fire(t)
 
 
-## Bienenstoecke: alle 2 Gegnerphasen schluepft ein Bienenkrieger (hoechstens 6 gleichzeitig).
+const HIVE_CAP := 6      # so viele Bienenkrieger gleichzeitig, hoechstens (Messung: docs/balance.md, Mission 5)
+
+## Bienenstoecke: alle 2 Gegnerphasen schluepft ein Bienenkrieger (hoechstens HIVE_CAP gleichzeitig).
 func _hive_phase() -> void:
 	for o in world.objects:
 		if o["type"] != "hive" or o["state"] != "active":
 			continue
 		o["clock"] = int(o.get("clock", 0)) + 1
 		var alive := units.filter(func(u: Dictionary) -> bool: return u["id"] == "bienenkrieger").size()
-		if int(o["clock"]) % 2 != 0 or alive >= 6:
+		if int(o["clock"]) % 2 != 0 or alive >= HIVE_CAP:
 			continue
 		var pos := _free_tile_near(o["pos"], {"flying": true})
 		_spawn("bienenkrieger", "e", pos, {})

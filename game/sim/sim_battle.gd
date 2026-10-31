@@ -22,6 +22,10 @@ var inventory := {"p": {}, "e": {}}      # Rucksack je Team: {Gegenstand: Anzahl
 var _uid := 1
 var world := World.new([])                # Weltobjekte (Feuer, Haeuser ...); leer = keine
 var flammable: Dictionary = {}            # Waldfelder
+var kids_stung := 0                       # Kapitel 5: Bienen am Waisenhaus
+var retreated: Array = []                 # Gegner, die sich zurueckgezogen haben (Stachelia)
+var bell_rung_turn := -1                  # Kapitel 5: Runde, in der die Glocke geläutet wurde
+var _scheduled: Array = []                # {turn, id} zeitversetzte Ereignisse (Hundsfreund)
 
 
 static func defs() -> Dictionary:
@@ -73,6 +77,79 @@ func fire_phase() -> void:
 			world.tick_fire(flammable)
 			grid.blocked = world.blocked()
 			return
+
+
+## Kapitel 5 wie Battle._hive_phase: alle 2 Gegnerphasen eine Biene je Stock, hoechstens 6.
+func hive_phase() -> void:
+	for o in world.objects:
+		if o["type"] != "hive" or o["state"] != "active":
+			continue
+		o["clock"] = int(o.get("clock", 0)) + 1
+		var alive := units.filter(func(u: Dictionary) -> bool: return u["id"] == "bienenkrieger").size()
+		if int(o["clock"]) % 2 == 0 and alive < Battle.HIVE_CAP:
+			spawn("bienenkrieger", "e", free_tile_near(o["pos"], {"flying": true}))
+
+
+func sting_check(e: Dictionary) -> void:
+	if not (e["tags"] as Array).has("schwarm") and e["id"] != "bienenmaedchen":
+		return
+	for o in world.objects:
+		if o["type"] == "orphanage" and Grid.dist(e["pos"], o["pos"]) == 1:
+			kids_stung += 1
+			return
+
+
+func attack_hive(u: Dictionary, o: Dictionary) -> void:
+	_ab_stat(u, "_hive")["uses"] += 1
+	world.damage(o, World.hit_damage(o, Combat.stat(u, "atk")))
+	grid.blocked = world.blocked()
+
+
+## Glocke: der Held, der ihr am naechsten ist und sie noch vor Zugende erreicht, laeutet sie (kostet seine Aktion).
+func maybe_ring() -> bool:
+	if not ai_cfg["p"].get("bell", true) or turn < int(ai_cfg["p"].get("bell_turn", 2)):
+		return false
+	for o in world.objects:
+		if o["type"] != "bell" or o["state"] != "ready":
+			continue
+		var best: Dictionary = {}
+		var best_t := Vector2i.ZERO
+		var bd := 999
+		for u in units:
+			if u["team"] != "p" or u["done"]:
+				continue
+			var reach := reach_tiles(u)
+			for t: Vector2i in reach:
+				if Grid.dist(t, o["pos"]) == 1 and unit_at(t).is_empty() or t == u["pos"] and Grid.dist(t, o["pos"]) == 1:
+					var d := Grid.dist(u["pos"], t)
+					if d < bd:
+						bd = d
+						best = u
+						best_t = t
+		if best.is_empty():
+			return false
+		move_to(best, best_t)
+		world.apply(o, "ring")
+		bell_rung_turn = turn
+		_scheduled.append({"turn": turn + 2, "id": "hund"})
+		best["done"] = true
+		return true
+	return false
+
+
+func run_scheduled() -> void:
+	for s: Dictionary in _scheduled.filter(func(x: Dictionary) -> bool: return x["turn"] <= turn):
+		_scheduled.erase(s)
+		if s["id"] == "hund":
+			spawn("hund", "p", free_tile_near(Vector2i(grid.width - 1, grid.height - 2), {"flying": false}))
+
+
+## Stachelia zieht sich bei unter 50 % Leben zurueck (Auslöser aus Mission 5); zaehlt wie besiegt.
+func check_retreat() -> void:
+	for u in units.duplicate():
+		if u["id"] == "bienenmaedchen" and u["team"] == "e" and float(u["hp"]) / float(u["maxhp"]) < 0.5 and ai_cfg["e"].get("retreat", false):
+			units.erase(u)
+			retreated.append(u["id"])
 
 
 func douse(u: Dictionary, o: Dictionary) -> void:
@@ -591,11 +668,16 @@ func _order(team: String) -> Array[Dictionary]:
 
 
 func act_phase(team: String) -> void:
+	if team == "p":
+		maybe_ring()
 	for u in _order(team):
 		if not units.has(u) or u["done"]:
 			continue
 		SimAI.take_turn(self, u)
 		u["done"] = true
+		if team == "e" and units.has(u):
+			sting_check(u)
+		check_retreat()
 		if winner() != "":
 			return
 
@@ -616,10 +698,12 @@ func play(max_turns := MAX_TURNS) -> String:
 		if winner() != "":
 			return winner()
 		fire_phase()
+		hive_phase()
 		act_phase("e")
 		if winner() != "":
 			return winner()
 		turn += 1
+		run_scheduled()
 	return "timeout"
 
 
@@ -631,4 +715,4 @@ func result(w: String) -> Dictionary:
 			"dealt": u["st"]["dealt"], "taken": u["st"]["taken"], "healed": u["st"]["healed"],
 			"kills": u["st"]["kills"], "ab": u["st"]["ab"],
 		})
-	return {"winner": w, "turns": turn, "units": rows, "houses_lost": world.houses_lost(), "houses_total": world.objects.filter(func(o: Dictionary) -> bool: return o["type"] == "house").size()}
+	return {"winner": w, "turns": turn, "units": rows, "kids_stung": kids_stung, "retreated": retreated.size(), "bell_turn": bell_rung_turn, "houses_lost": world.houses_lost(), "houses_total": world.objects.filter(func(o: Dictionary) -> bool: return o["type"] == "house").size()}

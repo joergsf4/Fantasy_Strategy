@@ -78,7 +78,7 @@ func run_cell(cell: Dictionary) -> Dictionary:
 	if cell.has("ab_status_turns"):
 		SimBattle.override_status_turns(cell["ab_status_turns"])
 	var max_turns := int(cell.get("max_turns", SimBattle.MAX_TURNS))
-	var agg := {"n": 0, "wins": 0, "timeouts": 0, "turns": 0, "p_alive": 0.0, "p_hp": 0.0, "e_alive": 0.0, "ids": {}, "abs": {}, "raw": [], "houses_lost": 0, "houses_total": 0}
+	var agg := {"n": 0, "wins": 0, "timeouts": 0, "turns": 0, "p_alive": 0.0, "p_hp": 0.0, "e_alive": 0.0, "ids": {}, "abs": {}, "raw": [], "houses_lost": 0, "houses_total": 0, "kids_stung": 0, "stung_battles": 0, "retreated": 0, "bell": 0, "bell_turn": 0}
 	for i in range(int(cell["from"]), int(cell["to"])):
 		var seed_ := int(cell["seed"]) + i
 		var rng := RandomNumberGenerator.new()
@@ -124,6 +124,12 @@ func _add(agg: Dictionary, res: Dictionary, p_ids: Array, e_ids: Array, raw: boo
 	agg["n"] += 1
 	agg["houses_lost"] += int(res.get("houses_lost", 0))
 	agg["houses_total"] += int(res.get("houses_total", 0))
+	agg["kids_stung"] += int(res.get("kids_stung", 0))
+	agg["stung_battles"] += 1 if int(res.get("kids_stung", 0)) > 0 else 0
+	agg["retreated"] += int(res.get("retreated", 0))
+	if int(res.get("bell_turn", -1)) > 0:
+		agg["bell"] += 1
+		agg["bell_turn"] += int(res["bell_turn"])
 	var w: String = res["winner"]
 	if w == "p":
 		agg["wins"] += 1

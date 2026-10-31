@@ -62,7 +62,7 @@
     6,
     3
    ],
-   "hp": 34,
+   "hp": 40,
    "carry": {
     "gold": 60,
     "items": {
@@ -89,6 +89,20 @@
    "pos": [
     10,
     2
+   ]
+  },
+  {
+   "id": "bienenkrieger",
+   "pos": [
+    2,
+    5
+   ]
+  },
+  {
+   "id": "bienenkrieger",
+   "pos": [
+    9,
+    5
    ]
   }
  ],

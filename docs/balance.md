@@ -13,6 +13,7 @@ Erzeugt von `tools/balance.py` mit dem grafikfreien Simulator (`game/sim/`). Er 
 - Kapitel-1-Ausstattung hebt die Siegquote um +19.1 Pp
 - Verteidigen: Gruppen +3.2 Pp Siegquote, 16.5 Einsätze pro Kampf
 - Mission 3: ohne Löschen gehen im Schnitt 4.0 von 4 Häusern verloren, mit voller Löschung 0.0
+- Mission 5: bei ×1,0 gewinnt die Gruppe 100%, Kinder werden in 27% der Kämpfe gestochen (ohne Glocke und Stöcke: 94% / 77%)
 
 ## 1. Einzelwertung: Wert in Infanteristen
 
@@ -291,6 +292,17 @@ Aufstellung wie im Spiel (Albrecht, Mira, Brunhilde, Wendy, Elisabeth, Takeda ge
 | Ohne Fasswurf (nur Löschen von Hand) | 100% / 0.1 | 47% / 1.5 | 0% / 1.6 |
 | Gar nicht löschen | 100% / 4.0 | 80% / 4.0 | 0% / 4.0 |
 | Ohne Brunhilde (Lin statt ihr, nur Löschen von Hand) | 100% / 0.0 | 48% / 0.5 | 0% / 1.5 |
+
+## 9. Mission 5: Waisenhaus, Bienenstöcke und Glocke
+
+Aufstellung wie im Spiel (Mira, Albrecht, Wendy, Elisabeth, Kage-Schwestern, Takeda gegen Stachelia mit 40 Leben und 5 Bienenkrieger, dazu 3 Stöcke). Zahlen: Siegquote / Anteil der Kämpfe mit gestochenen Kindern / durchschnittliche Runden, bei steigender Gegnerstärke.
+
+| Variante | ×1.0 | ×1.5 | ×2.0 |
+|---|--:|--:|--:|
+| Voll (Glocke und Stöcke) | 100% / 27% / 6.4 | 99% / 53% / 11.1 | 31% / 90% / 14.4 |
+| Ohne Glocke (kein Hundsfreund) | 100% / 32% / 6.9 | 93% / 48% / 13.4 | 19% / 89% / 14.5 |
+| Stöcke ignoriert | 100% / 84% / 8.5 | 51% / 71% / 18.9 | 17% / 91% / 15.9 |
+| Weder Glocke noch Stöcke | 94% / 77% / 12.6 | 17% / 69% / 21.5 | 19% / 94% / 16.3 |
 
 ## Grenzen
 

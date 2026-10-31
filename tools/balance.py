@@ -290,6 +290,35 @@ def e6_defend():
     print(f"   Gruppen: ohne Verteidigen {wr(g0):.1%}, mit {wr(g1):.1%}")
 
 
+def e8_bees():
+    """Mission 5 (Waisenhaus): Siegquote, gestochene Kinder, Glocke und Stoecke bei steigender Gegnerstaerke."""
+    print("E8: Mission 5, Bienenstoecke, Glocke und Hundsfreund")
+    party = ["maedchen_baer", "ritter", "wendy", "elisabeth", "ninjas", "samurai"]
+    mission = json.loads((GAME / "data" / "map_ch5.json").read_text())
+    foes = [e["id"] for e in mission["enemies"]]   # wie in Mission 5 (Stachelia mit den Leben laut Karte)
+    variants = {
+        "voll": {},
+        "ohne_glocke": {"bell": False},
+        "ohne_staecke": {"hive": False},
+        "weder_noch": {"bell": False, "hive": False},
+    }
+    mults = [1.0, 1.5, 2.0]
+    if os.environ.get("E8_QUICK"):   # nur die volle Variante, zum Einstellen der Werte
+        variants = {"voll": {}}
+    cells = []
+    for v, ai in variants.items():
+        for m in mults:
+            cells.append({"name": f"{v}|{m}", "n": 500, "seed": 970000, "map": "ch5", "party": {"fixed": party}, "enemy": {"fixed": foes},
+                          "e_mods": {"hp": m, "atk": m}, "p_ai": ai, "e_ai": {"retreat": True}})
+    res = run_cells(cells)
+    if os.environ.get("E8_QUICK"):
+        print("  ", [(m, round(wr(res[f'voll|{m}']), 2), round(res[f'voll|{m}']['stung_battles'] / res[f'voll|{m}']['n'], 2), round(res[f'voll|{m}']['turns'] / res[f'voll|{m}']['n'], 1)) for m in mults])
+        return
+    save("e8", {"cells": res, "mults": mults, "variants": list(variants)})
+    for v in variants:
+        print("  ", v, [(m, round(wr(res[f'{v}|{m}']), 2), round(res[f'{v}|{m}']['stung_battles'] / res[f'{v}|{m}']['n'], 2)) for m in mults])
+
+
 def e7_fire():
     """Mission 3 (Feuer): Siegquote und gerettete Haeuser mit/ohne Loeschen, mit/ohne Brunhilde, bei steigender Gegnerstaerke."""
     print("E7: Mission 3, Feuer und Loeschen")
@@ -675,6 +704,27 @@ def report():
         a0, a1 = cells["voll|1.0"], cells["ohne_loeschen|1.0"]
         notes.append(f"Mission 3: ohne Löschen gehen im Schnitt {a1['houses_lost'] / a1['n']:.1f} von 4 Häusern verloren, mit voller Löschung {a0['houses_lost'] / a0['n']:.1f}")
 
+    # ---- E8
+    e8 = R.get("e8")
+    if e8:
+        cells = e8["cells"]
+        nm = {"voll": "Voll (Glocke und Stöcke)", "ohne_glocke": "Ohne Glocke (kein Hundsfreund)", "ohne_staecke": "Stöcke ignoriert",
+              "weder_noch": "Weder Glocke noch Stöcke"}
+        w("## 9. Mission 5: Waisenhaus, Bienenstöcke und Glocke\n")
+        w("Aufstellung wie im Spiel (Mira, Albrecht, Wendy, Elisabeth, Kage-Schwestern, Takeda gegen Stachelia mit 40 Leben und 5 Bienenkrieger, dazu 3 Stöcke). "
+          "Zahlen: Siegquote / Anteil der Kämpfe mit gestochenen Kindern / durchschnittliche Runden, bei steigender Gegnerstärke.\n")
+        w("| Variante | " + " | ".join(f"×{m}" for m in e8["mults"]) + " |")
+        w("|---|" + "--:|" * len(e8["mults"]))
+        for v in e8["variants"]:
+            row = []
+            for m in e8["mults"]:
+                a = cells[f"{v}|{m}"]
+                row.append(f"{wr(a):.0%} / {a['stung_battles'] / a['n']:.0%} / {a['turns'] / a['n']:.1f}")
+            w(f"| {nm[v]} | " + " | ".join(row) + " |")
+        w("")
+        a0, a1 = cells["voll|1.0"], cells["weder_noch|1.0"]
+        notes.append(f"Mission 5: bei ×1,0 gewinnt die Gruppe {wr(a0):.0%}, Kinder werden in {a0['stung_battles'] / a0['n']:.0%} der Kämpfe gestochen (ohne Glocke und Stöcke: {wr(a1):.0%} / {a1['stung_battles'] / a1['n']:.0%})")
+
     # ---- Kurzfassung oben
     head = ["## Kurzfassung\n"] + [f"- {n}" for n in notes] + [""]
     L[2:2] = head if notes else []
@@ -694,7 +744,7 @@ def report():
 
 
 STEPS = {"calib": calib, "e0": e0_ratings, "e1": e1_contribution, "e2": e2_ablation, "e3": e3_difficulty,
-         "e3base": lambda: e3_difficulty(False), "e4": e4_power_ratio, "e5": e5_items, "e6": e6_defend, "e7": e7_fire, "report": report}
+         "e3base": lambda: e3_difficulty(False), "e4": e4_power_ratio, "e5": e5_items, "e6": e6_defend, "e7": e7_fire, "e8": e8_bees, "report": report}
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
