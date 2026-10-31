@@ -126,8 +126,18 @@ func _choose_level() -> Array:
 	return res
 
 
-func _chapter(cid: String, skip_intro := false, next_cid := "") -> void:
+## Mission laden und die vom Spieler gewaehlte Gruppe einsetzen (Plaetze der Karte bleiben, nur die Helden wechseln).
+func _mission_with_squad(cid: String) -> Dictionary:
 	var m := Mission.load_mission(cid)
+	var ids := party.squad_for(m)
+	for i in (m["players"] as Array).size():
+		m["players"][i]["id"] = ids[i]
+	party.release_absent(ids)
+	return m
+
+
+func _chapter(cid: String, skip_intro := false, next_cid := "") -> void:
+	var m := _mission_with_squad(cid)
 	var story_c := _load_json("res://data/story_%s.json" % cid)
 	if stage.map_data.get("id", "") != cid:
 		stage.map_data = m
@@ -149,7 +159,7 @@ func _chapter(cid: String, skip_intro := false, next_cid := "") -> void:
 	party.absorb(res)
 	party.save()
 	await _dialogue(story_c["outro"])
-	await _camp(Mission.load_mission(next_cid) if next_cid != "" else m)   # Lager zeigt die feste Gruppe der naechsten Mission
+	await _camp(Mission.load_mission(next_cid) if next_cid != "" else m)   # Lager: Gruppe der naechsten Mission waehlen
 	party.save()
 
 
@@ -157,11 +167,8 @@ func _camp(m: Dictionary) -> void:
 	var layer := CanvasLayer.new()
 	layer.layer = 6
 	add_child(layer)
-	var squad: Array = []
-	for e: Dictionary in m["players"]:
-		squad.append(e["id"])
 	var c := Camp.new()
-	c.setup(party, units, squad)
+	c.setup(party, units, party.squad_for(m), m)
 	layer.add_child(c)
 	await c.closed
 	layer.queue_free()
@@ -300,14 +307,15 @@ func _screenshot_mode() -> void:
 		pc.gold = int(OS.get_environment("SHOT_GOLD")) if OS.get_environment("SHOT_GOLD") != "" else 205
 		pc.materials = {"kraut": 3, "hopfen": 1, "kristall": 2}
 		pc.pool = ["eisenschwert", "schwere_axt", "plattenpanzer", "rubinring"]
-		var sq: Array = []
-		for e: Dictionary in map["players"]:
-			sq.append(e["id"])
+		var cm := Mission.load_mission("ch5")
+		var sq: Array = pc.squad_for(cm)
 		var cl := CanvasLayer.new()
 		cl.layer = 6
 		add_child(cl)
 		var cp := Camp.new()
-		cp.setup(pc, units, sq)
+		cp.setup(pc, units, sq, cm)
+		if OS.get_environment("SHOT_PICK") != "":
+			cp._pick = int(OS.get_environment("SHOT_PICK"))
 		cl.add_child(cp)
 		cp._tab = int(OS.get_environment("SHOT_TAB"))
 		if cp._tab == 2:

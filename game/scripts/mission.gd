@@ -23,6 +23,28 @@ static func load_mission(id: String) -> Dictionary:
 	return map
 
 
+## Alle Figuren, die in dieser Mission sprechen (Einleitung, Abschluss, Kampfdialoge, Rueckzug). Sie sind in der Gruppe fest,
+## alle anderen Helden der Gruppe duerfen vor der Mission gewechselt werden.
+static func dialogue_ids(id: String) -> Array:
+	var ids := {}
+	var add_lines := func(lines: Array) -> void:
+		for l: Dictionary in lines:
+			for k in ["left", "right", "speaker"]:
+				if l.has(k):
+					ids[l[k]] = true
+	var story: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/story_%s.json" % id))
+	add_lines.call(story.get("intro", []))
+	add_lines.call(story.get("outro", []))
+	var m := load_mission(id)
+	for t: Dictionary in m.get("triggers", []):
+		for step: Dictionary in t.get("do", []):
+			add_lines.call(step.get("dialogue", []))
+	for lines: Array in (m.get("flee", {}) as Dictionary).values():
+		add_lines.call(lines)
+	ids.erase("$hero")
+	return ids.keys()
+
+
 ## Anzeigetext des Ziels, mit Fortschritt.
 static func goal_text(goal: Dictionary, enemies_left: int, turn: int) -> String:
 	match goal.get("type", "rout"):

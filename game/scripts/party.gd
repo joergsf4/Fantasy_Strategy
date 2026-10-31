@@ -11,6 +11,7 @@ var inventory: Dictionary = {}     # Verbrauchsgegenstaende {id: Anzahl}
 var materials: Dictionary = {}     # Zutaten {id: Anzahl}
 var equipment: Dictionary = {}     # getragen: {Held: [Ausruestung]}
 var pool: Array = []               # besitzt, aber nicht getragen
+var squads: Dictionary = {}              # {Mission: [Helden]}: vom Spieler geaenderte Aufstellung vor der Mission
 var nemesis: Array = []            # entkommene Gegner, tauchen in spaeteren Missionen wieder auf
 var bought: Dictionary = {}        # im aktuellen Lager gekauft {id: Anzahl} (Haendler hat nur festen Vorrat)
 
@@ -59,7 +60,7 @@ func spend(price: int) -> bool:
 
 
 func to_dict() -> Dictionary:
-	return {"chapter": chapter, "gold": gold, "inventory": inventory, "materials": materials, "equipment": equipment, "pool": pool, "bought": bought, "nemesis": nemesis}
+	return {"chapter": chapter, "gold": gold, "inventory": inventory, "materials": materials, "equipment": equipment, "pool": pool, "bought": bought, "nemesis": nemesis, "squads": squads}
 
 
 static func from_dict(d: Dictionary) -> Party:
@@ -72,6 +73,7 @@ static func from_dict(d: Dictionary) -> Party:
 	p.pool = (d.get("pool", []) as Array).duplicate()
 	p.bought = _ints(d.get("bought", {}))
 	p.nemesis = (d.get("nemesis", []) as Array).duplicate()
+	p.squads = (d.get("squads", {}) as Dictionary).duplicate(true)
 	return p
 
 
@@ -86,6 +88,51 @@ func save(path := SAVE_PATH) -> void:
 	var f := FileAccess.open(path, FileAccess.WRITE)
 	f.store_string(JSON.stringify(to_dict(), "\t"))
 	f.close()
+
+
+## Helden, die man in Mission cid (Nummer ab 1) in die Gruppe holen kann: alle mit "hero": true und "from" <= Missionsnummer.
+static func roster(defs: Dictionary, mission_no: int) -> Array:
+	var out: Array = []
+	for id: String in defs:
+		if defs[id].get("hero", false) and int(defs[id].get("from", 1)) <= mission_no:
+			out.append(id)
+	return out
+
+
+## Gruppe fuer eine Mission: die Vorgabe der Karte (players), darueber die gespeicherte Auswahl des Spielers.
+## Gespraechsfiguren bleiben immer drin, die Auswahl wird auf gueltige Plaetze zurechtgestutzt.
+func squad_for(m: Dictionary) -> Array:
+	var base: Array = (m["players"] as Array).map(func(e: Dictionary) -> String: return e["id"])
+	var saved: Array = squads.get(m.get("id", ""), [])
+	if saved.size() != base.size():
+		return base
+	var fixed: Array = Mission.dialogue_ids(m["id"])
+	var out: Array = []
+	for i in base.size():
+		var id: String = base[i] if fixed.has(base[i]) else saved[i]
+		out.append(id if not out.has(id) else base[i])
+	return out
+
+
+## Wechselt Platz i der Gruppe von Mission m auf Held id. false, wenn der Platz fest ist oder der Held schon dabei ist.
+func set_squad_member(m: Dictionary, i: int, id: String) -> bool:
+	var cur := squad_for(m)
+	if Mission.dialogue_ids(m["id"]).has(cur[i]) or cur.has(id):
+		return false
+	cur[i] = id
+	squads[m["id"]] = cur
+	release_absent(cur)
+	return true
+
+
+## Ausruestung aller Helden, die nicht in dieser Gruppe sind, geht in den Lager-Vorrat zurueck und kann neu verteilt werden.
+func release_absent(squad: Array) -> void:
+	for hero: String in equipment.keys():
+		if squad.has(hero):
+			continue
+		for w: String in equipment[hero]:
+			pool.append(w)
+		equipment.erase(hero)
 
 
 ## Kurzbeschreibung fuer die Kapitelwahl.

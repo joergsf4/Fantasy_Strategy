@@ -11,6 +11,8 @@ const GOLD_COL := Color(1.0, 0.83, 0.42)
 var party: Party
 var unit_defs: Dictionary
 var squad: Array = []
+var mission: Dictionary = {}        # naechste Mission, deren Gruppe man hier waehlt (leer = nur anzeigen)
+var _pick := -1                     # Platz, fuer den gerade ein Ersatz gewaehlt wird
 var _tab := 0
 var _hero := ""
 var _slot := ""
@@ -20,10 +22,11 @@ var _body: Control
 var _tab_buttons: Array[Button] = []
 
 
-func setup(p: Party, defs: Dictionary, squad_ids: Array) -> void:
+func setup(p: Party, defs: Dictionary, squad_ids: Array, next_mission := {}) -> void:
 	party = p
 	unit_defs = defs
 	squad = squad_ids
+	mission = next_mission
 	_hero = squad_ids[0] if not squad_ids.is_empty() else ""
 	_quip = (Party.shop_data()["quips"] as Array)[0]
 
@@ -305,11 +308,13 @@ func _build_squad() -> void:
 	var col := VBoxContainer.new()
 	col.add_theme_constant_override("separation", 10)
 	_body.add_child(col)
-	col.add_child(_text("Diese Helden ziehen ins nächste Kapitel. Weitere schließen sich an, sobald die Geschichte sie trifft.", 20, Color(0.8, 0.85, 0.75), 900))
+	var fixed: Array = Mission.dialogue_ids(mission["id"]) if not mission.is_empty() else squad
+	col.add_child(_text("Diese Helden ziehen ins nächste Kapitel. Wer im Kapitel spricht (🔒 fest), muss mit; alle anderen lassen sich tauschen. Ausrüstung von Zurückbleibenden wandert ins Lager.", 20, Color(0.8, 0.85, 0.75), 940))
 	var grid := HBoxContainer.new()
 	grid.add_theme_constant_override("separation", 14)
 	col.add_child(grid)
-	for id: String in squad:
+	for i in squad.size():
+		var id: String = squad[i]
 		var card := VBoxContainer.new()
 		card.add_child(_portrait(id, Vector2(150, 190)))
 		var nm := _label(unit_defs[id]["name"], UiTheme.F_HEAD, 15, GOLD_COL)
@@ -321,4 +326,30 @@ func _build_squad() -> void:
 		var gt := _text(", ".join(gear) if not gear.is_empty() else "ohne Ausrüstung", 15, Color(0.85, 0.85, 0.8), 150)
 		gt.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		card.add_child(gt)
+		if not mission.is_empty():
+			var locked: bool = fixed.has(id)
+			var sw := _button("🔒 fest" if locked else ("▲ Auswahl" if _pick == i else "Tauschen"), func() -> void:
+				_pick = -1 if _pick == i else i
+				_refresh(), Vector2(150, 30))
+			sw.disabled = locked
+			card.add_child(sw)
 		grid.add_child(card)
+	if _pick >= 0:
+		var no := int(mission["id"].substr(2))
+		var cand := VBoxContainer.new()
+		cand.add_theme_constant_override("separation", 3)
+		col.add_child(_label("Ersatz für %s:" % unit_defs[squad[_pick]]["name"], UiTheme.F_HEAD, 20, GOLD_COL))
+		var row := HFlowContainer.new()
+		row.add_theme_constant_override("h_separation", 8)
+		row.add_theme_constant_override("v_separation", 6)
+		cand.add_child(row)
+		for id: String in Party.roster(unit_defs, no):
+			if squad.has(id):
+				continue
+			row.add_child(_button(unit_defs[id]["name"], func() -> void:
+				if party.set_squad_member(mission, _pick, id):
+					squad = party.squad_for(mission)
+					_hero = squad[0]
+				_pick = -1
+				_refresh(), Vector2(210, 32)))
+		col.add_child(cand)

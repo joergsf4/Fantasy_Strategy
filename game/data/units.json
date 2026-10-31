@@ -14,7 +14,8 @@
    "baerenpranke"
   ],
   "weapon": "fist",
-  "body": "flesh"
+  "body": "flesh",
+  "hero": true
  },
  "ritter": {
   "name": "Ser Albrecht",
@@ -32,7 +33,8 @@
    "verspotten"
   ],
   "weapon": "metal",
-  "body": "armor"
+  "body": "armor",
+  "hero": true
  },
  "samurai": {
   "name": "Takeda",
@@ -49,7 +51,8 @@
    "todeswirbel"
   ],
   "weapon": "metal",
-  "body": "flesh"
+  "body": "flesh",
+  "hero": true
  },
  "kungfu": {
   "name": "Meister Lin",
@@ -66,7 +69,8 @@
    "stabsprung"
   ],
   "weapon": "wood",
-  "body": "flesh"
+  "body": "flesh",
+  "hero": true
  },
  "ninjas": {
   "name": "Die Kage-Schwestern",
@@ -84,7 +88,8 @@
   ],
   "ranged_mult": 0.7,
   "weapon": "metal",
-  "body": "flesh"
+  "body": "flesh",
+  "hero": true
  },
  "elisabeth": {
   "name": "Käpt’n Elisabeth",
@@ -101,7 +106,8 @@
    "kanone"
   ],
   "weapon": "metal",
-  "body": "flesh"
+  "body": "flesh",
+  "hero": true
  },
  "museklaugust": {
   "name": "Muskelaugust",
@@ -118,7 +124,8 @@
    "wurf"
   ],
   "weapon": "fist",
-  "body": "flesh"
+  "body": "flesh",
+  "hero": true
  },
  "robo": {
   "name": "Robo",
@@ -136,7 +143,8 @@
    "gruener_laser"
   ],
   "weapon": "metal",
-  "body": "armor"
+  "body": "armor",
+  "hero": true
  },
  "hund": {
   "name": "Blauer Hundsfreund",
@@ -153,7 +161,9 @@
    "knochenwurf"
   ],
   "weapon": "fist",
-  "body": "flesh"
+  "body": "flesh",
+  "hero": true,
+  "from": 6
  },
  "wendy": {
   "name": "Wendy Wolle",
@@ -171,7 +181,8 @@
    "gruppenheilung"
   ],
   "weapon": "wood",
-  "body": "flesh"
+  "body": "flesh",
+  "hero": true
  },
  "claude": {
   "name": "Claude",
@@ -188,7 +199,8 @@
    "polymorph"
   ],
   "weapon": "fist",
-  "body": "flesh"
+  "body": "flesh",
+  "hero": true
  },
  "bienenmaedchen": {
   "name": "Stachelia",
@@ -224,7 +236,8 @@
    "fasswurf"
   ],
   "weapon": "wood",
-  "body": "flesh"
+  "body": "flesh",
+  "hero": true
  },
  "soldat_infanterie": {
   "name": "Büttel des Regenten",
