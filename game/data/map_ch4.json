@@ -67,20 +67,22 @@
    "id": "soldat_infanterie",
    "pos": [
     7,
-    2
+    1
    ],
    "carry": {
     "items": {
      "heiltrank": 1
     }
-   }
+   },
+   "guard": true
   },
   {
    "id": "soldat_infanterie",
    "pos": [
-    2,
-    4
-   ]
+    6,
+    2
+   ],
+   "guard": true
   },
   {
    "id": "soldat_bogenschuetze",

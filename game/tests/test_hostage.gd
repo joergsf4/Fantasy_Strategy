@@ -42,9 +42,40 @@ func run_tests(defs: Dictionary) -> void:
 	check(b._hostage_near(far).is_empty(), "weit weg: kein Befreien")
 	check(not b._hostage_near(g["pos"] + Vector2i(1, 0)).is_empty() and not b._hostage_near(g["pos"] + Vector2i(0, 1)).is_empty(), "nebenan: Befreien moeglich")
 	hero["pos"] = g["pos"] + Vector2i(0, 1)
+	# Wachen neben der Geisel: Befreien gesperrt
+	check(b._hostage_guards(g) == 2, "zwei Wachen stehen neben der Geisel")
+	check(not b._hostage_option(g)["enabled"], "Befreien gesperrt, solange Wachen daneben stehen")
+	var guards: Array = b.units.filter(func(e: Dictionary) -> bool: return e["team"] == "e" and Grid.dist(e["pos"], g["pos"]) == 1)
+	check(guards.all(func(e: Dictionary) -> bool: return e["guard"]), "Wachen sind als Wache markiert")
+	var parked: Array = []
+	for e: Dictionary in guards:
+		parked.append(e["pos"])
+		e["pos"] = Vector2i(11, 9)
+	check(b._hostage_option(g)["enabled"], "ohne Wachen kann man die Fesseln loesen")
+	# Runde 1: Fesseln anritzen, noch nicht frei, in derselben Runde nicht abschliessbar
+	await b._free_hostage(hero, g)
+	check(g["state"] == "bound" and g["progress"] == 1, "erste Aktion ritzt nur an")
+	check(not b._hostage_option(g)["enabled"], "in derselben Runde kein Abschluss")
+	# niemand mehr bei ihr: die Fesseln ziehen sich wieder zu
+	hero["pos"] = Vector2i(0, 9)
+	await b._retie_check()
+	check(g["progress"] == 0, "ohne Helden neben ihr geht der Fortschritt verloren")
+	hero["pos"] = g["pos"] + Vector2i(0, 1)
+	await b._free_hostage(hero, g)
+	b.turn += 1
+	await b._retie_check()
+	check(g["progress"] == 1 and b._hostage_option(g)["enabled"], "naechste Runde mit Held daneben: Abschluss moeglich")
 	await b._free_hostage(hero, g)
 	check(g["state"] == "free" and not b.grid.blocked.has(g["pos"]), "Geisel frei, Feld wieder offen")
 	check(b.goal_met(), "Ziel erreicht nach Befreien")
+	for i in guards.size():
+		(guards[i] as Dictionary)["pos"] = parked[i]
+	# Wache ruehrt sich nicht, bis ein Held auf 3 Felder herankommt
+	var wache: Dictionary = guards[0]
+	hero["pos"] = Vector2i(0, 9)
+	check(not b._alarm(wache) and wache["guard"], "Held weit weg: Wache bleibt stehen")
+	hero["pos"] = wache["pos"] + Vector2i(0, 3)
+	check(b._alarm(wache) and not wache["guard"], "Held nah: Wache wird aktiv und bleibt es")
 	# Gebiss: Fernangriff mit Abklingzeit
 	var xi: Dictionary = b._find("xiulan")
 	check(not xi.is_empty() and xi["abilities"].has("gebiss"), "Xiulan hat Gebiss-Wurf")

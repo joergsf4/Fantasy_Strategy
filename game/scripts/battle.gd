@@ -128,7 +128,7 @@ func _ready() -> void:
 	for e: Dictionary in map_data["players"]:
 		_spawn(e["id"], "p", Vector2i(e["pos"][0], e["pos"][1]))
 	for e: Dictionary in map_data["enemies"]:
-		_spawn(e["id"], "e", Vector2i(e["pos"][0], e["pos"][1]), {"carry": e.get("carry", {})})
+		_spawn(e["id"], "e", Vector2i(e["pos"][0], e["pos"][1]), {"carry": e.get("carry", {}), "guard": e.get("guard", false)})
 	_build_hud()
 	_update_status()
 
@@ -240,6 +240,7 @@ func _spawn(id: String, team: String, pos: Vector2i, extra := {}) -> void:
 	}
 	_next_uid += 1
 	u["carry"] = extra.get("carry", {})
+	u["guard"] = extra.get("guard", false)    # Wache: bleibt auf dem Posten, bis ein Held nahe kommt
 	if team == "p":
 		Items.apply_equipment(u, (loadout.get("equipment", {}) as Dictionary).get(id, []))
 	var node := Node3D.new()
@@ -531,8 +532,44 @@ func _show_tiles(tiles: Dictionary) -> void:
 		_hl_root.add_child(q)
 
 
+## Kachel unter dem Mauszeiger. Figuren haben Vorrang: der Koerper einer Figur ragt ueber das Feld dahinter,
+## ein Klick darauf meint die Figur und nicht das Feld, das sie verdeckt.
 func _pick_tile(screen: Vector2) -> Vector2i:
+	var best := Vector2i(-1, -1)
+	var best_d := INF
+	for u in units:
+		var sp: Sprite3D = u["sprite"]
+		if not is_instance_valid(sp) or not sp.visible or sp.texture == null:
+			continue
+		var foot := (u["node"] as Node3D).position + Vector3(0, 0.08, 0)
+		var h := sp.texture.get_height() * sp.pixel_size
+		var w := sp.texture.get_width() * sp.pixel_size
+		var a := cam.unproject_position(foot)
+		var top := cam.unproject_position(foot + Vector3(0, h, 0))
+		var half := absf(a.y - top.y) * (w / h) * 0.3     # schmaler als die Bildbreite: Figuren sind meist schlank
+		if absf(screen.x - a.x) <= half and screen.y >= top.y and screen.y <= a.y + 8.0:
+			var d := cam.global_position.distance_to(foot)
+			if d < best_d:
+				best_d = d
+				best = u["pos"]
+	if best != Vector2i(-1, -1):
+		return best
 	return terrain.pick(cam.project_ray_origin(screen), cam.project_ray_normal(screen))
+
+
+## Warum kann die gewaehlte Figur ein Feld nicht betreten? (Rueckmeldung statt stillem Abbruch)
+func _why_not_reachable(p: Vector2i) -> String:
+	if not grid.inside(p):
+		return "Außerhalb der Karte."
+	var o := unit_at(p)
+	if not o.is_empty() and o != sel:
+		return "Feld besetzt (%s)." % o["name"]
+	if not sel["flying"] and Grid.TERRAIN[grid.terrain(p)]["cost"] < 0:
+		return "Wasser kann nicht betreten werden."
+	if not sel["flying"] and grid.blocked.has(p):
+		return "Ein Hindernis versperrt das Feld."
+	var d := Grid.dist(sel_origin, p)
+	return "Zu weit entfernt (Bewegung %d)." % sel["move"] if d > sel["move"] else "Nicht erreichbar: Gelände kostet mehr Bewegung, als übrig ist."
 
 
 ## Vorschau eines Angriffs: Schaden, Positionsbonus-Hinweise, Gegenschlag.
@@ -612,6 +649,8 @@ func _hover(p: Vector2i) -> void:
 	var t: Dictionary = Grid.TERRAIN[grid.terrain(p)]
 	_info.text = "%s (Deckung +%d)" % [t["name"], t["def"]]
 	var u := unit_at(p)
+	if state == State.SELECTED and not reach.has(p) and u.is_empty():
+		_info.text += "   –   " + _why_not_reachable(p)
 	_show_card(u if not u.is_empty() else sel)
 	if state == State.TARGETING and not u.is_empty() and _target_units.has(u):
 		_forecast.text = _forecast_text(sel, u)
@@ -664,7 +703,7 @@ func _click(p: Vector2i) -> void:
 			elif reach.has(p) and (u.is_empty() or u == sel):
 				_move_player(p)
 			else:
-				_cancel()
+				_hint.text = _why_not_reachable(p)   # Auswahl bleibt, Rechtsklick bricht ab
 		State.TARGETING:
 			if _target_kind == "landing":
 				if _landing_tiles.has(p):
@@ -718,9 +757,7 @@ func _select(u: Dictionary) -> void:
 	for p: Vector2i in reach:
 		if not occupied.has(p):
 			tiles[p] = COL_MOVE
-	for p: Vector2i in occupied.keys():
-		reach.erase(p)
-	reach[u["pos"]] = 0
+	reach[u["pos"]] = 0   # besetzte Felder bleiben in reach: man darf durch eigene Leute laufen, nur das Ziel muss frei sein
 	tiles[u["pos"]] = COL_SELF
 	_show_tiles(tiles)
 	_show_card(u)
@@ -787,7 +824,8 @@ func _enter_action(show_abilities := false, show_items := false) -> void:
 				_menu_button(box, "Schalter umlegen", true, func() -> void: _use_switch(sel, so))
 			var hs := _hostage_near(sel["pos"])
 			if not hs.is_empty():
-				_menu_button(box, "Befreien", true, func() -> void: _free_hostage(sel, hs))
+				var ho := _hostage_option(hs)
+				_menu_button(box, ho["text"], ho["enabled"], func() -> void: _free_hostage(sel, hs))
 			var vl := _village_at(sel["pos"])
 			if not vl.is_empty() and not vl["visited"]:
 				_menu_button(box, "Dorf besuchen", true, func() -> void: _collect(sel, vl, "village"))
@@ -1545,12 +1583,53 @@ func _hostage_near(p: Vector2i) -> Dictionary:
 	return {}
 
 
+## Befreien braucht zwei Runden und eine Geisel ohne Wache daneben. Rueckgabe: {text, enabled} fuer den Menuepunkt.
+func _hostage_option(o: Dictionary) -> Dictionary:
+	if _hostage_guards(o) > 0:
+		return {"text": "Befreien (Wache!)", "enabled": false}
+	var p: int = o.get("progress", 0)
+	if p == 0:
+		return {"text": "Fesseln lösen (1/2)", "enabled": true}
+	if turn <= int(o["cut_turn"]):
+		return {"text": "Befreien (ab nächster Runde)", "enabled": false}
+	return {"text": "Befreien (2/2)", "enabled": true}
+
+
+func _hostage_guards(o: Dictionary) -> int:
+	var n := 0
+	for e in units:
+		if e["team"] == "e" and Grid.dist(e["pos"], o["pos"]) == 1:
+			n += 1
+	return n
+
+
+## Zu Beginn der Heldenphase: Fesseln, an denen niemand mehr steht, ziehen sich wieder zu.
+func _retie_check() -> void:
+	for o in world.objects:
+		if o["type"] != "hostage" or o["state"] != "bound" or int(o.get("progress", 0)) == 0:
+			continue
+		var held := false
+		for u in units:
+			if u["team"] == "p" and Grid.dist(u["pos"], o["pos"]) == 1:
+				held = true
+		if not held:
+			o["progress"] = 0
+			await _popup({"pos": o["pos"]}, "Die Fesseln sind wieder fest", Color(1.0, 0.6, 0.4))
+
+
 func _free_hostage(u: Dictionary, o: Dictionary) -> void:
 	_close_menu()
 	state = State.BUSY
 	_show_tiles({})
 	_update_status()
 	_actor = u
+	if int(o.get("progress", 0)) == 0:
+		o["progress"] = 1
+		o["cut_turn"] = turn
+		Sfx.event("rope")
+		await _popup(u, "Fesseln angeritzt\n(1/2)", Color(1.0, 0.9, 0.5))
+		_finish_unit_after(u)
+		return
 	await _popup(u, "Befreit!", Color(0.6, 1.0, 0.6))
 	await _after_world_change(world.apply(o, "free"))
 	_check_end()
@@ -2407,6 +2486,7 @@ func _return_from_polymorph(u: Dictionary) -> void:
 func _begin_phase(team: String) -> void:
 	if team == "p":
 		Sfx.event("turn_start")
+		await _retie_check()
 	for u in (units + _away):
 		if u["team"] != team:
 			continue
@@ -2455,6 +2535,8 @@ func _end_player_turn() -> void:
 	for e in units.filter(func(u: Dictionary) -> bool: return u["team"] == "e"):
 		if not units.has(e) or e["done"]:
 			continue
+		if e["guard"] and not _alarm(e):
+			continue
 		await _enemy_move(e)
 		if state == State.OVER:
 			return
@@ -2470,6 +2552,17 @@ func _end_player_turn() -> void:
 	_update_status()
 	if _all_done("p"):
 		_end_player_turn()
+
+
+## Wachen ruehren sich nicht, bis ein (sichtbarer) Held auf GUARD_RADIUS Felder herankommt, danach kaempfen sie normal.
+const GUARD_RADIUS := 3
+
+func _alarm(e: Dictionary) -> bool:
+	for u in units:
+		if u["team"] == "p" and not Status.has(u, "stealth") and Grid.dist(u["pos"], e["pos"]) <= GUARD_RADIUS:
+			e["guard"] = false
+			return true
+	return false
 
 
 func _taunter(e: Dictionary) -> Dictionary:

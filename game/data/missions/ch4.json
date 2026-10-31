@@ -2,7 +2,7 @@
  "id": "ch4",
  "title": "Das Teehaus am Pass",
  "map": "res://data/map_ch4.json",
- "briefing": "Der Regent hält eine Mutter mit ihrem Baby in einem Teehaus am Pass gefangen. Das Baby schreit, und jede zweite Runde eilt Verstärkung herbei. Befreit die Geisel, bevor die Wachen überhandnehmen. Vor der Tür steht Xiùlán, eine alte Dame, die für Geld als Babysitterin angeheuert wurde und mit dem Gebiss um sich wirft.",
+ "briefing": "Der Regent hält eine Mutter mit ihrem Baby in einem Teehaus am Pass gefangen. Zwei Wachen stehen bei ihr und lassen niemanden an die Fesseln. Das Baby schreit, und jede zweite Runde eilt Verstärkung herbei. Die Fesseln zu lösen dauert zwei Runden, und es muss jemand bei ihr bleiben. Vor der Tür steht Xiùlán, eine alte Dame, die für Geld als Babysitterin angeheuert wurde und mit dem Gebiss um sich wirft.",
  "goals": [
   {
    "type": "free",
@@ -108,6 +108,12 @@
        "speaker": "xiulan",
        "text": "Verbeug dich ruhig, Jungchen. Dann hast du die Nase auf Höhe meines Knies.",
        "right_expr": "lachend"
+      },
+      {
+       "left": "kungfu",
+       "right": "xiulan",
+       "speaker": "kungfu",
+       "text": "Du bist eine bösartige Hexe!"
       }
      ]
     }
