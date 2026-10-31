@@ -38,7 +38,9 @@ func _names() -> Dictionary:
 
 
 func _run() -> void:
-	party = Party.new_game()
+	party = Party.load_from()          # Spielstand fortsetzen, falls vorhanden (entkommene Gegner, Gold, Ausruestung)
+	if party == null:
+		party = Party.new_game()
 	stage = Stage.new()
 	stage.setup(map, units)
 	stage.party = party
@@ -56,7 +58,7 @@ func _run() -> void:
 	add_child(layer)
 	var end := Label.new()
 	end.theme = UiTheme.get_theme()
-	end.text = "Ende von Kapitel 3\n(Prototyp)"
+	end.text = "Ende von Kapitel %d\n(Prototyp)" % CHAPTERS.size()
 	end.add_theme_font_override("font", UiTheme.font(UiTheme.F_TITLE))
 	end.add_theme_font_size_override("font_size", 56)
 	end.add_theme_color_override("font_color", UiTheme.GOLD)
@@ -111,6 +113,13 @@ func _choose_level() -> Array:
 	add_child(layer)
 	var ls := LevelSelect.new()
 	ls.setup(list)
+	ls.save_info = party.summary()
+	ls.new_game_requested.connect(func() -> void:
+		Party.delete_save()
+		party = Party.new_game()
+		stage.party = party
+		ls.save_info = party.summary() + " (neues Spiel)"
+		ls.refresh_info())
 	layer.add_child(ls)
 	var res: Array = await ls.chosen
 	layer.queue_free()
@@ -268,7 +277,13 @@ func _screenshot_mode() -> void:
 		add_child(rl)
 		var rs := RewardScreen.new()
 		rs.setup({"gold": 205, "items": {"heiltrank": 1, "gegengift": 1, "aether": 1}, "materials": {"kraut": 3, "hopfen": 1}, "equipment": [],
-			"objectives": [{"id": "a", "text": "Kein Held fällt", "done": true, "reward": {"gold": 60}}, {"id": "b", "text": "In 6 Runden gewonnen", "done": false, "reward": {}}]})
+			"objectives": [{"id": "a", "text": "Kein Held fällt", "done": true, "reward": {"gold": 60}}, {"id": "b", "text": "In 6 Runden gewonnen", "done": false, "reward": {}}],
+			"turns": 7, "stats": {"rows": [
+				{"id": "ritter", "name": "Ser Albrecht", "alive": true, "hp": 12, "maxhp": 34, "dealt": 41, "taken": 22, "healed": 0, "kills": 3, "abs": 2, "bonus": 1},
+				{"id": "wendy", "name": "Wendy Wolle", "alive": true, "hp": 18, "maxhp": 18, "dealt": 6, "taken": 3, "healed": 27, "kills": 0, "abs": 4, "bonus": 0},
+				{"id": "samurai", "name": "Takeda", "alive": false, "hp": 0, "maxhp": 24, "dealt": 30, "taken": 24, "healed": 0, "kills": 2, "abs": 1, "bonus": 3}],
+				"awards": [{"title": "Schlagkräftigster", "name": "Ser Albrecht", "text": "41 Schaden ausgeteilt"}, {"title": "Sanitäter", "name": "Wendy Wolle", "text": "27 Leben geheilt"},
+					{"title": "Knapp davongekommen", "name": "Ser Albrecht", "text": "mit 12 von 34 Leben"}]}})
 		rl.add_child(rs)
 		for i in 40:
 			await get_tree().process_frame

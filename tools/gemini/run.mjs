@@ -177,6 +177,29 @@ const GEBAEUDE = {
 for (const [name, d] of Object.entries(GEBAEUDE))
   jobs.push({ name, refs: [path.join(OUT, 'fx_fireball.jpg')], prompt: `Create ${d}, game sprite, seen slightly from above and the front, sturdy and chunky, readable at small size.` + FX_STYLE });
 
+// Neue Heiler (Backlog 4): Magical Girl "Lumi" und Quaksalber-Arzt "Dr. Humbug", jeweils Portrait, lachend, wuetend, Chibi.
+const HEALERS = {
+  magical_girl: 'Lumi Sternenglanz, a cheerful magical girl healer: bright pink hair in two long twin-tails with star-shaped hair clips, big sparkling eyes, a frilly pastel pink-and-white dress with a big ribbon and a heart brooch, white gloves, holding a star-tipped magic wand that glows softly, tiny sparkles around her',
+  quacksalber: 'Dr. Humbug, a shady but charming quack doctor: tall top hat, round golden spectacles, a big curled moustache, a long patched mustard-yellow coat with dozens of tiny bottles and vials pinned inside, a worn leather doctor bag and a big bottle labeled miracle elixir in one hand, a sly confident grin',
+};
+const H_EMO = { lachend: 'laughing with joy and confidence', wuetend: 'angry and indignant, frowning and pointing' };
+for (const [hid, d] of Object.entries(HEALERS)) {
+  jobs.push({ name: hid, refs: [ref(STYLE_REF)], prompt: `Create a dialogue portrait of ${d}.` + PORTRAIT_TAIL });
+  jobs.push({ name: `${hid}_chibi`, refs: [path.join(OUT, `${hid}.jpg`)], prompt:
+    'Create a chibi version of exactly this character. Keep the same face, hair, colors, outfit and props. IMPORTANT: strict FULL BODY from head to toe, both feet clearly visible standing on the ground, nothing cropped, entire figure inside the image with margin. Tiny cute chibi proportions (about 2.5 heads tall), standing, facing right, small game-map sprite. Keep exactly the same pixel-art style. Output exactly ONE single character: no second figure, no ghost duplicate. NO ground line, NO floor strip, NO shadow or platform under the feet: the feet stand directly on the flat green background. ' + GREEN });
+  for (const [e, t] of Object.entries(H_EMO))
+    jobs.push({ name: `${hid}_${e}`, refs: [path.join(OUT, `${hid}.jpg`)], prompt:
+      `Redraw exactly this character in the identical pixel-art style, outfit, colors, size and framing: character on the left side of the image, facing right, nothing on the right half, solid bright green background like the reference. Change ONLY the facial expression and body language to: ${t}. Any glow stays inside the head: no light beams, streaks or glow extending outside the face. No text, no border.` });
+}
+// Wueste (Backlog 1): Karten-Sprites fuer das neue Biom.
+const WUESTE = {
+  fx_kaktus: 'a cluster of two or three green desert cacti (a tall saguaro with arms and a round barrel cactus) with small pink flowers and a few sand-colored pebbles around the base',
+  fx_palme: 'a lone desert oasis date palm with a curved trunk, a lush crown of green fronds and a few dates, with a small tuft of grass at the foot',
+  fx_zelt: 'a striped desert market tent in faded red and cream with a wooden pole, a small awning, a hanging oil lamp and a stack of woven baskets and clay pots in front',
+};
+for (const [name, d] of Object.entries(WUESTE))
+  jobs.push({ name, refs: [path.join(OUT, 'fx_fireball.jpg')], prompt: `Create ${d}, game sprite, seen slightly from above and the front, sturdy and chunky, readable at small size.` + FX_STYLE });
+
 async function generate(page, job) {
   await page.goto('https://gemini.google.com/app', { waitUntil: 'domcontentloaded' });
   await page.waitForSelector('div[role=textbox], .ql-editor', { timeout: 30000 });

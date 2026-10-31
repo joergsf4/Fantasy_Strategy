@@ -64,6 +64,13 @@ func run_tests(defs: Dictionary) -> void:
 	check((party.loadout()["nemesis"] as Array) == ["wart"], "Loadout reicht es in den Kampf")
 	var back := Party.from_dict(party.to_dict())
 	check(back.nemesis == ["wart"], "Speicherstand behaelt Wart")
+	check(back.summary().contains("Wart"), "Kapitelwahl zeigt entkommene Gegner")
+	var tmp := "user://test_save.json"
+	party.save(tmp)
+	var loaded := Party.load_from(tmp)
+	check(loaded != null and loaded.nemesis == ["wart"], "Spielstand laesst sich von der Platte laden")
+	Party.delete_save(tmp)
+	check(Party.load_from(tmp) == null, "Spielstand loeschen")
 	# Wiederkehr: Bedingung "fled" im naechsten Kampf
 	var b2 := Battle.new()
 	var m3 := Mission.load_mission("ch3")

@@ -3,8 +3,11 @@ extends Control
 ## Kapitelwahl nach "Press Start" (zu Testzwecken): pro Kapitel mit Einleitung oder direkt in den Kampf.
 
 signal chosen(index: int, skip_story: bool)
+signal new_game_requested
 
 var chapters: Array = []     # [{id, title}]
+var save_info := ""
+var _info: Label
 
 
 func setup(list: Array) -> void:
@@ -27,6 +30,8 @@ func _ready() -> void:
 	panel.add_child(col)
 	col.add_child(_label("Kapitel wählen", UiTheme.F_TITLE, 36, UiTheme.GOLD, HORIZONTAL_ALIGNMENT_CENTER))
 	col.add_child(_label("Testmenü", UiTheme.F_BODY, 18, Color(0.75, 0.75, 0.7), HORIZONTAL_ALIGNMENT_CENTER))
+	_info = _label(save_info, UiTheme.F_BODY, 16, Color(0.8, 0.85, 0.7), HORIZONTAL_ALIGNMENT_CENTER)
+	col.add_child(_info)
 	for i in chapters.size():
 		var row := HBoxContainer.new()
 		row.add_theme_constant_override("separation", 12)
@@ -37,6 +42,12 @@ func _ready() -> void:
 		row.add_child(_button("Direkt in den Kampf", func() -> void: pick(i, true)))
 		col.add_child(row)
 	col.add_child(_button("Soundlabor", _open_lab))
+	col.add_child(_button("Spielstand zurücksetzen", func() -> void: new_game_requested.emit()))
+
+
+func refresh_info() -> void:
+	if _info != null:
+		_info.text = save_info
 
 
 func _open_lab() -> void:

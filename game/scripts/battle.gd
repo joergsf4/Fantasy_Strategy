@@ -57,6 +57,7 @@ var _cur_item := ""
 var chests: Array[Dictionary] = []     # {pos, reward, open, node}
 var villages: Array[Dictionary] = []   # {pos, reward, visited}
 var loot := {"gold": 0, "items": {}, "materials": {}, "equipment": []}   # Beute dieses Kampfes (Gegenstaende gehen direkt in den Rucksack)
+var all_units: Array[Dictionary] = []     # alle je gespawnten Figuren (fuer die Statistik, auch gefallene)
 var fallen: Array[String] = []         # gefallene Helden (fuer Bonusziele)
 var _start_inventory: Dictionary = {}
 var _results: Dictionary = {}
@@ -248,7 +249,9 @@ func _spawn(id: String, team: String, pos: Vector2i, extra := {}) -> void:
 		"heal": d.get("heal", 0), "done": false, "status": [], "cd": {}, "dir": Vector2i.RIGHT,
 		"uid": str(_next_uid), "charge": 0,
 		"weapon": d.get("weapon", "fist"), "body": d.get("body", "flesh"),
+		"st": {"dealt": 0, "taken": 0, "healed": 0, "kills": 0, "abs": 0, "bonus": 0},
 	}
+	all_units.append(u)
 	_next_uid += 1
 	if extra.has("hp"):
 		u["hp"] = int(extra["hp"])
@@ -1030,6 +1033,8 @@ func _collect(u: Dictionary, entry: Dictionary, kind: String) -> void:
 ## Besiegte Gegner mit Beute geben sie sofort her; gefallene Helden werden vermerkt.
 func _on_death(def: Dictionary) -> void:
 	_note("death", {"unit": def, "by": _actor})
+	if not _actor.is_empty() and _actor["team"] != def["team"]:
+		_actor["st"]["kills"] += 1
 	if def["team"] == "e":
 		kills_total += 1
 		var carry: Dictionary = def.get("carry", {})
@@ -1085,6 +1090,44 @@ func _flee(def: Dictionary, talk := true) -> void:
 		n.queue_free()
 
 
+## Schaden fuer die Statistik: Angreifer teilt aus (falls bekannt), Ziel steckt ein.
+func _count(att: Dictionary, def: Dictionary, real: int) -> void:
+	if not att.is_empty() and att["team"] != def["team"]:
+		att["st"]["dealt"] += real
+	def["st"]["taken"] += real
+
+
+## Statistik der Heldenseite: je Figur Zahlen, dazu Auszeichnungen (nur wenn jemand mehr als 0 geschafft hat).
+func stats() -> Dictionary:
+	var rows: Array = []
+	for u in all_units:
+		if u["team"] != "p":
+			continue
+		var s: Dictionary = u["st"]
+		rows.append({"id": u["id"], "name": u["name"], "alive": u["hp"] > 0, "hp": u["hp"], "maxhp": u["maxhp"],
+			"dealt": s["dealt"], "taken": s["taken"], "healed": s["healed"], "kills": s["kills"], "abs": s["abs"], "bonus": s["bonus"]})
+	var awards: Array = []
+	var pick := func(key: String, title: String, text: String) -> void:
+		var best: Dictionary = {}
+		for r: Dictionary in rows:
+			if r[key] > 0 and (best.is_empty() or r[key] > best[key]):
+				best = r
+		if not best.is_empty():
+			awards.append({"title": title, "name": best["name"], "text": text % best[key]})
+	pick.call("dealt", "Schlagkräftigster", "%d Schaden ausgeteilt")
+	pick.call("taken", "Prügelknabe", "%d Schaden eingesteckt")
+	pick.call("healed", "Sanitäter", "%d Leben geheilt")
+	pick.call("kills", "Gegnerschreck", "%d Gegner besiegt")
+	pick.call("bonus", "Taktiker", "%d Treffer von hinten, der Seite oder oben")
+	var close: Dictionary = {}
+	for r: Dictionary in rows:
+		if r["alive"] and (close.is_empty() or float(r["hp"]) / float(r["maxhp"]) < float(close["hp"]) / float(close["maxhp"])):
+			close = r
+	if not close.is_empty() and float(close["hp"]) / float(close["maxhp"]) < 0.5:
+		awards.append({"title": "Knapp davongekommen", "name": close["name"], "text": "mit %d von %d Leben" % [close["hp"], close["maxhp"]]})
+	return {"rows": rows, "awards": awards}
+
+
 ## Ergebnis fuer Belohnungsbildschirm und Party: Rucksack-Rest samt Beute, Zutaten, Gold, Ziele.
 func results() -> Dictionary:
 	if not _results.is_empty():
@@ -1126,6 +1169,7 @@ func results() -> Dictionary:
 	gained["objectives"] = done
 	gained["turns"] = turn
 	gained["fled"] = fled.duplicate()
+	gained["stats"] = stats()
 	_results = gained
 	return gained
 
@@ -1766,6 +1810,7 @@ func _fire_phase() -> void:
 
 
 func _burn(u: Dictionary) -> void:
+	_count({}, u, mini(FIRE_DAMAGE, u["hp"]))
 	u["hp"] = maxi(0, u["hp"] - FIRE_DAMAGE)
 	_refresh_unit(u)
 	fx.flash_unit(u, Color(2.0, 1.2, 0.6), 0.25)
@@ -1839,6 +1884,8 @@ func _use_item(u: Dictionary, id: String, target: Dictionary) -> void:
 		_turn_towards(u, target["pos"])
 	_popup(u, it["name"], Color(1.0, 0.9, 0.5))
 	var res := Items.apply_item(id, target, units.filter(func(o: Dictionary) -> bool: return o["team"] == u["team"]))
+	u["st"]["healed"] += int(res["heal"])
+	u["st"]["abs"] += 1
 	for v: Dictionary in res["victims"]:
 		_refresh_unit(v)
 	if res["heal"] > 0 or res["cured"] > 0:
@@ -1980,6 +2027,7 @@ func _resolve(u: Dictionary, target: Dictionary) -> void:
 		if amount > 0:
 			_note("heal", {"by": u, "healed": [target]})
 		target["hp"] += amount
+		u["st"]["healed"] += amount
 		var cured := Status.cleanse(target)
 		_refresh_unit(target)
 		Sfx.event("heal")
@@ -1996,6 +2044,9 @@ func _strike(att: Dictionary, def: Dictionary, mult := 1.0, ignore_def := 0.0, l
 	_actor = att
 	var fc := forecast(att, def, att["pos"], mult, ignore_def)
 	var dmg: int = fc["dmg"]
+	_count(att, def, mini(dmg, def["hp"]))
+	if not (fc["tags"] as Array).is_empty():
+		att["st"]["bonus"] += 1                 # Treffer mit Positionsbonus (Ruecken, Flanke, Hoehe, Hinterhalt)
 	def["hp"] = maxi(0, def["hp"] - dmg)
 	Status.remove(att, "stealth")
 	if lunge:
@@ -2396,6 +2447,7 @@ func _effect_targets(u: Dictionary, ab: Dictionary, target: Dictionary, to: Stri
 
 func _run_ability(u: Dictionary, id: String, target: Dictionary) -> void:
 	var ab: Dictionary = abilities[id]
+	u["st"]["abs"] += 1
 	u["cd"][id] = Items.cooldown_for(u, int(ab["cd"]))
 	_actor = u
 	_note("ability", {"id": id, "by": u})
@@ -2456,6 +2508,7 @@ func _apply_effect(u: Dictionary, ab: Dictionary, target: Dictionary, ef: Dictio
 				if amount > 0 or Status.has(v, "poison"):
 					healed.append(v)
 				v["hp"] += amount
+				u["st"]["healed"] += amount
 				var cured: bool = ef.get("cleanse", false) and Status.cleanse(v)
 				_refresh_unit(v)
 				fx.on_heal(ab["id"], u, v, amount, cured)
@@ -2533,6 +2586,7 @@ func _throw(u: Dictionary, target: Dictionary, ef: Dictionary) -> void:
 
 ## Schaden ohne Angriff (Aufprall, Gift ...).
 func _deal(def: Dictionary, dmg: int, text: String) -> void:
+	_count(_actor, def, mini(dmg, def["hp"]))
 	def["hp"] = maxi(0, def["hp"] - dmg)
 	_refresh_unit(def)
 	await _popup(def, "-%d\n%s" % [dmg, text], Color(1, 0.45, 0.35))
@@ -2584,6 +2638,7 @@ func _begin_phase(team: String) -> void:
 		var stunned := Status.has(u, "stun")
 		for ev: Dictionary in Status.tick_phase_start(u):
 			if ev["type"] == "poison":
+				_count({}, u, mini(int(ev["amount"]), u["hp"]))
 				u["hp"] = maxi(0, u["hp"] - ev["amount"])
 				_refresh_unit(u)
 				await _popup(u, "-%d Gift" % ev["amount"], Color(0.6, 1.0, 0.4))

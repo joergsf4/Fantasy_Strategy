@@ -88,6 +88,18 @@ func save(path := SAVE_PATH) -> void:
 	f.close()
 
 
+## Kurzbeschreibung fuer die Kapitelwahl.
+func summary() -> String:
+	var names := {"wart": "Wart", "oskar": "Oskar", "maja": "Maja", "xiulan": "Xiùlán", "bienenmaedchen": "Stachelia", "dummy": "Trainingsattrappe"}
+	var fled: Array = nemesis.map(func(id: String) -> String: return names.get(id, id))
+	return "Spielstand: Gold %d%s" % [gold, ", entkommen: " + ", ".join(fled) if not fled.is_empty() else ""]
+
+
+static func delete_save(path := SAVE_PATH) -> void:
+	if FileAccess.file_exists(path):
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+
+
 static func load_from(path := SAVE_PATH) -> Party:
 	if not FileAccess.file_exists(path):
 		return null

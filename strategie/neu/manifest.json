@@ -114,5 +114,9 @@
  "fx_teehaus": true,
  "fx_waisenhaus": true,
  "fx_bienenstock": true,
- "fx_glocke": true
+ "fx_glocke": true,
+ "magical_girl": true,
+ "magical_girl_chibi": true,
+ "magical_girl_lachend": true,
+ "magical_girl_wuetend": true
 }

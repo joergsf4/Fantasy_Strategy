@@ -21,8 +21,9 @@ func _ready() -> void:
 	var panel := PanelContainer.new()
 	panel.add_theme_stylebox_override("panel", UiTheme.box("panel_dark_s.png", 24, Vector4(30, 22, 30, 22), 0.94))
 	panel.custom_minimum_size = Vector2(560, 0)
-	panel.position = Vector2(360, 110)
+	panel.position = Vector2(60, 90)
 	add_child(panel)
+	_build_stats()
 	var col := VBoxContainer.new()
 	col.add_theme_constant_override("separation", 6)
 	panel.add_child(col)
@@ -51,6 +52,45 @@ func _ready() -> void:
 		closed.emit()
 		queue_free())
 	col.add_child(b)
+
+
+## Rechte Seite: Statistik der Gruppe (Tabelle je Figur) und Auszeichnungen.
+func _build_stats() -> void:
+	var st: Dictionary = results.get("stats", {})
+	var rows: Array = st.get("rows", [])
+	if rows.is_empty():
+		return
+	var panel := PanelContainer.new()
+	panel.add_theme_stylebox_override("panel", UiTheme.box("panel_dark_s.png", 24, Vector4(30, 22, 30, 22), 0.94))
+	panel.custom_minimum_size = Vector2(580, 0)
+	panel.position = Vector2(650, 90)
+	add_child(panel)
+	var col := VBoxContainer.new()
+	col.add_theme_constant_override("separation", 5)
+	panel.add_child(col)
+	col.add_child(_label("Statistik – Runde %d" % int(results.get("turns", 0)), UiTheme.F_HEAD, 24, UiTheme.GOLD))
+	var grid := GridContainer.new()
+	grid.columns = 5
+	grid.add_theme_constant_override("h_separation", 14)
+	grid.add_theme_constant_override("v_separation", 3)
+	col.add_child(grid)
+	for h in ["", "Schaden", "Erlitten", "Geheilt", "Besiegt"]:
+		var hl := _label(h, UiTheme.F_BODY, 17, Color(0.85, 0.8, 0.55), HORIZONTAL_ALIGNMENT_RIGHT if h != "" else HORIZONTAL_ALIGNMENT_LEFT)
+		grid.add_child(hl)
+	for r: Dictionary in rows:
+		var nm := _label(("† " if not r["alive"] else "") + String(r["name"]), UiTheme.F_BODY, 19, UiTheme.CREAM if r["alive"] else Color(0.7, 0.55, 0.55))
+		nm.custom_minimum_size = Vector2(190, 0)
+		grid.add_child(nm)
+		for k in ["dealt", "taken", "healed", "kills"]:
+			grid.add_child(_label(str(int(r[k])), UiTheme.F_BODY, 19, UiTheme.CREAM, HORIZONTAL_ALIGNMENT_RIGHT))
+	var awards: Array = st.get("awards", [])
+	if not awards.is_empty():
+		col.add_child(_label("Auszeichnungen", UiTheme.F_HEAD, 20, UiTheme.GOLD))
+		for a: Dictionary in awards:
+			var l := _label("%s: %s (%s)" % [a["title"], a["name"], a["text"]], UiTheme.F_BODY, 18, Color(0.9, 0.9, 0.75))
+			l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			l.custom_minimum_size = Vector2(520, 0)
+			col.add_child(l)
 
 
 func _label(text: String, font: String, size: int, color: Color, align := HORIZONTAL_ALIGNMENT_LEFT) -> Label:

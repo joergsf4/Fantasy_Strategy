@@ -17,7 +17,7 @@ func _initialize() -> void:
 	root.add_child(ls)
 	await process_frame
 	var buttons: Array = ls.find_children("*", "Button", true, false)
-	buttons = buttons.filter(func(b: Button) -> bool: return b.text != "Soundlabor")
+	buttons = buttons.filter(func(b: Button) -> bool: return b.text != "Soundlabor" and b.text != "Spielstand zurücksetzen")
 	check(buttons.size() == 4, "Zwei Kapitel mal zwei Knoepfe = 4, war %d" % buttons.size())
 	check(buttons[0].text == "Mit Einleitung" and buttons[1].text == "Direkt in den Kampf", "Knopfbeschriftung")
 	buttons[3].pressed.emit()
