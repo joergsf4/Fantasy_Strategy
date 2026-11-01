@@ -49,3 +49,7 @@ Dorf-Felder (`V`) zeigen den Dorfplatz-Sprite (Wiese `fx_dorf`, Wüste `fx_dorf_
 
 ## Erledigt: Dialog-Editor, Tab „Charaktere“ (2026-11-01)
 Übersicht aller Figuren (`GET /api/characters`, `server.characters()`): erstes Auftreten, Spezialfähigkeit (mit Hinweis auf Missions-Fähigkeiten wie die Breitseite), Missions-Zeitstrahl mit Dialogzeilen je Kapitel und Sprung zu den Gesprächen, Werte, Soundprofil, Ausrüstung, Flucht und Rückkehr, Material-Ampel (Porträt, Emotionen, Karten-Figur), Design-Notizen. Filter, Suche, Karten- und Tabellenansicht mit Sortierung.
+
+## Erledigt: Karten-Objekte-Durchgang (2026-11-01)
+Alle Kapitel durchgesehen. Ersetzt durch Pixel-Sprites: Truhen (zu und offen, Tausch beim Öffnen), Burg (`C`-Felder), Beutesack-Markierung über Gegnern mit Beute, Hebel des Schalters (gespiegelt, wenn umgelegt), Pfahl mit Seilen bei der Geisel.
+**Bewusst als 3D geblieben:** Mauer und Tor (Steinmauer-Optik, vom Nutzer gelobt), Holzsteg (flache Planken auf dem Wasser, Sprites würden dort als stehende Bilder falsch wirken), Gelände mit Bäumen, Büschen, Gras und Steinen (Landschaft, vom Nutzer gelobt), Team-Ring unter den Figuren (Bedienelement).

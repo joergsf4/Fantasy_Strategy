@@ -134,5 +134,11 @@
  "fx_ruine1": true,
  "fx_ruine2": true,
  "fx_dorf": true,
- "fx_dorf_wueste": true
+ "fx_dorf_wueste": true,
+ "fx_truhe": true,
+ "fx_truhe_offen": true,
+ "fx_burg": true,
+ "fx_beutel": true,
+ "fx_pfahl": true,
+ "fx_hebel": true
 }

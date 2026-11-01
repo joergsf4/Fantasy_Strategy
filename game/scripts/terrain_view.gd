@@ -510,9 +510,7 @@ func _build_structures() -> void:
 	for j in grid.height:
 		for i in grid.width:
 			var t := grid.terrain(Vector2i(i, j))
-			if t == "C":     # Doerfer (V) setzt der Kampf als Sprites (Battle._build_decor)
-				_castle(i, j)
-			elif t == "P":
+			if t == "P":     # Doerfer (V) und Burgen (C) setzt der Kampf als Sprites (Battle._build_decor)
 				_planks(i, j)
 
 
@@ -552,83 +550,3 @@ func _planks(ti: int, tj: int) -> void:
 			for e in [-1, 1]:
 				k.box(Vector3(s * 0.44, -0.15, e * 0.46), Vector3(0.06, 0.45, 0.06), dark)
 	_build_mesh_at(k, ti, height_at(ti, tj), tj, "Pier_%d_%d" % [ti, tj])
-
-
-## Eine Zinnenreihe entlang einer Mauer (Richtung dir = X oder Z).
-func _crenel(k: MeshKit, from: Vector3, to: Vector3, y: float, col: Color, n: int) -> void:
-	for i in n:
-		var t := (float(i) + 0.5) / float(n)
-		var p := from.lerp(to, t)
-		k.box(Vector3(p.x, y, p.z), Vector3(0.07, 0.07, 0.07) if absf(to.x - from.x) > absf(to.z - from.z) else Vector3(0.07, 0.07, 0.07), col)
-
-
-func _tower(k: MeshKit, c: Vector3, r: float, h: float, stone: Color, dark: Color, roof: Color) -> void:
-	k.frustum(c, r * 1.12, r, h, stone.darkened(0.1), stone, 10, false)
-	k.frustum(c + Vector3(0, h, 0), r * 1.22, r * 1.22, 0.05, dark, dark.lightened(0.1), 10, true)       # Kranz
-	k.frustum(c + Vector3(0, h + 0.05, 0), r * 1.04, 0.0, h * 0.6, roof.darkened(0.1), roof.lightened(0.15), 10)   # Spitzdach
-	for a in [0.0, PI * 0.5, PI, PI * 1.5]:                                                         # Schiessscharten
-		var d := Vector3(cos(a), 0, sin(a))
-		k.box(c + d * (r * 0.98) + Vector3(0, h * 0.62, 0), Vector3(0.02 if absf(d.x) > 0.5 else 0.045, 0.1, 0.045 if absf(d.x) > 0.5 else 0.02), Color(0.06, 0.05, 0.08))
-	for n in 8:                                                                                      # Zinnen am Kranz
-		var a2 := TAU * n / 8.0
-		k.box(c + Vector3(cos(a2) * r * 1.2, h + 0.085, sin(a2) * r * 1.2), Vector3(0.05, 0.05, 0.05), dark, a2)
-	# Fahne
-	k.box(c + Vector3(0, h + 0.05 + h * 0.6 + 0.1, 0), Vector3(0.012, 0.22, 0.012), Color(0.3, 0.2, 0.1))
-	k.box(c + Vector3(0.07, h + 0.05 + h * 0.6 + 0.19, 0), Vector3(0.13, 0.07, 0.01), Color(0.78, 0.14, 0.14))
-
-
-func _castle(ti: int, tj: int) -> void:
-	var k := MeshKit.new()
-	var stone := Color(0.56, 0.55, 0.58)
-	var dark := Color(0.4, 0.4, 0.45)
-	var roof := Color(0.22, 0.3, 0.62)
-	var r := 0.4
-	var wh := 0.4
-	# Sockel aus grobem Fels
-	k.box(Vector3(0, 0.03, 0), Vector3(r * 2.3, 0.06, r * 2.3), Color(0.45, 0.43, 0.4))
-	# Mauern (Hinten, Links, Rechts, Vorne mit Tor)
-	k.box(Vector3(0, wh * 0.5 + 0.06, -r), Vector3(2 * r, wh, 0.1), stone)
-	k.box(Vector3(-r, wh * 0.5 + 0.06, 0), Vector3(0.1, wh, 2 * r), stone)
-	k.box(Vector3(r, wh * 0.5 + 0.06, 0), Vector3(0.1, wh, 2 * r), stone)
-	k.box(Vector3(-0.27, wh * 0.5 + 0.06, r), Vector3(0.26, wh, 0.1), stone)
-	k.box(Vector3(0.27, wh * 0.5 + 0.06, r), Vector3(0.26, wh, 0.1), stone)
-	k.box(Vector3(0, wh * 0.82 + 0.06, r), Vector3(0.28, wh * 0.36, 0.1), stone)            # Torsturz
-	# Wehrgang und Zinnen
-	for z in [-r, r]:
-		k.box(Vector3(0, wh + 0.07, z), Vector3(2 * r, 0.025, 0.14), dark)
-	for x in [-r, r]:
-		k.box(Vector3(x, wh + 0.07, 0), Vector3(0.14, 0.025, 2 * r), dark)
-	_crenel(k, Vector3(-r + 0.1, 0, -r), Vector3(r - 0.1, 0, -r), wh + 0.11, dark, 6)
-	_crenel(k, Vector3(-r, 0, -r + 0.1), Vector3(-r, 0, r - 0.1), wh + 0.11, dark, 6)
-	_crenel(k, Vector3(r, 0, -r + 0.1), Vector3(r, 0, r - 0.1), wh + 0.11, dark, 6)
-	_crenel(k, Vector3(-r + 0.1, 0, r), Vector3(-0.17, 0, r), wh + 0.11, dark, 2)
-	_crenel(k, Vector3(0.17, 0, r), Vector3(r - 0.1, 0, r), wh + 0.11, dark, 2)
-	# Tor: dunkler Durchgang, Holztor mit Beschlaegen, Fallgitter, Fackeln
-	k.box(Vector3(0, 0.2, r + 0.005), Vector3(0.2, 0.28, 0.104), Color(0.07, 0.05, 0.06))
-	k.box(Vector3(0, 0.19, r + 0.052), Vector3(0.17, 0.25, 0.012), Color(0.34, 0.21, 0.11))
-	for gx in [-0.05, 0.0, 0.05]:
-		k.box(Vector3(gx, 0.19, r + 0.06), Vector3(0.012, 0.25, 0.008), Color(0.2, 0.2, 0.22))
-	k.box(Vector3(0, 0.12, r + 0.06), Vector3(0.17, 0.014, 0.008), Color(0.2, 0.2, 0.22))
-	k.box(Vector3(0, 0.27, r + 0.058), Vector3(0.2, 0.025, 0.012), Color(0.3, 0.3, 0.34))                # Gitterkopf
-	for fx in [-0.15, 0.15]:
-		k.box(Vector3(fx, 0.25, r + 0.07), Vector3(0.015, 0.06, 0.015), Color(0.3, 0.2, 0.1))
-		k.box(Vector3(fx, 0.29, r + 0.07), Vector3(0.03, 0.03, 0.03), Color(1.0, 0.7, 0.2))
-	# Vier Eckturme
-	for sx in [-1, 1]:
-		for sz in [-1, 1]:
-			_tower(k, Vector3(sx * r, 0.06, sz * r), 0.1, 0.62, stone, dark, roof)
-	# Bergfried mit Erker, Fenstern und grosser Fahne
-	k.box(Vector3(0, 0.42, -0.18), Vector3(0.34, 0.72, 0.34), stone.lightened(0.04))
-	k.box(Vector3(0, 0.8, -0.18), Vector3(0.4, 0.05, 0.4), dark)
-	for n in 8:
-		var a3 := TAU * n / 8.0
-		var d3 := Vector3(cos(a3), 0, sin(a3))
-		k.box(Vector3(0, 0.86, -0.18) + Vector3(sign(d3.x) * 0.17 * (1 if absf(d3.x) > 0.3 else 0), 0, sign(d3.z) * 0.17 * (1 if absf(d3.z) > 0.3 else 0)), Vector3(0.07, 0.07, 0.07), dark)
-	k.frustum(Vector3(0, 0.83, -0.18), 0.25, 0.0, 0.34, Color(0.6, 0.18, 0.14), Color(0.82, 0.3, 0.2), 4)
-	for wz in [0.0, 0.14]:
-		k.box(Vector3(wz * 0 + (-0.07 if wz == 0.0 else 0.07), 0.58, -0.18 + 0.172), Vector3(0.07, 0.12, 0.012), Color(0.98, 0.84, 0.45))
-	k.box(Vector3(0, 0.34, -0.18 + 0.172), Vector3(0.1, 0.2, 0.012), Color(0.25, 0.16, 0.09))
-	k.box(Vector3(0, 1.28, -0.18), Vector3(0.015, 0.4, 0.015), Color(0.3, 0.2, 0.1))
-	k.box(Vector3(0.1, 1.38, -0.18), Vector3(0.2, 0.12, 0.01), Color(0.78, 0.14, 0.14))
-	k.box(Vector3(0.1, 1.38, -0.185), Vector3(0.07, 0.07, 0.01), Color(0.95, 0.8, 0.3))
-	_build_mesh_at(k, ti, height_at(ti, tj), tj, "Castle_%d_%d" % [ti, tj])

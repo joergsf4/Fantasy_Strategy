@@ -215,6 +215,18 @@ const DORF = {
 for (const [name, d] of Object.entries(DORF))
   jobs.push({ name, refs: [path.join(OUT, 'fx_fireball.jpg')], prompt: `Create ${d}, game sprite, seen slightly from above and the front, sturdy and chunky, readable at small size.` + FX_STYLE });
 
+// Letzte Klotz-Modelle ersetzen: Truhe (zu und offen), Burg, Beutesack-Markierung, Hebel (Schalter), Fesselpfahl.
+const REST = {
+  fx_truhe: 'a closed wooden treasure chest with iron bands, a golden lock and a rounded lid, slightly worn, sturdy and chunky',
+  fx_truhe_offen: 'the same kind of wooden treasure chest with iron bands and a golden lock, but standing open with the lid tilted back and gold coins and a gem glittering inside, sturdy and chunky',
+  fx_burg: 'a small grey stone castle keep: a square fortified building with a crenellated wall, four round corner towers with blue conical roofs, a gate and a red banner on top',
+  fx_beutel: 'a single small brown leather coin pouch tied with a string, with a gold coin peeking out and a sparkle, simple icon-like sprite',
+  fx_hebel: 'a small mossy grey stone block with a metal pull lever handle sticking up from it, tilted to the left, with a round red knob on top, like a railway switch',
+  fx_pfahl: 'a sturdy wooden post with coiled ropes wrapped around it, a few loose rope ends hanging down, a hostage stake',
+};
+for (const [name, d] of Object.entries(REST))
+  jobs.push({ name, refs: [path.join(OUT, 'fx_fireball.jpg')], prompt: `Create ${d}, game sprite, seen slightly from above and the front, readable at small size.` + FX_STYLE });
+
 async function generate(page, job) {
   await page.goto('https://gemini.google.com/app', { waitUntil: 'domcontentloaded' });
   await page.waitForSelector('div[role=textbox], .ql-editor', { timeout: 30000 });

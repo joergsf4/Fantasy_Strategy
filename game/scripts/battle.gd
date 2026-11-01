@@ -915,47 +915,18 @@ func _village_at(p: Vector2i) -> Dictionary:
 
 ## Truhe aus Holz mit Eisenbaendern, Deckel und goldenem Schloss.
 func _make_chest(entry: Dictionary) -> void:
-	if entry["look"] == "honey":     # Honigtopf statt Truhe: Sprite, wird beim Einsammeln ausgeblendet
-		var hroot := Node3D.new()
-		hroot.position = to_world(entry["pos"])
-		add_child(hroot)
-		fx.make_sprite("fx_honigtopf", Vector3(0, 0.3, 0), 0.6, false, Color.WHITE, 0, hroot)
-		entry["node"] = hroot
-		return
-	var wood := Color(0.45, 0.28, 0.14)
-	var dark := Color(0.30, 0.18, 0.09)
-	var iron := Color(0.42, 0.42, 0.48)
-	var gold := Color(0.95, 0.78, 0.25)
-	var body := MeshKit.new()
-	body.box(Vector3(0, 0.13, 0), Vector3(0.46, 0.26, 0.3), wood)
-	body.box(Vector3(-0.15, 0.13, 0), Vector3(0.05, 0.27, 0.31), iron)
-	body.box(Vector3(0.15, 0.13, 0), Vector3(0.05, 0.27, 0.31), iron)
-	var lid := MeshKit.new()
-	lid.box(Vector3(0, 0.05, 0), Vector3(0.48, 0.1, 0.32), dark)
-	lid.box(Vector3(-0.15, 0.05, 0), Vector3(0.05, 0.11, 0.33), iron)
-	lid.box(Vector3(0.15, 0.05, 0), Vector3(0.05, 0.11, 0.33), iron)
-	lid.box(Vector3(0, 0.0, 0.17), Vector3(0.07, 0.1, 0.03), gold)
 	var root := Node3D.new()
-	root.position = to_world(entry["pos"]) + Vector3(0, 0.02, 0)
-	root.rotation.y = 0.35
+	root.position = to_world(entry["pos"])
 	add_child(root)
-	var mat := StandardMaterial3D.new()
-	mat.vertex_color_use_as_albedo = true
-	mat.roughness = 1.0
-	var bi := MeshInstance3D.new()
-	bi.mesh = body.build()
-	bi.material_override = mat
-	root.add_child(bi)
-	var pivot := Node3D.new()
-	pivot.position = Vector3(0, 0.26, -0.15)     # Scharnier hinten
-	root.add_child(pivot)
-	var li := MeshInstance3D.new()
-	li.mesh = lid.build()
-	li.material_override = mat
-	li.position = Vector3(0, 0, 0.15)
-	pivot.add_child(li)
 	entry["node"] = root
-	entry["lid"] = pivot
+	entry["lid"] = null
+	if entry["look"] == "honey":     # Honigtopf statt Truhe: Sprite, wird beim Einsammeln ausgeblendet
+		fx.make_sprite("fx_honigtopf", Vector3(0, 0.3, 0), 0.6, false, Color.WHITE, 0, root)
+		return
+	entry["closed"] = _object_sprite("fx_truhe", 0.8, root)
+	var op := _object_sprite("fx_truhe_offen", 0.85, root)
+	op.visible = false
+	entry["open_s"] = op
 
 
 func _unshaded_mat(c: Color) -> StandardMaterial3D:
@@ -971,17 +942,8 @@ func _unshaded_mat(c: Color) -> StandardMaterial3D:
 func _loot_marker(node: Node3D, lift: float) -> void:
 	var m := Node3D.new()
 	m.name = "LootMarker"
-	m.position = Vector3(0.0, 2.45 + lift, 0)
-	var sack := SphereMesh.new()
-	sack.radius = 0.16
-	sack.height = 0.3
-	var sm := _mesh(sack, Color(0.62, 0.42, 0.22), Vector3.ZERO, m)
-	sm.material_override = _unshaded_mat(Color(0.7, 0.48, 0.25))
-	var tie := SphereMesh.new()
-	tie.radius = 0.06
-	tie.height = 0.12
-	var tm := _mesh(tie, Color(1.0, 0.82, 0.25), Vector3(0, 0.18, 0), m)
-	tm.material_override = _unshaded_mat(Color(1.0, 0.85, 0.3))
+	m.position = Vector3(0.0, 2.2 + lift, 0)
+	fx.make_sprite("fx_beutel", Vector3.ZERO, 0.45, false, Color.WHITE, 2, m)
 	node.add_child(m)
 	var tw := m.create_tween().set_loops()
 	tw.tween_property(m, "position:y", m.position.y + 0.08, 0.7).set_trans(Tween.TRANS_SINE)
@@ -1018,9 +980,14 @@ func _collect(u: Dictionary, entry: Dictionary, kind: String) -> void:
 	_update_status()
 	if kind == "chest":
 		entry["open"] = true
-		if entry["lid"] != null:
-			create_tween().tween_property(entry["lid"], "rotation_degrees:x", -105.0, 0.4).set_trans(Tween.TRANS_BACK)
-		elif entry["node"] != null:
+		if entry.has("closed"):     # Truhe: geschlossener Sprite gegen den offenen tauschen, kurzer Sprung
+			(entry["closed"] as Node3D).visible = false
+			var os := entry["open_s"] as Node3D
+			os.visible = true
+			var tw := create_tween()
+			tw.tween_property(os, "scale", os.scale * 1.15, 0.12)
+			tw.tween_property(os, "scale", os.scale, 0.18)
+		else:
 			(entry["node"] as Node3D).visible = false
 	else:
 		entry["visited"] = true
@@ -1195,6 +1162,10 @@ func _build_decor() -> void:
 					spots.append(["fx_kaktus", p, 1.0])
 				elif t == "G" and rng.randf() < 0.06:
 					spots.append(["fx_kaktus", p, 0.6])
+	for y in grid.height:        # Burg-Felder (C): Burg-Sprite; Dorf-Felder: Dorfplatz-Sprite
+		for x in grid.width:
+			if grid.terrain(Vector2i(x, y)) == "C":
+				spots.append(["fx_burg", Vector2i(x, y), 1.45])
 	for y in grid.height:        # Dorf-Felder: Dorfplatz-Sprite statt Mini-Haeuschen (Wiese oder Wueste)
 		for x in grid.width:
 			if grid.terrain(Vector2i(x, y)) == "V" and world.at(Vector2i(x, y)).is_empty():
@@ -1221,7 +1192,7 @@ func _make_object(o: Dictionary) -> void:
 	if o["type"] == "hostage":
 		_make_hostage(o)
 		return
-	if o["type"] in ["hive", "bell", "orphanage", "ship", "crate", "teahouse", "tent"]:
+	if o["type"] in ["hive", "bell", "orphanage", "ship", "crate", "teahouse", "tent", "switch"]:
 		_make_ch5_object(o)
 		return
 	var stone := Color(0.52, 0.5, 0.54)
@@ -1251,9 +1222,6 @@ func _make_object(o: Dictionary) -> void:
 				body.box(Vector3(0, 1.62, z), Vector3(0.04, 0.8, 0.04), Color(0.3, 0.2, 0.1))
 				body.box(Vector3(0.0, 1.8, z), cloth * 1.35, Color(0.85, 0.12, 0.12))
 				body.box(Vector3(0.0, 1.8, z), sign_ * 1.35, Color(0.98, 0.8, 0.25))
-		"switch":
-			body.box(Vector3(0, 0.12, 0), Vector3(0.3, 0.24, 0.3), stone)
-			body.box(Vector3(0, 0.26, 0), Vector3(0.36, 0.04, 0.36), dark)
 	var bi := MeshInstance3D.new()
 	bi.mesh = body.build()
 	bi.material_override = mat
@@ -1273,18 +1241,6 @@ func _make_object(o: Dictionary) -> void:
 			di.material_override = mat
 			pivot.add_child(di)
 			(parts["doors"] as Array).append({"pivot": pivot, "sgn": sgn})
-	if o["type"] == "switch":
-		var lp := Node3D.new()
-		lp.position = Vector3(0, 0.27, 0)
-		root.add_child(lp)
-		var lever := MeshKit.new()
-		lever.box(Vector3(0, 0.14, 0), Vector3(0.05, 0.28, 0.05), iron)
-		lever.box(Vector3(0, 0.3, 0), Vector3(0.11, 0.11, 0.11), Color(0.85, 0.15, 0.15))
-		var li := MeshInstance3D.new()
-		li.mesh = lever.build()
-		li.material_override = mat
-		lp.add_child(li)
-		parts["lever"] = lp
 	var rub := MeshKit.new()
 	StoneWall.rubble(rub, o["pos"])
 	var ri := MeshInstance3D.new()
@@ -1317,51 +1273,17 @@ func _refresh_object(o: Dictionary, animate: bool) -> void:
 					piv.create_tween().tween_property(piv, "rotation_degrees:y", angle, 0.5).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 				else:
 					piv.rotation_degrees.y = angle
-		"switch":
+		"switch":     # Hebel-Sprite: umgelegt = gespiegelt
 			if animate:
 				Sfx.event("switch")
-			p["rubble"].visible = false
-			var lv: Node3D = p["lever"]
-			var tilt := 35.0 if st == "on" else -35.0
+			var sw := p["body"] as Node3D
+			var sx := absf(sw.scale.x) * (-1.0 if st == "on" else 1.0)
 			if animate:
-				lv.create_tween().tween_property(lv, "rotation_degrees:z", tilt, 0.25).set_trans(Tween.TRANS_BACK)
+				var swt := create_tween()
+				swt.tween_property(sw, "scale:x", sx * 0.4, 0.1)
+				swt.tween_property(sw, "scale:x", sx, 0.15)
 			else:
-				lv.rotation_degrees.z = tilt
-		"crate":
-			(p["body"] as Node3D).visible = st == "intact"
-			if animate and st == "broken":
-				fx.particles("fx_smoke", to_world(o["pos"]) + Vector3(0, 0.3, 0), 6, 1.3, 0.4, 0.6, 1.0, Color(0.7, 0.55, 0.35), false, 90.0)
-				Sfx.event("wall_break")
-		"ship":
-			pass
-		"hive":
-			(p["body"] as Node3D).visible = st == "active"
-			if animate and st == "broken":
-				fx.particles("fx_smoke", to_world(o["pos"]) + Vector3(0, 0.3, 0), 8, 1.5, 0.5, 0.8, -0.2, Color(0.9, 0.8, 0.4), false, 80.0)
-				Sfx.event("wall_break")
-		"bell":
-			if st == "rung":
-				if animate:
-					Sfx.event("bell")
-					var swing := create_tween()
-					for a: float in [5.0, -4.5, 3.5, -2.5, 1.2, 0.0]:
-						swing.tween_property(p["lever"], "rotation_degrees:z", a, 0.22)
-				else:
-					(p["lever"] as Node3D).rotation_degrees.z = 0.0
-		"hostage":
-			if st == "free":
-				if animate:
-					Sfx.event("free")
-				var sp: Sprite3D = p["sprite"]
-				(p["body"] as Node3D).visible = false
-				if animate:
-					var rn: Node3D = p["root"]
-					var run := rn.position + Vector3(0, 0, 4.0)
-					var wtw := create_tween().set_parallel(true)
-					wtw.tween_property(rn, "position", run, 1.4).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
-					wtw.tween_property(sp, "modulate:a", 0.0, 1.4)
-				else:
-					sp.visible = false
+				sw.scale.x = sx
 		"fire":
 			(p["flames"] as Node3D).visible = st == "burning"
 			if animate:
@@ -1389,7 +1311,7 @@ func _refresh_object(o: Dictionary, animate: bool) -> void:
 
 ## Karten-Objekte als Pixel-Sprites (Gemini, freigestellt): Bienenstock, Glocke, Waisenhaus, Teehaus, Schiff, Hafen-Hindernisse.
 ## Die Spiellogik (Sperren, Zustaende) steckt in World, hier nur die Optik.
-const OBJ_SPRITE := {"hive": ["fx_bienenstock", 1.0], "bell": ["fx_glocke", 1.6], "orphanage": ["fx_waisenhaus", 1.9], "teahouse": ["fx_teehaus", 1.7], "tent": ["fx_zelt", 1.6]}
+const OBJ_SPRITE := {"hive": ["fx_bienenstock", 1.0], "bell": ["fx_glocke", 1.6], "orphanage": ["fx_waisenhaus", 1.9], "teahouse": ["fx_teehaus", 1.7], "tent": ["fx_zelt", 1.6], "switch": ["fx_hebel", 0.7]}
 const CRATE_SPRITES := [["fx_kiste", 1.0], ["fx_fass", 1.05], ["fx_saecke", 1.0]]
 
 
@@ -1455,18 +1377,9 @@ func _make_hostage(o: Dictionary) -> void:
 	sp.offset = Vector2(0, tex.get_height() / 2.0)
 	sp.position = Vector3(0, 0.08, 0)
 	root.add_child(sp)
-	var k := MeshKit.new()
-	var wood := Color(0.42, 0.26, 0.13)
-	for sx in [-1, 1]:
-		k.box(Vector3(sx * 0.3, 0.16, 0.1), Vector3(0.05, 0.32, 0.05), wood)
-	k.box(Vector3(0, 0.12, 0.1), Vector3(0.62, 0.03, 0.03), Color(0.75, 0.65, 0.4))
-	var mat := StandardMaterial3D.new()
-	mat.vertex_color_use_as_albedo = true
-	mat.roughness = 1.0
-	var mi := MeshInstance3D.new()
-	mi.mesh = k.build()
-	mi.material_override = mat
-	root.add_child(mi)
+	var post := _object_sprite("fx_pfahl", 0.8, root)      # Pfahl mit Seilen hinter der Gefangenen
+	post.position.z = -0.12
+	var mi := post
 	_obj_nodes[o["id"]] = {"root": root, "body": mi, "rubble": null, "doors": [], "lever": null, "sprite": sp}
 
 

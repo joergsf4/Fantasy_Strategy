@@ -493,6 +493,18 @@ func _screenshot_mode() -> void:
 		get_viewport().get_texture().get_image().save_png(OS.get_environment("SHOT_OUT"))
 		get_tree().quit()
 		return
+	if mode == "kap":   # beliebiges Kapitel ansehen: SHOT_CH=ch3
+		var bk := Battle.new()
+		bk.setup(Mission.load_mission(OS.get_environment("SHOT_CH")), units)
+		bk.loadout = Items.defs()["loadout_chapter1"]
+		add_child(bk)
+		await get_tree().process_frame
+		for i in 30:
+			await get_tree().process_frame
+		await get_tree().create_timer(0.8).timeout
+		get_viewport().get_texture().get_image().save_png(OS.get_environment("SHOT_OUT"))
+		get_tree().quit()
+		return
 	if mode == "wueste":   # Mission 7 (Sandhafen)
 		var bw7 := Battle.new()
 		bw7.setup(Mission.load_mission("ch7"), units)
