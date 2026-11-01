@@ -159,5 +159,13 @@
  "haendler_chibi": true,
  "sec_brunhilde_fass": true,
  "sec_lin_betrunken": true,
- "bg_betrunken": true
+ "bg_betrunken": true,
+ "fx_baum_fichte1": true,
+ "fx_baum_fichte2": true,
+ "fx_baum_eiche1": true,
+ "fx_baum_eiche2": true,
+ "fx_baum_eiche3": true,
+ "fx_busch": true,
+ "fx_fels1": true,
+ "fx_fels2": true
 }
