@@ -889,6 +889,8 @@
   "ai_bonus": 6,
   "caps": [
    "smash"
-  ]
+  ],
+  "super": true,
+  "super_sub": "Betrunkener Meister"
  }
 }

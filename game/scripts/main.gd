@@ -46,6 +46,7 @@ func _run() -> void:
 	stage.party = party
 	stage.dialogue_runner = _battle_dialogue
 	stage.secret_runner = _secret_scene
+	stage.super_music = _duck_music
 	add_child(stage)
 	_play_music(TITLE_MUSIC)
 	await _title()
@@ -83,6 +84,13 @@ func _play_music(path: String, fade := 0.0) -> void:
 	_music = p
 	if fade > 0.0:
 		create_tween().tween_property(p, "volume_db", MUSIC_DB, fade)
+
+
+## Kampfmusik waehrend einer Super-Attacke leiser stellen (on) bzw. wieder auf Normallautstaerke bringen.
+func _duck_music(on: bool) -> void:
+	if _music == null or not is_instance_valid(_music):
+		return
+	create_tween().tween_property(_music, "volume_db", -32.0 if on else MUSIC_DB, 0.5)
 
 
 func _fade_music(seconds := 2.5) -> void:
@@ -241,6 +249,17 @@ func _screenshot_mode() -> void:
 		var tr2 := Trailer2.new()
 		tr2.setup(map, units)
 		add_child(tr2)
+		return
+	if mode == "aurora":   # Polarlicht-Shader allein ansehen
+		var ar := ColorRect.new()
+		ar.set_anchors_preset(Control.PRESET_FULL_RECT)
+		var arm := ShaderMaterial.new()
+		arm.shader = load("res://shaders/aurora.gdshader")
+		ar.material = arm
+		add_child(ar)
+		await get_tree().create_timer(1.5).timeout
+		get_viewport().get_texture().get_image().save_png(OS.get_environment("SHOT_OUT"))
+		get_tree().quit()
 		return
 	if mode == "flow":  # Ablauf-Test: Titel -> (simulierter Tastendruck) -> Dialog
 		_run()

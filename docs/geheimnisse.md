@@ -20,3 +20,7 @@ Brunhilde wirft ihren Fasswurf auf Meister Lin. Lin bekommt Bierlaune (goldene A
 ## Neues Geheimnis anlegen
 
 Im Editor-Tab „Neues Geheimnis“: Figur und Fähigkeit wählen (nur Fähigkeiten mit Gegner-Ziel), Verbündeten wählen, Wirkung eintragen, Bilder und Text der Szene setzen. Eigene Bilder: in `tools/gemini/run.mjs` Aufträge `sec_<name>_<figur>` (Porträt, Figur links bzw. rechts) anlegen, dann `chroma_key.py neu`. Neue Fähigkeiten stehen in `abilities.json`.
+
+## Super-Attacke (Drunken Strike)
+
+Fähigkeiten mit `"super": true` in `abilities.json` bekommen einen besonderen Auftritt (`SuperCutin`, `Battle._super_cutin`): ein Polarlicht-Himmel (`shaders/aurora.gdshader`, animiert, mit Sternen), davor der stark vergrößerte Chibi der Figur (gleitet mit Nachbildern herein, taumelt leicht), Kinobalken, Funkenflug, der Name der Attacke schlägt ins Bild (`super_sub` als Untertitel), Weißblitz, danach beginnt die eigentliche Attacke. Dazu läuft eigene Musik (`assets/audio/super_attack.mp3`, „Sway of the Iron Fan“, ca. 1 Minute, mit Gemini erzeugt, Original in `strategie/musik/`): die Kampfmusik wird leiser, die Super-Musik blendet nach der Attacke aus. Jede weitere Fähigkeit lässt sich mit `"super": true` genauso aufwerten. Neue Musik: `node tools/gemini/music.mjs "<Beschreibung>" <ausgabe.mp3>`.

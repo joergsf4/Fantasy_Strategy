@@ -68,6 +68,7 @@ var triggers: Array = []                 # {when, do, fired}
 var _notes: Array = []                    # Ereignisse seit der letzten Pruefung: {kind, ...}
 var kills_total := 0                      # besiegte Gegner insgesamt
 var _actor: Dictionary = {}               # zuletzt handelnde Figur (fuer "$hero" bei Ereignissen ohne eigenen Ausloeser)
+var super_music := Callable()            # von main gesetzt: func(on: bool) -> daempft die Kampfmusik waehrend einer Super-Attacke
 var secret_runner := Callable()           # async func(secret: Dictionary) -> von main gesetzt, zeigt die Szene einer geheimen Interaktion
 var secrets_seen: Array = []              # schon gezeigte Szenen (Party)
 var secrets_done: Array = []              # in diesem Kampf ausgeloeste Geheimnisse
@@ -2363,6 +2364,40 @@ func _ab_tiles(u: Dictionary, id: String, pos: Vector2i) -> Array[Vector2i]:
 	return out
 
 
+## Super-Attacke: Polarlicht-Auftritt mit dem vergroesserten Chibi, dazu eigene Musik (die Kampfmusik wird leiser).
+var _super_player: AudioStreamPlayer
+
+func _super_cutin(u: Dictionary, ab: Dictionary) -> void:
+	var stream: AudioStreamMP3 = load("res://assets/audio/super_attack.mp3")
+	stream.loop = false
+	_super_player = AudioStreamPlayer.new()
+	_super_player.stream = stream
+	_super_player.volume_db = -4.0
+	add_child(_super_player)
+	_super_player.play()
+	if super_music.is_valid():
+		super_music.call(true)
+	var layer := CanvasLayer.new()
+	layer.layer = 9
+	add_child(layer)
+	var c := SuperCutin.new()
+	c.setup((u["sprite"] as Sprite3D).texture, str(ab["name"]), str(ab.get("super_sub", "")))
+	layer.add_child(c)
+	await c.finished
+	layer.queue_free()
+
+
+func _super_music_stop() -> void:
+	if _super_player != null and is_instance_valid(_super_player):
+		var p := _super_player
+		_super_player = null
+		var tw := create_tween()
+		tw.tween_property(p, "volume_db", -50.0, 0.9)
+		tw.tween_callback(p.queue_free)
+	if super_music.is_valid():
+		super_music.call(false)
+
+
 ## Das noch nicht ausgeloeste Geheimnis, das u mit Faehigkeit id auf den Verbuendeten o ausloest, oder {}.
 func _secret_for(u: Dictionary, id: String, o: Dictionary) -> Dictionary:
 	var sec := Secrets.find(u["id"], id, o["id"])
@@ -2516,6 +2551,8 @@ func _run_ability(u: Dictionary, id: String, target: Dictionary) -> void:
 	_note("ability", {"id": id, "by": u})
 	if target != u:
 		_turn_towards(u, target["pos"])
+	if ab.get("super", false):
+		await _super_cutin(u, ab)
 	if fx.has_fx(id):
 		_popup(u, ab["name"], Color(1.0, 0.9, 0.5))   # Name blendet parallel zur Animation ein
 	else:
@@ -2529,6 +2566,8 @@ func _run_ability(u: Dictionary, id: String, target: Dictionary) -> void:
 		await _apply_effect(u, ab, target, ef)
 	await fx.after(id, u, target)
 	_refresh_unit(u)
+	if ab.get("super", false):
+		_super_music_stop()
 	_check_end()
 
 

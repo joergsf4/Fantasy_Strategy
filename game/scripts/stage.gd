@@ -6,6 +6,7 @@ extends Node
 var map_data: Dictionary
 var unit_defs: Dictionary
 var battle: Battle
+var super_music := Callable()      # von main gesetzt: func(on: bool)
 var secret_runner := Callable()     # von main gesetzt: async func(secret)
 var dialogue_runner := Callable()   # von main gesetzt: async func(lines)
 var party: Party         # Zustand der Heldengruppe (Rucksack, Ausruestung); null = Standardausstattung
@@ -49,6 +50,7 @@ func new_battle() -> void:
 	battle.setup(map_data, unit_defs)
 	battle.dialogue_runner = dialogue_runner
 	battle.secret_runner = secret_runner
+	battle.super_music = super_music
 	battle.loadout = party.loadout() if party != null else Items.defs().get("loadout_chapter1", {})
 	add_child(battle)
 	battle.enter_title_mode()
