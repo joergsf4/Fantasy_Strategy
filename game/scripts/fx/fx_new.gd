@@ -432,7 +432,7 @@ func status_holder(id: String, root: Node3D) -> bool:
 						flocks[i].position = Vector3(cos(a) * 0.5, 0.7 + sin(a * 2.0) * 0.12, sin(a) * 0.5), 0.0, 1.0, 2.4)
 		"wut":        # rote Aura, pochende Ader und Dampf
 			var aura := fx.make_sprite("soft", Vector3(0, 0.75, 0), 1.9, true, Color(1.0, 0.2, 0.15, 0.6), 0, root)
-			var vein := _anger_mark(root, Vector3(0.25, 1.85, 0), 0.4)
+			var vein := _anger_mark(fx.icon_node(root), Vector3.ZERO, 0.3)
 			var tw2 := root.create_tween().set_loops().set_parallel(true)
 			tw2.tween_property(vein, "scale", vein.scale * 1.3, 0.28).set_trans(Tween.TRANS_SINE)
 			tw2.tween_property(aura, "scale", aura.scale * 1.1, 0.28).set_trans(Tween.TRANS_SINE)
@@ -444,15 +444,15 @@ func status_holder(id: String, root: Node3D) -> bool:
 			fx._loop_particles(root, "fx_flamme", Vector3(0, 0.15, 0), 5, 0.7, 0.5, 0.8, -1.6, Color.WHITE, true)
 			fx._loop_particles(root, "fx_smoke", Vector3(0, 1.0, 0), 2, 0.4, 0.4, 1.4, -0.5, Color(0.3, 0.3, 0.3, 0.8))
 		"tempo":
-			var boot := fx.make_sprite("fx_fluegelschuh", Vector3(0, 1.95, 0), 0.36, false, Color.WHITE, 1, root)
+			var boot := fx.make_sprite("fx_fluegelschuh", Vector3.ZERO, 0.3, false, Color.WHITE, 1, fx.icon_node(root))
 			var tw3 := root.create_tween().set_loops()
-			tw3.tween_property(boot, "position:y", 2.05, 0.5).set_trans(Tween.TRANS_SINE)
-			tw3.tween_property(boot, "position:y", 1.95, 0.5).set_trans(Tween.TRANS_SINE)
+			tw3.tween_property(boot, "position:y", 0.05, 0.5).set_trans(Tween.TRANS_SINE)
+			tw3.tween_property(boot, "position:y", 0.0, 0.5).set_trans(Tween.TRANS_SINE)
 		"uebel":
-			var sick := fx.make_sprite("fx_uebel", Vector3(0, 1.95, 0), 0.4, false, Color.WHITE, 1, root)
+			var sick := fx.make_sprite("fx_uebel", Vector3.ZERO, 0.3, false, Color.WHITE, 1, fx.icon_node(root))
 			var tw4 := root.create_tween().set_loops()
-			tw4.tween_property(sick, "position:x", 0.07, 0.3).set_trans(Tween.TRANS_SINE)
-			tw4.tween_property(sick, "position:x", -0.07, 0.3).set_trans(Tween.TRANS_SINE)
+			tw4.tween_property(sick, "position:x", 0.03, 0.3).set_trans(Tween.TRANS_SINE)
+			tw4.tween_property(sick, "position:x", -0.03, 0.3).set_trans(Tween.TRANS_SINE)
 			fx._loop_particles(root, "fx_bubble", Vector3(0, 0.4, 0), 3, 0.7, 0.2, 1.2, -0.9, Color(0.6, 1.0, 0.4))
 		"betrunken":   # goldener Schein, aufsteigender Schaum und Blasen: Bierlaune
 			var aura := fx.make_sprite("soft", Vector3(0, 0.75, 0), 1.7, true, Color(1.0, 0.75, 0.25, 0.5), 0, root)

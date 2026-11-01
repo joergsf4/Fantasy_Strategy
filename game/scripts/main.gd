@@ -710,6 +710,19 @@ func _screenshot_mode() -> void:
 		for i in 30:
 			await get_tree().process_frame
 		await get_tree().create_timer(0.8).timeout
+		if OS.get_environment("SHOT_STATUS") != "":      # z. B. SHOT_STATUS=stun,taunt,wut,tempo : Status auf zwei Helden, Meldungen am ersten Helden
+			var hs := bk.units.filter(func(x: Dictionary) -> bool: return x["team"] == "p")
+			for hh: Dictionary in hs.slice(0, 2):
+				for st in OS.get_environment("SHOT_STATUS").split(","):
+					Status.add(hh, st, 2)
+				bk._refresh_unit(hh)
+			bk._popup(hs[0], "-7", Color(1, 0.45, 0.35))
+			bk._popup(hs[0], "Gestärkt", Color(0.5, 1, 0.6))
+			bk._popup(hs[0], "+4", Color(0.4, 1, 0.5))
+			bk._banner("Wollmantel")
+			bk._hover_unit = hs[1]
+			bk._sync_labels()
+			await get_tree().create_timer(0.35).timeout
 		get_viewport().get_texture().get_image().save_png(OS.get_environment("SHOT_OUT"))
 		get_tree().quit()
 		return

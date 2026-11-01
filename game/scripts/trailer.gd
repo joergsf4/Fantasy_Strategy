@@ -259,6 +259,7 @@ func _spawn(b: Battle, spec: Array) -> Dictionary:
 	b._spawn(spec[0], spec[1], Vector2i(spec[2][0], spec[2][1]))
 	var u: Dictionary = b.units.back()
 	(u["label"] as Label3D).visible = false
+	(u["bar"] as MeshInstance3D).visible = false
 	return u
 
 

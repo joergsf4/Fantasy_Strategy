@@ -787,6 +787,68 @@ func sync_status(u: Dictionary) -> void:
 			if h != null:
 				holders[id] = h
 	u["fx_nodes"] = holders
+	_arrange_icons(u, n, holders)
+
+
+## Kopf-Symbole (Betaeubt, Spott, Wut, Beflügelt, Übel) stehen in einer Reihe ueber dem Lebensbalken (feste Plaetze, hoechstens ICON_MAX,
+## der Rest als "+N"), mit kleiner Restdauer. Ohne Ueberlappung mit Balken, Zahl und Meldungen.
+const ICON_IDS := ["stun", "taunt", "wut", "tempo", "uebel"]
+const ICON_MAX := 3
+const ICON_STEP := 0.36
+
+
+func _arrange_icons(u: Dictionary, n: Node3D, holders: Dictionary) -> void:
+	var icons: Array[String] = []
+	for s: Dictionary in u["status"]:
+		if ICON_IDS.has(s["id"]) and not icons.has(s["id"]):
+			icons.append(s["id"])
+	var shown := mini(icons.size(), ICON_MAX)
+	for i in icons.size():
+		var h: Node3D = holders.get(icons[i])
+		if h == null or not is_instance_valid(h):
+			continue
+		var ic := h.get_node_or_null("icon") as Node3D
+		if ic == null:
+			continue
+		ic.visible = i < ICON_MAX
+		ic.set_meta("slot", float(i) - float(shown - 1) * 0.5)      # Battle._place_overlays setzt die Lage entlang der Kamera
+		var tl := ic.get_node_or_null("turns") as Label3D
+		if tl != null:
+			var turns := int(Status.get_status(u, icons[i]).get("turns", 0))
+			tl.text = str(turns) if turns < 50 else ""
+	var more := u.get("more") as Label3D
+	if more == null and icons.size() > ICON_MAX:
+		more = _turns_label()
+		more.font_size = 52
+		n.add_child(more)
+		u["more"] = more
+	if more != null and is_instance_valid(more):
+		more.visible = icons.size() > ICON_MAX
+		more.text = "+%d" % (icons.size() - ICON_MAX)
+		more.set_meta("slot", float(shown) * 0.5 + 0.35)
+
+
+func _turns_label() -> Label3D:
+	var tl := Label3D.new()
+	tl.name = "turns"
+	tl.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+	tl.font = UiTheme.font(UiTheme.F_TITLE)
+	tl.font_size = 40
+	tl.pixel_size = 0.0046
+	tl.outline_size = 12
+	tl.no_depth_test = true
+	tl.render_priority = 6
+	tl.position = Vector3(0.14, -0.15, 0.0)
+	return tl
+
+
+## Symbolknoten eines Status: sync_status schiebt ihn in die Symbolreihe, die kleine Zahl zeigt die Restdauer.
+func icon_node(root: Node3D) -> Node3D:
+	var ic := Node3D.new()
+	ic.name = "icon"
+	root.add_child(ic)
+	ic.add_child(_turns_label())
+	return ic
 
 
 func _status_holder(id: String, n: Node3D) -> Node3D:
@@ -806,19 +868,20 @@ func _status_holder(id: String, n: Node3D) -> Node3D:
 			tww.tween_property(wr_, "scale", wr_.scale * 1.12, 0.8).set_trans(Tween.TRANS_SINE)
 			tww.tween_property(wr_, "scale", wr_.scale, 0.8).set_trans(Tween.TRANS_SINE)
 		"stun":    # drei Sterne kreisen ueber dem Kopf
+			var sic := icon_node(root)
 			var stars: Array[MeshInstance3D] = []
 			for i in 3:
-				stars.append(make_sprite("fx_star", Vector3(0, 1.95, 0), 0.28, true, Color(1.0, 0.95, 0.5), 0, root))
+				stars.append(make_sprite("fx_star", Vector3.ZERO, 0.22, true, Color(1.0, 0.95, 0.5), 0, sic))
 			var tw := root.create_tween().set_loops()
 			tw.tween_method(func(t: float) -> void:
 				for i in 3:
 					var a := t * TAU + i * TAU / 3.0
 					if is_instance_valid(stars[i]):
-						stars[i].position = Vector3(cos(a) * 0.34, 1.95 + sin(a * 2.0) * 0.04, sin(a) * 0.34), 0.0, 1.0, 1.2)
+						stars[i].position = Vector3(cos(a) * 0.17, sin(a * 2.0) * 0.03, sin(a) * 0.17), 0.0, 1.0, 1.2)
 		"poison":
 			_loop_particles(root, "fx_bubble", Vector3(0, 0.5, 0), 4, 0.9, 0.22, 1.3, -0.8, Color(0.7, 1.0, 0.7))
 		"taunt":
-			var ic := make_sprite("fx_exclaim", Vector3(0, 2.0, 0), 0.4, false, Color.WHITE, 0, root)
+			var ic := make_sprite("fx_exclaim", Vector3.ZERO, 0.3, false, Color.WHITE, 0, icon_node(root))
 			var tw2 := root.create_tween().set_loops()
 			tw2.tween_property(ic, "scale", ic.scale * 1.18, 0.4).set_trans(Tween.TRANS_SINE)
 			tw2.tween_property(ic, "scale", ic.scale, 0.4).set_trans(Tween.TRANS_SINE)

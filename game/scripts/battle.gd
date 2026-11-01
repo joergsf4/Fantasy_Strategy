@@ -36,6 +36,15 @@ var _end_btn: Button
 var _card_rich: RichTextLabel
 var _hud_layer: CanvasLayer
 var fx: Fx
+var _closeup := false             # Aufnahmemodus: keine Balken und Zahlen
+var _detail := false              # Alt gedrueckt: alle Lebenszahlen und Statusnamen zeigen
+var _hover_unit: Dictionary = {}  # Figur unter dem Mauszeiger
+var _clock := 0.0                 # Spielzeit fuer die Meldungs-Warteschlange (laeuft wie die Timer mit Engine.time_scale)
+var _popup_next := {}             # Figur -> fruehester Start der naechsten Meldung
+var _popup_count := {}            # Figur -> Anzahl bisheriger Meldungen (wechselnde Seite)
+var _popup_live := {}             # Figur -> laufende Meldungen [{label, base, n, t0}]
+var _banner_label: Label
+var _banner_tween: Tween
 var popup_scale := 1.0   # Groesse der Schadens- und Statuszahlen (Trailer nutzt kleinere)
 var _hud_root: Control
 var _menu: PanelContainer
@@ -320,15 +329,31 @@ func _spawn(id: String, team: String, pos: Vector2i, extra := {}) -> void:
 	node.add_child(sp)
 	if not (u["carry"] as Dictionary).is_empty():
 		_loot_marker(node, lift)
+	# Ueber dem Kopf steht standardmaessig nur ein schmaler Lebensbalken; Zahl und Statusnamen erscheinen bei Auswahl, Hover und Alt.
+	# Hoehe in Kamera-Richtung "oben": die Kamera blickt steil von oben, Welt-Hoehen waeren stark gestaucht, die Sprites aber nicht.
+	u["bar_h"] = float(d.get("size", 1.35)) + 0.14
+	u["lift"] = lift
+	var bar := MeshInstance3D.new()
+	bar.mesh = _bar_mesh()
+	var bmat := ShaderMaterial.new()
+	bmat.shader = load("res://shaders/hpbar.gdshader")
+	bmat.set_shader_parameter("team_col", TEAM_COLOR[team])
+	bmat.render_priority = 4
+	bar.material_override = bmat
+	bar.scale = Vector3(0.62, 0.1, 1.0)
+	bar.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	node.add_child(bar)
+	u["bar"] = bar
 	var lbl := Label3D.new()
 	lbl.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	lbl.font = UiTheme.font(UiTheme.F_TITLE)
-	lbl.font_size = 48
-	lbl.pixel_size = 0.006
+	lbl.font_size = 40
+	lbl.pixel_size = 0.0048
 	lbl.outline_size = 14
 	lbl.no_depth_test = true
-	lbl.modulate = TEAM_COLOR[team].lerp(Color.WHITE, 0.5)
-	lbl.position = Vector3(0, 1.9 + (float(d.get("size", 1.35)) - 1.35) * 1.2 + lift, 0)
+	lbl.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
+	lbl.modulate = TEAM_COLOR[team].lerp(Color.WHITE, 0.55)
+	lbl.visible = false
 	node.add_child(lbl)
 	u["node"] = node
 	u["sprite"] = sp
@@ -369,9 +394,40 @@ func _turn_towards(u: Dictionary, target: Vector2i) -> void:
 		_face_step(u, Vector2i(0, signi(d.y)))
 
 
-func _refresh_unit(u: Dictionary) -> void:
+## Gemeinsamer Lebensbalken-Netz fuer alle Figuren.
+var _bar_quad: QuadMesh
+
+func _bar_mesh() -> QuadMesh:
+	if _bar_quad == null:
+		_bar_quad = QuadMesh.new()
+		_bar_quad.size = Vector2.ONE
+	return _bar_quad
+
+
+## Text der Detailanzeige (Auswahl, Hover, Alt): Leben und alle Status mit Restdauer, je Status eine Zeile.
+func _label_text(u: Dictionary) -> String:
 	var st := Status.label(u)
-	(u["label"] as Label3D).text = "%d" % u["hp"] + ("\n" + st if st != "" else "")
+	return "%d/%d" % [u["hp"], u["maxhp"]] + ("\n" + st.replace(", ", "\n") if st != "" else "")
+
+
+## Soll die Detailanzeige dieser Figur gerade sichtbar sein?
+func _label_shown(u: Dictionary) -> bool:
+	var uid: String = u["uid"]
+	return not _in_stage and not _closeup and (_detail or uid == sel.get("uid", "") or uid == _hover_unit.get("uid", ""))
+
+
+func _sync_labels() -> void:
+	for u in units:
+		var l := u["label"] as Label3D
+		l.visible = _label_shown(u)
+		if l.visible:
+			l.text = _label_text(u)
+
+
+func _refresh_unit(u: Dictionary) -> void:
+	((u["bar"] as MeshInstance3D).material_override as ShaderMaterial).set_shader_parameter("ratio", clampf(float(u["hp"]) / float(maxi(1, u["maxhp"])), 0.0, 1.0))
+	(u["label"] as Label3D).text = _label_text(u)
+	(u["label"] as Label3D).visible = _label_shown(u)
 	var base := Color.WHITE
 	var d: Dictionary = unit_defs[u["id"]]
 	if d.has("tint"):
@@ -506,6 +562,7 @@ func _show_card(u: Dictionary) -> void:
 
 
 func _update_status() -> void:
+	_sync_labels()
 	_status.text = "Runde %d  –  %s" % [turn, "Deine Phase" if state != State.BUSY else "Gegner / Aktion"]
 	_goal.text = Mission.goal_text(goal, _count_team("e"), turn, _capture_info())
 	match state:
@@ -525,8 +582,10 @@ func _update_status() -> void:
 func _enter_close_view() -> void:
 	_hud_layer.visible = false
 	_cursor.visible = false
+	_closeup = true
 	for u in units:
 		(u["label"] as Label3D).visible = false
+		(u["bar"] as MeshInstance3D).visible = false
 
 
 ## Schaufenster-Modus (Titelbild, Dialoge): keine Bedienung, keine HUD-Anzeigen.
@@ -539,6 +598,7 @@ func enter_title_mode() -> void:
 	set_process_unhandled_input(false)
 	for u in units:
 		(u["label"] as Label3D).visible = false
+		(u["bar"] as MeshInstance3D).visible = false
 
 
 ## Zurueck ins Spiel: HUD an, Kamera fliegt auf die Standardansicht.
@@ -551,7 +611,8 @@ func exit_title_mode() -> void:
 	_hud_layer.visible = true
 	set_process_unhandled_input(true)
 	for u in units:
-		(u["label"] as Label3D).visible = true
+		(u["bar"] as MeshInstance3D).visible = true
+	_sync_labels()
 	state = State.IDLE
 	_update_status()
 
@@ -680,6 +741,47 @@ func _heal_targets(u: Dictionary, pos: Vector2i) -> Array[Dictionary]:
 
 # --------------------------------------------------------------------- Eingabe
 
+## Alt gedrueckt halten zeigt Lebenszahlen und alle Status (auch waehrend Animationen).
+func _input(event: InputEvent) -> void:
+	if event is InputEventKey and event.keycode in [KEY_ALT, KEY_META] and not event.echo:
+		_detail = event.pressed
+		_sync_labels()
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_APPLICATION_FOCUS_OUT and _detail:
+		_detail = false
+		_sync_labels()
+
+
+func _process(delta: float) -> void:
+	_clock += delta
+	_place_overlays()
+
+
+## Balken, Detailtext und Symbolreihe stehen ueber dem Kopf, gemessen entlang der Kamera-Hochachse (siehe _spawn).
+func _place_overlays() -> void:
+	if cam == null:
+		return
+	var up := cam.global_transform.basis.y.normalized()
+	var right := cam.global_transform.basis.x.normalized()
+	for u in units:
+		if not u.has("bar"):
+			continue
+		var off := up * float(u["bar_h"]) + Vector3.UP * float(u["lift"])
+		(u["bar"] as Node3D).position = off
+		(u["label"] as Node3D).position = off + up * 0.5
+		var holders: Dictionary = u.get("fx_nodes", {})
+		for id: String in holders:
+			var h := holders[id] as Node3D
+			var ic := h.get_node_or_null("icon") as Node3D if is_instance_valid(h) else null
+			if ic != null:
+				ic.position = off + up * 0.34 + right * (float(ic.get_meta("slot", 0.0)) * Fx.ICON_STEP)
+		var more := u.get("more") as Node3D
+		if more != null and is_instance_valid(more):
+			more.position = off + up * 0.3 + right * (float(more.get_meta("slot", 0.0)) * Fx.ICON_STEP)
+
+
 func _unhandled_input(event: InputEvent) -> void:
 	if state == State.BUSY or state == State.OVER:
 		return
@@ -696,6 +798,10 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _hover(p: Vector2i) -> void:
 	_forecast.text = ""
+	var hu := unit_at(p) if grid.inside(p) else {}
+	if hu.get("uid", "") != _hover_unit.get("uid", ""):
+		_hover_unit = hu
+		_sync_labels()
 	if not grid.inside(p):
 		_cursor.visible = false
 		_info.text = ""
@@ -1604,7 +1710,7 @@ func _do_throw_ally(dest: Vector2i) -> void:
 	_update_status()
 	Items.start_cooldown(u, _cur_ab, int(abilities[_cur_ab]["cd"]))
 	_turn_towards(u, ally["pos"])
-	_popup(u, abilities[_cur_ab]["name"], Color(1.0, 0.9, 0.5))
+	_banner(abilities[_cur_ab]["name"])
 	await fx.squash(u, 1.18, 0.85, 0.3)
 	await fx.leap(ally, dest, 2.4, 0.75, 2.0)
 	await _run_triggers("enter", dest, ally)
@@ -1644,7 +1750,7 @@ func _use_on_object(u: Dictionary, id: String, o: Dictionary) -> bool:
 	var sol := world.solution(o, ab.get("caps", []))
 	Items.start_cooldown(u, id, int(ab["cd"]))
 	_turn_towards(u, o["pos"])
-	_popup(u, ab["name"], Color(1.0, 0.9, 0.5))
+	_banner(ab["name"])
 	var at := to_world(o["pos"]) + Vector3(0, 0.45, 0)
 	var from := fx.chest(u, 0.7)
 	var also: Array[Dictionary] = []
@@ -2105,22 +2211,93 @@ func _strike(att: Dictionary, def: Dictionary, mult := 1.0, ignore_def := 0.0, l
 		await _down(def)
 
 
+const POPUP_MAX := 3          # so viele Meldungen gleichzeitig je Figur
+const POPUP_GAP := 0.22       # Mindestabstand zwischen zwei Meldungen derselben Figur (Sekunden Spielzeit)
+
+
+## Kurzmeldung an einer Figur (Schaden, Heilung, Status). Gestaffelt: je Figur eine Warteschlange, hoechstens POPUP_MAX gleichzeitig,
+## gleiche Texte werden zu "xN" zusammengefasst, die Meldungen steigen abwechselnd links und rechts neben der Figur auf (nicht ueber dem Kopf,
+## dort stehen Balken und Symbole). Schaden gross, Heilung mittel, Status klein. Fahigkeitsnamen laufen ueber _banner.
 func _popup(u: Dictionary, text: String, color: Color) -> void:
+	var key: String = u.get("uid", "%d_%d" % [u["pos"].x, u["pos"].y])
+	var live: Array = _popup_live.get(key, [])
+	for e: Dictionary in live:
+		if e["base"] == text and _clock - float(e["t0"]) < 0.8:
+			e["n"] = int(e["n"]) + 1
+			(e["label"] as Label3D).text = "%s ×%d" % [text, e["n"]]
+			return
+	var start := maxf(_clock, float(_popup_next.get(key, 0.0)))
+	_popup_next[key] = start + POPUP_GAP
+	if start > _clock:
+		await get_tree().create_timer(start - _clock).timeout
+	live = _popup_live.get(key, [])
+	while live.size() >= POPUP_MAX:
+		await get_tree().create_timer(0.1).timeout
+		live = _popup_live.get(key, [])
+	var dmg := text.begins_with("-") and text.length() > 1 and text[1].is_valid_int()
+	var heal := text.begins_with("+")
 	var l := Label3D.new()
 	l.text = text
 	l.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	l.font = UiTheme.font(UiTheme.F_TITLE)
-	l.font_size = 72 if "\n" not in text else 52
-	l.pixel_size = (0.0065 if "\n" in text else 0.008) * popup_scale
+	l.font_size = 72 if dmg else (60 if heal else 52)
+	l.pixel_size = (0.0105 if dmg else (0.0085 if heal else 0.0058)) * popup_scale
+	if "\n" in text and not dmg and not heal:
+		l.pixel_size = 0.0058 * popup_scale
 	l.outline_size = 16
 	l.modulate = color
 	l.no_depth_test = true
-	l.position = to_world(u["pos"]) + Vector3(0, 1.4, 0)
+	l.render_priority = 8
+	var cnt := int(_popup_count.get(key, 0))
+	_popup_count[key] = cnt + 1
+	var side := -1.0 if cnt % 2 == 0 else 1.0
+	var entry := {"label": l, "base": text, "n": 1, "t0": _clock}
+	live.append(entry)
+	_popup_live[key] = live
+	var cu := cam.global_transform.basis.y.normalized() if cam != null else Vector3.UP
+	var cr := cam.global_transform.basis.x.normalized() if cam != null else Vector3.RIGHT
+	var base := to_world(u["pos"]) + cr * side * 0.55 + cu * (0.75 + 0.3 * float(live.size() - 1))
+	l.position = base
 	add_child(l)
-	var tw := create_tween()
-	tw.tween_property(l, "position:y", l.position.y + 0.6, 0.5 if "\n" not in text else 0.9)
-	await tw.finished
-	l.queue_free()
+	if dmg:
+		l.scale = Vector3.ONE * 1.6
+		create_tween().tween_property(l, "scale", Vector3.ONE, 0.18).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	var life := 1.1 if (dmg or "\n" in text) else 0.9
+	var tw := create_tween().set_parallel(true)
+	tw.tween_property(l, "position", base + cu * 0.8, life)
+	tw.tween_property(l, "modulate:a", 0.0, life * 0.4).set_delay(life * 0.6)
+	tw.chain().tween_callback(func() -> void:
+		var lv: Array = _popup_live.get(key, [])
+		lv.erase(entry)
+		_popup_live[key] = lv
+		l.queue_free())
+	await get_tree().create_timer(0.45).timeout
+
+
+## Name einer Faehigkeit als Banner oben im Bild (unter dem Rundenband), damit er nicht mit Schaden und Status an der Figur kollidiert.
+func _banner(text: String, color := Color(1.0, 0.9, 0.5)) -> void:
+	if _hud_root == null:
+		return
+	if _banner_label == null:
+		_banner_label = Label.new()
+		_banner_label.position = Vector2(0, 50)
+		_banner_label.size = Vector2(1280, 40)
+		_banner_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		_banner_label.add_theme_font_override("font", UiTheme.font(UiTheme.F_TITLE))
+		_banner_label.add_theme_font_size_override("font_size", 30)
+		_banner_label.add_theme_constant_override("outline_size", 10)
+		_banner_label.add_theme_color_override("font_outline_color", Color(0.1, 0.05, 0.02))
+		_banner_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_hud_root.add_child(_banner_label)
+	_banner_label.text = text
+	_banner_label.add_theme_color_override("font_color", color)
+	if _banner_tween != null:
+		_banner_tween.kill()
+	_banner_label.modulate.a = 0.0
+	_banner_tween = create_tween()
+	_banner_tween.tween_property(_banner_label, "modulate:a", 1.0, 0.12)
+	_banner_tween.tween_interval(1.0)
+	_banner_tween.tween_property(_banner_label, "modulate:a", 0.0, 0.3)
 
 
 func _count_team(team: String) -> int:
@@ -2534,7 +2711,7 @@ func _run_secret(u: Dictionary, id: String, target: Dictionary) -> void:
 		return
 	secrets_done.append(sec["id"])
 	if fx.has_fx(id):
-		_popup(u, ab["name"], Color(1.0, 0.9, 0.5))
+		_banner(ab["name"])
 	await fx.windup(id, u, target)
 	await fx.before_hit(id, u, target, 0)
 	fx.on_hit(id, u, target, 0)
@@ -2669,9 +2846,10 @@ func _run_ability(u: Dictionary, id: String, target: Dictionary) -> void:
 	if ab.get("super", false):
 		await _super_cutin(u, ab)
 	if fx.has_fx(id):
-		_popup(u, ab["name"], Color(1.0, 0.9, 0.5))   # Name blendet parallel zur Animation ein
+		_banner(ab["name"])   # Name blendet parallel zur Animation ein
 	else:
-		await _popup(u, ab["name"], Color(1.0, 0.9, 0.5))
+		_banner(ab["name"])
+		await get_tree().create_timer(0.4).timeout
 	await fx.windup(id, u, target)
 	var tiles := _area_tiles(ab, u["pos"] if ab["target"] == "self" else target["pos"])
 	await fx.cast(id, u, target, tiles)
