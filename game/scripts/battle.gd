@@ -2659,7 +2659,7 @@ func _capture_unit(cu: Dictionary) -> void:
 ## Super-Attacke: Polarlicht-Auftritt mit dem vergroesserten Chibi, dazu eigene Musik (die Kampfmusik wird leiser).
 var _super_player: AudioStreamPlayer
 
-func _super_cutin(u: Dictionary, ab: Dictionary) -> void:
+func _super_cutin(u: Dictionary, ab: Dictionary, title := "", sub := "") -> void:
 	var stream: AudioStreamMP3 = load("res://assets/audio/super_attack.mp3")
 	stream.loop = false
 	_super_player = AudioStreamPlayer.new()
@@ -2673,7 +2673,7 @@ func _super_cutin(u: Dictionary, ab: Dictionary) -> void:
 	layer.layer = 9
 	add_child(layer)
 	var c := SuperCutin.new()
-	c.setup((u["sprite"] as Sprite3D).texture, str(ab["name"]), str(ab.get("super_sub", "")))
+	c.setup((u["sprite"] as Sprite3D).texture, title if title != "" else str(ab["name"]), sub if title != "" else str(ab.get("super_sub", "")))
 	layer.add_child(c)
 	await c.finished
 	layer.queue_free()
@@ -2688,6 +2688,84 @@ func _super_music_stop() -> void:
 		tw.tween_callback(p.queue_free)
 	if super_music.is_valid():
 		super_music.call(false)
+
+
+## Steht zwischen Schuetze und Ziel (gerade Linie) ein Verbuendeter, der den Strahl dieses Geheimnisses umlenkt? Rueckgabe {sec, via} oder {}.
+func _beam_blocker(u: Dictionary, id: String, target: Dictionary) -> Dictionary:
+	if target.get("tile", false) or target == u or not target.has("pos"):
+		return {}
+	var d: Vector2i = target["pos"] - u["pos"]
+	if (d.x != 0 and d.y != 0) or maxi(absi(d.x), absi(d.y)) < 2:
+		return {}
+	var step := Vector2i(signi(d.x), signi(d.y))
+	for k in range(1, maxi(absi(d.x), absi(d.y))):
+		var o := unit_at(u["pos"] + step * k)
+		if o.is_empty() or o["team"] != u["team"]:
+			continue
+		var sec := Secrets.find_beam(u["id"], id, o["id"])
+		if not sec.is_empty():
+			return {"sec": sec, "via": o}
+	return {}
+
+
+## Geheimnis "Laser-Reflektor": Die Figur auf der Linie lenkt den Strahl um. Er endet dort und trifft (bzw. heilt) alle Figuren im Umkreis
+## um die Figur mit einem Teil der Wirkung. Beim ersten Mal laufen Szene und grosser Auftritt, danach nur ein kurzer Effekt.
+func _run_reflect(u: Dictionary, id: String, target: Dictionary, via: Dictionary, sec: Dictionary) -> void:
+	var ab: Dictionary = abilities[id]
+	var ef: Dictionary = sec["effects"]
+	u["st"]["abs"] += 1
+	Items.start_cooldown(u, id, int(ab["cd"]))
+	_actor = u
+	_note("ability", {"id": id, "by": u})
+	_turn_towards(u, via["pos"])
+	_banner(ab["name"])
+	var dm := _first_effect(ab, "damage")
+	var hl := _first_effect(ab, "heal")
+	var healing := dm.is_empty() and not hl.is_empty()
+	var col := Color(0.4, 1.0, 0.6) if healing else Color(1.0, 0.25, 0.15)
+	await fx.windup(id, u, target)
+	await fx.reflect_beam(u, via, col)
+	var first := not secrets_seen.has(sec["id"])
+	if first:
+		secrets_seen.append(sec["id"])
+		if secret_runner.is_valid():
+			await secret_runner.call(sec)
+		var ci: Dictionary = ef.get("cutin", {})
+		if not ci.is_empty():
+			await _super_cutin(via, ab, str(ci.get("title", ab["name"])), str(ci.get("sub", "")))
+	await fx.reflect_spin(via)
+	_popup(via, "Reflektiert!", Color(1.0, 0.9, 0.5))
+	var pct := float(ef.get("reflect_pct", 75)) / 100.0
+	var tiles := _area_tiles({"area": {"shape": "radius", "r": int(ef.get("radius", 2))}}, via["pos"])
+	var victims: Array[Dictionary] = []
+	for o in units:
+		if not tiles.has(o["pos"]):
+			continue
+		if healing and o["team"] == u["team"]:
+			victims.append(o)
+		elif not healing and o["team"] != u["team"] and _hittable(o) and not Status.has(o, "stealth"):
+			victims.append(o)
+	for v in victims:
+		if not units.has(v):
+			continue
+		await fx.reflect_beam(via, v, col)
+		if healing:
+			var amount := mini(roundi(float(hl["amount"]) * pct), v["maxhp"] - v["hp"])
+			v["hp"] += amount
+			u["st"]["healed"] += amount
+			var cured: bool = hl.get("cleanse", false) and Status.cleanse(v)
+			_refresh_unit(v)
+			fx.on_heal(id, u, v, amount, cured)
+			await _popup(v, ("+%d" % amount) + ("\nGegengift" if cured else ""), Color(0.4, 1, 0.5))
+		else:
+			var dmg := Combat.damage(u, v, _cover_for(v, v["pos"]), 0.0, float(dm["mult"]) * pct, float(dm.get("ignore_def", 0.0)))
+			fx.reflect_hit(v)
+			await _deal(v, dmg, "")
+	if healing:
+		_note("heal", {"by": u, "healed": victims})
+	if first:
+		_super_music_stop()
+	_check_end()
 
 
 ## Das noch nicht ausgeloeste Geheimnis, das u mit Faehigkeit id auf den Verbuendeten o ausloest, oder {}.
@@ -2836,6 +2914,10 @@ func _run_ability(u: Dictionary, id: String, target: Dictionary) -> void:
 	var ab: Dictionary = abilities[id]
 	if ab["target"] == "enemy" and target.get("team", "") == u["team"] and target != u:
 		await _run_secret(u, id, target)
+		return
+	var bb := _beam_blocker(u, id, target)
+	if not bb.is_empty():
+		await _run_reflect(u, id, target, bb["via"], bb["sec"])
 		return
 	u["st"]["abs"] += 1
 	Items.start_cooldown(u, id, int(ab["cd"]))
@@ -3007,7 +3089,7 @@ func _deal(def: Dictionary, dmg: int, text: String) -> void:
 	_count(_actor, def, mini(dmg, def["hp"]))
 	def["hp"] = maxi(0, def["hp"] - dmg)
 	_refresh_unit(def)
-	await _popup(def, "-%d\n%s" % [dmg, text], Color(1, 0.45, 0.35))
+	await _popup(def, ("-%d" % dmg) + (("\n" + text) if text != "" else ""), Color(1, 0.45, 0.35))
 	if def["hp"] <= 0:
 		units.erase(def)
 		await _down(def)

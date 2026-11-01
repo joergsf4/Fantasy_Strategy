@@ -369,7 +369,7 @@ func _screenshot_mode() -> void:
 		sdim.set_anchors_preset(Control.PRESET_FULL_RECT)
 		sl.add_child(sdim)
 		var ss := SecretScene.new()
-		ss.setup_secret(Secrets.by_id("betrunkener_meister"), _names())
+		ss.setup_secret(Secrets.by_id(OS.get_environment("SHOT_SECRET") if OS.get_environment("SHOT_SECRET") != "" else "betrunkener_meister"), _names())
 		sl.add_child(ss)
 		await get_tree().create_timer(float(OS.get_environment("SHOT_DELAY")) if OS.get_environment("SHOT_DELAY") != "" else 4.0).timeout
 		get_viewport().get_texture().get_image().save_png(OS.get_environment("SHOT_OUT"))
@@ -943,6 +943,7 @@ const FX_SCENES := {
 	"tonikum": {"u": ["quacksalber", "p", [3, 7]], "tile": [5, 7], "more": [["ritter", "p", [5, 7]], ["soldat_infanterie", "e", [6, 7]], ["soldat_infanterie", "e", [5, 6]]]},
 	"hinterhalt": {"u": ["ninjas", "p", [4, 7]], "t": ["soldat_infanterie", "e", [5, 7], {"dir": [1, 0]}], "more": []},
 	"bellen": {"u": ["hund", "p", [5, 7]], "t": "self", "more": [["soldat_infanterie", "e", [7, 7]], ["soldat_infanterie", "e", [5, 5]], ["soldat_beritten", "e", [3, 8]]]},
+	"laser_reflektor": {"u": ["robo", "p", [2, 7]], "t": ["soldat_infanterie", "e", [6, 7]], "ab": "roter_laser", "more": [["samurai", "p", [4, 7]], ["soldat_infanterie", "e", [4, 5]], ["soldat_beritten", "e", [5, 8]], ["soldat_infanterie", "e", [8, 7]]]},
 	"drunken_strike": {"u": ["kungfu", "p", [4, 7]], "t": ["soldat_infanterie", "e", [5, 7]], "more": []},
 	"sternschnuppe": {"u": ["magical_girl", "p", [2, 7]], "t": ["soldat_infanterie", "e", [8, 7]], "more": []},
 }
@@ -955,6 +956,8 @@ func _fx_strip(id: String) -> void:
 	var b := Battle.new()
 	b.setup(map, units)
 	add_child(b)
+	b.secret_runner = func(_sec: Dictionary) -> void: await get_tree().create_timer(0.2).timeout     # die Szene selbst: SHOT=secret
+	b.super_music = _duck_music
 	await get_tree().process_frame
 	for u in b.units.duplicate():
 		(u["node"] as Node3D).queue_free()
@@ -976,7 +979,7 @@ func _fx_strip(id: String) -> void:
 		await get_tree().process_frame
 	var done := [false]
 	var run := func() -> void:
-		await b._run_ability(hero, id, tgt)
+		await b._run_ability(hero, sc.get("ab", id), tgt)
 		done[0] = true
 	run.call()
 	var n := 0

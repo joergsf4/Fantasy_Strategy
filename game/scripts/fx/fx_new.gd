@@ -316,6 +316,30 @@ func secret_reveal(v: Dictionary, _sec: Dictionary) -> void:
 	await fx.squash(v, 1.25, 0.8, 0.5)
 
 
+## Laser-Reflektor: Strahl von einer Figur zur anderen (zur Umlenkung und zu jedem Opfer), mit Funken am Ziel.
+func reflect_beam(a: Dictionary, b: Dictionary, color: Color) -> void:
+	Sfx.play("laser_fire", -6.0, 1.3)
+	fx.beam(fx.chest(a, 0.75), fx.chest(b, 0.6), color, 0.2, 0.3)
+	await _wait(0.2)
+	fx.particles("fx_star", fx.chest(b, 0.6), 5, 2.2, 0.2, 0.5, 1.0, color.lerp(Color.WHITE, 0.5), true, 160.0)
+	fx.light_flash(fx.chest(b, 0.6), color, 2.0, 3.0, 0.25)
+
+
+## Treffer des umgelenkten Strahls: Funken, Aufblitzen, kleiner Rueckstoss.
+func reflect_hit(v: Dictionary) -> void:
+	fx.particles("fx_star", fx.chest(v, 0.55), 6, 2.6, 0.22, 0.5, 2.0, Color(1.0, 0.7, 0.4), true, 180.0)
+	fx.flash_unit(v, Color(2.2, 1.6, 1.4), 0.18)
+	fx.shake(0.04, 0.12)
+
+
+## Takeda wirbelt sein Schwert (die Drehung seines Todeswirbels) und lenkt den Strahl um.
+func reflect_spin(via: Dictionary) -> void:
+	Sfx.play("chime", -3.0, 1.2)
+	fx.shockwave(_pos(via), 1.6, Color(1.0, 0.95, 0.7, 0.8), 0.45)
+	fx.light_flash(fx.chest(via, 0.8), Color(1.0, 0.9, 0.6), 3.0, 4.0, 0.5)
+	await fx.ab._spin(via)
+
+
 func scared_shiver(v: Dictionary) -> void:
 	var sp := v["sprite"] as Sprite3D
 	var x0 := sp.position.x

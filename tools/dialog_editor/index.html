@@ -762,10 +762,22 @@ function secPreview(x) {
 const SEC_PLACEHOLDER = "Beschreibe das Geheimnis frei, z. B.: Brunhilde wirft ein Fass auf Lin. Der kämpft ab dann 10 % stärker im Drunken-Master-Stil und bekommt eine Sonderfähigkeit. Was soll passieren, wie soll es aussehen, welche Szene, welche Musik? Alles, was Claude für die Umsetzung wissen muss.";
 function secTech(x, i) {
   const o = SEC, uname = id => o.units[id]?.name || id, t = x.trigger, sc = x.scene, fig = Object.entries(o.units).map(([k, u]) => [k, u.name]);
+  const beam = t.type === "beam_via_ally", second = beam ? t.via : t.target;
   const abs = (o.units[t.by]?.abilities || []).map(a => [a, o.abilities[a] || a]); if (!abs.length) abs.push(["", "(keine passende Fähigkeit)"]);
-  const who = [[t.by, uname(t.by)], [t.target, uname(t.target)]];
+  const who = [[t.by, uname(t.by)], [second, uname(second)]];
   const pt = list => list.map(n => [n, n]);
-  return `<div class="sbox"><h4>Auslöser</h4><div class="row">
+  const typ = `<div class="sbox"><h4>Auslöser-Typ</h4><div class="row"><select data-f="ttype" aria-label="Auslöser-Typ">${secOpts([["ability_on_ally", "Fähigkeit auf einen Verbündeten einsetzen"], ["beam_via_ally", "Strahl über einen Verbündeten umlenken"]], t.type || "ability_on_ally")}</select></div></div>`;
+  const trig = beam ? `<div class="sbox"><h4>Auslöser</h4><div class="row">
+        <select data-f="by" aria-label="Schütze">${secOpts(fig, t.by)}</select> schießt
+        ${(o.units[t.by]?.beams || []).map(a => `<label style="display:inline-flex;gap:4px;margin:0"><input type="checkbox" data-f="beamab" data-ab="${esc(a)}" ${(t.abilities || []).includes(a) ? "checked" : ""}> ${esc(o.abilities[a] || a)}</label>`).join(" ") || "(keine Strahl-Fähigkeit)"}
+        und <select data-f="via" aria-label="Figur im Weg">${secOpts(fig, t.via)}</select> steht auf der Linie zum Ziel.</div>
+        <p class="hint" style="margin:6px 0 0">Der Strahl endet bei der Figur im Weg. Fähigkeiten mit Schaden oder Heilung, Ziel auf gerader Linie.</p></div>
+      <div class="sbox"><h4>Wirkung</h4><div class="row">
+        Reflexion <input type="number" data-f="reflect_pct" min="1" max="200" value="${+x.effects.reflect_pct || 75}" aria-label="Reflexion in Prozent"> % des Schadens bzw. der Heilung
+        · Umkreis <input type="number" data-f="radius" min="1" max="4" value="${+x.effects.radius || 2}" aria-label="Umkreis in Feldern"> Felder um ${esc(uname(t.via))}</div>
+        <div class="row" style="margin-top:6px"><label style="display:inline-flex;gap:4px;margin:0"><input type="checkbox" data-f="cutin_on" ${x.effects.cutin ? "checked" : ""}> Großer Polarlicht-Auftritt beim ersten Mal</label>
+        ${x.effects.cutin ? `Figur <select data-f="cutin_unit">${secOpts(fig, x.effects.cutin.unit)}</select> Titel <input type="text" data-f="cutin_title" value="${esc(x.effects.cutin.title || "")}" maxlength="40" style="width:160px"> Untertitel <input type="text" data-f="cutin_sub" value="${esc(x.effects.cutin.sub || "")}" maxlength="40" style="width:140px">` : ""}</div></div>`
+  : `<div class="sbox"><h4>Auslöser</h4><div class="row">
         <select data-f="by" aria-label="Figur">${secOpts(fig, t.by)}</select> setzt
         <select data-f="ability" aria-label="Fähigkeit">${secOpts(abs, t.ability)}</select> auf Verbündeten
         <select data-f="target" aria-label="Verbündeter">${secOpts(fig, t.target)}</select> ein.</div>
@@ -773,7 +785,8 @@ function secTech(x, i) {
       <div class="sbox"><h4>Wirkung (bis Kampfende)</h4><div class="row">
         Angriff + <input type="number" data-f="atk_pct" min="0" max="100" value="${+x.effects.atk_pct || 0}" aria-label="Angriffsbonus in Prozent"> %
         · Neue Fähigkeit <select data-f="grant_ability">${secOpts(Object.entries(o.abilities), x.effects.grant_ability || "", "keine")}</select>
-        · Status <input type="text" data-f="status" value="${esc(x.effects.status || "betrunken")}" style="width:110px" aria-label="Status-Kennung"></div></div>
+        · Status <input type="text" data-f="status" value="${esc(x.effects.status || "betrunken")}" style="width:110px" aria-label="Status-Kennung"></div></div>`;
+  return `${typ}${trig}
       <div class="sbox"><h4>Szene (läuft beim ersten Mal)</h4><div class="row">
         Links <select data-f="left">${secOpts(pt(o.portraits), sc.left)}</select>
         Rechts <select data-f="right">${secOpts(pt(o.portraits), sc.right)}</select></div>
@@ -788,7 +801,7 @@ function secCard(x, i) {
   const tech = !!x.trigger;
   const chips = (x.characters || []).map(c => `<span class="chip2">${esc(uname(c))} <button class="btn ghost" data-sact="rmchar" data-c="${esc(c)}" aria-label="${esc(uname(c))} entfernen" style="padding:0 4px">✕</button></span>`).join("") || '<span class="hint">noch keine Figuren</span>';
   return `<div class="scard" data-sec="${i}" ${tech ? "" : 'style="grid-template-columns:1fr"'}>
-    ${tech ? `<div>${secPreview(x)}<p class="hint" style="margin-top:6px">Vorschau: links ${esc(uname(x.trigger.by))}, rechts ${esc(uname(x.trigger.target))}. Im Spiel liegt die Szene vor der Karte, dazu kommen Banner, Tiefenwirkung (Maus) und ein fliegendes Fass.</p></div>` : ""}
+    ${tech ? `<div>${secPreview(x)}<p class="hint" style="margin-top:6px">Vorschau: links ${esc(uname(x.trigger.by))}, rechts ${esc(uname(x.trigger.target || x.trigger.via))}. Im Spiel liegt die Szene vor der Karte, dazu kommen Banner und Tiefenwirkung (Maus).</p></div>` : ""}
     <div class="sform">
       <div class="row"><b style="flex:1">${tech ? "✓ Umgesetzt (aktiv im Spiel)" : "💡 Idee (noch nicht im Spiel)"}</b></div>
       <label>Name des Geheimnisses</label><input type="text" class="wide" data-f="name" value="${esc(x.name)}" maxlength="60">
@@ -813,6 +826,16 @@ function secNew() {
   let n = 1; while (sec.some(x => x.id === "geheimnis_" + n)) n++;
   sec.push({ id: "geheimnis_" + n, name: "Neue Idee", characters: [], prompt: "" });
 }
+function secSwitchType(x, type) {
+  const t = x.trigger, second = t.via || t.target;
+  if (type === "beam_via_ally") {
+    x.trigger = { type, by: t.by, abilities: (SEC.units[t.by]?.beams || []).slice(0, 1), via: second };
+    x.effects = { reflect_pct: 75, radius: 2 };
+  } else {
+    x.trigger = { type: "ability_on_ally", by: t.by, ability: SEC.units[t.by]?.abilities[0] || "", target: second };
+    x.effects = { atk_pct: 10, grant_ability: "", status: "betrunken" };
+  }
+}
 function secAddTech(x) {
   const ch = x.characters || [], by = ch.find(c => SEC.units[c]?.abilities.length) || Object.keys(SEC.units).find(k => SEC.units[k].abilities.length), other = ch.find(c => c !== by) || Object.keys(SEC.units).find(k => k !== by);
   x.trigger = { type: "ability_on_ally", by, ability: SEC.units[by].abilities[0] || "", target: other };
@@ -822,19 +845,29 @@ function secAddTech(x) {
   x.characters = ch;
 }
 document.addEventListener("input", e => {
-  const el = e.target, card = el.closest?.(".scard"); if (!card || view !== "sec" || el.matches("select")) return;
+  const el = e.target, card = el.closest?.(".scard"); if (!card || view !== "sec" || el.matches("select, input[type=checkbox]")) return;
   const x = sec[+card.dataset.sec], f = el.dataset.f;
   if (f === "text") { x.scene.lines[+el.dataset.j].text = el.value; fit(el); }
   else if (f === "prompt") { x.prompt = el.value; fit(el); }
   else if (f === "name") { x.name = el.value; const tg = card.querySelector(".tag"); if (tg) tg.textContent = "✦ GEHEIME INTERAKTION ✦ " + el.value; }
   else if (f === "atk_pct") x.effects.atk_pct = Math.max(0, Math.min(100, parseInt(el.value || "0", 10) || 0));
+  else if (f === "reflect_pct") x.effects.reflect_pct = Math.max(1, Math.min(200, parseInt(el.value || "75", 10) || 75));
+  else if (f === "radius") x.effects.radius = Math.max(1, Math.min(4, parseInt(el.value || "2", 10) || 2));
+  else if (f === "cutin_title") x.effects.cutin.title = el.value;
+  else if (f === "cutin_sub") x.effects.cutin.sub = el.value;
   else if (f === "status") x.effects.status = el.value.trim();
   updateStatus();
 });
 document.addEventListener("change", e => {
-  const el = e.target, card = el.closest?.(".scard"); if (!card || view !== "sec" || !el.matches("select")) return;
+  const el = e.target, card = el.closest?.(".scard"); if (!card || view !== "sec" || !el.matches("select, input[type=checkbox]")) return;
   const x = sec[+card.dataset.sec], f = el.dataset.f;
   if (f === "addchar") { if (el.value) (x.characters ||= []).push(el.value); }
+  else if (f === "ttype") secSwitchType(x, el.value);
+  else if (f === "via") { x.trigger.via = el.value; x.scene.lines.forEach(l => { if (l.speaker !== x.trigger.by) l.speaker = el.value; }); }
+  else if (f === "beamab") { const set = new Set(x.trigger.abilities || []); el.checked ? set.add(el.dataset.ab) : set.delete(el.dataset.ab); x.trigger.abilities = [...set]; }
+  else if (f === "cutin_on") { if (el.checked) x.effects.cutin = x.effects.cutin || { unit: x.trigger.via || x.trigger.by, title: x.name, sub: "" }; else delete x.effects.cutin; }
+  else if (f === "cutin_unit") x.effects.cutin.unit = el.value;
+  else if (f === "by" && x.trigger.type === "beam_via_ally") { x.trigger.by = el.value; x.trigger.abilities = (SEC.units[el.value].beams || []).slice(0, 1); x.scene.lines.forEach(l => { if (l.speaker !== x.trigger.via) l.speaker = el.value; }); }
   else if (f === "by") { x.trigger.by = el.value; x.trigger.ability = SEC.units[el.value].abilities[0] || ""; x.scene.lines.forEach(l => { if (l.speaker !== x.trigger.target) l.speaker = el.value; }); }
   else if (f === "ability" || f === "target") { x.trigger[f] = el.value; if (f === "target") x.scene.lines.forEach(l => { if (l.speaker !== x.trigger.by) l.speaker = el.value; }); }
   else if (f === "grant_ability") x.effects.grant_ability = el.value;

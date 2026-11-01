@@ -169,10 +169,11 @@ class EditorTest(unittest.TestCase):
         idee = {"id": "kuerbis_idee", "name": "Kuerbisse", "characters": ["maedchen_baer", "wendy"], "prompt": "  Zwei Figuren treffen einen sprechenden Kuerbis.\nDer Kuerbis stellt ein Raetsel.  "}
         server.save_secrets({"secrets": d["secrets"] + [idee]})
         got = server.read(server.DATA / "secrets.json")["secrets"]
-        self.assertEqual(len(got), 2)
-        self.assertNotIn("trigger", got[1])                                         # Idee ohne technische Umsetzung
-        self.assertEqual(got[1]["prompt"], "Zwei Figuren treffen einen sprechenden Kuerbis.\nDer Kuerbis stellt ein Raetsel.")
-        self.assertEqual(server.secrets()["secrets"][1]["characters"], ["maedchen_baer", "wendy"])
+        n = len(d["secrets"])
+        self.assertEqual(len(got), n + 1)
+        self.assertNotIn("trigger", got[n])                                         # Idee ohne technische Umsetzung
+        self.assertEqual(got[n]["prompt"], "Zwei Figuren treffen einen sprechenden Kuerbis.\nDer Kuerbis stellt ein Raetsel.")
+        self.assertEqual(server.secrets()["secrets"][n]["characters"], ["maedchen_baer", "wendy"])
         # frisch angelegte Technik mit leerer Zeile oder ganz ohne Zeilen speichert (leere Zeilen werden ignoriert)
         tech = {"id": "t_idee", "name": "T", "characters": ["braumeisterin", "kungfu"], "prompt": "",
                 "trigger": {"type": "ability_on_ally", "by": "braumeisterin", "ability": "fasswurf", "target": "kungfu"},
@@ -191,6 +192,28 @@ class EditorTest(unittest.TestCase):
         # nur Ideen sind im Spiel nicht aktiv: die Datei bleibt fuer das Spiel gueltig
         for sec in got:
             self.assertTrue(sec["id"] and sec["name"])
+
+    def test_geheimnis_strahl_ueber_verbuendeten(self):
+        d = server.secrets()
+        beam = next(x for x in d["secrets"] if x.get("trigger", {}).get("type") == "beam_via_ally")
+        self.assertEqual((beam["trigger"]["by"], beam["trigger"]["via"], beam["effects"]["reflect_pct"], beam["effects"]["radius"]), ("robo", "samurai", 75, 2))
+        self.assertIn("roter_laser", d["units"]["robo"]["beams"])
+        self.assertIn("gruener_laser", d["units"]["robo"]["beams"])
+        server.save_secrets({"secrets": d["secrets"]})                              # unveraendert speichern geht
+        import copy
+        for mutate in (lambda s: s["trigger"].update(abilities=[]), lambda s: s["trigger"].update(abilities=["kanone"]), lambda s: s["trigger"].update(via="gibtsnicht"),
+                       lambda s: s["trigger"].update(via="robo"), lambda s: s["effects"].update(reflect_pct=0), lambda s: s["effects"].update(radius=9),
+                       lambda s: s["effects"].update(cutin={"unit": "nix", "title": "x"}), lambda s: s["scene"]["lines"][0].update(speaker="ritter")):
+            sl = copy.deepcopy(d["secrets"])
+            mutate(next(x for x in sl if x.get("trigger", {}).get("type") == "beam_via_ally"))
+            with self.assertRaises(ValueError):
+                server.save_secrets({"secrets": sl})
+        sl = copy.deepcopy(d["secrets"])
+        b2 = next(x for x in sl if x.get("trigger", {}).get("type") == "beam_via_ally")
+        b2["effects"].pop("cutin"); b2["effects"]["reflect_pct"] = 50
+        server.save_secrets({"secrets": sl})                                        # Auftritt ist optional
+        saved = [x for x in server.read(server.DATA / "secrets.json")["secrets"] if x.get("trigger", {}).get("type") == "beam_via_ally"][0]
+        self.assertEqual(saved["effects"], {"reflect_pct": 50, "radius": 2})
 
     def test_leere_flee_und_ideen_werden_entfernt_und_ideen_gespeichert(self):
         b = self.body("ch3")

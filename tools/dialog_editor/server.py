@@ -277,9 +277,11 @@ def secrets() -> dict:
     secs = read(DATA / "secrets.json")["secrets"]
     for sc in secs:       # aeltere Eintraege ohne Freitext: Figuren aus dem Ausloeser
         sc.setdefault("prompt", "")
-        sc.setdefault("characters", [sc["trigger"]["by"], sc["trigger"]["target"]] if sc.get("trigger") else [])
+        sc.setdefault("characters", [sc["trigger"]["by"], sc["trigger"].get("target", sc["trigger"].get("via"))] if sc.get("trigger") else [])
     return {"secrets": secs,
-            "units": {k: {"name": v["name"], "abilities": [a for a in v.get("abilities", []) if abilities.get(a, {}).get("target") == "enemy"], "hero": bool(v.get("hero"))}
+            "units": {k: {"name": v["name"], "abilities": [a for a in v.get("abilities", []) if abilities.get(a, {}).get("target") == "enemy"],
+                          "beams": [a for a in v.get("abilities", []) if abilities.get(a, {}).get("target") in ("enemy", "ally") and any(e.get("type") in ("damage", "heal") for e in abilities[a].get("effects", []))],
+                          "hero": bool(v.get("hero"))}
                       for k, v in units.items() if isinstance(v, dict) and "name" in v},
             "abilities": {k: v["name"] for k, v in abilities.items()},
             "portraits": portraits}
@@ -316,26 +318,59 @@ def save_secrets(body: dict) -> None:
         entry = {"id": sid, "name": name, "characters": chars, "prompt": prompt}
         if sec.get("trigger"):
             t = sec["trigger"]
-            by, ab, on = t["by"], t["ability"], t["target"]
+            beam = t.get("type", "ability_on_ally") == "beam_via_ally"
+            by = t["by"]
+            on = t["via"] if beam else t["target"]
             if by not in units or "name" not in units[by] or on not in units or "name" not in units[on]:
                 raise ValueError(f"{name}: unbekannte Figur im Ausloeser")
             if by == on:
                 raise ValueError(f"{name}: die Figur kann das Geheimnis nicht auf sich selbst ausloesen")
-            if ab not in units[by].get("abilities", []) or abilities.get(ab, {}).get("target") != "enemy":
-                raise ValueError(f"{name}: {units[by]['name']} hat keine passende Faehigkeit '{ab}' (Gegner-Ziel)")
-            if (by, ab, on) in triples:
-                raise ValueError(f"{name}: dieser Ausloeser kommt zweimal vor")
-            triples.add((by, ab, on))
-            ef = sec["effects"]
-            pct = ef.get("atk_pct", 0)
-            if not isinstance(pct, int) or isinstance(pct, bool) or not 0 <= pct <= 100:
-                raise ValueError(f"{name}: Angriffsbonus muss 0 bis 100 Prozent sein")
-            gift = ef.get("grant_ability", "")
-            if gift and gift not in abilities:
-                raise ValueError(f"{name}: unbekannte Faehigkeit '{gift}'")
-            status = ef.get("status") or "betrunken"
-            if not re.match(r"^[a-z_]{1,20}$", status):
-                raise ValueError(f"{name}: ungueltiger Status")
+            if beam:
+                abs_ = list(dict.fromkeys(t.get("abilities", [])))
+                if not abs_:
+                    raise ValueError(f"{name}: mindestens eine Strahl-Faehigkeit waehlen")
+                for ab in abs_:
+                    if ab not in units[by].get("abilities", []) or abilities.get(ab, {}).get("target") not in ("enemy", "ally") \
+                            or not any(e.get("type") in ("damage", "heal") for e in abilities[ab].get("effects", [])):
+                        raise ValueError(f"{name}: {units[by]['name']} hat keine passende Strahl-Faehigkeit '{ab}'")
+                    if (by, ab, on) in triples:
+                        raise ValueError(f"{name}: dieser Ausloeser kommt zweimal vor")
+                    triples.add((by, ab, on))
+                ef = sec["effects"]
+                rp, rad = ef.get("reflect_pct", 75), ef.get("radius", 2)
+                if not isinstance(rp, int) or isinstance(rp, bool) or not 1 <= rp <= 200:
+                    raise ValueError(f"{name}: Reflexion muss 1 bis 200 Prozent sein")
+                if not isinstance(rad, int) or isinstance(rad, bool) or not 1 <= rad <= 4:
+                    raise ValueError(f"{name}: der Umkreis muss 1 bis 4 Felder sein")
+                cut = ef.get("cutin") or {}
+                if cut:
+                    if cut.get("unit") not in units or "name" not in units[cut["unit"]]:
+                        raise ValueError(f"{name}: unbekannte Figur im Auftritt")
+                    if len(str(cut.get("title", ""))) > 40 or len(str(cut.get("sub", ""))) > 40:
+                        raise ValueError(f"{name}: Titel und Untertitel des Auftritts hoechstens 40 Zeichen")
+                new_trigger = {"type": "beam_via_ally", "by": by, "abilities": abs_, "via": on}
+                new_effects = {"reflect_pct": rp, "radius": rad}
+                if cut:
+                    new_effects["cutin"] = {"unit": cut["unit"], "title": str(cut.get("title", "")).strip(), "sub": str(cut.get("sub", "")).strip()}
+            else:
+                ab = t["ability"]
+                if ab not in units[by].get("abilities", []) or abilities.get(ab, {}).get("target") != "enemy":
+                    raise ValueError(f"{name}: {units[by]['name']} hat keine passende Faehigkeit '{ab}' (Gegner-Ziel)")
+                if (by, ab, on) in triples:
+                    raise ValueError(f"{name}: dieser Ausloeser kommt zweimal vor")
+                triples.add((by, ab, on))
+                ef = sec["effects"]
+                pct = ef.get("atk_pct", 0)
+                if not isinstance(pct, int) or isinstance(pct, bool) or not 0 <= pct <= 100:
+                    raise ValueError(f"{name}: Angriffsbonus muss 0 bis 100 Prozent sein")
+                gift = ef.get("grant_ability", "")
+                if gift and gift not in abilities:
+                    raise ValueError(f"{name}: unbekannte Faehigkeit '{gift}'")
+                status = ef.get("status") or "betrunken"
+                if not re.match(r"^[a-z_]{1,20}$", status):
+                    raise ValueError(f"{name}: ungueltiger Status")
+                new_trigger = {"type": "ability_on_ally", "by": by, "ability": ab, "target": on}
+                new_effects = {"atk_pct": pct, "grant_ability": gift, "status": status}
             sc = sec["scene"]
             if sc["left"] not in portraits or sc["right"] not in portraits:
                 raise ValueError(f"{name}: unbekanntes Bild in der Szene")
@@ -354,8 +389,8 @@ def save_secrets(body: dict) -> None:
             for c in (by, on):
                 if c not in chars:
                     chars.append(c)
-            entry["trigger"] = {"type": "ability_on_ally", "by": by, "ability": ab, "target": on}
-            entry["effects"] = {"atk_pct": pct, "grant_ability": gift, "status": status}
+            entry["trigger"] = new_trigger
+            entry["effects"] = new_effects
             entry["scene"] = {"left": sc["left"], "right": sc["right"], "lines": lines}
         out.append(entry)
     path = DATA / "secrets.json"

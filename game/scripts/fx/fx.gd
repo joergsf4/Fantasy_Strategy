@@ -695,6 +695,18 @@ func secret_reveal(v: Dictionary, sec: Dictionary) -> void:
 	await nw.secret_reveal(v, sec)
 
 
+func reflect_beam(a: Dictionary, b: Dictionary, color: Color) -> void:
+	await nw.reflect_beam(a, b, color)
+
+
+func reflect_hit(v: Dictionary) -> void:
+	nw.reflect_hit(v)
+
+
+func reflect_spin(via: Dictionary) -> void:
+	await nw.reflect_spin(via)
+
+
 func hive_appear(u: Dictionary, p: Vector3) -> void:
 	await nw.hive_appear(u, p)
 

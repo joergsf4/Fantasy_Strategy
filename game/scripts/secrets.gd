@@ -19,7 +19,16 @@ static func all() -> Array:
 static func find(by: String, ability: String, target: String) -> Dictionary:
 	for s: Dictionary in all():
 		var t: Dictionary = s["trigger"]
-		if t["by"] == by and t["ability"] == ability and t["target"] == target:
+		if t.get("type", "ability_on_ally") == "ability_on_ally" and t["by"] == by and t["ability"] == ability and t["target"] == target:
+			return s
+	return {}
+
+
+## Das Geheimnis, bei dem "by" mit dem Strahl "ability" von der Figur "via" auf der Linie umgelenkt wird (Typ beam_via_ally), oder {}.
+static func find_beam(by: String, ability: String, via: String) -> Dictionary:
+	for s: Dictionary in all():
+		var t: Dictionary = s["trigger"]
+		if t.get("type", "") == "beam_via_ally" and t["by"] == by and t["via"] == via and (t["abilities"] as Array).has(ability):
 			return s
 	return {}
 

@@ -112,3 +112,6 @@ Standardmäßig nur ein **Lebensbalken** (`shaders/hpbar.gdshader`, Teamfarbe, g
 
 ## Erledigt: Geheimnisse als Freitext-Ideen (2026-11-01)
 Der Editor-Tab „Geheimnisse“ arbeitet jetzt mit einem **Freitext-Prompt** und der **Auswahl der beteiligten Figuren**; Auslöser, Wirkung und Szene sind optional (aufklappbar). Einträge ohne technische Umsetzung gelten als Idee und sind im Spiel nicht aktiv. Test: `tools/dialog_editor/test_server.py` (`test_geheimnis_als_freitext_idee_ohne_technik`).
+
+## Erledigt: Geheimnis „Laser-Reflektor“ (2026-11-01)
+Zweiter Auslöser-Typ `beam_via_ally` (Strahl über einen Verbündeten umlenken), erstes Beispiel Robo und Takeda: roter Laser trifft die Gegner, grüner Laser heilt die Verbündeten im Umkreis 2 um Takeda mit 75 %. Beim ersten Mal Dialogszene und Polarlicht-Auftritt, danach kurzer Effekt. Der Editor-Tab „Geheimnisse“ kennt den neuen Typ (Auslöser-Typ-Auswahl). Die Dialoge sind vorläufig (von Claude erdacht, der Nutzer verfeinert sie später). Offen: Simulator, Feinschliff der Dialoge und Werte.

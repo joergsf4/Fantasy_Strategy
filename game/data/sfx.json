@@ -290,6 +290,9 @@
      "db": -6
     }
    ]
+  },
+  "laser_reflektor": {
+   "cast": "chime"
   }
  },
  "events": {

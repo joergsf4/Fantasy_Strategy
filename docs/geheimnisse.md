@@ -26,3 +26,12 @@ Im Editor-Tab „Neues Geheimnis“: Figur und Fähigkeit wählen (nur Fähigkei
 ## Super-Attacke (Drunken Strike)
 
 Fähigkeiten mit `"super": true` in `abilities.json` bekommen einen besonderen Auftritt (`SuperCutin`, `Battle._super_cutin`): ein Polarlicht-Himmel (`shaders/aurora.gdshader`, animiert, mit Sternen), davor der stark vergrößerte Chibi der Figur (gleitet mit Nachbildern herein, taumelt leicht), Kinobalken, Funkenflug, der Name der Attacke schlägt ins Bild (`super_sub` als Untertitel), Weißblitz, danach beginnt die eigentliche Attacke. Dazu läuft eigene Musik (`assets/audio/super_attack.mp3`, „Sway of the Iron Fan“, ca. 1 Minute, mit Gemini erzeugt, Original in `strategie/musik/`): die Kampfmusik wird leiser, die Super-Musik blendet nach der Attacke aus. Jede weitere Fähigkeit lässt sich mit `"super": true` genauso aufwerten. Neue Musik: `node tools/gemini/music.mjs "<Beschreibung>" <ausgabe.mp3>`.
+
+## Zweiter Auslöser-Typ: Strahl über einen Verbündeten (`beam_via_ally`)
+
+Beispiel **Laser-Reflektor** (Robo und Takeda): Steht Takeda auf der geraden Linie zwischen Robo und dem Ziel seines roten oder grünen Lasers, lenkt er den Strahl mit seinem Schwertwirbel um. Der Strahl endet bei Takeda, und alle Figuren im **Umkreis von 2 Feldern um Takeda** bekommen **75 %** der Wirkung: beim roten Laser (×1,8, ignoriert die Hälfte der Verteidigung) werden die **Gegner** getroffen, beim grünen Laser (12 Heilung, Gegengift) die **Verbündeten** geheilt. Das ursprüngliche Ziel profitiert nur, wenn es im Umkreis steht.
+- **Daten:** `trigger: {type: "beam_via_ally", by, abilities: [...], via}`, `effects: {reflect_pct, radius, cutin: {unit, title, sub}}`, `scene` wie beim ersten Typ. Der Umkreis und die Prozente stehen im Editor.
+- **Ablauf** (`Battle._beam_blocker`, `_run_reflect`): Beim **ersten Mal** erscheinen die Dialogszene (Robo links, Takeda rechts) und der große Polarlicht-Auftritt (`SuperCutin` mit Takeda, Titel „Laser-Reflektor“, Untertitel „Schwertwirbel“, Super-Musik). **Danach** nur ein kurzer Effekt: Strahl zu Takeda, Schwertwirbel, „Reflektiert!“, Strahlen zu den Opfern. Anders als beim Betrunkenen Meister gilt der Effekt **bei jedem Schuss**, nicht nur einmal pro Kampf. Abklingzeit und Statistik zählen für Robo.
+- **Kein Hinweis im Spiel:** Der Schuss verhält sich ohne Takeda auf der Linie wie bisher.
+- **Nicht modelliert:** Der Simulator kennt die Reflexion nicht, die Gegner-KI nutzt sie nicht.
+- Test: `tests/test_reflect.gd`, Editor-Test `test_geheimnis_strahl_ueber_verbuendeten`.
