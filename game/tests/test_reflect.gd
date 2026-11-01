@@ -163,6 +163,41 @@ func _initialize() -> void:
 	await b._run_ability(h2, "knochenwurf", g2)
 	check(knight["hp"] == 10 and not Status.has(knight, "satt"), "andere Figur im Weg faengt nichts auf")
 
+	# --- Shuriken Regen: Muskelaugust wirft die Ninja-Schwestern
+	clear()
+	scenes.clear()
+	var aug := spawn("museklaugust", "p", Vector2i(2, 5))
+	var nin := spawn("ninjas", "p", Vector2i(3, 5))
+	var f1 := spawn("soldat_infanterie", "e", Vector2i(7, 5))        # im Umkreis 2 um das Landefeld (6, 5)
+	var f2 := spawn("soldat_beritten", "e", Vector2i(7, 6))
+	var f3 := spawn("soldat_infanterie", "e", Vector2i(10, 9))       # weit weg
+	for f: Dictionary in [f1, f2, f3]:
+		f["hp"] = 100
+		f["maxhp"] = 100
+	check(not Secrets.find_throw("museklaugust", "wurf", "ninjas").is_empty() and Secrets.find_throw("museklaugust", "wurf", "ritter").is_empty(), "Wurf-Geheimnis nur fuer die Ninjas")
+	b.sel = aug
+	b._landing_ally = nin
+	b._cur_ab = "wurf"
+	var expect := Combat.damage(nin, f1, b._cover_for(f1, f1["pos"]), 0.0, 0.75)
+	await b._do_throw_ally(Vector2i(6, 5))
+	check(nin["pos"] == Vector2i(6, 5), "die Ninjas landen auf dem Zielfeld")
+	check(100 - f1["hp"] == expect and 100 - f2["hp"] > 0, "Gegner im Umkreis bekommen den Regen (%d, erwartet %d)" % [100 - f1["hp"], expect])
+	check(f3["hp"] == 100, "weit entfernte Gegner nicht")
+	check(nin["hp"] == nin["maxhp"] and aug["hp"] == aug["maxhp"], "keine Verbuendeten getroffen")
+	check(nin["st"]["dealt"] > 0, "Statistik zaehlt fuer die Ninjas")
+	check(scenes == ["shuriken_regen"], "Szene beim ersten Mal")
+	# ein anderer Verbuendeter fliegt normal
+	clear()
+	scenes.clear()
+	var a2 := spawn("museklaugust", "p", Vector2i(2, 5))
+	var kn := spawn("ritter", "p", Vector2i(3, 5))
+	var e2 := spawn("soldat_infanterie", "e", Vector2i(7, 5))
+	b.sel = a2
+	b._landing_ally = kn
+	b._cur_ab = "wurf"
+	await b._do_throw_ally(Vector2i(6, 5))
+	check(e2["hp"] == e2["maxhp"] and scenes.is_empty(), "andere Figuren verteilen keinen Regen")
+
 	# --- Idee ohne trigger tut nichts
 	var only_idea := Secrets.find_beam("robo", "roter_laser", "kungfu")
 	check(only_idea.is_empty(), "ohne Eintrag keine Umlenkung")

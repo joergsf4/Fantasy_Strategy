@@ -699,6 +699,10 @@ func catch_bone(u: Dictionary, via: Dictionary) -> void:
 	await nw.catch_bone(u, via)
 
 
+func shuriken_rain(from_unit: Dictionary, dest: Vector2i, victims: Array[Dictionary], tiles: Array[Vector2i]) -> void:
+	await nw.shuriken_rain(from_unit, dest, victims, tiles)
+
+
 func reflect_beam(a: Dictionary, b: Dictionary, color: Color) -> void:
 	await nw.reflect_beam(a, b, color)
 

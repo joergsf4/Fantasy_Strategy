@@ -269,7 +269,7 @@ def missions() -> dict:
     return {"missions": out}
 
 
-FLY_SPRITES = ["fx_barrel", "fx_bone", "fx_star", "fx_flower", "fx_bolt", "fx_fireball", "fx_honig", "fx_bierkrug", "fx_flasche", "fx_wolle"]     # fliegende Objekte der Geheimnis-Szene
+FLY_SPRITES = ["fx_barrel", "fx_bone", "fx_shuriken", "fx_star", "fx_flower", "fx_bolt", "fx_fireball", "fx_honig", "fx_bierkrug", "fx_flasche", "fx_wolle"]     # fliegende Objekte der Geheimnis-Szene
 
 
 def secrets() -> dict:
@@ -284,6 +284,7 @@ def secrets() -> dict:
     return {"secrets": secs,
             "units": {k: {"name": v["name"], "abilities": [a for a in v.get("abilities", []) if abilities.get(a, {}).get("target") == "enemy"],
                           "beams": [a for a in v.get("abilities", []) if abilities.get(a, {}).get("target") in ("enemy", "ally") and any(e.get("type") in ("damage", "heal") for e in abilities[a].get("effects", []))],
+                          "throws": [a for a in v.get("abilities", []) if "throw_ally" in abilities.get(a, {}).get("caps", [])],
                           "hero": bool(v.get("hero"))}
                       for k, v in units.items() if isinstance(v, dict) and "name" in v},
             "abilities": {k: v["name"] for k, v in abilities.items()},
@@ -333,7 +334,10 @@ def save_secrets(body: dict) -> None:
         entry = {"id": sid, "name": name, "characters": chars, "prompt": prompt}
         if sec.get("trigger"):
             t = sec["trigger"]
-            beam = t.get("type", "ability_on_ally") == "beam_via_ally"
+            ttype = t.get("type", "ability_on_ally")
+            if ttype not in ("ability_on_ally", "beam_via_ally", "throw_ally"):
+                raise ValueError(f"{name}: unbekannter Ausloeser-Typ '{ttype}'")
+            beam = ttype == "beam_via_ally"
             by = t["by"]
             on = t["via"] if beam else t["target"]
             if by not in units or "name" not in units[by] or on not in units or "name" not in units[on]:
@@ -376,6 +380,23 @@ def save_secrets(body: dict) -> None:
                                 or not isinstance(turns, int) or isinstance(turns, bool) or not 1 <= turns <= 9:
                             raise ValueError(f"{name}: Status braucht eine Kennung, Schadensminderung 0 bis 90 Prozent und 1 bis 9 Runden")
                         new_effects["status"] = {"id": sid_, "turns": turns, "reduce_pct": red}
+            elif ttype == "throw_ally":
+                ab = t["ability"]
+                if ab not in units[by].get("abilities", []) or "throw_ally" not in abilities.get(ab, {}).get("caps", []):
+                    raise ValueError(f"{name}: {units[by]['name']} hat keine Wurf-Faehigkeit '{ab}' (Marke throw_ally)")
+                if (by, ab, on) in triples:
+                    raise ValueError(f"{name}: dieser Ausloeser kommt zweimal vor")
+                triples.add((by, ab, on))
+                ef = sec["effects"]
+                rain, rad, hgt = ef.get("rain_pct", 75), ef.get("radius", 2), ef.get("height", 4.2)
+                if not isinstance(rain, int) or isinstance(rain, bool) or not 1 <= rain <= 200:
+                    raise ValueError(f"{name}: der Regen muss 1 bis 200 Prozent des Angriffsschadens sein")
+                if not isinstance(rad, int) or isinstance(rad, bool) or not 1 <= rad <= 4:
+                    raise ValueError(f"{name}: der Umkreis muss 1 bis 4 Felder sein")
+                if not isinstance(hgt, (int, float)) or isinstance(hgt, bool) or not 2.0 <= hgt <= 8.0:
+                    raise ValueError(f"{name}: die Flughoehe muss 2 bis 8 sein")
+                new_trigger = {"type": "throw_ally", "by": by, "ability": ab, "target": on}
+                new_effects = {"rain_pct": rain, "radius": rad, "height": float(hgt)}
             else:
                 ab = t["ability"]
                 if ab not in units[by].get("abilities", []) or abilities.get(ab, {}).get("target") != "enemy":

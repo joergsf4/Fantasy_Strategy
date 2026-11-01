@@ -225,6 +225,20 @@ class EditorTest(unittest.TestCase):
             with self.assertRaises(ValueError):
                 server.save_secrets({"secrets": sl})
 
+    def test_geheimnis_wurf_regen(self):
+        import copy
+        d = server.secrets()
+        wurf = next(x for x in d["secrets"] if x.get("trigger", {}).get("type") == "throw_ally")
+        self.assertEqual((wurf["trigger"]["by"], wurf["trigger"]["ability"], wurf["trigger"]["target"], wurf["effects"]["rain_pct"]), ("museklaugust", "wurf", "ninjas", 75))
+        self.assertIn("wurf", d["units"]["museklaugust"]["throws"])
+        server.save_secrets({"secrets": d["secrets"]})
+        for mutate in (lambda s: s["trigger"].update(ability="bearhug"), lambda s: s["trigger"].update(target="museklaugust"), lambda s: s["effects"].update(rain_pct=0),
+                       lambda s: s["effects"].update(radius=9), lambda s: s["effects"].update(height=20), lambda s: s["trigger"].update(by="ritter")):
+            sl = copy.deepcopy(d["secrets"])
+            mutate(next(x for x in sl if x.get("trigger", {}).get("type") == "throw_ally"))
+            with self.assertRaises(ValueError):
+                server.save_secrets({"secrets": sl})
+
     def test_leere_flee_und_ideen_werden_entfernt_und_ideen_gespeichert(self):
         b = self.body("ch3")
         b["flee"] = {}

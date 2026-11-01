@@ -762,12 +762,22 @@ function secPreview(x) {
 const SEC_PLACEHOLDER = "Beschreibe das Geheimnis frei, z. B.: Brunhilde wirft ein Fass auf Lin. Der kämpft ab dann 10 % stärker im Drunken-Master-Stil und bekommt eine Sonderfähigkeit. Was soll passieren, wie soll es aussehen, welche Szene, welche Musik? Alles, was Claude für die Umsetzung wissen muss.";
 function secTech(x, i) {
   const o = SEC, uname = id => o.units[id]?.name || id, t = x.trigger, sc = x.scene, fig = Object.entries(o.units).map(([k, u]) => [k, u.name]);
-  const beam = t.type === "beam_via_ally", second = beam ? t.via : t.target;
+  const beam = t.type === "beam_via_ally", thr = t.type === "throw_ally", second = beam ? t.via : t.target;
   const abs = (o.units[t.by]?.abilities || []).map(a => [a, o.abilities[a] || a]); if (!abs.length) abs.push(["", "(keine passende Fähigkeit)"]);
   const who = [[t.by, uname(t.by)], [second, uname(second)]];
   const pt = list => list.map(n => [n, n]);
-  const typ = `<div class="sbox"><h4>Auslöser-Typ</h4><div class="row"><select data-f="ttype" aria-label="Auslöser-Typ">${secOpts([["ability_on_ally", "Fähigkeit auf einen Verbündeten einsetzen"], ["beam_via_ally", "Strahl über einen Verbündeten umlenken"]], t.type || "ability_on_ally")}</select></div></div>`;
-  const trig = beam ? `<div class="sbox"><h4>Auslöser</h4><div class="row">
+  const typ = `<div class="sbox"><h4>Auslöser-Typ</h4><div class="row"><select data-f="ttype" aria-label="Auslöser-Typ">${secOpts([["ability_on_ally", "Fähigkeit auf einen Verbündeten einsetzen"], ["beam_via_ally", "Strahl über einen Verbündeten umlenken"], ["throw_ally", "Einen Verbündeten werfen"]], t.type || "ability_on_ally")}</select></div></div>`;
+  const throwAbs = (o.units[t.by]?.throws || []).map(a => [a, o.abilities[a] || a]); if (!throwAbs.length) throwAbs.push(["", "(keine Wurf-Fähigkeit)"]);
+  const trig = thr ? `<div class="sbox"><h4>Auslöser</h4><div class="row">
+        <select data-f="by" aria-label="Werfer">${secOpts(fig, t.by)}</select> wirft mit
+        <select data-f="ability" aria-label="Wurf-Fähigkeit">${secOpts(throwAbs, t.ability)}</select> die Verbündete
+        <select data-f="target" aria-label="Geworfene Figur">${secOpts(fig, t.target)}</select>.</div>
+        <p class="hint" style="margin:6px 0 0">Nur Fähigkeiten, die Verbündete werfen können (Marke throw_ally).</p></div>
+      <div class="sbox"><h4>Wirkung</h4><div class="row">
+        Regen <input type="number" data-f="rain_pct" min="1" max="200" value="${+x.effects.rain_pct || 75}" aria-label="Regen in Prozent"> % des normalen Angriffsschadens
+        · Umkreis <input type="number" data-f="radius" min="1" max="4" value="${+x.effects.radius || 2}" aria-label="Umkreis"> Felder um das Landefeld
+        · Flughöhe <input type="number" data-f="height" min="2" max="8" step="0.5" value="${+x.effects.height || 4.2}" aria-label="Flughöhe"></div></div>`
+  : beam ? `<div class="sbox"><h4>Auslöser</h4><div class="row">
         <select data-f="by" aria-label="Schütze">${secOpts(fig, t.by)}</select> schießt
         ${(o.units[t.by]?.beams || []).map(a => `<label style="display:inline-flex;gap:4px;margin:0"><input type="checkbox" data-f="beamab" data-ab="${esc(a)}" ${(t.abilities || []).includes(a) ? "checked" : ""}> ${esc(o.abilities[a] || a)}</label>`).join(" ") || "(keine Strahl-Fähigkeit)"}
         und <select data-f="via" aria-label="Figur im Weg">${secOpts(fig, t.via)}</select> steht auf der Linie zum Ziel.</div>
@@ -838,6 +848,9 @@ function secSwitchType(x, type) {
   if (type === "beam_via_ally") {
     x.trigger = { type, by: t.by, abilities: (SEC.units[t.by]?.beams || []).slice(0, 1), via: second };
     x.effects = { mode: "reflect", reflect_pct: 75, radius: 2 };
+  } else if (type === "throw_ally") {
+    x.trigger = { type, by: t.by, ability: SEC.units[t.by]?.throws?.[0] || "", target: second };
+    x.effects = { rain_pct: 75, radius: 2, height: 4.2 };
   } else {
     x.trigger = { type: "ability_on_ally", by: t.by, ability: SEC.units[t.by]?.abilities[0] || "", target: second };
     x.effects = { atk_pct: 10, grant_ability: "", status: "betrunken" };
@@ -861,6 +874,8 @@ document.addEventListener("input", e => {
   else if (f === "atk_pct") x.effects.atk_pct = Math.max(0, Math.min(100, parseInt(el.value || "0", 10) || 0));
   else if (f === "reflect_pct") x.effects.reflect_pct = Math.max(1, Math.min(200, parseInt(el.value || "75", 10) || 75));
   else if (f === "radius") x.effects.radius = Math.max(1, Math.min(4, parseInt(el.value || "2", 10) || 2));
+  else if (f === "rain_pct") x.effects.rain_pct = Math.max(1, Math.min(200, parseInt(el.value || "75", 10) || 75));
+  else if (f === "height") x.effects.height = Math.max(2, Math.min(8, parseFloat(el.value || "4.2") || 4.2));
   else if (f === "heal") x.effects.heal = Math.max(0, Math.min(60, parseInt(el.value || "0", 10) || 0));
   else if (f === "st_id") (x.effects.status ||= { id: "satt", turns: 3, reduce_pct: 25 }).id = el.value.trim();
   else if (f === "st_turns") (x.effects.status ||= { id: "satt", turns: 3, reduce_pct: 25 }).turns = Math.max(1, Math.min(9, parseInt(el.value || "3", 10) || 3));

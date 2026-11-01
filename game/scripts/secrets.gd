@@ -33,6 +33,15 @@ static func find_beam(by: String, ability: String, via: String) -> Dictionary:
 	return {}
 
 
+## Das Geheimnis, bei dem "by" mit dem Wurf "ability" die Verbuendete "target" wirft (Typ throw_ally), oder {}.
+static func find_throw(by: String, ability: String, target: String) -> Dictionary:
+	for s: Dictionary in all():
+		var t: Dictionary = s["trigger"]
+		if t.get("type", "") == "throw_ally" and t["by"] == by and t["ability"] == ability and t["target"] == target:
+			return s
+	return {}
+
+
 static func by_id(id: String) -> Dictionary:
 	for s: Dictionary in all():
 		if s["id"] == id:

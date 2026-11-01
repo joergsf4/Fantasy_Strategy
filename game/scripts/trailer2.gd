@@ -175,7 +175,13 @@ func _scene(sc: Dictionary) -> void:
 	push.tween_property(b.cam, "position", b.cam.position + (look - b.cam.position).normalized() * 0.9, 2.6)
 	await _fade_to(0.0, 0.14)
 	await _wait(0.2)
-	await b._run_ability(hero, sc["ab"], tgt)
+	if sc.get("throw", false):
+		b.sel = hero
+		b._landing_ally = tgt
+		b._cur_ab = "wurf"
+		await b._do_throw_ally(Vector2i(int(sc["dest"][0]), int(sc["dest"][1])))
+	else:
+		await b._run_ability(hero, sc["ab"], tgt)
 	await _wait(0.15)
 	push.kill()
 	await _fade_to(1.0, 0.12)

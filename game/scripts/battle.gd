@@ -1711,8 +1711,12 @@ func _do_throw_ally(dest: Vector2i) -> void:
 	Items.start_cooldown(u, _cur_ab, int(abilities[_cur_ab]["cd"]))
 	_turn_towards(u, ally["pos"])
 	_banner(abilities[_cur_ab]["name"])
-	await fx.squash(u, 1.18, 0.85, 0.3)
-	await fx.leap(ally, dest, 2.4, 0.75, 2.0)
+	var sec := Secrets.find_throw(u["id"], _cur_ab, ally["id"])
+	if not sec.is_empty():
+		await _throw_with_rain(u, ally, dest, sec)
+	else:
+		await fx.squash(u, 1.18, 0.85, 0.3)
+		await fx.leap(ally, dest, 2.4, 0.75, 2.0)
 	await _run_triggers("enter", dest, ally)
 	_check_end()
 	if state == State.OVER:
@@ -2706,6 +2710,38 @@ func _beam_blocker(u: Dictionary, id: String, target: Dictionary) -> Dictionary:
 		if not sec.is_empty():
 			return {"sec": sec, "via": o}
 	return {}
+
+
+## Geheimnis "Shuriken Regen": Wirft die Figur ihre Verbuendete, fliegt diese besonders hoch und verteilt aus der Luft einen Shuriken-Regen
+## auf die Gegner im Umkreis um das Landefeld (Anteil ihres normalen Angriffsschadens). Beim ersten Mal Szene und Polarlicht-Auftritt.
+func _throw_with_rain(u: Dictionary, ally: Dictionary, dest: Vector2i, sec: Dictionary) -> void:
+	var ef: Dictionary = sec["effects"]
+	if not secrets_seen.has(sec["id"]):
+		secrets_seen.append(sec["id"])
+		if secret_runner.is_valid():
+			await secret_runner.call(sec)
+		var ci: Dictionary = ef.get("cutin", {})
+		if not ci.is_empty():
+			await _super_cutin(ally, {}, str(ci.get("title", sec["name"])), str(ci.get("sub", "")))
+			_super_music_stop()
+	var tiles := _area_tiles({"area": {"shape": "radius", "r": int(ef.get("radius", 2))}}, dest)
+	var victims: Array[Dictionary] = []
+	for o in units:
+		if o["team"] != u["team"] and _hittable(o) and not Status.has(o, "stealth") and tiles.has(o["pos"]):
+			victims.append(o)
+	await fx.squash(u, 1.22, 0.8, 0.3)
+	fx.leap(ally, dest, float(ef.get("height", 4.2)), 1.0, 2.0)       # laeuft parallel zum Regen
+	await get_tree().create_timer(0.3).timeout
+	await fx.shuriken_rain(ally, dest, victims, tiles)
+	var pct := float(ef.get("rain_pct", 75)) / 100.0
+	_actor = ally
+	for v in victims:
+		if not units.has(v):
+			continue
+		var dmg := Combat.damage(ally, v, _cover_for(v, v["pos"]), 0.0, pct)
+		fx.reflect_hit(v)
+		await _deal(v, dmg, "")
+	await get_tree().create_timer(0.35).timeout
 
 
 ## Geheimnis "Futter fuer Brumm" (mode "catch"): Die Figur auf der Flugbahn faengt etwas auf (Heilung und ein Status mit Schadensminderung),

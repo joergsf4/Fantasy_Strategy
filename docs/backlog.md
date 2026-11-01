@@ -118,3 +118,6 @@ Zweiter Auslöser-Typ `beam_via_ally` (Strahl über einen Verbündeten umlenken)
 
 ## Erledigt: Geheimnis „Futter für Brumm“ (2026-11-01)
 Dritte geheime Interaktion (Hundsfreund wirft Knochen, Mira & Brumm stehen auf der Flugbahn): Heilung 8 und Status „Satt“ (3 Runden, −25 % erlittener Schaden), der Angriff läuft unverändert weiter. Dafür neue Wirkungsart `catch` beim Auslöser-Typ `beam_via_ally`. Dialoge von Claude erdacht (vorläufig), kein Polarlicht-Auftritt (im Editor optional zuschaltbar). Hinweis: Knochenwurf hat nur Reichweite 1–2, der Auslöser tritt daher nur bei Ziel in genau 2 Feldern Abstand auf.
+
+## Erledigt: Geheimnis „Shuriken Regen“ (2026-11-01)
+Dritter Auslöser-Typ `throw_ally`: Muskelaugust wirft die Kage-Schwestern höher, aus der Luft regnet es Wurfsterne (75 % des Angriffsschadens, Umkreis 2 um das Landefeld). Szene mit Wurfstern, Polarlicht-Auftritt als Erkennungszeichen, Editor-Typ „Einen Verbündeten werfen“. Dialoge von Claude erdacht (vorläufig). Offen: Simulator, Balancing.

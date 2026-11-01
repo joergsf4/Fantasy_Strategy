@@ -337,6 +337,34 @@ func catch_bone(u: Dictionary, via: Dictionary) -> void:
 	await _wait(0.35)
 
 
+## Shuriken-Regen: Wurfsterne fallen aus der Luft auf die Gegner und streuen ueber die Felder im Umkreis.
+func shuriken_rain(from_unit: Dictionary, dest: Vector2i, victims: Array[Dictionary], tiles: Array[Vector2i]) -> void:
+	Sfx.play("whoosh_l", -4.0, 1.4)
+	var spots: Array[Vector3] = []
+	for v in victims:
+		spots.append(fx.chest(v, 0.4))
+	for t in tiles:
+		if randf() < 0.55:
+			spots.append(fx.ground(battle.to_world(t) + Vector3(randf_range(-0.3, 0.3), 0.0, randf_range(-0.3, 0.3)), 0.12))
+	var peak := _pos(from_unit) + Vector3(0, 2.2, 0)
+	for i in spots.size():
+		var target := spots[i]
+		var star := fx.make_sprite("fx_shuriken", target + Vector3(randf_range(-0.4, 0.4), 3.4, randf_range(-0.4, 0.4)), 0.42, false, Color.WHITE, 2)
+		var from := star.position
+		var tw := fx.create_tween()
+		tw.tween_interval(float(i % 6) * 0.06)
+		tw.tween_method(func(t: float) -> void:
+			if is_instance_valid(star):
+				star.position = from.lerp(target, t * t)
+				fx._sp(star, "roll", t * 18.0), 0.0, 1.0, 0.34)
+		tw.tween_callback(func() -> void:
+			if is_instance_valid(star):
+				fx.particles("fx_star", target, 3, 1.6, 0.14, 0.35, 2.0, Color(0.9, 0.95, 1.0), true, 160.0)
+				star.queue_free())
+	fx.particles("fx_shuriken", peak, 10, 2.5, 0.25, 0.7, 3.0, Color.WHITE, false, 180.0)
+	await _wait(0.34 + 0.06 * float(mini(spots.size(), 6)) + 0.1)
+
+
 ## Treffer des umgelenkten Strahls: Funken, Aufblitzen, kleiner Rueckstoss.
 func reflect_hit(v: Dictionary) -> void:
 	fx.particles("fx_star", fx.chest(v, 0.55), 6, 2.6, 0.22, 0.5, 2.0, Color(1.0, 0.7, 0.4), true, 180.0)
