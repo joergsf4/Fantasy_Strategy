@@ -102,7 +102,7 @@ Im Kampf: Menü **Gegenstand** neben **Angriff / Fähigkeit / Warten**. Nicht be
 
 - **Quellen (alle fest, kein Zufall):** Truhen („Truhe öffnen“) und Dörfer („Dorf besuchen“) auf der Karte kosten die Aktion und gehen einmal; Gegner mit Beutesack über dem Kopf geben ihren Gegenstand beim Besiegen; Kapitelbelohnung und Bonusziele (Kein Held fällt, schnell gewonnen) nach dem Sieg.
 - **Gold** nur aus diesen Quellen. Zutaten: Kraut, Hopfen, Kristall.
-- **Lager** nach jedem Kapitel (`game/scripts/camp.gd`): **Händler** (Hase „Hoppel“, fester Vorrat pro Kapitel, `data/shop.json`; Preise noch Platzhalter bis zum Balancing-Lauf E5), **Brauen** (`data/recipes.json`: Brunhilde braut Bier, Wendy Heiltrank und Gegengift, Claude Äther), **Ausrüstung**, **Aufstellung**.
+- **Lager** nach jedem Kapitel (`game/scripts/camp.gd`): **Händler** (lebender Wollsack „Wulle“, fester Vorrat pro Kapitel, `data/shop.json`; Preise noch Platzhalter bis zum Balancing-Lauf E5), **Brauen** (`data/recipes.json`: Brunhilde braut Bier, Wendy Heiltrank und Gegengift, Claude Äther), **Ausrüstung**, **Aufstellung**.
 - **Speichern:** `user://save.json` (Gold, Rucksack, Zutaten, Ausrüstung, Vorrat des Händlers).
 
 

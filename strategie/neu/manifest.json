@@ -74,9 +74,6 @@
  "fuerst_wuetend": true,
  "dummy": true,
  "dummy_chibi": true,
- "haendler": true,
- "haendler_lachend": true,
- "haendler_chibi": true,
  "wart": true,
  "wart_chibi": true,
  "wart_lachend": true,
@@ -156,5 +153,8 @@
  "fx_rauchkugel": true,
  "fx_fluegelschuh": true,
  "fx_uebel": true,
- "fx_wutader": true
+ "fx_wutader": true,
+ "haendler": true,
+ "haendler_lachend": true,
+ "haendler_chibi": true
 }

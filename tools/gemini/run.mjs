@@ -100,11 +100,13 @@ for (const [e, t] of Object.entries(EMO_V))
 jobs.push({ name: 'dummy', refs: [ref(STYLE_REF)], prompt: `Create a dialogue portrait of ${DUMMY}.` + PORTRAIT_TAIL });
 jobs.push({ name: 'dummy_chibi', refs: [path.join(OUT, 'ritter_chibi.jpg')], prompt: `Create ${DUMMY}.` + CHIBI_TAIL });
 
-// Haendler (Platzhalter "Hoppel"): anthropomorpher Hase mit riesigem Rucksack voller Waren.
-const MERCHANT = 'a friendly anthropomorphic rabbit merchant (bunny shopkeeper): tall upright ears with one ear folded over, warm brown and cream fur, a cheeky grin with big front teeth, a green traveling coat and a wide-brimmed hat with a feather, wearing a huge overstuffed backpack piled high with potion bottles, scrolls, a rolled-up blanket, pots and a lantern, a coin pouch at the belt';
-jobs.push({ name: 'haendler', refs: [ref(STYLE_REF)], prompt: `Create a dialogue portrait of ${MERCHANT}, smiling invitingly.` + PORTRAIT_TAIL });
-jobs.push({ name: 'haendler_lachend', refs: [ref(STYLE_REF)], prompt: `Create a dialogue portrait of ${MERCHANT}, laughing out loud with joy.` + PORTRAIT_TAIL });
-jobs.push({ name: 'haendler_chibi', refs: [path.join(OUT, 'ritter_chibi.jpg')], prompt: `Create ${MERCHANT}.` + CHIBI_TAIL });
+// Haendler "Wulle": lebender Sack aus blauer Haekelwolle (Vorbild: strategie/haendler_vorbild.jpg, ein echtes Haekeltier).
+const SACK_REF = path.join(SRC, 'haendler_vorbild.jpg');
+const SACK_TAIL = ' IMPORTANT: the FIRST attached image is the character reference (a real crocheted plush toy): redraw exactly this character as a pixel-art game character, keeping its design: a trapezoid sack body of slate-blue crocheted wool (wider at the bottom, narrower at the top), the top gathered and tied shut with a beige string tied in a bow, two tiny rounded ear-like nubs at the top corners, two big round cream-beige crocheted eyes with small dark brown pupils, a small round blue nose in the middle, two thin long tube arms of the same blue wool, and two short tube legs with big rounded oval feet. Visible fine knitted/crocheted stitch texture. He is a friendly traveling merchant: a little coin pouch hangs from his string and a few wares (a potion bottle, a scroll) peek out above the tied top. The SECOND attached image is ONLY a pixel-art style reference, do NOT draw its character.';
+const MERCHANT = 'Wulle, a living sack merchant made of blue crocheted wool';
+jobs.push({ name: 'haendler', refs: [SACK_REF, ref(STYLE_REF)], prompt: `Create a dialogue portrait of ${MERCHANT}, with a friendly inviting look.` + SACK_TAIL + PORTRAIT_TAIL });
+jobs.push({ name: 'haendler_lachend', refs: [SACK_REF, ref(STYLE_REF)], prompt: `Create a dialogue portrait of ${MERCHANT}, happy, eyes crinkled with joy, the wool body bouncing with laughter.` + SACK_TAIL + PORTRAIT_TAIL });
+jobs.push({ name: 'haendler_chibi', refs: [SACK_REF, path.join(OUT, 'ritter_chibi.jpg')], prompt: `Create ${MERCHANT}.` + SACK_TAIL + CHIBI_TAIL });
 
 // Neue Gegenspieler: Wart, Xiulan, Oskar, Maja. Reihenfolge wichtig: Maja nutzt Oskars Portrait als Vorlage (Zwillinge).
 const VILLAINS = {

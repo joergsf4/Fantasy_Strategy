@@ -1,7 +1,7 @@
 {
  "_info": "Preise aus dem Balancing-Lauf E5 (docs/balance.md, Abschnitt 6): rund 55 Gold je Punkt Siegquote-Gewinn (Infanteristen-Aequivalent), Mindestpreise fuer Gegenstaende mit kaum messbarem Wert. Bei neuen Messungen neu ableiten.",
  "merchant": {
-  "name": "Hoppel",
+  "name": "Wulle",
   "portrait": "haendler"
  },
  "chapter1": [
@@ -42,9 +42,9 @@
   }
  ],
  "quips": [
-  "Frische Ware, frisch vom Rücken! Nur heute – wie jeden Tag.",
-  "Mein Rucksack hat für alles ein Fach. Nur nicht für Rückgaben.",
-  "Gold rein, Hoppel raus – äh, Ware raus!",
+  "Frische Ware, frisch aus dem Sack! Nur heute – wie jeden Tag.",
+  "Mein Sack hat für alles ein Fach. Nur nicht für Rückgaben.",
+  "Gold in den Sack, Ware raus – und zugebunden!",
   "Ich hab nichts gegen Helden. Besonders nichts gegen ihr Gold."
  ]
 }
