@@ -1,7 +1,7 @@
 {
  "_info": "Preise aus dem Balancing-Lauf E5 (docs/balance.md, Abschnitt 6): rund 55 Gold je Punkt Siegquote-Gewinn (Infanteristen-Aequivalent), Mindestpreise fuer Gegenstaende mit kaum messbarem Wert. Bei neuen Messungen neu ableiten.",
  "merchant": {
-  "name": "Wulle",
+  "name": "Sack",
   "portrait": "haendler"
  },
  "chapter1": [

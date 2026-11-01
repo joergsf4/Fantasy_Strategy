@@ -100,10 +100,10 @@ for (const [e, t] of Object.entries(EMO_V))
 jobs.push({ name: 'dummy', refs: [ref(STYLE_REF)], prompt: `Create a dialogue portrait of ${DUMMY}.` + PORTRAIT_TAIL });
 jobs.push({ name: 'dummy_chibi', refs: [path.join(OUT, 'ritter_chibi.jpg')], prompt: `Create ${DUMMY}.` + CHIBI_TAIL });
 
-// Haendler "Wulle": lebender Sack aus blauer Haekelwolle (Vorbild: strategie/haendler_vorbild.jpg, ein echtes Haekeltier).
+// Haendler "Sack": lebender Sack aus blauer Haekelwolle (Vorbild: strategie/haendler_vorbild.jpg, ein echtes Haekeltier).
 const SACK_REF = path.join(SRC, 'haendler_vorbild.jpg');
 const SACK_TAIL = ' IMPORTANT: the FIRST attached image is the character reference (a real crocheted plush toy): redraw exactly this character as a pixel-art game character, keeping its design: a trapezoid sack body of slate-blue crocheted wool (wider at the bottom, narrower at the top), the top gathered and tied shut with a beige string tied in a bow, two tiny rounded ear-like nubs at the top corners, two big round cream-beige crocheted eyes with small dark brown pupils, a small round blue nose in the middle, two thin long tube arms of the same blue wool, and two short tube legs with big rounded oval feet. Visible fine knitted/crocheted stitch texture. He is a friendly traveling merchant: a little coin pouch hangs from his string and a few wares (a potion bottle, a scroll) peek out above the tied top. The SECOND attached image is ONLY a pixel-art style reference, do NOT draw its character.';
-const MERCHANT = 'Wulle, a living sack merchant made of blue crocheted wool';
+const MERCHANT = 'Sack, a living sack merchant made of blue crocheted wool';
 jobs.push({ name: 'haendler', refs: [SACK_REF, ref(STYLE_REF)], prompt: `Create a dialogue portrait of ${MERCHANT}, with a friendly inviting look.` + SACK_TAIL + PORTRAIT_TAIL });
 jobs.push({ name: 'haendler_lachend', refs: [SACK_REF, ref(STYLE_REF)], prompt: `Create a dialogue portrait of ${MERCHANT}, happy, eyes crinkled with joy, the wool body bouncing with laughter.` + SACK_TAIL + PORTRAIT_TAIL });
 jobs.push({ name: 'haendler_chibi', refs: [SACK_REF, path.join(OUT, 'ritter_chibi.jpg')], prompt: `Create ${MERCHANT}.` + SACK_TAIL + CHIBI_TAIL });

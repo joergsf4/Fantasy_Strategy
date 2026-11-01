@@ -88,7 +88,7 @@ func _run() -> void:
 
 	# --- Haendler
 	_say("Rüste dich aus")
-	await _beat([["haendler", "lachend", "Wulle", "Lebender Wollsack, Händler"], []], 1.8)
+	await _beat([["haendler", "lachend", "Sack", "Lebender Wollsack, Händler"], []], 1.8)
 
 	# --- Abspann
 	await _fade_to(1.0, 0.2)
