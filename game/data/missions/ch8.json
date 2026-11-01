@@ -33,20 +33,21 @@
        "left": "maedchen_baer",
        "right": "xiulan",
        "speaker": "xiulan",
-       "text": "Das Bärenmädchen! Dieses Wasserloch ist gesperrt. Zwei Gold pro Schluck. Und nicht schlürfen.",
+       "text": "Dieses Wasserloch ist gesperrt. Zwei Gold pro Schluck. Und nicht schlürfen.",
        "right_expr": "lachend"
       },
       {
        "left": "maedchen_baer",
        "right": "xiulan",
        "speaker": "maedchen_baer",
-       "text": "Wir wollen nur trinken."
+       "text": "Wir wollen nur trinken!",
+       "left_expr": "wuetend"
       },
       {
        "left": "maedchen_baer",
        "right": "xiulan",
        "speaker": "xiulan",
-       "text": "Dann zahlt, Kindchen. Oder ich werfe mein Gebiss.",
+       "text": "Ich lasse euch nicht an mein kostbares Wasser, Mädchen!",
        "right_expr": "lachend"
       }
      ]
@@ -108,26 +109,27 @@
        "left": "robo",
        "right": "panzer",
        "speaker": "robo",
-       "text": "Robina! Du … du bist gewachsen."
+       "text": "Hallo große Schwester. Ich wusste, dass ich dich hier finde.",
+       "left_expr": "lachend"
       },
       {
        "left": "robo",
        "right": "panzer",
        "speaker": "panzer",
-       "text": "Und du bist geschrumpft. Der Regent hat mir ein neues Fahrgestell versprochen, wenn ich euch aufhalte.",
-       "right_expr": "lachend"
+       "text": "Du hättest nicht kommen sollen, Kleiner. Ich bin programmiert, alle Feinde des Regenten zu zerstören.",
+       "right_expr": "wuetend"
       },
       {
        "left": "robo",
        "right": "panzer",
        "speaker": "robo",
-       "text": "Schwester, du musst das nicht tun. Du bist nicht wie er."
+       "text": "Schwester, du musst das nicht tun."
       },
       {
        "left": "robo",
        "right": "panzer",
        "speaker": "panzer",
-       "text": "Mama hat gesagt, ich soll auf dich aufpassen. Ich passe auf, dass du nicht weiter gehst. Feuer frei!",
+       "text": "Meine Programmierung ist unumgänglich! Ihr seid verloren!",
        "right_expr": "wuetend"
       },
       {
@@ -140,7 +142,7 @@
        "left": "ritter",
        "right": "robo",
        "speaker": "robo",
-       "text": "Sie ist stur, aber nicht böse. Bleibt drei Runden in Folge bei ihr, dann öffne ich den Zugang und übernehme ihr Steuer."
+       "text": "Sie ist stur, aber nicht böse. Bleibt drei Runden in Folge bei ihr, dann öffne ich den Zugang und übernehme die Steuerung."
       }
      ]
     }
@@ -172,7 +174,7 @@
        "left": "elisabeth",
        "right": "panzer",
        "speaker": "panzer",
-       "text": "Meine ist größer, Kleine.",
+       "text": "Meine ist größer, Schätzchen.",
        "right_expr": "lachend"
       }
      ]
@@ -199,14 +201,14 @@
        "left": "ritter",
        "right": "xiulan",
        "speaker": "xiulan",
-       "text": "Mein Kreuz! Ihr wollt eine alte Dame wirklich in den Sand klopfen?",
+       "text": "Mein Kreuz! Ihr wollt einer alten Dame doch nichts tun, oder?",
        "right_expr": "wuetend"
       },
       {
        "left": "ritter",
        "right": "xiulan",
        "speaker": "ritter",
-       "text": "Eine alte Dame, die mit Gebissen wirft, hat Respekt verdient. Und Niederlagen."
+       "text": "Eine alte Dame, die mit Gebissen wirft, hat keinen Respekt verdient. Tritt zur Seite!"
       }
      ]
     }
@@ -219,7 +221,7 @@
     "left": "$hero",
     "right": "xiulan",
     "speaker": "xiulan",
-    "text": "Genug! Mein Gebiss ist verbeult und mein Kreuz auch. Ich rufe meinen Enkel an!",
+    "text": "Genug! Mein Gebiss ist verbeult und mein Kreuz auch. Wir sehen uns wieder, Kinder.",
     "right_expr": "wuetend"
    },
    {

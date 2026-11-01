@@ -95,7 +95,7 @@
        "left": "quacksalber",
        "right": "elisabeth",
        "speaker": "elisabeth",
-       "text": "Das Zeug riecht nach einer Piratenkombüse."
+       "text": "Das Zeug riecht wie 10 Monate alter Fisch."
       }
      ]
     }
@@ -161,7 +161,7 @@
        "left": "magical_girl",
        "right": "maja",
        "speaker": "magical_girl",
-       "text": "Du hast ein ziemlich schlechtes Stimmungsbild, weißt du das?",
+       "text": "Du hast ziemlich schlechte Manieren, weißt du das?",
        "left_expr": "wuetend"
       }
      ]

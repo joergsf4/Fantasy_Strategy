@@ -4,7 +4,7 @@
    "left": "elisabeth",
    "right": "maedchen_baer",
    "speaker": "elisabeth",
-   "text": "Anker werfen! Das ist der Sandhafen, die letzte Station vor der Insel des Regenten.",
+   "text": "Anker werfen! Das ist der Sandhafen, Hier versteckt sich der miese Regent!",
    "left_expr": "lachend"
   },
   {
@@ -17,7 +17,7 @@
    "left": "magical_girl",
    "right": "maedchen_baer",
    "speaker": "magical_girl",
-   "text": "Hallo, ihr Helden! Ich bin Lumi Sternenglanz. Die Sterne haben mir verraten, dass ihr Hilfe braucht.",
+   "text": "Ich bin Lumi Sternenglanz. Die Sterne haben mich hier her geführt. Ich biete euch meine unfassbare Niedlichkeit an.",
    "left_expr": "lachend"
   },
   {
@@ -30,20 +30,20 @@
    "left": "magical_girl",
    "right": "maedchen_baer",
    "speaker": "magical_girl",
-   "text": "Ich heile und beschütze! Sternensegen!",
+   "text": "Ich heile und beschütze! Naja und austeilen kann ich auch ganz gut. Macht der Sternnebel macht auf!!",
    "left_expr": "lachend"
   },
   {
    "left": "quacksalber",
    "right": "magical_girl",
    "speaker": "quacksalber",
-   "text": "Willkommen im Team, Lumi! Wer heilt, sollte sich kennen: Ich mit Salbe, du mit Sternen. Meine Nebenwirkungen sind überschaubar."
+   "text": "Hallo gnädiges Fräulein! Wer heilt, sollte sich kennen: Ich mit Salbe, du mit Sternen. Meine Nebenwirkungen sind überschaubar."
   },
   {
    "left": "quacksalber",
    "right": "elisabeth",
    "speaker": "elisabeth",
-   "text": "Überschaubar? Ich nehme trotzdem zwei Flaschen.",
+   "text": "Ich nehme trotzdem zwei Flaschen.",
    "right_expr": "lachend"
   },
   {
@@ -79,7 +79,7 @@
    "left": "hund",
    "right": "elisabeth",
    "speaker": "hund",
-   "text": "Dann nichts wie zurück aufs Schiff. Obwohl ... ich sehe schon wieder grün aus."
+   "text": "Dann nichts wie weiter. Wir müssen den Unterschlupf des Regenten finden!"
   }
  ]
 }
