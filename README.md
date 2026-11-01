@@ -1,6 +1,8 @@
 <div align="center">
 
-# Strategy Fantasy
+# フザケタ・タクティクス
+
+*Fuzaketa Tactics*
 
 **Rundenstrategie mit Herz, Humor und Pixel-Art**
 
@@ -9,7 +11,7 @@
 ![Lizenz](https://img.shields.io/badge/Hobbyprojekt-nicht%20kommerziell-7fd08f)
 ![Sprache](https://img.shields.io/badge/Texte-Deutsch-d9534f)
 
-<img src="docs/img/titel.jpg" alt="Titelbild von Strategy Fantasy" width="860">
+<img src="docs/img/titel.jpg" alt="Titelbild von フザケタ・タクティクス" width="860">
 
 *Ein Mädchen, ein Bär und ein Regent, der Steuern rückwirkend eintreibt.*
 
@@ -72,8 +74,8 @@ Manche Fähigkeiten wirken auf Verbündete anders, als man denkt. Wer es herausf
 
 ### Fertige Testversion
 Unter [Releases](https://github.com/joergsf4/Fantasy_Strategy/releases) liegen ZIPs für macOS und Windows.
-- **macOS:** ZIP entpacken, Rechtsklick auf die App, „Öffnen“ (nicht notarisiert). Falls macOS sie sperrt: `xattr -cr "Strategy Adventure.app"`.
-- **Windows:** ZIP entpacken, `StrategyAdventure.exe` starten. SmartScreen warnt eventuell („Weitere Informationen“, „Trotzdem ausführen“). Die Windows-Version wurde noch nicht getestet.
+- **macOS:** ZIP entpacken, Rechtsklick auf die App, „Öffnen“ (nicht notarisiert). Falls macOS sie sperrt: `xattr -cr "Fuzaketa Tactics.app"`.
+- **Windows:** ZIP entpacken, `game.exe` starten. SmartScreen warnt eventuell („Weitere Informationen“, „Trotzdem ausführen“). Die Windows-Version wurde noch nicht getestet.
 
 ### Aus dem Quelltext
 ```
@@ -143,4 +145,4 @@ Dazu viele weitere in `game/tests/` (Fähigkeiten, Missionen, Feuer, Gruppenwahl
 ## Hinweise
 - **KI-generierte Inhalte:** Alle Figuren-, Effekt- und Hintergrundbilder (`strategie/`, `game/assets/portraits|tokens|fx`) und die Musik (`game/assets/audio/`) wurden mit Google Gemini erzeugt, die Soundeffekte synthetisch. Programmcode und Daten entstanden mit Claude Code. Das Projekt ist ein nicht kommerzielles Hobbyprojekt.
 - **Stand:** Testversion. Werte und Balancing sind vorläufig, Fehler bitte als Issue melden.
-- **Schriften:** Cinzel Decorative und IM Fell English (SIL Open Font License, Lizenztexte im Ordner `game/assets/fonts/`).
+- **Schriften:** Cinzel Decorative, IM Fell English und Dela Gothic One (für die Katakana des Namens, nur ein Auszug; SIL Open Font License, Lizenztexte im Ordner `game/assets/fonts/`).

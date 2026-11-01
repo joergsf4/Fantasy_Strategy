@@ -6,6 +6,7 @@ from PIL import Image, ImageDraw, ImageFilter, ImageFont, ImageEnhance, ImageCho
 ROOT = Path(__file__).resolve().parent.parent
 PORT = ROOT / "game" / "assets" / "portraits"
 FONT_T = str(ROOT / "game" / "assets" / "fonts" / "CinzelDecorative-Black.ttf")
+FONT_JP = str(ROOT / "game" / "assets" / "fonts" / "DelaGothicOne-Kana.ttf")
 FONT_B = str(ROOT / "game" / "assets" / "fonts" / "CinzelDecorative-Bold.ttf")
 OUT = ROOT / "out" / "thumbnail"
 W, H = 1920, 1080
@@ -86,8 +87,8 @@ def main():
     for yy in range(0, 520):
         sd.line([(0, yy), (W, yy)], fill=(5, 8, 20, int(200 * (1 - yy / 520) ** 1.6)))
     c.alpha_composite(shade)
-    gold_text(c, "STRATEGY", FONT_T, 150, W / 2, 20)
-    gold_text(c, "FANTASY", FONT_T, 232, W / 2, 140)
+    gold_text(c, "フザケタ・", FONT_JP, 200, W / 2, 0)
+    gold_text(c, "タクティクス", FONT_JP, 200, W / 2, 190)
     # Unterzeile
     band = Image.new("RGBA", (W, 110), (0, 0, 0, 0))
     bd = ImageDraw.Draw(band)

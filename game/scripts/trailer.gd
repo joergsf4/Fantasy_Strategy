@@ -390,8 +390,8 @@ func _end_card() -> void:
 		l.modulate.a = 0.0
 		root.add_child(l)
 		return l
-	var a: Label = mk.call("Strategy", 190, 84, UiTheme.GOLD, UiTheme.F_TITLE)
-	var b: Label = mk.call("Fantasy", 270, 124, UiTheme.GOLD, UiTheme.F_TITLE)
+	var a: Label = mk.call("フザケタ・", 170, 100, UiTheme.GOLD, UiTheme.F_JP)
+	var b: Label = mk.call("タクティクス", 260, 100, UiTheme.GOLD, UiTheme.F_JP)
 	var c: Label = mk.call("Demnächst", 450, 34, Color(0.95, 0.9, 0.78), UiTheme.F_HEAD)
 	_fade.color.a = 0.0
 	var tw := create_tween()

@@ -397,8 +397,8 @@ func _end_card2() -> void:
 		l.modulate.a = 0.0
 		root.add_child(l)
 		return l
-	var a: Label = mk.call("Strategy", 150, 84, UiTheme.GOLD, UiTheme.F_TITLE)
-	var b: Label = mk.call("Fantasy", 230, 124, UiTheme.GOLD, UiTheme.F_TITLE)
+	var a: Label = mk.call("フザケタ・", 130, 100, UiTheme.GOLD, UiTheme.F_JP)
+	var b: Label = mk.call("タクティクス", 220, 100, UiTheme.GOLD, UiTheme.F_JP)
 	var c: Label = mk.call("7 Kapitel  ·  %d Helden  ·  über 30 Fähigkeiten  ·  Geheimnisse" % heroes, 420, 30, Color(0.95, 0.9, 0.78), UiTheme.F_HEAD)
 	var d: Label = mk.call("Demnächst", 500, 38, Color(1.0, 0.96, 0.84), UiTheme.F_HEAD)
 	_fade.color.a = 0.0

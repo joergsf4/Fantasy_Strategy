@@ -11,6 +11,7 @@ const CHEAT := "brumm"      # kleingeschrieben im Hauptmenue tippen: schaltet di
 
 const FONT_TITLE := "res://assets/fonts/CinzelDecorative-Black.ttf"
 const FONT_UI := "res://assets/fonts/CinzelDecorative-Bold.ttf"
+const FONT_JP := "res://assets/fonts/DelaGothicOne-Kana.ttf"      # Katakana des Spielnamens (Cinzel hat keine)
 const GOLD := Color(1.0, 0.83, 0.42)
 const OUTLINE := Color(0.16, 0.08, 0.03)
 
@@ -84,12 +85,12 @@ func _build_ui(ui: CanvasLayer) -> void:
 	_title_box.size = Vector2(1280, 720)
 	_title_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	ui.add_child(_title_box)
-	for part: Array in [["Strategy", 104, 120], ["Fantasy", 150, 232]]:
+	for part: Array in [["フザケタ・", 128, 88], ["タクティクス", 128, 226]]:
 		var y: float = part[2]
-		var shadow := _label(part[0], FONT_TITLE, part[1], Color(0, 0, 0, 0.55), 18)
+		var shadow := _label(part[0], FONT_JP, part[1], Color(0, 0, 0, 0.55), 18)
 		shadow.position = Vector2(0, y + 8)
 		_title_box.add_child(shadow)
-		var main := _label(part[0], FONT_TITLE, part[1], GOLD, 14)
+		var main := _label(part[0], FONT_JP, part[1], GOLD, 14)
 		main.position = Vector2(0, y)
 		_title_box.add_child(main)
 		# heller Verlauf-Eindruck: oberer Teil etwas heller durch zweites, geclipptes Label
@@ -98,9 +99,12 @@ func _build_ui(ui: CanvasLayer) -> void:
 		hi.size = Vector2(1280, part[1] * 0.62)
 		hi.clip_contents = true
 		hi.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		var hl := _label(part[0], FONT_TITLE, part[1], Color(1.0, 0.95, 0.72))
+		var hl := _label(part[0], FONT_JP, part[1], Color(1.0, 0.95, 0.72))
 		hi.add_child(hl)
 		_title_box.add_child(hi)
+	var roma := _label("Fuzaketa Tactics", FONT_UI, 30, Color(0.93, 0.88, 0.76), 6)      # Lesung des Namens
+	roma.position = Vector2(0, 378)
+	_title_box.add_child(roma)
 	var orn := Ornament.new()
 	orn.position = Vector2(640 - 260, 428)
 	orn.size = Vector2(520, 24)
@@ -123,7 +127,7 @@ func _build_ui(ui: CanvasLayer) -> void:
 		_start_label.visible = false
 		_build_menu(ui)
 
-	var foot := _label("Arbeitstitel  ·  Prototyp", FONT_UI, 16, Color(1, 1, 1, 0.55), 4)
+	var foot := _label("Testversion", FONT_UI, 16, Color(1, 1, 1, 0.55), 4)
 	foot.position = Vector2(-20, 684)
 	foot.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	ui.add_child(foot)

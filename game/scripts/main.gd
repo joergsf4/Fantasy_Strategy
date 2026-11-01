@@ -30,6 +30,7 @@ func _ready() -> void:
 		_screenshot_mode()
 		return
 	if DisplayServer.get_name() != "headless":
+		DisplayServer.window_set_title("フザケタ・タクティクス")      # unabhaengig vom (ASCII) Namen der macOS-App
 		PauseHost.set_fullscreen(true)           # das Spiel startet im Vollbild (F11 oder Pause-Menue schalten um)
 	_pause = PauseHost.new()
 	_pause.save_cb = func() -> void: party.save()

@@ -3,7 +3,10 @@ config_version=5
 
 [application]
 
-config/name="Strategy Adventure"
+config/name="フザケタ・タクティクス"
+config/name.macos="Fuzaketa Tactics"      ; der macOS-Ordner (.app) soll keinen japanischen Namen tragen; der Fenstertitel wird im Spiel gesetzt
+config/use_custom_user_dir=true
+config/custom_user_dir_name="Strategy Adventure"      ; Ordner der Spielstaende bleibt, auch wenn der Name sich aendert
 run/main_scene="res://scenes/main.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 

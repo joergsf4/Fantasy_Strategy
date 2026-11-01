@@ -5,6 +5,7 @@ extends RefCounted
 const UI := "res://assets/ui/"
 const F_HEAD := "res://assets/fonts/CinzelDecorative-Bold.ttf"
 const F_TITLE := "res://assets/fonts/CinzelDecorative-Black.ttf"
+const F_JP := "res://assets/fonts/DelaGothicOne-Kana.ttf"      # Katakana des Spielnamens
 const F_BODY := "res://assets/fonts/IMFeENrm28P.ttf"
 const CREAM := Color(0.96, 0.91, 0.78)
 const GOLD := Color(1.0, 0.83, 0.42)
