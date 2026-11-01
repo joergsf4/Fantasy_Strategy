@@ -409,6 +409,32 @@ func shuriken_rain(from_unit: Dictionary, dest: Vector2i, victims: Array[Diction
 	await _wait(0.34 + minf(float(spots.size()) * 0.07, 1.1) + 0.1)
 
 
+## Inspiration von oben: Sternenstaub rieselt aus der Hoehe auf die Figur, goldenes Leuchten und ein Aufschwung.
+func inspire(v: Dictionary) -> void:
+	Sfx.play("chime", -2.0, 1.1)
+	var top := fx.chest(v, 3.2)
+	for i in 14:
+		var s := fx.make_sprite("fx_star", top + Vector3(randf_range(-0.5, 0.5), randf_range(0.0, 0.8), randf_range(-0.5, 0.5)), 0.22, true, Color(1.0, 0.9, 0.5))
+		var to := fx.chest(v, 0.7) + Vector3(randf_range(-0.2, 0.2), 0.0, randf_range(-0.2, 0.2))
+		var from := s.position
+		var tw := fx.create_tween()
+		tw.tween_interval(float(i) * 0.04)
+		tw.tween_method(func(t: float) -> void:
+			if is_instance_valid(s):
+				s.position = from.lerp(to, t)
+				fx._sp(s, "roll", t * 6.0), 0.0, 1.0, 0.45)
+		tw.tween_callback(func() -> void:
+			if is_instance_valid(s):
+				s.queue_free())
+	await _wait(0.6)
+	fx.light_flash(fx.chest(v, 0.9), Color(1.0, 0.85, 0.4), 3.5, 5.0, 0.6)
+	fx.shockwave(_pos(v), 1.4, Color(1.0, 0.9, 0.5, 0.8), 0.5)
+	fx.particles("fx_star", fx.chest(v, 0.8), 14, 3.0, 0.2, 0.9, -0.4, Color(1.0, 0.92, 0.55), true, 180.0)
+	fx.flash_unit(v, Color(2.0, 1.7, 1.1), 0.4)
+	fx.hop(v, 0.3, 0.3)
+	await fx.squash(v, 1.15, 0.9, 0.3)
+
+
 ## Treffer des umgelenkten Strahls: Funken, Aufblitzen, kleiner Rueckstoss.
 func reflect_hit(v: Dictionary) -> void:
 	fx.particles("fx_star", fx.chest(v, 0.55), 6, 2.6, 0.22, 0.5, 2.0, Color(1.0, 0.7, 0.4), true, 180.0)
@@ -569,6 +595,11 @@ func status_holder(id: String, root: Node3D) -> bool:
 			twb.tween_property(aura, "scale", aura.scale, 0.9).set_trans(Tween.TRANS_SINE)
 			fx._loop_particles(root, "fx_bubble", Vector3(0, 0.2, 0), 4, 0.8, 0.22, 1.5, -0.8, Color(1.0, 0.85, 0.45))
 			fx._loop_particles(root, "fx_foam", Vector3(0, 1.4, 0), 2, 0.5, 0.2, 1.0, -0.2, Color(1.0, 0.95, 0.75, 0.9))
+		"inspiriert":  # goldener Stern ueber dem Kopf, pulsiert
+			var ist := fx.make_sprite("fx_star", Vector3.ZERO, 0.3, true, Color(1.0, 0.9, 0.5), 1, fx.icon_node(root))
+			var twi := root.create_tween().set_loops()
+			twi.tween_property(ist, "scale", ist.scale * 1.25, 0.5).set_trans(Tween.TRANS_SINE)
+			twi.tween_property(ist, "scale", ist.scale, 0.5).set_trans(Tween.TRANS_SINE)
 		"satt":        # kleiner Knochen als Symbol (Restdauer-Zahl daneben)
 			fx.make_sprite("fx_bone", Vector3.ZERO, 0.28, false, Color.WHITE, 1, fx.icon_node(root))
 		"angst":

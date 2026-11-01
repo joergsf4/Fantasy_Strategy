@@ -762,14 +762,22 @@ function secPreview(x) {
 const SEC_PLACEHOLDER = "Beschreibe das Geheimnis frei, z. B.: Brunhilde wirft ein Fass auf Lin. Der kämpft ab dann 10 % stärker im Drunken-Master-Stil und bekommt eine Sonderfähigkeit. Was soll passieren, wie soll es aussehen, welche Szene, welche Musik? Alles, was Claude für die Umsetzung wissen muss.";
 function secTech(x, i) {
   const o = SEC, uname = id => o.units[id]?.name || id, t = x.trigger, sc = x.scene, fig = Object.entries(o.units).map(([k, u]) => [k, u.name]);
-  const beam = t.type === "beam_via_ally", thr = t.type === "throw_ally", near = t.type === "ability_near_ally", second = beam ? t.via : near ? t.near : t.target;
+  const beam = t.type === "beam_via_ally", thr = t.type === "throw_ally", near = t.type === "ability_near_ally" || t.type === "hit_near_ally", hitn = t.type === "hit_near_ally", second = beam ? t.via : near ? t.near : t.target;
   const abs = (o.units[t.by]?.abilities || []).map(a => [a, o.abilities[a] || a]); if (!abs.length) abs.push(["", "(keine passende Fähigkeit)"]);
   const who = [[t.by, uname(t.by)], [second, uname(second)]];
   const pt = list => list.map(n => [n, n]);
-  const typ = `<div class="sbox"><h4>Auslöser-Typ</h4><div class="row"><select data-f="ttype" aria-label="Auslöser-Typ">${secOpts([["ability_on_ally", "Fähigkeit auf einen Verbündeten einsetzen"], ["beam_via_ally", "Strahl über einen Verbündeten umlenken"], ["throw_ally", "Einen Verbündeten werfen"], ["ability_near_ally", "Verbündeter in der Nähe erschrickt"]], t.type || "ability_on_ally")}</select></div></div>`;
+  const typ = `<div class="sbox"><h4>Auslöser-Typ</h4><div class="row"><select data-f="ttype" aria-label="Auslöser-Typ">${secOpts([["ability_on_ally", "Fähigkeit auf einen Verbündeten einsetzen"], ["beam_via_ally", "Strahl über einen Verbündeten umlenken"], ["throw_ally", "Einen Verbündeten werfen"], ["ability_near_ally", "Verbündeter in der Nähe erschrickt"], ["hit_near_ally", "Verbündeter neben dem getroffenen Gegner"]], t.type || "ability_on_ally")}</select></div></div>`;
   const throwAbs = (o.units[t.by]?.throws || []).map(a => [a, o.abilities[a] || a]); if (!throwAbs.length) throwAbs.push(["", "(keine Wurf-Fähigkeit)"]);
   const reacts = (o.units[t.near]?.all_abilities || []).map(a => [a, o.abilities[a] || a]);
-  const trig = near ? `<div class="sbox"><h4>Auslöser</h4><div class="row">
+  const trig = hitn ? `<div class="sbox"><h4>Auslöser</h4><div class="row">
+        <select data-f="by" aria-label="Figur">${secOpts(fig, t.by)}</select> trifft mit
+        <select data-f="ability" aria-label="Fähigkeit">${secOpts((o.units[t.by]?.all_abilities || []).map(a => [a, o.abilities[a] || a]), t.ability)}</select>
+        einen Gegner, und <select data-f="near" aria-label="Verbündeter daneben">${secOpts(fig, t.near)}</select> steht direkt daneben.</div></div>
+      <div class="sbox"><h4>Wirkung</h4><div class="row">
+        Status <input type="text" data-f="st_id" value="${esc(x.effects.status?.id || "inspiriert")}" style="width:110px" aria-label="Status-Kennung">
+        für <input type="number" data-f="st_turns" min="1" max="9" value="${+x.effects.status?.turns || 2}" aria-label="Runden"> Runden
+        · <input type="number" data-f="st_atk" min="1" max="200" value="${+x.effects.status?.atk_pct || 25}" aria-label="Mehr Angriff in Prozent"> % mehr Angriff für ${esc(uname(t.near))}</div></div>`
+  : near ? `<div class="sbox"><h4>Auslöser</h4><div class="row">
         <select data-f="by" aria-label="Figur">${secOpts(fig, t.by)}</select> setzt
         <select data-f="ability" aria-label="Fähigkeit">${secOpts((o.units[t.by]?.all_abilities || []).map(a => [a, o.abilities[a] || a]), t.ability)}</select>
         ein, und <select data-f="near" aria-label="Figur in der Nähe">${secOpts(fig, t.near)}</select> steht auf einem Nachbarfeld.</div></div>
@@ -857,6 +865,9 @@ function secSwitchType(x, type) {
   if (type === "beam_via_ally") {
     x.trigger = { type, by: t.by, abilities: (SEC.units[t.by]?.beams || []).slice(0, 1), via: second };
     x.effects = { mode: "reflect", reflect_pct: 75, radius: 2 };
+  } else if (type === "hit_near_ally") {
+    x.trigger = { type, by: t.by, ability: SEC.units[t.by]?.all_abilities?.[0] || "", near: second };
+    x.effects = { status: { id: "inspiriert", turns: 2, atk_pct: 25 } };
   } else if (type === "ability_near_ally") {
     const ra = SEC.units[second]?.all_abilities?.[0] || "";
     x.trigger = { type, by: t.by, ability: SEC.units[t.by]?.all_abilities?.[0] || "", near: second };
@@ -891,6 +902,7 @@ document.addEventListener("input", e => {
   else if (f === "height") x.effects.height = Math.max(2, Math.min(8, parseFloat(el.value || "4.2") || 4.2));
   else if (f === "heal") x.effects.heal = Math.max(0, Math.min(60, parseInt(el.value || "0", 10) || 0));
   else if (f === "st_id") (x.effects.status ||= { id: "satt", turns: 3, reduce_pct: 25 }).id = el.value.trim();
+  else if (f === "st_atk") (x.effects.status ||= { id: "inspiriert", turns: 2, atk_pct: 25 }).atk_pct = Math.max(1, Math.min(200, parseInt(el.value || "25", 10) || 25));
   else if (f === "st_turns") (x.effects.status ||= { id: "satt", turns: 3, reduce_pct: 25 }).turns = Math.max(1, Math.min(9, parseInt(el.value || "3", 10) || 3));
   else if (f === "st_red") (x.effects.status ||= { id: "satt", turns: 3, reduce_pct: 25 }).reduce_pct = Math.max(0, Math.min(90, parseInt(el.value || "0", 10) || 0));
   else if (f === "cutin_title") x.effects.cutin.title = el.value;
@@ -903,14 +915,14 @@ document.addEventListener("change", e => {
   const x = sec[+card.dataset.sec], f = el.dataset.f;
   if (f === "addchar") { if (el.value) (x.characters ||= []).push(el.value); }
   else if (f === "ttype") secSwitchType(x, el.value);
-  else if (f === "near") { x.trigger.near = el.value; x.effects.react_ability = SEC.units[el.value]?.all_abilities?.[0] || ""; x.scene.lines.forEach(l => { if (l.speaker !== x.trigger.by) l.speaker = el.value; }); }
+  else if (f === "near") { x.trigger.near = el.value; if (x.trigger.type === "ability_near_ally") x.effects.react_ability = SEC.units[el.value]?.all_abilities?.[0] || ""; x.scene.lines.forEach(l => { if (l.speaker !== x.trigger.by) l.speaker = el.value; }); }
   else if (f === "react_ability") x.effects.react_ability = el.value;
   else if (f === "mode") { const cut = x.effects.cutin; x.effects = el.value === "catch" ? { mode: "catch", heal: 8, status: { id: "satt", turns: 3, reduce_pct: 25 } } : { mode: "reflect", reflect_pct: 75, radius: 2 }; if (cut) x.effects.cutin = cut; }
   else if (f === "via") { x.trigger.via = el.value; x.scene.lines.forEach(l => { if (l.speaker !== x.trigger.by) l.speaker = el.value; }); }
   else if (f === "beamab") { const set = new Set(x.trigger.abilities || []); el.checked ? set.add(el.dataset.ab) : set.delete(el.dataset.ab); x.trigger.abilities = [...set]; }
   else if (f === "cutin_on") { if (el.checked) x.effects.cutin = x.effects.cutin || { unit: x.trigger.via || x.trigger.by, title: x.name, sub: "" }; else delete x.effects.cutin; }
   else if (f === "cutin_unit") x.effects.cutin.unit = el.value;
-  else if (f === "by" && x.trigger.type === "ability_near_ally") { x.trigger.by = el.value; x.trigger.ability = SEC.units[el.value]?.all_abilities?.[0] || ""; x.scene.lines.forEach(l => { if (l.speaker !== x.trigger.near) l.speaker = el.value; }); }
+  else if (f === "by" && (x.trigger.type === "ability_near_ally" || x.trigger.type === "hit_near_ally")) { x.trigger.by = el.value; x.trigger.ability = SEC.units[el.value]?.all_abilities?.[0] || ""; x.scene.lines.forEach(l => { if (l.speaker !== x.trigger.near) l.speaker = el.value; }); }
   else if (f === "by" && x.trigger.type === "beam_via_ally") { x.trigger.by = el.value; x.trigger.abilities = (SEC.units[el.value].beams || []).slice(0, 1); x.scene.lines.forEach(l => { if (l.speaker !== x.trigger.via) l.speaker = el.value; }); }
   else if (f === "by") { x.trigger.by = el.value; x.trigger.ability = SEC.units[el.value].abilities[0] || ""; x.scene.lines.forEach(l => { if (l.speaker !== x.trigger.target) l.speaker = el.value; }); }
   else if (f === "ability" || f === "target") { x.trigger[f] = el.value; if (f === "target") x.scene.lines.forEach(l => { if (l.speaker !== x.trigger.by) l.speaker = el.value; }); }

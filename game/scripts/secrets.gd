@@ -51,6 +51,15 @@ static func find_near(by: String, ability: String, near: String) -> Dictionary:
 	return {}
 
 
+## Das Geheimnis, bei dem "near" neben einem Gegner steht, den die Faehigkeit "ability" von "by" trifft (Typ hit_near_ally), oder {}.
+static func find_hitnear(by: String, ability: String, near: String) -> Dictionary:
+	for s: Dictionary in all():
+		var t: Dictionary = s["trigger"]
+		if t.get("type", "") == "hit_near_ally" and t["by"] == by and t["ability"] == ability and t["near"] == near:
+			return s
+	return {}
+
+
 static func by_id(id: String) -> Dictionary:
 	for s: Dictionary in all():
 		if s["id"] == id:

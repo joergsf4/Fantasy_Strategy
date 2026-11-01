@@ -2712,6 +2712,41 @@ func _beam_blocker(u: Dictionary, id: String, target: Dictionary) -> Dictionary:
 	return {}
 
 
+## Geheimnis "Inspiration von oben" (Typ hit_near_ally): Trifft die Faehigkeit von u einen Gegner und steht eine Verbuendete direkt neben ihm,
+## wird sie inspiriert (mehr Angriff fuer ein paar Runden). Beim ersten Mal Szene und Polarlicht-Auftritt.
+func _hit_near_reactions(u: Dictionary, id: String, target: Dictionary) -> void:
+	if not target.has("uid") or target.get("team", u["team"]) == u["team"] or not abilities[id].has("effects"):
+		return
+	if _first_effect(abilities[id], "damage").is_empty():
+		return
+	for o in units.duplicate():
+		if o == u or o["team"] != u["team"] or Grid.dist(o["pos"], target["pos"]) != 1:
+			continue
+		var sec := Secrets.find_hitnear(u["id"], id, o["id"])
+		if sec.is_empty():
+			continue
+		await _run_inspire(u, o, sec)
+
+
+func _run_inspire(u: Dictionary, o: Dictionary, sec: Dictionary) -> void:
+	var ef: Dictionary = sec["effects"]
+	if not secrets_seen.has(sec["id"]):
+		secrets_seen.append(sec["id"])
+		if secret_runner.is_valid():
+			await secret_runner.call(sec)
+		var ci: Dictionary = ef.get("cutin", {})
+		if not ci.is_empty():
+			await _super_cutin(o, {}, str(ci.get("title", sec["name"])), str(ci.get("sub", "")))
+			_super_music_stop()
+	var st: Dictionary = ef["status"]
+	var mods := {"atk": maxi(1, roundi(float(o["atk"]) * float(st.get("atk_pct", 25)) / 100.0))}
+	await fx.inspire(o)
+	Status.add(o, str(st["id"]), int(st.get("turns", 2)), mods)
+	_refresh_unit(o)
+	_popup(o, "Inspiriert!", Color(1.0, 0.9, 0.45))
+	await get_tree().create_timer(0.4).timeout
+
+
 ## Geheimnis "Woll im Ueberfluss" (Typ ability_near_ally): Setzt u die Faehigkeit ein und steht die Figur "near" auf einem Nachbarfeld,
 ## erschrickt sie und wirkt ihre Faehigkeit (react_ability) auf alle Verbuendeten im Umkreis um sich. Das kostet ihre normale Abklingzeit;
 ## sie muss die Faehigkeit bereit haben. Beim ersten Mal Szene und Polarlicht-Auftritt.
@@ -3075,6 +3110,7 @@ func _run_ability(u: Dictionary, id: String, target: Dictionary) -> void:
 	if ab.get("super", false):
 		_super_music_stop()
 	await _near_reactions(u, id)
+	await _hit_near_reactions(u, id, target)
 	_check_end()
 
 

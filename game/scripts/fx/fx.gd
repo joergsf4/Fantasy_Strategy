@@ -699,6 +699,10 @@ func catch_bone(u: Dictionary, via: Dictionary) -> void:
 	await nw.catch_bone(u, via)
 
 
+func inspire(v: Dictionary) -> void:
+	await nw.inspire(v)
+
+
 func hover_throw(u: Dictionary, dest: Vector2i, height: float, hover: float) -> void:
 	await nw.hover_throw(u, dest, height, hover)
 
@@ -816,7 +820,7 @@ func sync_status(u: Dictionary) -> void:
 
 ## Kopf-Symbole (Betaeubt, Spott, Wut, Beflügelt, Übel) stehen in einer Reihe ueber dem Lebensbalken (feste Plaetze, hoechstens ICON_MAX,
 ## der Rest als "+N"), mit kleiner Restdauer. Ohne Ueberlappung mit Balken, Zahl und Meldungen.
-const ICON_IDS := ["stun", "taunt", "wut", "tempo", "uebel", "satt"]
+const ICON_IDS := ["stun", "taunt", "wut", "tempo", "uebel", "satt", "inspiriert"]
 const ICON_MAX := 3
 const ICON_STEP := 0.36
 

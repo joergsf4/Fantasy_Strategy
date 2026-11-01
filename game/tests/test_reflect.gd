@@ -239,6 +239,37 @@ func _initialize() -> void:
 	await b._run_ability(wo_e4, "kanone", wo_z4)
 	check(Status.has(wo_w4, "schild") and scenes.is_empty(), "spaeter ohne Szene, Wollmantel weiterhin")
 
+	# --- Inspiration von oben: Albrecht steht neben dem Gegner, den Lumis Sternschnuppe trifft
+	clear()
+	scenes.clear()
+	var lumi2 := spawn("magical_girl", "p", Vector2i(0, 0))
+	var albrecht := spawn("ritter", "p", Vector2i(6, 6))
+	var abseits := spawn("kungfu", "p", Vector2i(9, 9))
+	var opfer := spawn("soldat_infanterie", "e", Vector2i(6, 5))
+	opfer["hp"] = 100
+	opfer["maxhp"] = 100
+	var atk_vor: int = Combat.stat(albrecht, "atk")
+	await b._run_ability(lumi2, "sternschnuppe", opfer)
+	check(Status.has(albrecht, "inspiriert") and int(Status.get_status(albrecht, "inspiriert")["turns"]) == 2, "Albrecht ist 2 Runden inspiriert")
+	check(Combat.stat(albrecht, "atk") == atk_vor + maxi(1, roundi(atk_vor * 0.25)), "25 %% mehr Angriff (%d -> %d)" % [atk_vor, Combat.stat(albrecht, "atk")])
+	check(not Status.has(abseits, "inspiriert") and not Status.has(lumi2, "inspiriert"), "nur wer neben dem Getroffenen steht")
+	check(100 - opfer["hp"] > 0 and scenes == ["inspiration_von_oben"], "Sternschnuppe trifft wie sonst, Szene beim ersten Mal")
+	# nicht daneben: keine Inspiration
+	clear()
+	scenes.clear()
+	var l3 := spawn("magical_girl", "p", Vector2i(0, 0))
+	var a3 := spawn("ritter", "p", Vector2i(9, 9))
+	var o3 := spawn("soldat_infanterie", "e", Vector2i(6, 5))
+	await b._run_ability(l3, "sternschnuppe", o3)
+	check(not Status.has(a3, "inspiriert"), "Albrecht steht nicht neben dem Gegner: nichts")
+	# andere Faehigkeit von Lumi (Heilung) loest nichts aus
+	clear()
+	var l4 := spawn("magical_girl", "p", Vector2i(0, 0))
+	var a4 := spawn("ritter", "p", Vector2i(2, 0))
+	a4["hp"] = 10
+	await b._run_ability(l4, "sternensegen", a4)
+	check(not Status.has(a4, "inspiriert"), "Sternensegen inspiriert nicht")
+
 	# --- Idee ohne trigger tut nichts
 	var only_idea := Secrets.find_beam("robo", "roter_laser", "kungfu")
 	check(only_idea.is_empty(), "ohne Eintrag keine Umlenkung")

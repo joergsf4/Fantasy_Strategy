@@ -124,3 +124,6 @@ Dritter Auslöser-Typ `throw_ally`: Muskelaugust wirft die Kage-Schwestern höhe
 
 ## Erledigt: Geheimnis „Woll im Überfluss“ (2026-11-01)
 Vierter Auslöser-Typ `ability_near_ally`: Kanone von Elisabeth mit Wendy auf einem Nachbarfeld löst Wendys Wollmantel auf alle Verbündeten im Umkreis 2 aus (normale Abklingzeit, nur wenn bereit). Szene, Polarlicht-Auftritt, Editor-Typ „Verbündeter in der Nähe erschrickt“. Dialoge von Claude erdacht (vorläufig).
+
+## Erledigt: Geheimnis „Inspiration von oben“ (2026-11-01)
+Fünfter Auslöser-Typ `hit_near_ally`: Lumis Sternschnuppe trifft einen Gegner, Albrecht steht daneben → 2 Runden +25 % Angriff. Szene, Polarlicht-Auftritt, Status-Symbol, Editor-Typ „Verbündeter neben dem getroffenen Gegner“. Dialoge von Claude erdacht (vorläufig).

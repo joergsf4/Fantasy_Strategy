@@ -253,6 +253,19 @@ class EditorTest(unittest.TestCase):
             with self.assertRaises(ValueError):
                 server.save_secrets({"secrets": sl})
 
+    def test_geheimnis_treffer_neben_verbuendetem(self):
+        import copy
+        d = server.secrets()
+        hit = next(x for x in d["secrets"] if x.get("trigger", {}).get("type") == "hit_near_ally")
+        self.assertEqual((hit["trigger"]["by"], hit["trigger"]["ability"], hit["trigger"]["near"], hit["effects"]["status"]["atk_pct"]), ("magical_girl", "sternschnuppe", "ritter", 25))
+        server.save_secrets({"secrets": d["secrets"]})
+        for mutate in (lambda s: s["trigger"].update(ability="sternensegen"), lambda s: s["effects"]["status"].update(atk_pct=0), lambda s: s["effects"]["status"].update(turns=0),
+                       lambda s: s["effects"]["status"].update(id="Ins Piriert"), lambda s: s["trigger"].update(near="magical_girl")):
+            sl = copy.deepcopy(d["secrets"])
+            mutate(next(x for x in sl if x.get("trigger", {}).get("type") == "hit_near_ally"))
+            with self.assertRaises(ValueError):
+                server.save_secrets({"secrets": sl})
+
     def test_leere_flee_und_ideen_werden_entfernt_und_ideen_gespeichert(self):
         b = self.body("ch3")
         b["flee"] = {}
