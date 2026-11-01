@@ -53,7 +53,8 @@ def load_all() -> dict:
     for uid, u in units.items():
         if uid.startswith("_") or "name" not in u:
             continue
-        out_units[uid] = {"name": u["name"], "hero": uid in heroes, "flees": bool(u.get("flees")),
+        out_units[uid] = {"name": u["name"], "hero": bool(u.get("hero")) or uid in heroes, "flees": bool(u.get("flees")),
+                          "intro": u.get("intro"), "role": u.get("role", ""), "heal": int(u.get("heal", 0)),
                           "exprs": [e for e in ("lachend", "wuetend") if f"{uid}_{e}" in portraits], "portrait": uid in portraits}
     for uid, name in EXTRA_SPEAKERS.items():
         out_units[uid] = {"name": name, "hero": False, "flees": False, "special": True,
@@ -71,7 +72,7 @@ def load_all() -> dict:
 
 
 # ---------------------------------------------------------------- Charaktere (Uebersicht, nur lesen)
-ROLE_DE = {"tank": "Tank", "damage": "Schaden", "healer": "Heiler", "mage": "Magier", "": ""}
+ROLE_DE = {"tank": "Tank", "damage": "Schaden", "healer": "Heiler", "mage": "Magier", "melee": "Nahkampf", "ranged": "Fernkampf", "soldier": "Soldat", "": ""}
 ROLE_ORDER = ["Gruppe", "Gegner", "Verstärkung", "stößt dazu", "im Gespräch"]
 
 
@@ -192,10 +193,80 @@ def characters() -> dict:
             "first": first, "chapters": per, "lines_total": sum(v["total"] for v in per.values()), "quote": quote.get(uid, ""),
             "assets": {"portrait": uid in portraits, "exprs": exprs, "token": special or uid in tokens or (u or {}).get("portrait", uid) in tokens},
             "flees": bool((u or {}).get("flees")), "no_flee": no_flee.get(uid, []), "returns": sorted(set(returns.get(uid, []))),
-            "from": (u or {}).get("from", 1) if (u or {}).get("hero") else None, "sound": None if special else f"{u.get('weapon', 'fist')} / {u.get('body', 'flesh')}",
+            "from": (u or {}).get("from", 1) if (u or {}).get("hero") else None, "intro": (u or {}).get("intro"), "sound": None if special else f"{u.get('weapon', 'fist')} / {u.get('body', 'flesh')}",
             "gear": gear, "notes": notes.get(uid, {}),
         })
     return {"characters": out, "chapters": [{"n": int(c[2:]), "id": c, "title": read(DATA / "missions" / f"{c}.json")["title"]} for c in chapters]}
+
+
+# ---------------------------------------------------------------- Missionen (Gruppe und Gegner je Kapitel)
+BLOCKING_TILE = "W"      # Wasser ist nicht betretbar; alles andere (auch Steg, Duene) darf eine Startposition sein
+
+
+def map_path(cid: str) -> Path:
+    return ROOT / "game" / read(DATA / "missions" / f"{cid}.json")["map"].removeprefix("res://")
+
+
+def missions() -> dict:
+    """Je Kapitel: Karte, Gruppe, Gegner, Objekte, Sprecher (Zeilen je Figur), Rueckkehr-Auslöser, Spawns. Nur lesen."""
+    out = []
+    for cid in chapter_ids():
+        m = read(DATA / "missions" / f"{cid}.json")
+        st = read(DATA / f"story_{cid}.json")
+        mp = read(map_path(cid))
+        speakers: dict = {}
+        def count(lines):
+            for l in lines:
+                sp = l.get("speaker")
+                if sp and sp != "$hero":
+                    speakers[sp] = speakers.get(sp, 0) + 1
+        count(st["intro"]); count(st["outro"])
+        spawns, returns = [], []
+        for t in m.get("triggers", []):
+            returns += (t.get("if") or {}).get("fled", [])
+            for step in t.get("do", []):
+                spawns += [sp["id"] for sp in step.get("spawn", [])]
+                count(step.get("dialogue", []))
+        for lines in (m.get("flee") or {}).values():
+            count(lines)
+        out.append({"id": cid, "n": int(cid[2:]), "title": m["title"], "briefing": m.get("briefing", ""), "rows": mp["rows"], "biome": mp.get("biome", ""),
+                    "players": mp["players"], "enemies": mp["enemies"], "objects": [{"id": o["id"], "type": o["type"], "pos": o["pos"]} for o in mp.get("objects", [])],
+                    "speakers": speakers, "spawns": sorted(set(spawns)), "returns": sorted(set(returns))})
+    return {"missions": out}
+
+
+def save_mission(cid: str, body: dict) -> None:
+    """Gruppe und Gegner einer Mission speichern (nur diese beiden Listen der Karte, alles andere bleibt)."""
+    if not CHAPTER_RE.match(cid) or cid not in chapter_ids():
+        raise ValueError("unbekanntes Kapitel")
+    units = read(DATA / "units.json")
+    path = map_path(cid)
+    mp = read(path)
+    rows = mp["rows"]
+    taken = {tuple(o["pos"]) for o in mp.get("objects", [])}
+    seen_pos, seen_hero = set(), set()
+    for side in ("players", "enemies"):
+        for e in body[side]:
+            if e.get("id") not in units or "name" not in units[e["id"]]:
+                raise ValueError(f"unbekannte Figur '{e.get('id')}'")
+            x, y = e["pos"]
+            if not (isinstance(x, int) and isinstance(y, int) and 0 <= y < len(rows) and 0 <= x < len(rows[y])):
+                raise ValueError(f"{e['id']}: Position ausserhalb der Karte")
+            if rows[y][x] == BLOCKING_TILE:
+                raise ValueError(f"{e['id']}: Position ({x}, {y}) liegt im Wasser")
+            if (x, y) in seen_pos or (x, y) in taken:
+                raise ValueError(f"{e['id']}: Feld ({x}, {y}) ist schon belegt")
+            seen_pos.add((x, y))
+        if side == "players":
+            for e in body[side]:
+                if e["id"] in seen_hero:
+                    raise ValueError(f"{e['id']} steht doppelt in der Gruppe")
+                seen_hero.add(e["id"])
+    if not body["players"]:
+        raise ValueError("Die Gruppe darf nicht leer sein")
+    if mp["players"] != body["players"] or mp["enemies"] != body["enemies"]:
+        mp["players"], mp["enemies"] = body["players"], body["enemies"]
+        write_atomic(path, mp)
 
 
 # ---------------------------------------------------------------- Pruefung (Vertrauensgrenze: nichts Kaputtes in die Spieldaten)
@@ -331,6 +402,8 @@ class Handler(BaseHTTPRequestHandler):
         path = self.path.split("?")[0]
         if path == "/api/data":
             return self._json(200, load_all())
+        if path == "/api/missions":
+            return self._json(200, missions())
         if path == "/api/characters":
             return self._json(200, characters())
         if path == "/api/draft/available":
@@ -344,6 +417,13 @@ class Handler(BaseHTTPRequestHandler):
         self._send(200, f.read_bytes(), mimetypes.guess_type(f.name)[0] or "application/octet-stream")
 
     def do_PUT(self) -> None:
+        mm = re.match(r"^/api/mission/(ch\d+)$", self.path)
+        if mm:
+            try:
+                save_mission(mm.group(1), self._body())
+                return self._json(200, {"ok": True})
+            except (ValueError, KeyError, TypeError) as e:
+                return self._json(400, {"error": str(e)})
         m = re.match(r"^/api/chapter/(ch\d+)$", self.path)
         if not m:
             return self._json(404, {"error": "unbekannt"})

@@ -15,7 +15,8 @@
   ],
   "weapon": "fist",
   "body": "flesh",
-  "hero": true
+  "hero": true,
+  "intro": 1
  },
  "ritter": {
   "name": "Ser Albrecht",
@@ -34,7 +35,8 @@
   ],
   "weapon": "metal",
   "body": "armor",
-  "hero": true
+  "hero": true,
+  "intro": 1
  },
  "samurai": {
   "name": "Takeda",
@@ -52,7 +54,8 @@
   ],
   "weapon": "metal",
   "body": "flesh",
-  "hero": true
+  "hero": true,
+  "intro": 3
  },
  "kungfu": {
   "name": "Meister Lin",
@@ -70,7 +73,8 @@
   ],
   "weapon": "wood",
   "body": "flesh",
-  "hero": true
+  "hero": true,
+  "intro": 1
  },
  "ninjas": {
   "name": "Die Kage-Schwestern",
@@ -89,7 +93,8 @@
   "ranged_mult": 0.7,
   "weapon": "metal",
   "body": "flesh",
-  "hero": true
+  "hero": true,
+  "intro": 4
  },
  "elisabeth": {
   "name": "Käpt’n Elisabeth",
@@ -107,7 +112,8 @@
   ],
   "weapon": "metal",
   "body": "flesh",
-  "hero": true
+  "hero": true,
+  "intro": 1
  },
  "museklaugust": {
   "name": "Muskelaugust",
@@ -125,7 +131,8 @@
   ],
   "weapon": "fist",
   "body": "flesh",
-  "hero": true
+  "hero": true,
+  "intro": 2
  },
  "robo": {
   "name": "Robo",
@@ -144,7 +151,8 @@
   ],
   "weapon": "metal",
   "body": "armor",
-  "hero": true
+  "hero": true,
+  "intro": 2
  },
  "hund": {
   "name": "Blauer Hundsfreund",
@@ -163,7 +171,8 @@
   "weapon": "fist",
   "body": "flesh",
   "hero": true,
-  "from": 6
+  "from": 6,
+  "intro": 5
  },
  "wendy": {
   "name": "Wendy Wolle",
@@ -182,7 +191,8 @@
   ],
   "weapon": "wood",
   "body": "flesh",
-  "hero": true
+  "hero": true,
+  "intro": 1
  },
  "claude": {
   "name": "Claude",
@@ -219,7 +229,8 @@
   ],
   "weapon": "metal",
   "body": "flesh",
-  "flees": true
+  "flees": true,
+  "intro": 1
  },
  "braumeisterin": {
   "name": "Brunhilde Bräu",
@@ -237,7 +248,8 @@
   ],
   "weapon": "wood",
   "body": "flesh",
-  "hero": true
+  "hero": true,
+  "intro": 1
  },
  "soldat_infanterie": {
   "name": "Büttel des Regenten",
@@ -257,7 +269,8 @@
    "schildwall"
   ],
   "weapon": "metal",
-  "body": "armor"
+  "body": "armor",
+  "intro": 1
  },
  "soldat_beritten": {
   "name": "Reiter des Regenten",
@@ -277,7 +290,8 @@
    "sturmangriff"
   ],
   "weapon": "metal",
-  "body": "armor"
+  "body": "armor",
+  "intro": 1
  },
  "soldat_bogenschuetze": {
   "name": "Bogenschütze des Regenten",
@@ -294,7 +308,8 @@
    "standard"
   ],
   "weapon": "wood",
-  "body": "flesh"
+  "body": "flesh",
+  "intro": 2
  },
  "soldat_priester": {
   "name": "Priester des Regenten",
@@ -312,7 +327,8 @@
   ],
   "heal": 6,
   "weapon": "wood",
-  "body": "flesh"
+  "body": "flesh",
+  "intro": 2
  },
  "fuerst": {
   "name": "Regent Morgrim",
@@ -373,7 +389,8 @@
   "ranged_mult": 0.8,
   "flees": true,
   "weapon": "metal",
-  "body": "flesh"
+  "body": "flesh",
+  "intro": 2
  },
  "oskar": {
   "name": "Oskar",
@@ -394,7 +411,8 @@
   ],
   "flees": true,
   "weapon": "metal",
-  "body": "armor"
+  "body": "armor",
+  "intro": 3
  },
  "maja": {
   "name": "Maja",
@@ -416,7 +434,8 @@
   "ranged_mult": 0.8,
   "flees": true,
   "weapon": "wood",
-  "body": "flesh"
+  "body": "flesh",
+  "intro": 3
  },
  "xiulan": {
   "name": "Xiùlán",
@@ -437,7 +456,8 @@
   ],
   "flees": true,
   "weapon": "fist",
-  "body": "flesh"
+  "body": "flesh",
+  "intro": 4
  },
  "bienenkrieger": {
   "name": "Bienenkrieger",
@@ -455,7 +475,8 @@
    "schwarm"
   ],
   "weapon": "metal",
-  "body": "flesh"
+  "body": "flesh",
+  "intro": 5
  },
  "magical_girl": {
   "name": "Lumi Sternenglanz",
@@ -475,7 +496,8 @@
   "weapon": "wood",
   "body": "flesh",
   "hero": true,
-  "from": 7
+  "from": 7,
+  "intro": 7
  },
  "quacksalber": {
   "name": "Dr. Humbug",
@@ -495,6 +517,7 @@
   "weapon": "wood",
   "body": "flesh",
   "hero": true,
-  "from": 7
+  "from": 7,
+  "intro": 7
  }
 }

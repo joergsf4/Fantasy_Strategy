@@ -86,6 +86,35 @@ table.ct td { padding: 5px 8px; border-bottom: 1px solid var(--line); vertical-a
 table.ct tr:hover td { background: var(--panel); }
 table.ct tr.rsel td { background: #2a2412; }
 table.ct .av { width: 28px; height: 28px; border-width: 1px; display: inline-grid; vertical-align: middle; margin-right: 8px; }
+body.view-mis nav.chapters, body.view-mis #q, body.view-mis #status, body.view-mis #togglePal, body.view-mis #undo, body.view-mis #redo, body.view-mis #save { display: none; }
+body.view-mis #app { grid-template-columns: minmax(0, 1fr) 270px; }
+/* Missionen */
+.mbar { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 12px; }
+.mbar .sp { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+.mgrid { display: grid; grid-template-columns: minmax(0, 1fr) 330px; gap: 16px; align-items: start; }
+.mlist { background: var(--panel); border: 2px dashed var(--line); border-radius: var(--r); padding: 10px; margin-bottom: 14px; min-height: 90px; }
+.mlist.drop { border-color: var(--gold); background: #1f1c10; }
+.mlist h3 { font-size: 16px; color: var(--gold); margin-bottom: 8px; display: flex; gap: 8px; align-items: center; }
+.mcards { display: grid; grid-template-columns: repeat(auto-fill, minmax(215px, 1fr)); gap: 8px; }
+.mcard { background: var(--panel2); border: 1px solid var(--line); border-radius: 10px; padding: 8px; display: grid; grid-template-columns: 44px 1fr auto; gap: 2px 8px; align-items: center; cursor: grab; }
+.mcard.warn { border-color: var(--gold); }
+.mcard .av { width: 44px; height: 44px; grid-row: 1 / span 2; }
+.mcard b { font-size: 14px; }
+.mcard small { color: var(--muted); font-size: 12px; grid-column: 2 / 4; }
+.mcard .wn { grid-column: 1 / -1; color: var(--gold); font-size: 12.5px; }
+.mcard .x { background: none; border: 0; color: var(--muted); font-size: 16px; padding: 2px 6px; border-radius: 6px; }
+.mcard .x:hover { color: var(--red); background: var(--panel); }
+.mm { position: relative; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; margin-bottom: 12px; }
+.mm .tile { position: absolute; width: 27px; height: 27px; }
+.mm .pin { position: absolute; width: 27px; height: 27px; display: grid; place-items: center; }
+.mm .pin .av { width: 24px; height: 24px; border-width: 2px; }
+.mm .pin.p .av { border-color: var(--blue); } .mm .pin.e .av { border-color: var(--red); }
+.mm .obj { position: absolute; width: 19px; height: 19px; margin: 4px; background: #3a2a1a; border: 1px solid #0007; border-radius: 3px; font-size: 10px; color: #e8d9b0; text-align: center; line-height: 17px; }
+.mwarn { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 10px 12px; }
+.mwarn h3 { font-size: 15px; color: var(--gold); margin-bottom: 6px; }
+.mwarn ul { margin: 0; padding-left: 18px; font-size: 13.5px; } .mwarn li { margin-bottom: 4px; }
+.mwarn li.ok { color: var(--green); list-style: none; margin-left: -18px; }
+@media (max-width: 1100px) { .mgrid { grid-template-columns: minmax(0, 1fr); } }
 @media (max-width: 1100px) { .cwrap.sel { grid-template-columns: minmax(0, 1fr); } .cdetail { position: static; max-height: none; } }
 #status { color: var(--muted); font-size: 13px; }
 #status.dirty { color: var(--gold); }
@@ -212,6 +241,7 @@ label.f select, label.f input { min-width: 120px; }
     <div class="tabs" role="tablist" aria-label="Ansicht">
       <button id="tabTalks" role="tab" aria-selected="true">Gespräche</button>
       <button id="tabChars" role="tab" aria-selected="false">Charaktere</button>
+      <button id="tabMis" role="tab" aria-selected="false">Missionen</button>
     </div>
     <input id="q" type="search" placeholder="Texte durchsuchen …" aria-label="Gespräche durchsuchen" style="width:240px">
     <span id="status" role="status" aria-live="polite"></span>
@@ -222,9 +252,9 @@ label.f select, label.f input { min-width: 120px; }
   </header>
   <nav class="chapters" id="nav" aria-label="Kapitel"></nav>
   <main id="main" tabindex="-1"></main>
-  <aside class="pal" aria-label="Figuren">
+  <aside class="pal" aria-label="Figuren" data-drop="mrem">
     <input id="palq" type="search" placeholder="Figur suchen …" aria-label="Figur suchen">
-    <p class="hint">Figur auf einen <b>Platz</b> in einer Zeile ziehen, oder auf <b>+ Zeile</b>, um eine neue Zeile anzulegen. Zeilen lassen sich am Griff ⋮⋮ umsortieren, auch in andere Gespräche.</p>
+    <p class="hint" id="palhint">Figur auf einen <b>Platz</b> in einer Zeile ziehen, oder auf <b>+ Zeile</b>, um eine neue Zeile anzulegen. Zeilen lassen sich am Griff ⋮⋮ umsortieren, auch in andere Gespräche.</p>
     <div id="pal"></div>
   </aside>
 </div>
@@ -239,6 +269,7 @@ const EXPR = { "": "Normal", lachend: "Lachend", wuetend: "Wütend" };
 const STATES = { wall: ["intact", "broken"], gate: ["closed", "open", "broken"], switch: ["off", "on"], fire: ["burning", "out"], house: ["intact", "burning", "ruin"], hostage: ["bound", "free"], teahouse: ["standing"], hive: ["active", "broken"], bell: ["ready", "rung"], orphanage: ["standing"], ship: ["anchored"], crate: ["intact", "broken"] };
 const STATE_DE = { intact: "heil", broken: "zerstört", closed: "geschlossen", open: "offen", off: "aus", on: "umgelegt", burning: "brennt", out: "gelöscht", ruin: "Ruine", bound: "gefesselt", free: "befreit", standing: "steht", active: "aktiv", ready: "bereit", rung: "geläutet", anchored: "vor Anker" };
 
+let MIS = null, mis = [], misSaved = {}, misHist = [], misFut = [], mCur = "ch1";
 let view = "talks", CH = null, cView = "cards", cFilter = "alle", cq = "", cSort = { key: "first", dir: 1 }, cSel = "";
 let DB, chapters = [], saved = {}, cur = "", hist = [], fut = [], canDraft = false, typingSnap = false, filter = "", open = {};
 
@@ -439,7 +470,7 @@ function renderTalks() {
   updateStatus();
   fitAll();
 }
-function render() { view === "char" ? renderChars() : renderTalks(); }
+function render() { view === "char" ? renderChars() : view === "mis" ? renderMis() : renderTalks(); }
 function renderPalette() {
   const q = $("#palq").value.toLowerCase();
   const groups = [["Helden", Object.entries(DB.units).filter(([, u]) => u.hero)], ["Gegner", Object.entries(DB.units).filter(([, u]) => !u.hero && !u.special)], ["Sonstige", Object.entries(DB.units).filter(([, u]) => u.special)]];
@@ -501,6 +532,10 @@ const acts = {
   preview(el) { const { c, key } = lineCtx(el); const cv = convs(c).find(x => x.key === key); preview(linesOf(c, key, false), cv.t); },
   rmcond(el) { const { c, key } = lineCtx(el), t = c.triggers[+key.slice(2)], k = el.dataset.k; change(() => { if (k === "object") delete t.if.object; else t.if[k].splice(+el.dataset.j, 1); if (!t.if[k]?.length) delete t.if[k]; if (!Object.keys(t.if).length) delete t.if; }); },
   addcond(el) { const { c, key } = lineCtx(el), t = c.triggers[+key.slice(2)], k = el.dataset.k; openPicker(el, id => { open["w" + key.slice(2)] = true; change(() => { t.if ??= {}; (t.if[k] ??= []).includes(id) || t.if[k].push(id); }); }); },
+  mch(el) { mCur = el.dataset.id; renderMis(); },
+  mrem(el) { misRemove(el.dataset.side, +el.dataset.i); },
+  madd(el) { const side = el.dataset.side; openPicker(el, id => misAdd(side, id)); },
+  mundo() { misRestore(misHist, misFut); }, mredo() { misRestore(misFut, misHist); }, msave() { misSave(); },
   cfilter(el) { cFilter = el.dataset.k; renderChars(); },
   cmode() { cView = cView === "cards" ? "table" : "cards"; renderChars(); },
   csel(el) { cSel = cSel === el.dataset.id ? "" : el.dataset.id; renderCharRes(); },
@@ -617,7 +652,7 @@ function charDetail(c) {
   const key = d => d && (d.total >= 4 || d.lines.Einleitung || d.lines.Abschluss);
   return `<aside class="cdetail" aria-label="Details ${esc(c.name)}">
     <div class="big">${avatar(c.id)}<div><h2>${esc(c.name)} <span class="kind ${c.kind}">${c.kind}</span></h2>
-      <div class="kv">${esc(firstText(c))}${c.from && c.from > 1 ? ` · wählbar ab Kapitel ${c.from}` : ""}</div></div>
+      <div class="kv">${esc(firstText(c))}${c.intro ? ` · in der Story eingeführt in Kapitel ${c.intro}` : ""}${c.from && c.from > 1 ? ` · wählbar ab Kapitel ${c.from}` : ""}</div></div>
       <button class="btn ghost" data-act="cclose" aria-label="Schließen" style="margin-left:auto">✕</button></div>
     ${c.notes.tagline ? `<p><i>${esc(c.notes.tagline)}</i></p>` : ""}
     ${st ? `<div class="stats"><div><b>${st.hp}</b>Leben</div><div><b>${st.atk}</b>Angriff</div><div><b>${st.def}</b>Verteidigung</div><div><b>${st.res}</b>Resistenz</div>
@@ -643,10 +678,110 @@ function gotoTalks(chId, name) {
 function setView(v) {
   view = v;
   document.body.classList.toggle("view-char", v === "char");
-  $("#tabTalks").setAttribute("aria-selected", v === "talks"); $("#tabChars").setAttribute("aria-selected", v === "char");
+  document.body.classList.toggle("view-mis", v === "mis");
+  for (const [id, k] of [["#tabTalks", "talks"], ["#tabChars", "char"], ["#tabMis", "mis"]]) $(id).setAttribute("aria-selected", v === k);
+  $("#palhint").innerHTML = v === "mis" ? "Figur in <b>Gruppe</b> oder <b>Gegner</b> ziehen, um sie in die Mission zu holen. Eine Karte hierher ziehen (oder ✕) nimmt sie wieder heraus. Gelb markierte Figuren passen nicht zur Geschichte."
+    : 'Figur auf einen <b>Platz</b> in einer Zeile ziehen, oder auf <b>+ Zeile</b>, um eine neue Zeile anzulegen. Zeilen lassen sich am Griff ⋮⋮ umsortieren, auch in andere Gespräche.';
   render();
 }
 
+// ---- Tab Missionen: Gruppe und Gegner je Kapitel, Warnungen bei Story-Widerspruechen
+const TERR = { G: "#3f7a3a", F: "#2d5a2b", M: "#6b6b73", W: "#2f64b0", V: "#a0714a", C: "#9a9aa6", P: "#8a6a3c", D: "#d6b878" };
+const mCh = () => mis.find(m => m.id === mCur);
+const misPart = m => JSON.stringify({ p: m.players, e: m.enemies });
+const misDirty = () => mis.filter(m => misPart(m) !== misSaved[m.id]).map(m => m.id);
+const chTitle = n => (MIS.missions.find(m => m.n === n) || {}).title || "";
+function misPush() { misHist.push(JSON.stringify(mis)); if (misHist.length > 100) misHist.shift(); misFut = []; }
+function misRestore(from, to) { if (!from.length) return; to.push(JSON.stringify(mis)); mis = JSON.parse(from.pop()); renderMis(); }
+function misWarnings(m) {
+  const byCard = {}, global = [], add = (k, t) => (byCard[k] ||= []).push(t);
+  const intro = id => { const u = DB.units[id]; return u && u.intro && m.n < u.intro ? `${u.name} wird erst in Kapitel ${u.intro} („${chTitle(u.intro)}“) eingeführt.` : ""; };
+  for (const e of m.players) {
+    const w = intro(e.id); if (w) add("p:" + e.id, w);
+    if (DB.units[e.id] && !DB.units[e.id].hero) add("p:" + e.id, "Das ist eine Gegnerfigur, kein Held.");
+  }
+  for (const e of m.enemies) {
+    const w = intro(e.id); if (w) add("e:" + e.id + ":" + e.pos, w);
+    if (DB.units[e.id]?.hero) add("e:" + e.id + ":" + e.pos, "Das ist ein Held der Gruppe, hier als Gegner.");
+  }
+  const present = new Set([...m.players, ...m.enemies].map(e => e.id).concat(m.spawns));
+  for (const [id, n] of Object.entries(m.speakers)) {
+    const u = DB.units[id]; if (!u || u.special || present.has(id)) continue;
+    global.push(`${u.name} spricht in diesem Kapitel (${n} Zeile${n > 1 ? "n" : ""}), ist aber weder in der Gruppe noch bei den Gegnern.`);
+  }
+  for (const id of m.returns) {
+    const earlier = mis.some(o => o.n < m.n && o.enemies.some(e => e.id === id));
+    if (!earlier) global.push(`${U(id)} soll hier zurückkehren (Auslöser „entkommen“), tritt aber in keinem früheren Kapitel als Gegner auf.`);
+  }
+  const n = m.players.length;
+  if (n < 4 || n > 6) global.push(`Die Gruppe hat ${n} Figuren (üblich sind 6). Das Balancing ist nur für 6 gemessen.`);
+  if (!m.players.some(e => DB.units[e.id]?.role === "healer" || DB.units[e.id]?.heal > 0)) global.push("Kein Heiler und keine Heilerin in der Gruppe.");
+  return { byCard, global };
+}
+function freeSpot(m, side) {
+  const list = side === "p" ? m.players : m.enemies, h = m.rows.length, w = m.rows[0].length;
+  const base = list.length ? [Math.round(list.reduce((a, e) => a + e.pos[0], 0) / list.length), Math.round(list.reduce((a, e) => a + e.pos[1], 0) / list.length)] : (side === "p" ? [1, h - 2] : [w - 2, 1]);
+  const used = new Set([...m.players, ...m.enemies, ...m.objects].map(e => e.pos.join(",")));
+  const seen = new Set([base.join(",")]), q = [base];
+  while (q.length) {
+    const [x, y] = q.shift();
+    if (x >= 0 && y >= 0 && x < w && y < h && m.rows[y][x] !== "W" && !used.has(x + "," + y)) return [x, y];
+    for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const k = (x + dx) + "," + (y + dy); if (!seen.has(k)) { seen.add(k); q.push([x + dx, y + dy]); } }
+  }
+  return base;
+}
+function misAdd(side, id) {
+  const m = mCh();
+  if (side === "p" && m.players.some(e => e.id === id)) return toast(`${U(id)} ist schon in der Gruppe`);
+  misPush(); (side === "p" ? m.players : m.enemies).push({ id, pos: freeSpot(m, side) }); renderMis();
+}
+function misRemove(side, i) { misPush(); (side === "p" ? mCh().players : mCh().enemies).splice(i, 1); renderMis(); }
+async function misSave() {
+  for (const id of misDirty()) {
+    const m = mis.find(x => x.id === id);
+    const r = await fetch(`/api/mission/${id}`, { method: "PUT", body: JSON.stringify({ players: m.players, enemies: m.enemies }) });
+    if (!r.ok) return toast(`Speichern fehlgeschlagen (${m.title}): ${(await r.json()).error}`, "err");
+    misSaved[id] = misPart(m);
+  }
+  CH = null; toast("Gespeichert"); renderMis();
+}
+function miniMap(m) {
+  const h = m.rows.length, w = m.rows[0].length, S = 27;
+  const tiles = m.rows.map((r, y) => [...r].map((t, x) => `<div class="tile" style="left:${x * S}px;top:${y * S}px;background:${TERR[t] || "#444"}"></div>`).join("")).join("");
+  const obj = m.objects.map(o => `<div class="obj" style="left:${o.pos[0] * S}px;top:${o.pos[1] * S}px" title="${esc(o.id)} (${o.type})">${esc(o.type[0].toUpperCase())}</div>`).join("");
+  const pin = (e, c) => `<div class="pin ${c}" style="left:${e.pos[0] * S}px;top:${e.pos[1] * S}px" title="${esc(U(e.id))} (${e.pos})">${avatar(e.id)}</div>`;
+  return `<div class="mm" style="width:${w * S}px;height:${h * S}px">${tiles}${obj}${m.players.map(e => pin(e, "p")).join("")}${m.enemies.map(e => pin(e, "e")).join("")}</div>`;
+}
+async function renderMis() {
+  if (!MIS) {
+    $("#main").innerHTML = '<p class="hint">Lade Missionen …</p>';
+    MIS = await (await fetch("/api/missions")).json(); mis = JSON.parse(JSON.stringify(MIS.missions)); mis.forEach(m => misSaved[m.id] = misPart(m));
+  }
+  const m = mCh(), wn = misWarnings(m), dirty = misDirty();
+  const card = (e, side, i) => {
+    const u = DB.units[e.id] || {}, key = side === "p" ? "p:" + e.id : "e:" + e.id + ":" + e.pos, w = wn.byCard[key] || [];
+    const extra = side === "e" ? [e.hp ? `${e.hp} Leben` : "", e.carry ? "trägt Beute" : "", e.guard ? "Wache" : ""].filter(Boolean).join(" · ") : "";
+    return `<div class="mcard ${w.length ? "warn" : ""}" draggable="true" data-drag="mcard" data-side="${side}" data-i="${i}">${avatar(e.id)}<b>${esc(U(e.id))}</b>
+      <button class="x" data-act="mrem" data-side="${side}" data-i="${i}" aria-label="${esc(U(e.id))} entfernen" title="Aus der Mission nehmen">✕</button>
+      <small>${esc([u.role ? { tank: "Tank", damage: "Schaden", healer: "Heiler", mage: "Magier", melee: "Nahkampf", ranged: "Fernkampf", soldier: "Soldat" }[u.role] || u.role : "", u.intro ? `eingeführt in K${u.intro}` : "", `Feld ${e.pos[0]}, ${e.pos[1]}`, extra].filter(Boolean).join(" · "))}</small>
+      ${w.map(t => `<div class="wn">⚠ ${esc(t)}</div>`).join("")}</div>`;
+  };
+  $("#main").innerHTML = `<div class="mbar">${mis.map(x => `<button class="chip2" data-act="mch" data-id="${x.id}" aria-pressed="${x.id === mCur}">${x.n} ${esc(x.title)}${dirty.includes(x.id) ? ' <span class="dot warn"></span>' : ""}</button>`).join("")}
+      <span class="sp"><span class="hint">${dirty.length ? "● Ungespeichert in " + dirty.length + " Kapitel" : "Alles gespeichert"}</span>
+      <button class="btn" data-act="mundo" ${misHist.length ? "" : "disabled"}>↶ Rückgängig</button><button class="btn" data-act="mredo" ${misFut.length ? "" : "disabled"}>↷</button>
+      <button class="btn primary" data-act="msave" ${dirty.length ? "" : "disabled"}>Speichern</button></span></div>
+    <p class="hint" style="margin:0 0 10px">${esc(m.briefing)}</p>
+    <div class="mgrid"><div>
+      <div class="mlist" data-drop="mgroup"><h3>Gruppe <span class="count">${m.players.length}</span><button class="btn" data-act="madd" data-side="p" style="margin-left:auto">+ Held</button></h3>
+        <div class="mcards">${m.players.map((e, i) => card(e, "p", i)).join("") || '<div class="empty">Held hierher ziehen</div>'}</div></div>
+      <div class="mlist" data-drop="menemy"><h3>Gegner <span class="count">${m.enemies.length}</span><button class="btn" data-act="madd" data-side="e" style="margin-left:auto">+ Gegner</button></h3>
+        <div class="mcards">${m.enemies.map((e, i) => card(e, "e", i)).join("") || '<div class="empty">Gegner hierher ziehen</div>'}</div>
+        <p class="hint" style="margin:8px 0 0">Neue Gegner bekommen keine Beute und keine Sonderwerte. Mehr oder weniger Gegner ändert die Schwierigkeit (Balancing messen mit <code>tools/balance.py</code>).</p></div>
+    </div><div>
+      ${miniMap(m)}
+      <div class="mwarn"><h3>Story-Prüfung</h3><ul>${(() => { const all = [...wn.global, ...Object.values(wn.byCard).flat()]; return all.length ? all.map(t => `<li>⚠ ${esc(t)}</li>`).join("") : '<li class="ok">✓ Keine Widersprüche zur Geschichte gefunden.</li>'; })()}</ul></div>
+    </div></div>`;
+}
 // ---- Ereignisse
 document.addEventListener("click", e => {
   const b = e.target.closest("[data-act]");
@@ -700,6 +835,7 @@ let dragInfo = null;
 document.addEventListener("dragstart", e => {
   const el = e.target.closest("[data-drag]"); if (!el) return;
   if (el.dataset.drag === "char") dragInfo = { type: "char", id: el.dataset.id };
+  else if (el.dataset.drag === "mcard") dragInfo = { type: "mcard", side: el.dataset.side, i: +el.dataset.i };
   else { const { key, i } = lineCtx(el), li = el.closest(".line"); dragInfo = { type: "line", from: key + "|" + i }; li.classList.add("dragging"); e.dataTransfer.setDragImage(li, 20, 20); }
   e.dataTransfer.setData("text/plain", "x"); e.dataTransfer.effectAllowed = "move";
 });
@@ -708,6 +844,7 @@ document.addEventListener("dragover", e => {
   if (!dragInfo) return;
   const z = e.target.closest(dragInfo.type === "line" ? ".line, [data-drop=add]" : "[data-drop]"); if (!z) return;
   const k = z.dataset.drop;
+  if ((dragInfo.type === "char" && (k === "mgroup" || k === "menemy")) || (dragInfo.type === "mcard" && k === "mrem")) { e.preventDefault(); document.querySelectorAll(".drop").forEach(x => x.classList.remove("drop")); z.classList.add("drop"); return; }
   if (dragInfo.type === "char" && (k === "slot" || k === "add")) { e.preventDefault(); document.querySelectorAll(".drop").forEach(x => x.classList.remove("drop")); z.classList.add("drop"); }
   if (dragInfo.type === "line" && (k === "line" || k === "add")) {
     e.preventDefault(); document.querySelectorAll(".over-top,.over-bot").forEach(x => x.classList.remove("over-top", "over-bot"));
@@ -718,6 +855,9 @@ document.addEventListener("drop", e => {
   if (!dragInfo) return;
   const z = e.target.closest(dragInfo.type === "line" ? ".line, [data-drop=add]" : "[data-drop]"); if (!z) return;
   e.preventDefault();
+  if (dragInfo.type === "mcard" && z.dataset.drop === "mrem") { misRemove(dragInfo.side, dragInfo.i); dragInfo = null; return; }
+  if (dragInfo.type === "char" && (z.dataset.drop === "mgroup" || z.dataset.drop === "menemy")) { misAdd(z.dataset.drop === "mgroup" ? "p" : "e", dragInfo.id); dragInfo = null; return; }
+  if (["mgroup", "menemy", "mrem"].includes(z.dataset.drop)) { dragInfo = null; return; }    // nur die oben behandelten Kombinationen sind Missions-Ziele
   const k = z.dataset.drop, { c, key, i, lines } = lineCtx(z, true);
   if (dragInfo.type === "char") {
     const id = dragInfo.id;
@@ -729,11 +869,11 @@ document.addEventListener("drop", e => {
 });
 
 $("#q").oninput = e => { filter = e.target.value; render(); };
-$("#tabTalks").onclick = () => setView("talks"); $("#tabChars").onclick = () => setView("char");
+$("#tabTalks").onclick = () => setView("talks"); $("#tabChars").onclick = () => setView("char"); $("#tabMis").onclick = () => setView("mis");
 document.addEventListener("input", e => { if (e.target.id === "cq") { cq = e.target.value; renderCharRes(); } });
 $("#undo").onclick = undo; $("#redo").onclick = redo; $("#save").onclick = save; $("#palq").oninput = renderPalette;
 $("#togglePal").onclick = () => document.body.classList.toggle("pal-open");
-addEventListener("beforeunload", e => { if (dirtyIds().length) { e.preventDefault(); e.returnValue = ""; } });
+addEventListener("beforeunload", e => { if (dirtyIds().length || misDirty().length) { e.preventDefault(); e.returnValue = ""; } });
 
 (async () => {
   DB = await (await fetch("/api/data")).json();

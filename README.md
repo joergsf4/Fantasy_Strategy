@@ -18,7 +18,7 @@ Nach „Press Start“ erscheint eine Kapitelauswahl (Testmenü). Steuerung: Mau
 ```
 python3 tools/dialog_editor/server.py     # dann http://127.0.0.1:8765 im Browser öffnen
 ```
-Weboberfläche für alle Gespräche (Einleitung, Abschluss, Gespräche im Kampf mit Auslösern, Rückzug benannter Gegner): Texte bearbeiten, Figuren per Drag-and-Drop zuordnen, Zeilen umsortieren, Vorschau wie im Spiel, neue Gespräche aus einer Beschreibung entwerfen (braucht die Claude-CLI). Zweiter Tab **Charaktere**: Übersicht aller Figuren (erstes Auftreten, Spezialfähigkeit, Missionen mit Dialogzeilen, Werte, Notizen aus `docs/figuren.md`, Material-Check) als Karten oder Tabelle. Nur Python-Standardbibliothek. Test: `python3 -m unittest tools/dialog_editor/test_server.py`.
+Weboberfläche für alle Gespräche (Einleitung, Abschluss, Gespräche im Kampf mit Auslösern, Rückzug benannter Gegner): Texte bearbeiten, Figuren per Drag-and-Drop zuordnen, Zeilen umsortieren, Vorschau wie im Spiel, neue Gespräche aus einer Beschreibung entwerfen (braucht die Claude-CLI). Zweiter Tab **Charaktere**: Übersicht aller Figuren (erstes Auftreten, Spezialfähigkeit, Missionen mit Dialogzeilen, Werte, Notizen aus `docs/figuren.md`, Material-Check) als Karten oder Tabelle. Dritter Tab **Missionen**: Gruppe und Gegner jedes Kapitels per Drag-and-Drop ändern (Figuren aus der Palette in die Listen ziehen, per ✕ oder auf die Palette zurück entfernen) mit Minikarte und **Story-Warnungen** (z. B. Hundsfreund in Kapitel 1, bevor er eingeführt wird; Sprecher ohne Platz; Rückkehrer ohne früheren Auftritt). Gespeichert wird in `game/data/map_chN.json`. Nur Python-Standardbibliothek. Test: `python3 -m unittest tools/dialog_editor/test_server.py`.
 
 ## Tests
 ```

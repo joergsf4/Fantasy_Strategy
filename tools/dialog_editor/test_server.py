@@ -76,6 +76,43 @@ class EditorTest(unittest.TestCase):
         self.assertTrue(by["wart"]["flees"])
         self.assertTrue(all(c["lines_total"] == sum(v["total"] for v in c["chapters"].values()) for c in by.values()))
 
+    def test_missionen_lesen_und_gruppe_speichern(self):
+        data = server.missions()["missions"]
+        by = {m["id"]: m for m in data}
+        self.assertEqual(len(data), len(server.chapter_ids()))
+        self.assertTrue(any(e["id"] == "wart" for e in by["ch2"]["enemies"]))
+        self.assertIn("wart", by["ch3"]["returns"])
+        self.assertGreater(by["ch4"]["speakers"]["kungfu"], 0)
+        # eine Figur mehr in die Gruppe von Kapitel 2 (freies Landfeld), dann zurueck: Datei bleibt byteweise gleich
+        path = server.map_path("ch2")
+        before = path.read_bytes()
+        m = by["ch2"]
+        taken = {tuple(e["pos"]) for e in m["players"] + m["enemies"]} | {tuple(o["pos"]) for o in m["objects"]}
+        spot = next([x, y] for y, row in enumerate(m["rows"]) for x, ch in enumerate(row) if ch == "G" and (x, y) not in taken)
+        server.save_mission("ch2", {"players": m["players"] + [{"id": "claude", "pos": spot}], "enemies": m["enemies"]})
+        self.assertEqual(len(server.missions()["missions"][1]["players"]), len(m["players"]) + 1)
+        server.save_mission("ch2", {"players": m["players"], "enemies": m["enemies"]})
+        self.assertEqual(path.read_bytes(), before)
+
+    def test_mission_speichern_lehnt_ungueltiges_ab(self):
+        m = {x["id"]: x for x in server.missions()["missions"]}["ch2"]
+        water = next(([x, y] for y, row in enumerate(m["rows"]) for x, ch in enumerate(row) if ch == "W"), None)
+        taken = m["players"][0]["pos"]
+        cases = [
+            {"players": m["players"] + [{"id": "gibtsnicht", "pos": [0, 0]}], "enemies": m["enemies"]},
+            {"players": m["players"] + [{"id": "claude", "pos": [99, 99]}], "enemies": m["enemies"]},
+            {"players": m["players"] + [{"id": "claude", "pos": taken}], "enemies": m["enemies"]},
+            {"players": m["players"] + [m["players"][0]], "enemies": m["enemies"]},
+            {"players": [], "enemies": m["enemies"]},
+        ]
+        if water:
+            cases.append({"players": m["players"] + [{"id": "claude", "pos": water}], "enemies": m["enemies"]})
+        before = server.map_path("ch2").read_bytes()
+        for body in cases:
+            with self.assertRaises(ValueError):
+                server.save_mission("ch2", body)
+        self.assertEqual(before, server.map_path("ch2").read_bytes())
+
     def test_leere_flee_und_ideen_werden_entfernt_und_ideen_gespeichert(self):
         b = self.body("ch3")
         b["flee"] = {}
