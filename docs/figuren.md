@@ -337,3 +337,6 @@ Aktuell (Platzhalter): HP 24 · Angriff 3 · Verteidigung 3 · Resistenz 6 · Be
 `quacksalber` · Chibi: `game/assets/tokens/quacksalber.png` · Porträts normal, lachend, wütend
 Aktuell (Platzhalter): HP 26 · Angriff 4 · Verteidigung 3 · Resistenz 3 · Bewegung 3 · Reichweite 1–2 · Heilen 5
 **Spezialfähigkeit: Wundersalbe** (Abklingzeit 2, Reichweite 1–2): heilt 14 HP und entfernt Gift, der Geruch macht das Ziel 1 Runde erschöpft (−2 Verteidigung). Berechenbare Nebenwirkung statt Zufall.
+
+## Sack (Händler)
+Lebender Wollsack aus blauer Häkelwolle, der Händler im Lager (`shop.json`, Porträt `haendler`, Stimme `v_sack`). Keine Kampfeinheit. **Vorstellung** am Ende von Kapitel 1 (Abschluss in `story_ch1.json`, vor dem ersten Lager) im Gespräch mit Ser Albrecht und Mira: Er lag als Wollsack in einer Scheune in Eichenfurt, wurde eines Morgens lebendig („hatte Augen“) und ist seitdem neugierig und pleite. Der Regent hat seinen Marktstand beschlagnahmt (rückwirkend, mit Zinsen), darum begleitet er die Gruppe: Wo sie gewinnt, gibt es Beute und Kundschaft, und er versorgt sie nach jedem Kampf im Lager mit Heiltränken, Gegengift und Rüstung. Pointe: „Ich bin ein Sack. Ich bleibe überall liegen.“

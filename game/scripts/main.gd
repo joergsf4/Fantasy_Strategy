@@ -35,6 +35,7 @@ func _names() -> Dictionary:
 	for id: String in units:
 		n[id] = units[id]["name"]
 	n["waisenkinder"] = "Die Waisenkinder"
+	n["haendler"] = "Sack"          # Haendler im Lager, keine Kampfeinheit
 	n["mutter"] = "Lieselotte"     # Geisel aus Mission 4 (Platzhaltername), keine Kampfeinheit
 	return n
 
@@ -349,7 +350,7 @@ func _screenshot_mode() -> void:
 			layer.layer = 2
 			add_child(layer)
 			var d := Dialogue.new()
-			d.setup(story["intro"].slice(int(OS.get_environment("SHOT_LINE"))), _names())
+			d.setup(story["outro" if OS.get_environment("SHOT_PART") == "outro" else "intro"].slice(int(OS.get_environment("SHOT_LINE"))), _names())
 			layer.add_child(d)
 		var delay := OS.get_environment("SHOT_DELAY")
 		await get_tree().create_timer(float(delay) if delay != "" else 6.0).timeout

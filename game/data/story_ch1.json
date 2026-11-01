@@ -74,6 +74,77 @@
    "right": "wendy",
    "speaker": "ritter",
    "text": "Das war nur ein Vorposten. Der Regent im Süden steckt dahinter. Wir brechen auf."
+  },
+  {
+   "left": "ritter",
+   "right": "haendler",
+   "speaker": "haendler",
+   "text": "Wartet! Nicht schießen, nicht stechen, nicht zuknoten! Ich bin Sack. Händler.",
+   "right_expr": "lachend"
+  },
+  {
+   "left": "ritter",
+   "right": "haendler",
+   "speaker": "ritter",
+   "text": "Ein sprechender Wollsack. In vierzig Jahren habe ich viel gesehen, aber das hier fehlte mir noch."
+  },
+  {
+   "left": "ritter",
+   "right": "haendler",
+   "speaker": "haendler",
+   "text": "Das höre ich oft. Fragt nicht, wie ich lebendig wurde. Ich lag in einer Scheune in Eichenfurt, voll Schafswolle, und eines Morgens hatte ich Augen. Seitdem bin ich neugierig und pleite."
+  },
+  {
+   "left": "ritter",
+   "right": "haendler",
+   "speaker": "ritter",
+   "text": "Und was wollt Ihr von uns?"
+  },
+  {
+   "left": "ritter",
+   "right": "haendler",
+   "speaker": "haendler",
+   "text": "Verkaufen! Ihr kämpft, ihr werdet verletzt, ihr verliert Schwerter. Ich habe Heiltränke, Gegengift und Rüstung, und alles passt in mich hinein."
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "haendler",
+   "speaker": "maedchen_baer",
+   "text": "Brumm sagt, du riechst nach Schaf und nach Abenteuer. Aber warum gehst du mit uns? Händler bleiben doch im Dorf.",
+   "left_expr": "lachend"
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "haendler",
+   "speaker": "haendler",
+   "text": "Der Regent hat meinen Marktstand beschlagnahmt, rückwirkend und mit Zinsen. Wo er verliert, werden meine Preise wieder sicher. Und wo ihr gewinnt, gibt es Beute: Gold für euch, Kundschaft für mich."
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "haendler",
+   "speaker": "maedchen_baer",
+   "text": "Dann bist du dabei. Brumm wird dich mögen, fürchte ich.",
+   "left_expr": "lachend"
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "haendler",
+   "speaker": "haendler",
+   "text": "Sagt ihm, ich bin nicht aus Honig. Ihr findet mich nach jedem Kampf im Lager. Stammkunden zahlen den gleichen Preis. Ich bin sehr treu.",
+   "right_expr": "lachend"
+  },
+  {
+   "left": "ritter",
+   "right": "haendler",
+   "speaker": "ritter",
+   "text": "Meinetwegen. Aber wenn der Sack stört, bleibt er im Lager."
+  },
+  {
+   "left": "ritter",
+   "right": "haendler",
+   "speaker": "haendler",
+   "text": "Ich bin ein Sack. Ich bleibe überall liegen.",
+   "right_expr": "lachend"
   }
  ]
 }
