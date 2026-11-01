@@ -709,6 +709,20 @@ const FX_SCENES := {
 	"polymorph": {"u": ["claude", "p", [3, 7]], "t": ["soldat_infanterie", "e", [6, 7]], "more": []},
 	"giftstachel": {"u": ["bienenmaedchen", "p", [3, 7]], "t": ["soldat_infanterie", "e", [5, 7]], "more": []},
 	"fasswurf": {"u": ["braumeisterin", "p", [3, 7]], "t": ["soldat_infanterie", "e", [6, 7]], "more": []},
+	"wollmantel": {"u": ["wendy", "p", [3, 7]], "t": ["ritter", "p", [5, 7]], "more": [["soldat_infanterie", "e", [7, 7]]]},
+	"baerengebruell": {"u": ["maedchen_baer", "p", [4, 7]], "t": ["soldat_infanterie", "e", [6, 7]], "more": []},
+	"stabwirbel": {"u": ["kungfu", "p", [5, 7]], "t": "self", "more": [["soldat_infanterie", "e", [6, 7]], ["soldat_infanterie", "e", [5, 6]], ["soldat_beritten", "e", [4, 8]]]},
+	"wutanfall": {"u": ["elisabeth", "p", [4, 7]], "t": "self", "more": [["soldat_infanterie", "e", [7, 7]]]},
+	"bienenkorb": {"u": ["bienenmaedchen", "p", [4, 7]], "tile": [6, 7], "more": [["soldat_infanterie", "e", [9, 7]]]},
+	"prost": {"u": ["braumeisterin", "p", [4, 7]], "t": ["ritter", "p", [5, 7], {"hp": 14}], "more": []},
+	"bearhug": {"u": ["museklaugust", "p", [4, 7]], "t": ["soldat_infanterie", "e", [5, 7]], "more": []},
+	"kyujutsu": {"u": ["samurai", "p", [2, 7]], "t": ["soldat_infanterie", "e", [6, 7]], "more": []},
+	"brandbombe": {"u": ["oskar", "p", [3, 7]], "t": ["soldat_infanterie", "e", [6, 7]], "more": []},
+	"flucht": {"u": ["maja", "e", [5, 7]], "t": "self", "more": [["ritter", "p", [4, 7]]]},
+	"tonikum": {"u": ["quacksalber", "p", [3, 7]], "tile": [5, 7], "more": [["ritter", "p", [5, 7]], ["soldat_infanterie", "e", [6, 7]], ["soldat_infanterie", "e", [5, 6]]]},
+	"hinterhalt": {"u": ["ninjas", "p", [4, 7]], "t": ["soldat_infanterie", "e", [5, 7], {"dir": [1, 0]}], "more": []},
+	"bellen": {"u": ["hund", "p", [5, 7]], "t": "self", "more": [["soldat_infanterie", "e", [7, 7]], ["soldat_infanterie", "e", [5, 5]], ["soldat_beritten", "e", [3, 8]]]},
+	"sternschnuppe": {"u": ["magical_girl", "p", [2, 7]], "t": ["soldat_infanterie", "e", [8, 7]], "more": []},
 }
 
 
@@ -725,7 +739,7 @@ func _fx_strip(id: String) -> void:
 	b.units.clear()
 	var sc: Dictionary = FX_SCENES[id]
 	var hero := _fx_spawn(b, sc["u"])
-	var tgt: Dictionary = hero if str(sc["t"]) == "self" else _fx_spawn(b, sc["t"])
+	var tgt: Dictionary = {"pos": Vector2i(sc["tile"][0], sc["tile"][1]), "tile": true} if sc.has("tile") else (hero if str(sc["t"]) == "self" else _fx_spawn(b, sc["t"]))
 	for o: Array in sc["more"]:
 		_fx_spawn(b, o)
 	# Kamera naeher ans Geschehen
@@ -762,6 +776,8 @@ func _fx_spawn(b: Battle, spec: Array) -> Dictionary:
 		var o: Dictionary = spec[3]
 		if o.has("hp"):
 			u["hp"] = o["hp"]
+		if o.has("dir"):
+			u["dir"] = Vector2i(o["dir"][0], o["dir"][1])
 		for s: String in o.get("status", []):
 			Status.add(u, s, 3)
 		b._refresh_unit(u)

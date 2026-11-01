@@ -1,6 +1,58 @@
 {
  "wendy": [
   null,
-  "Wollmantel. Wendy wirft einen Wollmantel über ein Ziel, der zwei Runden lang 50% schaden absorbiert."
+  "Wollmantel. Wendy wirft einen Wollmantel über ein Ziel, der zwei Runden lang 50% schaden absorbiert.."
+ ],
+ "maedchen_baer": [
+  null,
+  "Bärengebrüll: Brumm schüchtert einen Gegner ein, sodass er zwei Runden wegläuft."
+ ],
+ "kungfu": [
+  null,
+  "Stabwirbel. Lin trifft mehrere Gegner um sich. quasi wie Takeda."
+ ],
+ "elisabeth": [
+  null,
+  "Arrr: Elisabeth hat einen Wutanfall. Doppelter Schaden aber zwei Runden nicht steuerbar. Greift random Ziele an."
+ ],
+ "bienenmaedchen": [
+  null,
+  "Verstärkung: Stachelia stellt einen Bienenkorb hin, aus dem Bienensoldaten spawnen.( überlegen wie das nicht zu mächtig wird)"
+ ],
+ "braumeisterin": [
+  null,
+  "Prost: Brunhilde gibt einem angrenzenden verbündeten ein Bier, das moderat heilt."
+ ],
+ "museklaugust": [
+  null,
+  "Bearhug: Agust greift einen Gegner und quetscht ihn. großer schaden"
+ ],
+ "samurai": [
+  null,
+  "Kyujutsu: Dekade zieht seinen Bogen und  kann vier Felder weit schießen. Schaden wir bei Nahkampf."
+ ],
+ "oskar": [
+  null,
+  "Brandbombe: 3 Felder Reichweite. Schaden über Zeit."
+ ],
+ "maja": [
+  null,
+  "Flucht: ist Maja stark verletzt, dann nutzt sie Flucht. Rauch entsteht und sie spawnt irgendwo random am Kartenrand und wird 20% geheilt."
+ ],
+ "quacksalber": [
+  null,
+  "Tonikum: wirft Flasche zwei Felder weit: Buffe für Bewegungsreichweite bei verbündeten. Übelkeit bei Gegnern für zwei Runden.(vll so mit gründen blubberblasen die aufsteigen) verlangsamt Gegner."
+ ],
+ "ninjas": [
+  null,
+  "Hinterhältiger Angriff. Tötet normale Gegner( Büttel ect.) sofort. Funktioniert nur von hinten."
+ ],
+ "hund": [
+  null,
+  "Bellen: Jagd manchen Gegnern(zufällig) angst ein. Fliehen zwei Runden."
+ ],
+ "magical_girl": [
+  null,
+  "Sternschnuppe: Sternschnuppe fällt vom Himmel und fügt normalen Nahkampfschaden zu aber Kartenweite Reichweite."
  ]
 }

@@ -109,3 +109,19 @@ Folgen, die ich prüfe: Ser Albrecht (Schlachtruf und Verspotten, je 4) und Robo
 
 - Alle Annahmen sind bestätigt bzw. korrigiert.
 - Soll die Schick-Stufe mit Flipbook-Animationen gleich mitkommen (mehr Gemini-Arbeit, schöneres Ergebnis) oder erst nach Phase G?
+
+
+## 10. Stand der Umsetzung (2026-11-01)
+
+Alle 14 Fähigkeiten sind im Spiel (`abilities.json`, `units.json`), mit Animation (`scripts/fx/fx_new.gd`), Sound (`make_sfx.py`, `sfx.json`) und Test (`tests/test_new_abilities.gd`). Abweichungen und Besonderheiten gegenüber dem Plan:
+
+- **Gemeinsame Abklingzeit:** `Items.start_cooldown`. Ausgenommen (`"solo": true`) sind die schon vorhandenen Paare Schlachtruf/Verspotten (Albrecht), Roter/Grüner Laser (Robo), Stabsprung (Lin, freie Aktion) und Majas Flucht. Ohne diese Ausnahmen wäre Mission 3 bei ×1,6 von 18 % auf 7 % gefallen.
+- **Panik statt Angst:** „scared“ ist schon der Status von Majas Eisigem Blick (−3 ATK, −1 DEF). Brumm und der Hund setzen daher den neuen Status `angst` („Panik“, Gegner laufen weg und greifen nicht an).
+- **Bienenkorb** ist ein Weltobjekt (`hive_p` in `objects.json`), kein eigener Figurentyp: schlüpft alle 2 Runden einen Bienenkrieger (höchstens 3), löst sich nach 6 Runden auf (`Battle._player_hive_phase`).
+- **Wutanfall:** Status `wut` dauert 3 Phasen (= zwei Runden Kontrollverlust); die Figur handelt am Phasenanfang selbst (`_rage_phase`), Zufallsziel auch unter Freunden.
+- **Tonikum und Bienenkorb** haben die neue Zielart `tile` (Feldwahl mit Flächenvorschau).
+- **Hinterhalt** prüft die Blickrichtung (`u["dir"]`); Ziele „normal“ sind Figuren mit Marke `standard` oder `schwarm`.
+- **Simulator:** kennt Hinterhalt, Panik, Brennen, Wollmantel und die Flächenwirkungen; Bienenkorb, Tonikum, Wutanfall und Majas Flucht bleiben unmodelliert (der Simulator unterschätzt die Helden dort leicht).
+- **Messung (Simulator, 450 Kämpfe je Zelle):** Mission 3 ×1,6: 18 % → 17 %; Mission 5 ×2,0: 31 % → 70 %; Mission 6 ×1,5: 93 % → 93 %; Mission 7 ×1,25 (neue Heiler): 86 % → 78 %. Die Missionen auf ×1,0 bleiben bei 100 %.
+- **Sprites:** 15 neue `fx_*` (Wolle, Gebrüll, Stab, Dampf, Zornader, Krug, Krack, Bombe, Flamme, Flasche, Wuff, Sternschnuppe, Rauchkugel, Flügelschuh, Übel). Die Zornader ist ein einzelner Bogen, die Marke setzt `_anger_mark` aus vier Stücken zusammen.
+- **Noch offen:** Flipbook-Animationen (Schick-Stufe), Statussymbole im Info-Feld der Figurenkarte, Feinabstimmung der Abklingzeiten nach dem Probespielen, Mission-Balance (Mission 5 ist mit den neuen Fähigkeiten etwas leichter).

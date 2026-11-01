@@ -80,6 +80,16 @@ static func _status_value(b: SimBattle, u: Dictionary, v: Dictionary, ef: Dictio
 			return 3.0
 		"scared":
 			return float(v["atk"]) * 0.8 if v["team"] != u["team"] else 0.0
+		"angst":
+			return float(v["atk"]) * 1.2 if v["team"] != u["team"] else 0.0
+		"schild":
+			return float(v["maxhp"]) * 0.3 if v["team"] == u["team"] and not Status.has(v, "schild") else 0.0
+		"brennen":
+			return 6.0 if v["team"] != u["team"] and not Status.has(v, "brennen") else 0.0
+		"uebel":
+			return 3.0 if v["team"] != u["team"] else 0.0
+		"tempo":
+			return 2.0 if v["team"] == u["team"] else 0.0
 		"tired":
 			return float(mods.get("def", 0)) * 1.5
 	return 0.0
@@ -117,6 +127,8 @@ static func ab_value(b: SimBattle, u: Dictionary, ab: Dictionary, target: Dictio
 				total += _val_damage(target, fc3["dmg"]) + float(target["atk"]) * 0.9
 			"polymorph":
 				total += float(target["atk"]) * 2.4 + float(target["maxhp"]) * 0.15
+			"assassinate":
+				total += float(target["hp"]) * 1.1 + float(target["atk"]) * 0.9 if b.is_normal(target) else float(b.forecast(u, target, pos, ef["mult"])["dmg"])
 	return total
 
 
@@ -193,6 +205,8 @@ static func best_action_at(b: SimBattle, u: Dictionary, t: Vector2i, targets: Ar
 		var ab: Dictionary = abd[id]
 		var pen := float(ab["cd"]) * 0.5
 		var tgt: String = ab["target"]
+		if tgt == "tile" or ab.has("ai_flee"):
+			continue      # Bienenkorb, Tonikum, Flucht modelliert der Simulator nicht
 		if tgt == "self":
 			var s3 := ab_value(b, u, ab, u, t) - pen
 			if s3 > best_s:

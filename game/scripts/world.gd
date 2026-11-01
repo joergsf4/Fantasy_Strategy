@@ -25,6 +25,18 @@ func _init(list: Array = []) -> void:
 		})
 
 
+## Objekt zur Laufzeit hinzufuegen (Bienenkorb der Stachelia).
+func add_object(type: String, pos: Vector2i, extra := {}) -> Dictionary:
+	var d: Dictionary = defs()[type]
+	var o := {
+		"id": "%s_%d_%d_%d" % [type, pos.x, pos.y, objects.size()], "type": type, "pos": pos, "state": d["start"],
+		"hp": int(d.get("hp", 0)), "maxhp": int(d.get("hp", 0)), "age": 0, "link": [], "dir": "v", "look": "",
+	}
+	o.merge(extra, true)
+	objects.append(o)
+	return o
+
+
 func at(p: Vector2i) -> Dictionary:
 	for o in objects:
 		if o["pos"] == p:

@@ -16,6 +16,7 @@ var _soft: Texture2D
 var _ring: Texture2D
 var _hitstop_busy := false
 var ab: FxAbilities
+var nw: FxNew
 
 
 func setup(b: Battle) -> void:
@@ -32,6 +33,7 @@ func setup(b: Battle) -> void:
 	_soft = _make_soft()
 	_ring = _make_ring()
 	ab = FxAbilities.new(self)
+	nw = FxNew.new(self)
 
 
 ## Hat diese Faehigkeit eine eigene Animation?
@@ -686,6 +688,31 @@ func polymorph_in(u: Dictionary) -> void:
 func on_heal(id: String, u: Dictionary, v: Dictionary, amount: int, cured: bool) -> void:
 	Sfx.ability(id, "heal", u, v)
 	ab.on_heal(id, u, v, amount, cured)
+	nw.on_heal(id, u, v)
+
+
+func hive_appear(u: Dictionary, p: Vector3) -> void:
+	await nw.hive_appear(u, p)
+
+
+func assassinate(u: Dictionary, v: Dictionary) -> void:
+	await nw.assassinate(u, v)
+
+
+func scared_shiver(v: Dictionary) -> void:
+	await nw.scared_shiver(v)
+
+
+func rage_burst(u: Dictionary) -> void:
+	nw.rage_burst(u)
+
+
+func vanish_out(u: Dictionary) -> void:
+	await nw.vanish_out(u)
+
+
+func vanish_in(u: Dictionary) -> void:
+	await nw.vanish_in(u)
 
 
 func after(id: String, u: Dictionary, target: Dictionary) -> void:
@@ -796,8 +823,9 @@ func _status_holder(id: String, n: Node3D) -> Node3D:
 		"tired":
 			_loop_particles(root, "fx_sweat", Vector3(0.2, 1.7, 0), 2, 0.5, 0.2, 1.0, 3.0, Color.WHITE)
 		_:
-			root.queue_free()
-			return null
+			if not nw.status_holder(id, root):
+				root.queue_free()
+				return null
 	return root
 
 

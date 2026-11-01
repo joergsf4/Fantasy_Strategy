@@ -11,7 +11,8 @@
   "role": "tank",
   "dmg_type": "body",
   "abilities": [
-   "baerenpranke"
+   "baerenpranke",
+   "baerengebruell"
   ],
   "weapon": "fist",
   "body": "flesh",
@@ -50,7 +51,8 @@
   "role": "damage",
   "dmg_type": "body",
   "abilities": [
-   "todeswirbel"
+   "todeswirbel",
+   "kyujutsu"
   ],
   "weapon": "metal",
   "body": "flesh",
@@ -69,7 +71,8 @@
   "role": "melee",
   "dmg_type": "body",
   "abilities": [
-   "stabsprung"
+   "stabsprung",
+   "stabwirbel"
   ],
   "weapon": "wood",
   "body": "flesh",
@@ -88,7 +91,8 @@
   "role": "damage",
   "dmg_type": "body",
   "abilities": [
-   "versteck"
+   "versteck",
+   "hinterhalt"
   ],
   "ranged_mult": 0.7,
   "weapon": "metal",
@@ -108,7 +112,8 @@
   "role": "ranged",
   "dmg_type": "body",
   "abilities": [
-   "kanone"
+   "kanone",
+   "wutanfall"
   ],
   "weapon": "metal",
   "body": "flesh",
@@ -127,7 +132,8 @@
   "role": "damage",
   "dmg_type": "body",
   "abilities": [
-   "wurf"
+   "wurf",
+   "bearhug"
   ],
   "weapon": "fist",
   "body": "flesh",
@@ -166,7 +172,8 @@
   "role": "damage",
   "dmg_type": "body",
   "abilities": [
-   "knochenwurf"
+   "knochenwurf",
+   "bellen"
   ],
   "weapon": "fist",
   "body": "flesh",
@@ -187,7 +194,8 @@
   "dmg_type": "magic",
   "heal": 8,
   "abilities": [
-   "gruppenheilung"
+   "gruppenheilung",
+   "wollmantel"
   ],
   "weapon": "wood",
   "body": "flesh",
@@ -225,7 +233,8 @@
   "dmg_type": "body",
   "flying": true,
   "abilities": [
-   "giftstachel"
+   "giftstachel",
+   "bienenkorb"
   ],
   "weapon": "metal",
   "body": "flesh",
@@ -244,7 +253,8 @@
   "role": "tank",
   "dmg_type": "body",
   "abilities": [
-   "fasswurf"
+   "fasswurf",
+   "prost"
   ],
   "weapon": "wood",
   "body": "flesh",
@@ -407,7 +417,8 @@
    "boss"
   ],
   "abilities": [
-   "befehl"
+   "befehl",
+   "brandbombe"
   ],
   "flees": true,
   "weapon": "metal",
@@ -429,7 +440,8 @@
    "boss"
   ],
   "abilities": [
-   "einschuechtern"
+   "einschuechtern",
+   "flucht"
   ],
   "ranged_mult": 0.8,
   "flees": true,
@@ -491,7 +503,8 @@
   "dmg_type": "magic",
   "heal": 6,
   "abilities": [
-   "sternensegen"
+   "sternensegen",
+   "sternschnuppe"
   ],
   "weapon": "wood",
   "body": "flesh",
@@ -512,7 +525,8 @@
   "dmg_type": "body",
   "heal": 5,
   "abilities": [
-   "wundersalbe"
+   "wundersalbe",
+   "tonikum"
   ],
   "weapon": "wood",
   "body": "flesh",

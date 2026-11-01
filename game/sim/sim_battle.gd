@@ -186,7 +186,7 @@ func obj_targets(u: Dictionary, id: String, pos: Vector2i) -> Array[Dictionary]:
 
 func extinguish_ability(u: Dictionary, id: String, o: Dictionary) -> void:
 	var ab: Dictionary = ab_defs()[id]
-	u["cd"][id] = Items.cooldown_for(u, int(ab["cd"]))
+	Items.start_cooldown(u, id, int(ab["cd"]))
 	var s := _ab_stat(u, id)
 	s["uses"] += 1
 	for other in world.objects:
@@ -312,7 +312,7 @@ func ready_abilities(u: Dictionary) -> Array:
 ## Wo kann die Einheit hinziehen? {Vector2i: Kosten}, ohne belegte Felder (eigenes Feld bleibt).
 func reach_tiles(u: Dictionary) -> Dictionary:
 	var foe_team := "e" if u["team"] == "p" else "p"
-	var reach := grid.reachable(u["pos"], u["move"], u["flying"], team_tiles(foe_team))
+	var reach := grid.reachable(u["pos"], Combat.move_of(u), u["flying"], team_tiles(foe_team))
 	for o in units:
 		if o != u:
 			reach.erase(o["pos"])
@@ -378,7 +378,7 @@ func move_to(u: Dictionary, goal: Vector2i) -> void:
 	if goal == u["pos"]:
 		return
 	var foe_team := "e" if u["team"] == "p" else "p"
-	var full := grid.reachable(u["pos"], u["move"], u["flying"], team_tiles(foe_team))
+	var full := grid.reachable(u["pos"], Combat.move_of(u), u["flying"], team_tiles(foe_team))
 	var path := grid.path_to(u["pos"], goal, full, u["flying"])
 	var run := 0
 	var last := Vector2i.ZERO
@@ -444,6 +444,8 @@ func first_effect(ab: Dictionary, type: String) -> Dictionary:
 func ab_targets(u: Dictionary, id: String, pos: Vector2i) -> Array[Dictionary]:
 	var ab: Dictionary = ab_defs()[id]
 	var out: Array[Dictionary] = []
+	if ab["target"] == "tile":
+		return out
 	if ab["target"] == "self":
 		out.append(u)
 		return out
@@ -454,6 +456,8 @@ func ab_targets(u: Dictionary, id: String, pos: Vector2i) -> Array[Dictionary]:
 			continue
 		if ab["target"] == "enemy":
 			if o["team"] == u["team"] or Status.has(o, "stealth"):
+				continue
+			if ab.get("require_back", false) and not from_behind(pos, o):
 				continue
 			if ab.has("require_tag") and not (o["tags"] as Array).has(ab["require_tag"]):
 				continue
@@ -472,6 +476,16 @@ func ab_targets(u: Dictionary, id: String, pos: Vector2i) -> Array[Dictionary]:
 				continue
 			out.append(o)
 	return out
+
+
+func from_behind(pos: Vector2i, o: Dictionary) -> bool:
+	var rel := Vector2(pos - o["pos"])
+	return rel != Vector2.ZERO and Vector2(o["dir"]) != Vector2.ZERO and rel.normalized().dot(Vector2(o["dir"]).normalized()) < -0.5
+
+
+func is_normal(o: Dictionary) -> bool:
+	var tags: Array = o["tags"]
+	return tags.has("standard") or tags.has("schwarm")
 
 
 func area_tiles(ab: Dictionary, center: Vector2i) -> Array[Vector2i]:
@@ -521,7 +535,7 @@ func effect_victims(u: Dictionary, ab: Dictionary, target: Dictionary, to: Strin
 
 func run_ability(u: Dictionary, id: String, target: Dictionary) -> void:
 	var ab: Dictionary = ab_defs()[id]
-	u["cd"][id] = Items.cooldown_for(u, int(ab["cd"]))
+	Items.start_cooldown(u, id, int(ab["cd"]))
 	_ab_stat(u, id)["uses"] += 1
 	if target != u:
 		turn_towards(u, target["pos"])
@@ -546,7 +560,35 @@ func _apply_effect(u: Dictionary, ab: Dictionary, target: Dictionary, ef: Dictio
 				return o["team"] != u["team"] and o != target and Grid.dist(o["pos"], target["pos"]) == 1)
 			for v in near:
 				strike(u, v, ef["mult"], 0.0, false, id)
+		"assassinate":
+			if units.has(target):
+				if is_normal(target):
+					var kd: int = target["hp"]
+					target["hp"] = 0
+					_credit(u, target, kd, id)
+					_kill(u, target, id)
+				else:
+					strike(u, target, ef["mult"], 0.0, false, id)
+		"vanish":
+			var edge: Array[Vector2i] = []
+			for y in grid.height:
+				for x in grid.width:
+					if x == 0 or y == 0 or x == grid.width - 1 or y == grid.height - 1:
+						var p := Vector2i(x, y)
+						if tile_free(p, u) and world.at(p).is_empty() and Grid.dist(p, u["pos"]) > 2:
+							edge.append(p)
+			if not edge.is_empty():
+				u["pos"] = edge[rng.randi() % edge.size()]
+			u["hp"] += mini(roundi(float(ef.get("heal_pct", 0.2)) * u["maxhp"]), u["maxhp"] - u["hp"])
 		"status":
+			if ef.has("chance"):
+				var kept: Array[Dictionary] = []
+				for v in victims:
+					if rng.randf() < float(ef["chance"]):
+						kept.append(v)
+				if kept.is_empty() and not victims.is_empty():
+					kept.append(victims[rng.randi() % victims.size()])
+				victims = kept
 			for v in victims:
 				var src: String = u["uid"] if ef["id"] == "taunt" else ""
 				Status.add(v, ef["id"], int(ef["turns"]), ef.get("mods", {}), src)
@@ -619,7 +661,7 @@ func begin_phase(team: String) -> void:
 		u["charge"] = 0
 		var stunned := Status.has(u, "stun")
 		for ev: Dictionary in Status.tick_phase_start(u):
-			if ev["type"] == "poison":
+			if ev["type"] == "poison" or ev["type"] == "burn":
 				var dmg := mini(int(ev["amount"]), u["hp"])
 				u["hp"] -= dmg
 				u["st"]["taken"] += dmg
@@ -686,7 +728,8 @@ func act_phase(team: String) -> void:
 	for u in _order(team):
 		if not units.has(u) or u["done"]:
 			continue
-		SimAI.take_turn(self, u)
+		if not Status.has(u, "angst"):      # in Panik: laeuft weg: die Aktion faellt aus
+			SimAI.take_turn(self, u)
 		u["done"] = true
 		if team == "e" and units.has(u):
 			sting_check(u)

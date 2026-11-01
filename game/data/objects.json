@@ -144,5 +144,16 @@
   ],
   "hp": 0,
   "solutions": {}
+ },
+ "hive_p": {
+  "name": "Bienenkorb",
+  "start": "active",
+  "active": "active",
+  "blocks": [
+   "active"
+  ],
+  "hp": 0,
+  "def": 0,
+  "solutions": {}
  }
 }

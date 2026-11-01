@@ -119,7 +119,9 @@ class EditorTest(unittest.TestCase):
         ritter = by["ritter"]["ability_notes"]["defaults"]
         self.assertTrue(ritter[0].startswith("Schlachtruf") and ritter[1].startswith("Verspotten"))     # zwei Faehigkeiten: beide Felder gefuellt
         ninjas = by["ninjas"]["ability_notes"]["defaults"]
-        self.assertTrue(ninjas[0].startswith("Versteck") and ninjas[1] == "")                           # eine Faehigkeit: zweites Feld leer
+        self.assertTrue(ninjas[0].startswith("Versteck") and ninjas[1].startswith("Hinterh"))           # zwei Faehigkeiten (seit den neuen Faehigkeiten)
+        claude = by["claude"]["ability_notes"]["defaults"]
+        self.assertTrue(claude[0].startswith("Polymorph") and claude[1] == "")                          # eine Faehigkeit: zweites Feld leer
         self.assertEqual(by["soldat_infanterie"]["ability_notes"]["defaults"], ["", ""])                # keine: beide leer
         server.save_ability_note("ninjas", 1, "  Rauchbombe: legt eine Nebelwand.  ")
         n = {c["id"]: c for c in server.characters()["characters"]}["ninjas"]["ability_notes"]

@@ -141,5 +141,20 @@
  "fx_beutel": true,
  "fx_pfahl": true,
  "fx_hebel": true,
- "fx_haus_praxis": true
+ "fx_haus_praxis": true,
+ "fx_wolle": true,
+ "fx_bruell": true,
+ "fx_stab": true,
+ "fx_dampf": true,
+ "fx_bierkrug": true,
+ "fx_krack": true,
+ "fx_bombe": true,
+ "fx_flamme": true,
+ "fx_flasche": true,
+ "fx_wuff": true,
+ "fx_sternschnuppe": true,
+ "fx_rauchkugel": true,
+ "fx_fluegelschuh": true,
+ "fx_uebel": true,
+ "fx_wutader": true
 }

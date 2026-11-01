@@ -152,5 +152,47 @@
  },
  "wundersalbe": {
   "lunge": false
+ },
+ "wollmantel": {
+  "lunge": false
+ },
+ "baerengebruell": {
+  "lunge": false
+ },
+ "stabwirbel": {
+  "lunge": false
+ },
+ "wutanfall": {
+  "lunge": false
+ },
+ "bienenkorb": {
+  "lunge": false
+ },
+ "prost": {
+  "lunge": false
+ },
+ "bearhug": {
+  "lunge": false
+ },
+ "kyujutsu": {
+  "lunge": false
+ },
+ "brandbombe": {
+  "lunge": false
+ },
+ "flucht": {
+  "lunge": false
+ },
+ "tonikum": {
+  "lunge": false
+ },
+ "hinterhalt": {
+  "lunge": false
+ },
+ "bellen": {
+  "lunge": false
+ },
+ "sternschnuppe": {
+  "lunge": false
  }
 }

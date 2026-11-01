@@ -68,6 +68,8 @@ func windup(id: String, u: Dictionary, target: Dictionary) -> void:
 			await fx.squash(u, 0.92, 1.1, 0.3)
 		"fasswurf":
 			await _barrel_up(u)
+		_:
+			await fx.nw.windup(id, u, target)
 
 
 ## Wellen/Flaechen/Strahlen, die vor den Treffern ablaufen.
@@ -85,6 +87,8 @@ func cast(id: String, u: Dictionary, target: Dictionary, tiles: Array[Vector2i])
 			await _laser_fire(u, target)
 		"gruener_laser":
 			await _green_beam(u, target)
+		_:
+			await fx.nw.cast(id, u, target, tiles)
 
 
 func before_hit(id: String, u: Dictionary, v: Dictionary, _i: int) -> void:
@@ -97,6 +101,8 @@ func before_hit(id: String, u: Dictionary, v: Dictionary, _i: int) -> void:
 			await fx.projectile("fx_glob", fx.chest(u, 0.65), fx.chest(v, 0.5), 0.4, 0.6, 0.55, 2.0, "fx_bubble")
 		"fasswurf":
 			await _barrel_throw(u, v)
+		_:
+			await fx.nw.before_hit(id, u, v, _i)
 
 
 func on_hit(id: String, u: Dictionary, v: Dictionary, _i: int) -> void:
@@ -111,9 +117,13 @@ func on_hit(id: String, u: Dictionary, v: Dictionary, _i: int) -> void:
 			_splat(u, v)
 		"fasswurf":
 			_barrel_burst(u, v)
+		_:
+			fx.nw.on_hit(id, u, v, _i)
 
 
 func on_status(_id: String, u: Dictionary, v: Dictionary, status: String) -> void:
+	if await fx.nw.status(_id, u, v, status):
+		return
 	match status:
 		"buff":
 			fx.hop(v, 0.2, 0.2)

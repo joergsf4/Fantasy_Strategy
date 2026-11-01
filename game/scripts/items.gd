@@ -66,6 +66,25 @@ static func cooldown_for(u: Dictionary, base_cd: int) -> int:
 	return maxi(1, base_cd - int(u.get("cd_bonus", 0))) if base_cd > 0 else 0
 
 
+## Gemeinsame Abklingzeit: Nach einer Faehigkeit sind alle Faehigkeiten der Figur fuer deren Dauer gesperrt.
+static func start_cooldown(u: Dictionary, id: String, base_cd: int) -> void:
+	var cd := cooldown_for(u, base_cd)
+	u["cd"][id] = cd
+	if _ability_defs()[id].get("solo", false):
+		return
+	for other: String in u.get("abilities", []):
+		if not _ability_defs()[other].get("solo", false):
+			u["cd"][other] = maxi(int(u["cd"].get(other, 0)), cd)
+
+
+static var _abs: Dictionary = {}
+
+static func _ability_defs() -> Dictionary:
+	if _abs.is_empty():
+		_abs = JSON.parse_string(FileAccess.get_file_as_string("res://data/abilities.json"))
+	return _abs
+
+
 ## Mag u (bzw. ein Ziel) diesen Gegenstand sinnvoll bekommen? Fuer Menue und KI.
 static func useful_on(id: String, target: Dictionary) -> bool:
 	var it: Dictionary = consumables()[id]

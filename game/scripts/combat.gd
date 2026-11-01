@@ -54,11 +54,18 @@ static func position_bonus(att_pos: Vector2i, def_pos: Vector2i, def_dir: Vector
 ## Schaden eines Treffers. mult = Faehigkeitsfaktor, ignore_def = Anteil der Verteidigung, der ignoriert wird.
 static func damage(att: Dictionary, def: Dictionary, cover: int, pos_bonus: float, mult := 1.0, ignore_def := 0.0, flat := 0) -> int:
 	var defense := stat(def, "res" if att.get("dmg_type", "body") == "magic" else "def")
-	var raw := roundi(float(stat(att, "atk") + flat) * mult * (1.0 + pos_bonus))
+	var raw := roundi(float(stat(att, "atk") + flat) * mult * (1.0 + pos_bonus) * (2.0 if Status.has(att, "wut") else 1.0))
 	var dmg := maxi(1, raw - roundi(float(defense) * (1.0 - ignore_def)) - cover)
 	if Status.has(def, "defend"):
 		dmg = maxi(1, ceili(float(dmg) * defend_factor(def)))
+	if Status.has(def, "schild"):
+		dmg = maxi(1, ceili(float(dmg) * 0.5))      # Wollmantel
 	return dmg
+
+
+## Bewegungsweite inkl. Status (Beflügelt +1, Übel −2), mindestens 1.
+static func move_of(u: Dictionary) -> int:
+	return maxi(1, stat(u, "move"))
 
 
 static func defend_factor(u: Dictionary) -> float:

@@ -436,6 +436,77 @@ def pickup(rng):
 
 
 # name -> (Funktion, Varianten, Zielpegel in dBFS)
+# Neue Faehigkeiten (docs/faehigkeiten_plan.md)
+def wool_poof(rng):
+    n = int(SR * 0.45)
+    soft = filt(noise(rng, n), "band", [300, 2200]) * dec(0.45, 0.1) * 0.5
+    return fade(soft + 0.6 * thump(180, 70, 0.45, 0.08) + 0.15 * tone(900, 0.45, f_end=500) * dec(0.45, 0.1))
+
+
+def roar(rng):
+    t = t_(0.9)
+    growl = tone(85, 0.9, "saw", vib=0.08, vib_rate=22, f_end=60) * (0.6 + 0.4 * np.sin(2 * np.pi * 30 * t))
+    body = filt(growl, "low", 700) * np.sin(np.pi * np.minimum(t / 0.9, 1)) ** 0.5
+    return fade(body * 0.8 + 0.35 * filt(noise(rng, len(t)), "band", [200, 1400]) * dec(0.9, 0.4), 0.02, 0.1)
+
+
+def rage(rng):
+    t = t_(0.8)
+    scream = tone(520, 0.8, "saw", vib=0.04, vib_rate=11, f_end=300) * np.sin(np.pi * np.minimum(t / 0.8, 1)) ** 0.4
+    steam = filt(noise(rng, len(t)), "high", 3000) * dec(0.8, 0.35) * 0.3
+    return fade(filt(scream, "band", [350, 3000]) * 0.5 + steam)
+
+
+def hive_drop(rng):
+    return fade(mix((thump(120, 45, 0.4, 0.09) * 1.2, 0, 1), (buzz(rng) * 0.6, 0.12, 0.8), (band(rng, 0.25, 300, 2500, 0.08), 0, 0.5)))
+
+
+def mug_slide(rng):
+    slide = filt(noise(rng, int(SR * 0.3)), "band", [400, 2500]) * dec(0.3, 0.12) * 0.35
+    clack = modal(rng, [620, 1250, 2300], [0.05, 0.03, 0.02], [0.5, 0.3, 0.15], 0.25)
+    glug = tone(300, 0.1, f_end=520) * dec(0.1, 0.04) * 0.4
+    return mix((slide, 0, 1), (clack, 0.28, 0.9), (glug, 0.45, 0.7), (glug, 0.58, 0.6))
+
+
+def crunch(rng):
+    parts = []
+    for i in range(5):
+        parts.append((filt(noise(rng, int(SR * 0.04)), "band", [900, 5000]) * dec(0.04, 0.012), i * 0.035, 0.9))
+    return fade(mix(*parts, (thump(150, 55, 0.35, 0.08), 0, 0.9)))
+
+
+def fuse(rng):
+    n = int(SR * 0.55)
+    hiss = filt(noise(rng, n), "high", 3500) * (0.25 + 0.2 * np.sin(2 * np.pi * 23 * t_(0.55))) * np.linspace(0.6, 1, n)
+    return fade(hiss * 0.8, 0.01, 0.05)
+
+
+def glass(rng):
+    ring = modal(rng, [2400, 3600, 5200], [0.18, 0.1, 0.06], [0.5, 0.4, 0.3], 0.4)
+    tinkle = band(rng, 0.2, 3000, 9000, 0.05) * 0.3
+    return fade(mix((ring, 0, 1), (tinkle, 0.01, 0.8)))
+
+
+def bark(rng):
+    t = t_(0.22)
+    x = tone(330, 0.22, "saw", f_end=180) * np.exp(-t / 0.09)
+    return fade(filt(x, "band", [250, 1800]) * 0.8 + 0.2 * filt(noise(rng, len(t)), "band", [800, 3500]) * np.exp(-t / 0.04))
+
+
+def star_fall(rng):
+    dur = 0.55
+    sweep = tone(2600, dur, f_end=500) * np.linspace(0.2, 1, int(SR * dur)) * 0.3
+    shimmer = filt(noise(rng, int(SR * dur)), "high", 5000) * 0.15 * np.linspace(0.3, 1, int(SR * dur))
+    return fade(sweep + shimmer, 0.01, 0.03)
+
+
+def chime(rng):
+    parts = []
+    for i, f in enumerate([1320, 1760, 2093]):
+        parts.append((tone(f, 0.5) * dec(0.5, 0.15) * 0.4, i * 0.06, 0.8))
+    return fade(mix(*parts))
+
+
 SOUNDS = {
     "w_wood": (w_wood, 3, -6), "w_metal": (w_metal, 3, -8), "w_fist": (w_fist, 3, -4),
     "t_armor": (t_armor, 3, -6), "t_wood": (t_wood, 3, -6), "t_flesh": (t_flesh, 3, -5), "t_face": (t_face, 3, -5), "t_stone": (t_stone, 2, -6),
@@ -450,6 +521,8 @@ SOUNDS = {
     "coin": (coin, 1, -9), "extinguish": (extinguish, 1, -9), "rope": (rope, 1, -9), "baby": (baby, 2, -9), "fire_loop": (fire_loop, 1, -18),
     "ui_click": (ui_click, 1, -9), "ui_hover": (ui_hover, 1, -16), "ui_back": (ui_back, 1, -11), "dialog_tick": (dialog_tick, 3, -18),
     "bell": (bell, 1, -6), "buzz": (buzz, 2, -12), "turn_start": (turn_start, 1, -9), "victory": (victory, 1, -7), "defeat": (defeat, 1, -8), "item_use": (item_use, 1, -9), "pickup": (pickup, 1, -9),
+    "wool_poof": (wool_poof, 2, -8), "roar": (roar, 2, -5), "rage": (rage, 2, -7), "hive_drop": (hive_drop, 1, -6), "mug_slide": (mug_slide, 1, -8),
+    "crunch": (crunch, 2, -5), "fuse": (fuse, 1, -12), "glass": (glass, 2, -10), "bark": (bark, 3, -6), "star_fall": (star_fall, 1, -9), "chime": (chime, 2, -9),
 }
 
 

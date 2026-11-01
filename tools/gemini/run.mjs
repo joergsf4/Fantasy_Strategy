@@ -230,6 +230,27 @@ for (const [name, d] of Object.entries(REST))
 // Dr. Humbugs "aeusserst seriöse" Praxis (Mission 3): Fachwerkhaus mit Schild, rotem Kreuz und Flaschen im Fenster.
 jobs.push({ name: 'fx_haus_praxis', refs: [path.join(OUT, 'fx_haus1.jpg')], prompt: 'Create a small half-timbered village house that is a shady quack doctor\'s practice, in exactly the same pixel-art style as the attached image (use it ONLY as a style reference): a wooden hanging sign with a red cross and a skull-and-bones joke, a big window full of colorful potion bottles and jars, a mortar and pestle on a barrel by the door, a steep red tiled roof with a chimney, readable at small size, game sprite, seen slightly from above and the front.' + FX_STYLE });
 
+// Neue Faehigkeiten (docs/faehigkeiten_plan.md): Effekt-Sprites und Statussymbole.
+const ABIL = {
+  fx_wolle: 'a fluffy white wool coat / cloak mid-air with soft curly wool tufts and a few loose wool flecks, cozy, game sprite',
+  fx_bruell: 'a comic roar shockwave: a big jagged cone-shaped sound burst in orange and cream with three curved sound-wave arcs and speed lines, game VFX sprite',
+  fx_stab: 'a long wooden kung-fu staff (bo) with red cloth wraps at both ends and a faint white motion arc, drawn diagonally, game sprite',
+  fx_dampf: 'two puffs of hot white steam with a reddish glow, rising upward, cartoon angry steam, game VFX sprite',
+  fx_wutader: 'the manga anger mark: four thick curved red angry-vein arcs arranged around an empty center like a throbbing burst (the classic anger pop symbol), red with dark outline and a small highlight, clearly NOT a plus sign and NOT a medical cross, comic emote symbol',
+  fx_bierkrug: 'a big wooden beer mug with iron hoops, overflowing golden beer with white foam on top, a few drops flying, game sprite',
+  fx_krack: 'the comic sound word KRACK in bold jagged yellow and red letters with a burst outline, crack lines around it, game VFX sprite',
+  fx_bombe: 'a round black iron bomb with a lit sparkling fuse and a glowing orange stripe, small and chunky, game sprite',
+  fx_flamme: 'a single lively orange-yellow flame with red edges and a white-hot core, small flickering fire, game VFX sprite',
+  fx_flasche: 'a round glass potion flask with a cork, glowing green bubbling liquid and purple smoke wisps, tilted as thrown, game sprite',
+  fx_wuff: 'a comic speech bubble with the word WUFF in bold white letters on dark outline, with small bark lines, game sprite',
+  fx_sternschnuppe: 'a bright magical shooting star: a golden-pink five-pointed star with a long glittering tail of pink and white sparkles, drawn diagonally falling to the lower right, game VFX sprite',
+  fx_rauchkugel: 'a small round grey smoke bomb pellet with a short fuse and a puff of purple-grey smoke leaking out, game sprite',
+  fx_fluegelschuh: 'a small brown leather boot with two white feather wings on its sides and a speed streak, icon-like game sprite',
+  fx_uebel: 'a sick green cartoon face with swirly eyes and a queasy wobbly mouth and a few green bubbles, thick dark outline, comic emote symbol',
+};
+for (const [name, d] of Object.entries(ABIL))
+  jobs.push({ name, refs: [path.join(OUT, 'fx_fireball.jpg')], prompt: `Create ${d}.` + FX_STYLE });
+
 async function generate(page, job) {
   await page.goto('https://gemini.google.com/app', { waitUntil: 'domcontentloaded' });
   await page.waitForSelector('div[role=textbox], .ql-editor', { timeout: 30000 });

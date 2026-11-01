@@ -678,6 +678,16 @@ func _hover(p: Vector2i) -> void:
 		_forecast.text = _forecast_text(sel, u)
 		if _target_kind == "ability" and (abilities[_cur_ab]["target"] == "ally_center" or abilities[_cur_ab].get("shape", "") == "line"):
 			_show_ability_tiles(u["pos"])
+	elif state == State.TARGETING and _target_kind == "ability_tile" and _landing_tiles.has(p):
+		var ab: Dictionary = abilities[_cur_ab]
+		var tt := {sel["pos"]: COL_SELF}
+		for q in _landing_tiles:
+			tt[q] = Color(1.0, 0.82, 0.25, 0.3)
+		for q in _area_tiles(ab, p):
+			tt[q] = Color(1.0, 0.6, 0.15, 0.45)
+		tt[p] = Color(1.0, 0.6, 0.15, 0.7)
+		_show_tiles(tt)
+		_forecast.text = "%s\n%s" % [ab["name"], ab["text"]]
 	elif state == State.TARGETING and u.is_empty():
 		var wo := world.at(p)
 		if not wo.is_empty() and _target_objs.has(wo):
@@ -730,6 +740,9 @@ func _click(p: Vector2i) -> void:
 			if _target_kind == "landing":
 				if _landing_tiles.has(p):
 					_do_throw_ally(p)
+			elif _target_kind == "ability_tile":
+				if _landing_tiles.has(p):
+					_do_tile_ability(p)
 			elif not u.is_empty() and _target_units.has(u):
 				if _target_kind == "ability" and (abilities[_cur_ab].get("caps", []) as Array).has("throw_ally") and u["team"] == sel["team"]:
 					_begin_landing(u)
@@ -770,7 +783,7 @@ func _select(u: Dictionary) -> void:
 	sel_dir = u["dir"]
 	_acted = false
 	var blocked := _team_tiles("e") if u["team"] == "p" else _team_tiles("p")
-	reach = grid.reachable(u["pos"], u["move"], u["flying"], blocked)
+	reach = grid.reachable(u["pos"], Combat.move_of(u), u["flying"], blocked)
 	var occupied := {}
 	for o in units:
 		if o != u:
@@ -812,7 +825,7 @@ func _enter_action(show_abilities := false, show_items := false) -> void:
 		for id: String in sel["abilities"]:
 			var ab: Dictionary = abilities[id]
 			var cd: int = sel["cd"].get(id, 0)
-			var ok := cd == 0 and (not _ab_targets(sel, id, sel["pos"]).is_empty() or not _obj_targets(sel, id, sel["pos"]).is_empty())
+			var ok := cd == 0 and (not _ab_targets(sel, id, sel["pos"]).is_empty() or not _obj_targets(sel, id, sel["pos"]).is_empty() or not _ab_tiles(sel, id, sel["pos"]).is_empty())
 			var b := _menu_button(box, ab["name"] + (" (%d)" % cd if cd > 0 else ""), ok, func() -> void: _begin_ability(id))
 			b.mouse_entered.connect(func() -> void: _info.text = ab["text"])
 		_menu_button(box, "Zurück", true, func() -> void: _enter_action())
@@ -1194,7 +1207,7 @@ func _make_object(o: Dictionary) -> void:
 	if o["type"] == "hostage":
 		_make_hostage(o)
 		return
-	if o["type"] in ["hive", "bell", "orphanage", "ship", "crate", "teahouse", "tent", "switch"]:
+	if o["type"] in ["hive", "hive_p", "bell", "orphanage", "ship", "crate", "teahouse", "tent", "switch"]:
 		_make_ch5_object(o)
 		return
 	var stone := Color(0.52, 0.5, 0.54)
@@ -1307,13 +1320,15 @@ func _refresh_object(o: Dictionary, animate: bool) -> void:
 				fx.particles("fx_foam", to_world(o["pos"]) + Vector3(0, 0.5, 0), 12, 3.0, 0.25, 0.7, 5.0, Color.WHITE, false, 120.0)
 			elif animate and st == "ruin":
 				fx.particles("fx_smoke", to_world(o["pos"]) + Vector3(0, 0.3, 0), 10, 1.5, 0.7, 1.0, -0.3, Color(0.3, 0.3, 0.3), false, 70.0)
+	if o["type"] == "hive_p":
+		(p["body"] as Node3D).visible = st == "active"
 	if not ["gate", "wall", "house"].has(o["type"]) and p["rubble"] != null:
 		(p["rubble"] as Node3D).visible = false
 
 
 ## Karten-Objekte als Pixel-Sprites (Gemini, freigestellt): Bienenstock, Glocke, Waisenhaus, Teehaus, Schiff, Hafen-Hindernisse.
 ## Die Spiellogik (Sperren, Zustaende) steckt in World, hier nur die Optik.
-const OBJ_SPRITE := {"hive": ["fx_bienenstock", 1.0], "bell": ["fx_glocke", 1.6], "orphanage": ["fx_waisenhaus", 1.9], "teahouse": ["fx_teehaus", 1.7], "tent": ["fx_zelt", 1.6], "switch": ["fx_hebel", 0.7]}
+const OBJ_SPRITE := {"hive": ["fx_bienenstock", 1.0], "hive_p": ["fx_bienenstock", 0.9], "bell": ["fx_glocke", 1.6], "orphanage": ["fx_waisenhaus", 1.9], "teahouse": ["fx_teehaus", 1.7], "tent": ["fx_zelt", 1.6], "switch": ["fx_hebel", 0.7]}
 const CRATE_SPRITES := [["fx_kiste", 1.0], ["fx_fass", 1.05], ["fx_saecke", 1.0]]
 
 
@@ -1505,6 +1520,18 @@ func _begin_landing(ally: Dictionary) -> void:
 	_hint.text = "Landefeld wählen (bis 4 Felder weit). Rechtsklick = zurück."
 
 
+func _do_tile_ability(p: Vector2i) -> void:
+	var u := sel
+	state = State.BUSY
+	_show_tiles({})
+	_forecast.text = ""
+	_update_status()
+	await _run_ability(u, _cur_ab, {"pos": p, "tile": true})
+	if state == State.OVER:
+		return
+	_finish_unit_after(u)
+
+
 func _do_throw_ally(dest: Vector2i) -> void:
 	var u := sel
 	var ally := _landing_ally
@@ -1512,7 +1539,7 @@ func _do_throw_ally(dest: Vector2i) -> void:
 	_show_tiles({})
 	_forecast.text = ""
 	_update_status()
-	u["cd"][_cur_ab] = Items.cooldown_for(u, int(abilities[_cur_ab]["cd"]))
+	Items.start_cooldown(u, _cur_ab, int(abilities[_cur_ab]["cd"]))
 	_turn_towards(u, ally["pos"])
 	_popup(u, abilities[_cur_ab]["name"], Color(1.0, 0.9, 0.5))
 	await fx.squash(u, 1.18, 0.85, 0.3)
@@ -1552,7 +1579,7 @@ func _use_on_object(u: Dictionary, id: String, o: Dictionary) -> bool:
 	_update_status()
 	var ab: Dictionary = abilities[id]
 	var sol := world.solution(o, ab.get("caps", []))
-	u["cd"][id] = Items.cooldown_for(u, int(ab["cd"]))
+	Items.start_cooldown(u, id, int(ab["cd"]))
 	_turn_towards(u, o["pos"])
 	_popup(u, ab["name"], Color(1.0, 0.9, 0.5))
 	var at := to_world(o["pos"]) + Vector3(0, 0.45, 0)
@@ -2261,6 +2288,8 @@ func _tile_free(p: Vector2i, mover: Dictionary) -> bool:
 func _ab_targets(u: Dictionary, id: String, pos: Vector2i) -> Array[Dictionary]:
 	var ab: Dictionary = abilities[id]
 	var out: Array[Dictionary] = []
+	if ab["target"] == "tile":
+		return out
 	if ab["target"] == "self":
 		out.append(u)
 		return out
@@ -2278,6 +2307,8 @@ func _ab_targets(u: Dictionary, id: String, pos: Vector2i) -> Array[Dictionary]:
 				continue
 			if ab.has("require_tag") and not (o["tags"] as Array).has(ab["require_tag"]):
 				continue
+			if ab.get("require_back", false) and not _from_behind(pos, o):
+				continue
 			if ab.get("shape", "") == "line" and o["pos"].x != pos.x and o["pos"].y != pos.y:
 				continue   # Strahl: nur auf geraden Linien
 			if not _first_effect(ab, "jump").is_empty():
@@ -2292,6 +2323,32 @@ func _ab_targets(u: Dictionary, id: String, pos: Vector2i) -> Array[Dictionary]:
 					and not (o["hp"] < o["maxhp"] or Status.has(o, "poison")):
 				continue
 			out.append(o)
+	return out
+
+
+## Steht pos hinter o (entgegen dessen Blickrichtung)? Voraussetzung des Hinterhalts.
+func _from_behind(pos: Vector2i, o: Dictionary) -> bool:
+	var rel := Vector2(pos - o["pos"])
+	return rel != Vector2.ZERO and Vector2(o["dir"]) != Vector2.ZERO and rel.normalized().dot(Vector2(o["dir"]).normalized()) < -0.5
+
+
+## Zielfelder von Faehigkeiten mit target "tile" (Bienenkorb: freies Bodenfeld, Tonikum: jedes Feld in Reichweite).
+func _ab_tiles(u: Dictionary, id: String, pos: Vector2i) -> Array[Vector2i]:
+	var ab: Dictionary = abilities[id]
+	var out: Array[Vector2i] = []
+	if ab["target"] != "tile":
+		return out
+	var r: Array = ab["range"]
+	for dy in range(-int(r[1]), int(r[1]) + 1):
+		for dx in range(-int(r[1]), int(r[1]) + 1):
+			var p := pos + Vector2i(dx, dy)
+			var d := Grid.dist(pos, p)
+			if d < r[0] or d > r[1] or not grid.inside(p):
+				continue
+			if _first_effect(ab, "summon_hive").is_empty():
+				out.append(p)
+			elif unit_at(p).is_empty() and world.at(p).is_empty() and grid.cost(p) >= 0:
+				out.append(p)
 	return out
 
 
@@ -2330,7 +2387,16 @@ func _begin_ability(id: String) -> void:
 	_cur_ab = id
 	_target_units = _ab_targets(sel, id, sel["pos"])
 	_target_objs = _obj_targets(sel, id, sel["pos"])
-	_show_ability_tiles(sel["pos"])
+	if abilities[id]["target"] == "tile":
+		_target_kind = "ability_tile"
+		_landing_tiles = _ab_tiles(sel, id, sel["pos"])
+		var tt := {sel["pos"]: COL_SELF}
+		for p in _landing_tiles:
+			tt[p] = Color(1.0, 0.82, 0.25, 0.45)
+		_show_tiles(tt)
+		_hint.text = "%s: Zielfeld wählen. Rechtsklick = zurück." % abilities[id]["name"]
+	else:
+		_show_ability_tiles(sel["pos"])
 	state = State.TARGETING
 	_update_status()
 
@@ -2383,7 +2449,7 @@ func _effect_targets(u: Dictionary, ab: Dictionary, target: Dictionary, to: Stri
 func _run_ability(u: Dictionary, id: String, target: Dictionary) -> void:
 	var ab: Dictionary = abilities[id]
 	u["st"]["abs"] += 1
-	u["cd"][id] = Items.cooldown_for(u, int(ab["cd"]))
+	Items.start_cooldown(u, id, int(ab["cd"]))
 	_actor = u
 	_note("ability", {"id": id, "by": u})
 	if target != u:
@@ -2426,7 +2492,30 @@ func _apply_effect(u: Dictionary, ab: Dictionary, target: Dictionary, ef: Dictio
 			for v in near:
 				fx.on_splash(ab["id"], u, v)
 				await _strike(u, v, ef["mult"], 0.0, false)
+		"summon_hive":
+			var hive := world.add_object("hive_p", target["pos"], {"owner": u["uid"]})
+			grid.blocked = world.blocked()
+			_make_object(hive)
+			_refresh_object(hive, true)
+			await fx.hive_appear(u, to_world(target["pos"]))
+		"vanish":
+			await _vanish(u, ef)
+		"assassinate":
+			if units.has(target):
+				if _is_normal(target):
+					await fx.assassinate(u, target)
+					await _deal(target, target["hp"], "Hinterhalt")
+				else:
+					await _strike(u, target, ef["mult"], 0.0, true)
 		"status":
+			if ef.has("chance"):
+				var kept: Array[Dictionary] = []
+				for v in victims:
+					if rng.randf() < float(ef["chance"]):
+						kept.append(v)
+				if kept.is_empty() and not victims.is_empty():
+					kept.append(victims[rng.randi() % victims.size()])
+				victims = kept
 			for v in victims:
 				var src: String = u["uid"] if ef["id"] == "taunt" else ""
 				Status.add(v, ef["id"], ef["turns"], ef.get("mods", {}), src)
@@ -2572,11 +2661,11 @@ func _begin_phase(team: String) -> void:
 		u["charge"] = 0
 		var stunned := Status.has(u, "stun")
 		for ev: Dictionary in Status.tick_phase_start(u):
-			if ev["type"] == "poison":
+			if ev["type"] == "poison" or ev["type"] == "burn":
 				_count({}, u, mini(int(ev["amount"]), u["hp"]))
 				u["hp"] = maxi(0, u["hp"] - ev["amount"])
 				_refresh_unit(u)
-				await _popup(u, "-%d Gift" % ev["amount"], Color(0.6, 1.0, 0.4))
+				await _popup(u, "-%d %s" % [ev["amount"], "Gift" if ev["type"] == "poison" else "Brand"], Color(0.6, 1.0, 0.4) if ev["type"] == "poison" else Color(1.0, 0.6, 0.2))
 				if u["hp"] <= 0:
 					units.erase(u)
 					_away.erase(u)
@@ -2628,6 +2717,8 @@ func _end_player_turn() -> void:
 		return
 	await _run_triggers("turn", turn)
 	await _run_scheduled()
+	await _player_hive_phase()
+	await _rage_phase()
 	_check_end()
 	if state == State.OVER:
 		return
@@ -2741,8 +2832,140 @@ func _enemy_self_ability(e: Dictionary) -> String:
 	return ""
 
 
+## Eingeschuechterte Gegner laufen vom naechsten Helden weg und greifen nicht an.
+func _flee_scared(e: Dictionary, reach_e: Dictionary, occupied: Dictionary) -> void:
+	var foes := units.filter(func(u: Dictionary) -> bool: return u["team"] != e["team"])
+	if foes.is_empty():
+		return
+	var best_t: Vector2i = e["pos"]
+	var best_d := -1.0
+	for t: Vector2i in reach_e:
+		if occupied.has(t) and t != e["pos"]:
+			continue
+		var dmin := 999.0
+		for f in foes:
+			dmin = minf(dmin, float(Grid.dist(t, f["pos"])))
+		if dmin > best_d:
+			best_d = dmin
+			best_t = t
+	reach = reach_e
+	await fx.scared_shiver(e)
+	await _walk(e, best_t)
+	await _flush_events()
+
+
+## Normale Gegner (Soldaten, Bienen) sterben beim Hinterhalt sofort; Namenstraeger und Bosse nicht.
+func _is_normal(o: Dictionary) -> bool:
+	var tags: Array = o["tags"]
+	return tags.has("standard") or tags.has("schwarm")
+
+
+## Bienenkorb der Stachelia: alle 2 Runden schluepft eine Biene (hoechstens 3), nach 6 Runden loest er sich auf.
+const HIVE_P_CAP := 3
+const HIVE_P_LIFE := 6
+
+func _player_hive_phase() -> void:
+	for o in world.objects.duplicate():
+		if o["type"] != "hive_p" or o["state"] != "active":
+			continue
+		o["age"] = int(o["age"]) + 1
+		if int(o["age"]) >= HIVE_P_LIFE:
+			o["state"] = "gone"
+			grid.blocked = world.blocked()
+			_refresh_object(o, true)
+			fx.particles("fx_smoke", to_world(o["pos"]) + Vector3(0, 0.4, 0), 10, 1.5, 0.6, 0.9, -0.3, Color(0.8, 0.7, 0.4), false, 70.0)
+			continue
+		var alive := units.filter(func(u: Dictionary) -> bool: return u["id"] == "bienenkrieger" and u["team"] == "p").size()
+		if int(o["age"]) % 2 != 0 or alive >= HIVE_P_CAP:
+			continue
+		var pos := _free_tile_near(o["pos"], {"flying": true})
+		_spawn("bienenkrieger", "p", pos, {})
+		Sfx.event("buzz")
+		await _popup(units.back(), "Bzzz!", Color(1.0, 0.85, 0.3))
+
+
+## Wutanfall: betroffene Helden handeln selbst (zufaelliges Ziel in Reichweite, auch Freunde).
+func _rage_phase() -> void:
+	for u in units.filter(func(x: Dictionary) -> bool: return x["team"] == "p" and Status.has(x, "wut") and not x["done"]):
+		if not units.has(u):
+			continue
+		await _rage_act(u)
+		if units.has(u):
+			u["done"] = true
+			_refresh_unit(u)
+		_check_end()
+		if state == State.OVER:
+			return
+
+
+func _rage_act(u: Dictionary) -> void:
+	var reach_u := grid.reachable(u["pos"], Combat.move_of(u), u["flying"], _team_tiles("e"))
+	var others: Array[Dictionary] = []
+	var occupied := {}
+	for o in units:
+		if o != u:
+			occupied[o["pos"]] = true
+			if not Status.has(o, "stealth"):
+				others.append(o)
+	var opts: Array = []
+	for t: Vector2i in reach_u:
+		if occupied.has(t):
+			continue
+		for o in others:
+			if Combat.in_range(u, Grid.dist(t, o["pos"])):
+				opts.append([t, o])
+	reach = reach_u
+	fx.rage_burst(u)
+	await _popup(u, "Arrr!", Color(1.0, 0.35, 0.25))
+	if opts.is_empty():
+		if others.is_empty():
+			return
+		var goal: Vector2i = others[rng.randi() % others.size()]["pos"]
+		var best_t: Vector2i = u["pos"]
+		var best_d := 9999
+		for t: Vector2i in reach_u:
+			if not occupied.has(t) and Grid.dist(t, goal) < best_d:
+				best_d = Grid.dist(t, goal)
+				best_t = t
+		await _walk(u, best_t)
+		return
+	var pick: Array = opts[rng.randi() % opts.size()]
+	await _walk(u, pick[0])
+	await _strike(u, pick[1])
+	if units.has(pick[1]) and pick[1]["hp"] > 0 and Combat.can_counter(pick[1], Grid.dist(u["pos"], pick[1]["pos"])):
+		await _strike(pick[1], u)
+
+
+## Maja (und wer sonst Rauch wirft): weg an einen freien Randfeld, danach etwas erholt.
+func _vanish(u: Dictionary, ef: Dictionary) -> void:
+	var edge: Array[Vector2i] = []
+	for y in grid.height:
+		for x in grid.width:
+			if x == 0 or y == 0 or x == grid.width - 1 or y == grid.height - 1:
+				var p := Vector2i(x, y)
+				if _tile_free(p, u) and world.at(p).is_empty() and Grid.dist(p, u["pos"]) > 2:
+					edge.append(p)
+	await fx.vanish_out(u)
+	if not edge.is_empty():
+		var dest: Vector2i = edge[rng.randi() % edge.size()]
+		u["pos"] = dest
+		(u["node"] as Node3D).position = to_world(dest)
+	var gain := mini(roundi(float(ef.get("heal_pct", 0.2)) * u["maxhp"]), u["maxhp"] - u["hp"])
+	u["hp"] += gain
+	_refresh_unit(u)
+	await fx.vanish_in(u)
+	if gain > 0:
+		await _popup(u, "+%d" % gain, Color(0.4, 1, 0.5))
+
+
 func _enemy_move(e: Dictionary) -> void:
-	var reach_e := grid.reachable(e["pos"], e["move"], e["flying"], _team_tiles("p"))
+	for id: String in e["abilities"]:      # Maja: bei schwerer Verletzung Rauch und weg (einmal pro Kampf)
+		var fab: Dictionary = abilities[id]
+		if fab.has("ai_flee") and int(e["cd"].get(id, 0)) == 0 and float(e["hp"]) <= float(fab["ai_flee"]) * e["maxhp"]:
+			await _run_ability(e, id, e)
+			await _flush_events()
+			return
+	var reach_e := grid.reachable(e["pos"], Combat.move_of(e), e["flying"], _team_tiles("p"))
 	var occupied := {}
 	for o in units:
 		if o != e:
@@ -2751,6 +2974,9 @@ func _enemy_move(e: Dictionary) -> void:
 		for ft: Vector2i in world.burning_tiles():
 			if ft != e["pos"]:
 				occupied[ft] = true      # kein Ziel-/Standfeld im Feuer
+	if Status.has(e, "angst"):
+		await _flee_scared(e, reach_e, occupied)
+		return
 	if e["heal"] > 0 and await _enemy_heal(e, reach_e, occupied):
 		return
 	var players := units.filter(func(u: Dictionary) -> bool: return u["team"] == "p" and not Status.has(u, "stealth"))

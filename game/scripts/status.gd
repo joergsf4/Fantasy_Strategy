@@ -4,9 +4,11 @@ extends RefCounted
 
 const NAMES := {
 	"stun": "Benommen", "poison": "Gift", "taunt": "Spott", "stealth": "Verborgen",
-	"buff": "Gestärkt", "tired": "Erschöpft", "polymorph": "Verwandelt", "defend": "Verteidigt", "scared": "Eingeschüchtert", "wachsam": "Wachsam",
+	"buff": "Gestärkt", "tired": "Erschöpft", "polymorph": "Verwandelt", "defend": "Verteidigt", "scared": "Eingeschüchtert", "angst": "Panik", "wachsam": "Wachsam",
+	"schild": "Wollmantel", "wut": "Wutanfall", "brennen": "Brennt", "tempo": "Beflügelt", "uebel": "Übel",
 }
-const GOOD := ["stealth", "buff", "defend", "wachsam"]
+const BURN_DAMAGE := 3
+const GOOD := ["stealth", "buff", "defend", "wachsam", "schild", "wut", "tempo"]
 
 
 static func add(u: Dictionary, id: String, turns: int, mods := {}, src := "") -> void:
@@ -63,6 +65,8 @@ static func tick_phase_start(u: Dictionary) -> Array:
 		if s["id"] == "poison":
 			events.append({"type": "poison", "amount": poison_damage(s)})
 			s["n"] = int(s.get("n", 0)) + 1
+		elif s["id"] == "brennen":
+			events.append({"type": "burn", "amount": BURN_DAMAGE})
 		s["turns"] = int(s["turns"]) - 1
 		if s["turns"] <= 0:
 			events.append({"type": "expire", "id": s["id"]})

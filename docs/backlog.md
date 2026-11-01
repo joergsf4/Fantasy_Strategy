@@ -65,3 +65,7 @@ Siehe `docs/missionen.md`. Mission 3 ist durch den Nachschub (Bogenschütze und 
 
 ## Erledigt: Fähigkeits-Felder im Charaktere-Tab (2026-11-01)
 Pro Figur zwei Freitextfelder „Fähigkeit 1/2“: vorbelegt mit den Fähigkeiten aus dem Spiel (zwei bei Albrecht, eins bei den Kage-Schwestern, das zweite frei), leer bei Figuren ohne Fähigkeit. Gespeichert wird mit dem Speichern-Button oben bzw. Strg+S (`game/data/ability_notes.json`); der Button samt Status, Rückgängig und Strg+S gilt in allen drei Tabs und speichert Gespräche, Missionen und Fähigkeitstexte zusammen, „↺ Spieltext wiederherstellen“ setzt zurück. Das ist ein Entwurfs-Notizblock und ändert Abilities und Balancing nicht. Offen: Übernahme eines Entwurfs als echte Fähigkeit in `abilities.json`.
+
+
+## Erledigt: 14 neue Fähigkeiten (2026-11-01)
+Wollmantel (Wendy), Bärengebrüll (Brumm), Stabwirbel (Lin), Wutanfall (Elisabeth), Bienenkorb (Stachelia), Prost (Brunhilde), Bearhug (Muskelaugust), Kyujutsu (Takeda), Brandbombe (Oskar), Flucht (Maja), Tonikum (Dr. Humbug), Hinterhalt (Kage-Schwestern), Bellen (Hundsfreund), Sternschnuppe (Lumi). Gemeinsame Abklingzeit je Figur. Details und Messwerte: `docs/faehigkeiten_plan.md`, Abschnitt 10.

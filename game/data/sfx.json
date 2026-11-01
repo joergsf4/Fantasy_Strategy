@@ -207,6 +207,78 @@
     "heal",
     "item_use"
    ]
+  },
+  "wollmantel": {
+   "windup": "whoosh_s",
+   "cast": "wool_poof"
+  },
+  "baerengebruell": {
+   "windup": "roar"
+  },
+  "stabwirbel": {
+   "windup": "whoosh_l",
+   "hit": "@melee"
+  },
+  "wutanfall": {
+   "windup": "rage"
+  },
+  "bienenkorb": {
+   "cast": "hive_drop"
+  },
+  "prost": {
+   "windup": "mug_slide",
+   "heal": "heal"
+  },
+  "bearhug": {
+   "windup": "whoosh_s",
+   "hit": [
+    "w_fist",
+    "crunch",
+    {
+     "s": "crit",
+     "db": -6
+    }
+   ]
+  },
+  "kyujutsu": {
+   "shot": "bow_shot",
+   "hit": "arrow_hit"
+  },
+  "brandbombe": {
+   "windup": "fuse",
+   "shot": "whoosh_s",
+   "hit": "explosion"
+  },
+  "flucht": {
+   "windup": "poof",
+   "cast": "poof"
+  },
+  "tonikum": {
+   "cast": [
+    "glass",
+    "splash"
+   ]
+  },
+  "hinterhalt": {
+   "windup": "whoosh_s",
+   "cast": [
+    "w_metal",
+    "t_flesh",
+    {
+     "s": "crit",
+     "db": -6
+    }
+   ]
+  },
+  "bellen": {
+   "windup": "bark"
+  },
+  "sternschnuppe": {
+   "shot": "star_fall",
+   "hit": [
+    "chime",
+    "zap"
+   ]
   }
  },
  "events": {
