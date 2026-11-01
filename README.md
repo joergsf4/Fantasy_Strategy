@@ -11,7 +11,7 @@ Nach „Press Start“ erscheint eine Kapitelauswahl (Testmenü). Steuerung: Mau
 ## Inhalt
 - `game/` Godot-Projekt (Skripte, Daten als JSON, Shader, Assets)
 - `docs/` Kampfsystem, Figuren, Missionen, Balancing-Bericht
-- `tools/` Hilfswerkzeuge: Freistellen der Bilder (`chroma_key.py`), UI-Texturen (`make_ui.py`), Gemini-Automatisierung (`gemini/`), Balancing (`balance.py` mit grafikfreiem Simulator in `game/sim/`), Trailer und Thumbnail
+- `tools/` Hilfswerkzeuge: Freistellen der Bilder (`chroma_key.py`), UI-Texturen (`make_ui.py`), Gemini-Automatisierung (`gemini/`), Balancing (`balance.py` mit grafikfreiem Simulator in `game/sim/`), Trailer (`tools/make_trailer.sh`, Teaser und `trailer2` mit 2 Minuten) und Thumbnail
 - `strategie/` Original-Bilder (Gemini) auf Greenscreen
 
 ## Dialog-Editor

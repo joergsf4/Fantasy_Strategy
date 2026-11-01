@@ -237,6 +237,11 @@ func _screenshot_mode() -> void:
 		tr.setup(map, units)
 		add_child(tr)
 		return
+	if mode == "trailer2":   # Trailer 2 (ca. 2 Minuten): tools/make_trailer.sh trailer2
+		var tr2 := Trailer2.new()
+		tr2.setup(map, units)
+		add_child(tr2)
+		return
 	if mode == "flow":  # Ablauf-Test: Titel -> (simulierter Tastendruck) -> Dialog
 		_run()
 		await get_tree().create_timer(5.0).timeout
