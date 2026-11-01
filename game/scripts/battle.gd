@@ -156,7 +156,12 @@ func _ready() -> void:
 	for e: Dictionary in map_data["players"]:
 		_spawn(e["id"], "p", Vector2i(e["pos"][0], e["pos"][1]))
 	for e: Dictionary in map_data["enemies"]:
-		_spawn(e["id"], "e", Vector2i(e["pos"][0], e["pos"][1]), {"carry": e.get("carry", {}), "guard": e.get("guard", false), "hp": e.get("hp")} if e.has("hp") else {"carry": e.get("carry", {}), "guard": e.get("guard", false)})
+		var extra := {"carry": e.get("carry", {}), "guard": e.get("guard", false)}
+		if e.has("hp"):
+			extra["hp"] = e["hp"]
+		if e.has("atk_mult"):      # Karte staerkt oder schwaecht den Angriff dieser Figur (Faktor auf den Grundwert)
+			extra["atk_mult"] = e["atk_mult"]
+		_spawn(e["id"], "e", Vector2i(e["pos"][0], e["pos"][1]), extra)
 	_build_hud()
 	_update_status()
 
@@ -283,8 +288,8 @@ func _spawn(id: String, team: String, pos: Vector2i, extra := {}) -> void:
 		"id": id, "name": d["name"], "team": team, "pos": pos,
 		"hp": d["hp"], "maxhp": d["hp"], "atk": d["atk"], "def": d["def"], "res": d.get("res", 0),
 		"move": d["move"], "range": d["range"], "range_min": d.get("range_min", 1),
-		"dmg_type": d.get("dmg_type", "body"), "role": d.get("role", ""), "tags": d.get("tags", []),
-		"abilities": d.get("abilities", []), "passives": d.get("passives", []),
+		"dmg_type": d.get("dmg_type", "body"), "role": d.get("role", ""), "tags": (d.get("tags", []) as Array).duplicate(),
+		"abilities": (d.get("abilities", []) as Array).duplicate(), "passives": (d.get("passives", []) as Array).duplicate(),   # Kopien: Missionen und Ausruestung haengen Faehigkeiten an, die Grunddaten bleiben unveraendert
 		"ranged_mult": d.get("ranged_mult", 1.0), "flying": d.get("flying", false),
 		"heal": d.get("heal", 0), "done": false, "status": [], "cd": {}, "dir": Vector2i.RIGHT,
 		"uid": str(_next_uid), "charge": 0,
@@ -296,6 +301,8 @@ func _spawn(id: String, team: String, pos: Vector2i, extra := {}) -> void:
 	if extra.has("hp"):
 		u["hp"] = int(extra["hp"])
 		u["maxhp"] = int(extra["hp"])
+	if extra.has("atk_mult"):
+		u["atk"] = maxi(1, roundi(float(u["atk"]) * float(extra["atk_mult"])))
 	if team == "p":     # Faehigkeiten, die nur diese Mission gewaehrt ("grants": {Held: [Faehigkeit]}), z. B. Breitseite
 		for ab_id: String in (map_data.get("grants", {}) as Dictionary).get(id, []):
 			(u["abilities"] as Array).append(ab_id)
@@ -326,7 +333,10 @@ func _spawn(id: String, team: String, pos: Vector2i, extra := {}) -> void:
 	if d.has("tint"):
 		var t: Array = d["tint"]
 		sp.modulate = Color(t[0], t[1], t[2])
-	node.add_child(sp)
+	var lean := Node3D.new()      # schiebt die Figur entlang der Blickrichtung zur Kamera (siehe _place_overlays)
+	node.add_child(lean)
+	lean.add_child(sp)
+	u["lean"] = lean
 	if not (u["carry"] as Dictionary).is_empty():
 		_loot_marker(node, lift)
 	# Ueber dem Kopf steht standardmaessig nur ein schmaler Lebensbalken; Zahl und Statusnamen erscheinen bei Auswahl, Hover und Alt.
@@ -754,6 +764,9 @@ func _notification(what: int) -> void:
 		_sync_labels()
 
 
+const LEAN_TO_CAM := 0.45      # Weltabstand, um den Figuren zur Kamera ruecken
+
+
 func _process(delta: float) -> void:
 	_clock += delta
 	_place_overlays()
@@ -766,6 +779,15 @@ func _place_overlays() -> void:
 	var up := cam.global_transform.basis.y.normalized()
 	var right := cam.global_transform.basis.x.normalized()
 	for u in units:
+		if u.has("lean") and is_instance_valid(u["lean"]):
+			# Das Billboard steht schraeg zur Kamera: Kopf und Schultern ragen nach hinten in die Mauer daneben und werden abgeschnitten.
+			# Darum rueckt die ganze Figur ein Stueck auf der Sichtlinie zur Kamera (Bildposition bleibt, die Groesse gleicht der Massstab aus).
+			var lean := u["lean"] as Node3D
+			var to_cam := cam.global_position - (lean.get_parent() as Node3D).global_position
+			var dist := to_cam.length()
+			if dist > 2.0:
+				lean.position = to_cam / dist * LEAN_TO_CAM
+				lean.scale = Vector3.ONE * ((dist - LEAN_TO_CAM) / dist)
 		if not u.has("bar"):
 			continue
 		var off := up * float(u["bar_h"]) + Vector3.UP * float(u["lift"])

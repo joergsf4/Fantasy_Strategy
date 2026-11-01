@@ -106,6 +106,23 @@ func run_tests(defs: Dictionary, m: Dictionary) -> void:
 	check(seen == 1, "Simulator gewaehrt Elisabeth die Breitseite")
 	var w := sb.play(20)
 	check(w in ["p", "e", "timeout"], "Simulationslauf laeuft durch (%s)" % w)
+	# Die Breitseite gehoert nur zu Mission 6: Grunddaten bleiben unveraendert, ein zweiter Aufbau gibt sie nicht doppelt, andere Missionen nicht
+	check(not (defs["elisabeth"]["abilities"] as Array).has("breitseite"), "Grunddaten von Elisabeth bleiben ohne Breitseite")
+	var b2 := Battle.new()
+	b2.setup(Mission.load_mission("ch6"), defs)
+	b2.dialogue_runner = func(_l: Array) -> void: pass
+	root.add_child(b2)
+	await process_frame
+	check((b2._find("elisabeth")["abilities"] as Array).count("breitseite") == 1, "Breitseite nach erneutem Aufbau von Mission 6 nur einmal")
+	check((b._find("elisabeth")["abilities"] as Array).count("breitseite") == 1, "Breitseite im ersten Kampf nur einmal")
+	var b7 := Battle.new()
+	b7.setup(Mission.load_mission("ch7"), defs)
+	b7.dialogue_runner = func(_l: Array) -> void: pass
+	root.add_child(b7)
+	await process_frame
+	check(not (b7._find("elisabeth")["abilities"] as Array).has("breitseite"), "Elisabeth hat die Breitseite in Mission 7 nicht")
+	var sb7 := SimSetup.build({"map": "ch7", "players": [], "enemies": []}, 3)
+	check(sb7.units.filter(func(u: Dictionary) -> bool: return (u["abilities"] as Array).has("breitseite") and u["team"] == "p").is_empty(), "Simulator: keine Breitseite in Mission 7 (auch nicht nach Mission 6)")
 
 
 func grid_ok(p: Vector2i) -> bool:
