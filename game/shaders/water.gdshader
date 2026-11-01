@@ -44,6 +44,15 @@ void fragment() {
 	vec3 col = mix(shallow, deep, smoothstep(0.03, 0.4, depth));
 	col += vec3(0.14, 0.18, 0.20) * smoothstep(0.58, 0.72, rip);
 
+	// Dezente Wellenlinien, die langsam zum Ufer laufen (Tiefe = Abstand zur Uferlinie), mit leichtem Wackeln
+	float band = sin(depth * 46.0 + t * 1.5 + (w1 - 0.5) * 5.0);
+	float shore_lines = smoothstep(0.86, 1.0, band) * (1.0 - smoothstep(0.06, 0.34, depth)) * smoothstep(0.045, 0.09, depth);
+	col = mix(col, vec3(0.92, 0.97, 1.0), shore_lines * 0.38);
+	// Weite Duenung auf offenem Wasser und feine Glitzerpunkte
+	col += vec3(0.05, 0.08, 0.1) * smoothstep(0.45, 0.8, vnoise(p * vec2(1.2, 2.6) + vec2(t * 0.1, 0.0)));
+	float glint = smoothstep(0.9, 0.98, vnoise(p * 11.0 + vec2(t * 0.35, -t * 0.25)));
+	col += vec3(0.8, 0.9, 1.0) * glint * 0.2 * smoothstep(0.05, 0.3, depth);
+
 	// Schaumkante am Ufer
 	float wob = (rip - 0.5) * 0.05 + sin(t * 1.4 + p.x * 3.0 + p.y * 2.0) * 0.008;
 	float foam = (1.0 - smoothstep(0.0, 0.05, depth + wob)) * step(0.0, depth);

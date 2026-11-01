@@ -1392,10 +1392,30 @@ func _make_ch5_object(o: Dictionary) -> void:
 			var c: Array = CRATE_SPRITES[(int(o["pos"].x) + 2 * int(o["pos"].y)) % 3]
 			parts["body"] = _object_sprite(c[0], c[1], root)
 		"ship":      # Elisabeths Piratenschiff auf dem Wasser, leicht schaukelnd
-			var sh := fx.make_sprite("fx_schiff", Vector3(0, 0.9, 0), 2.8, false, Color.WHITE, 0, root)
+			# Der Rumpf taucht ein Stueck ins Wasser (die Wasserflaeche verdeckt den unteren Rand), dazu Schaum und dunkle Wasserlinie
+			var sh := fx.make_sprite("fx_schiff", Vector3(0, 0.98, 0), 2.8, false, Color.WHITE, 0, root)
+			var sm := ShaderMaterial.new()
+			sm.shader = load("res://shaders/ship_sprite.gdshader")
+			sm.set_shader_parameter("tex", fx.tex("fx_schiff"))
+			sh.material_override = sm
 			var rock := sh.create_tween().set_loops()
-			rock.tween_property(sh, "position:y", 0.97, 1.6).set_trans(Tween.TRANS_SINE)
-			rock.tween_property(sh, "position:y", 0.83, 1.6).set_trans(Tween.TRANS_SINE)
+			rock.tween_property(sh, "position:y", 1.02, 1.7).set_trans(Tween.TRANS_SINE)
+			rock.tween_property(sh, "position:y", 0.94, 1.7).set_trans(Tween.TRANS_SINE)
+			var shadow := fx.make_flat("soft", Vector3(0.05, 0.015, 0.0), 3.0, Color(0.02, 0.1, 0.2, 0.5))
+			shadow.scale = Vector3(1.0, 0.5, 1.0)
+			var foam1 := fx.make_flat("ring", Vector3(0.0, 0.03, 0.05), 2.5, Color(1, 1, 1, 0.38), true)
+			var foam2 := fx.make_flat("ring", Vector3(0.0, 0.03, 0.05), 3.0, Color(1, 1, 1, 0.2), true)
+			for f: MeshInstance3D in [shadow, foam1, foam2]:
+				f.get_parent().remove_child(f)
+				root.add_child(f)
+			foam1.scale = Vector3(1.0, 1.0, 0.45)
+			foam2.scale = Vector3(1.0, 1.0, 0.45)
+			var pulse := foam1.create_tween().set_loops()
+			pulse.tween_property(foam1, "scale", Vector3(1.1, 1.0, 0.5), 1.7).set_trans(Tween.TRANS_SINE)
+			pulse.tween_property(foam1, "scale", Vector3(1.0, 1.0, 0.45), 1.7).set_trans(Tween.TRANS_SINE)
+			var pulse2 := foam2.create_tween().set_loops()
+			pulse2.tween_property(foam2, "scale", Vector3(0.94, 1.0, 0.41), 2.1).set_trans(Tween.TRANS_SINE)
+			pulse2.tween_property(foam2, "scale", Vector3(1.04, 1.0, 0.47), 2.1).set_trans(Tween.TRANS_SINE)
 			parts["body"] = sh
 		"bell":      # der ganze Sprite wackelt beim Laeuten um den Fuss
 			var piv := Node3D.new()

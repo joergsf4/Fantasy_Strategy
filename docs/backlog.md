@@ -102,3 +102,7 @@ Der Panzer aus Mission 8 ist jetzt ein vollwertiger Held (`panzer` in `units.jso
 - **Automatisches Speichern** nach jeder geschafften Mission war schon da, jetzt mit Meldung.
 - **Hauptmenü** mit *Fortfahren (Kapitel X)*, *Neues Spiel* (mit Rückfrage) und *Beenden* statt „Press Start“ und N-N (`TitleScreen.interactive`). Test `tests/test_title.gd`.
 - Offen: Speichern mitten im Kampf, Lautstärkeregler im Pause-Menü, Optionen (Sprache, Tasten).
+
+## Erledigt: Wasser und Schiff (2026-11-01)
+- **Wasser** (`shaders/water.gdshader`): dezente, langsam zum Ufer laufende Wellenlinien, weite Dünung auf offenem Wasser, feine Glitzerpunkte.
+- **Schiff** (`shaders/ship_sprite.gdshader`, `Battle._make_ch5_object`): Der Rumpf taucht ins Wasser ein (unterer Rand blendet in Wasserfarbe aus, wogende weiße Wasserlinie), dazu zwei atmende Schaumringe und ein dunkler Wasserschatten, sanftes Schaukeln. Kapitel 6 und 7.

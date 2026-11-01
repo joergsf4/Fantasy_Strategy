@@ -833,9 +833,9 @@ func _screenshot_mode() -> void:
 		get_viewport().get_texture().get_image().save_png(OS.get_environment("SHOT_OUT"))
 		get_tree().quit()
 		return
-	if mode == "closeup":   # Nahaufnahme einer Kachel: SHOT_TILE="x,y"
+	if mode == "closeup":   # Nahaufnahme einer Kachel: SHOT_TILE="x,y", optional SHOT_CH=ch6
 		var b0 := Battle.new()
-		b0.setup(map, units)
+		b0.setup(Mission.load_mission(OS.get_environment("SHOT_CH")) if OS.get_environment("SHOT_CH") != "" else map, units)
 		add_child(b0)
 		await get_tree().process_frame
 		var tp := OS.get_environment("SHOT_TILE").split(",")
