@@ -5,6 +5,7 @@ extends Dialogue
 ## (Maus und leichtes Schwanken), vorneweg ein Titelbanner "Geheime Interaktion".
 
 var secret: Dictionary = {}
+var quick := false          # kuerzerer Titelauftritt (Trailer)
 var _fore: Control
 var _intro_done := false
 var _t := 0.0
@@ -74,8 +75,8 @@ func _play_intro() -> void:
 	barrel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_fore.add_child(barrel)
 	var fl := create_tween().set_parallel(true)
-	fl.tween_property(barrel, "position", Vector2(820, 300), 0.8).set_delay(0.55).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
-	fl.tween_property(barrel, "rotation", TAU * 1.5, 0.8).set_delay(0.55)
+	fl.tween_property(barrel, "position", Vector2(820, 300), 0.8).set_delay(0.3 if quick else 0.55).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+	fl.tween_property(barrel, "rotation", TAU * 1.5, 0.8).set_delay(0.3 if quick else 0.55)
 	fl.chain().tween_callback(func() -> void:
 		barrel.queue_free()
 		_splash(Vector2(860, 360)))
@@ -93,8 +94,8 @@ func _play_intro() -> void:
 	banner.add_child(l1)
 	banner.add_child(l2)
 	var bt := create_tween()
-	bt.tween_property(banner, "modulate:a", 1.0, 0.35).set_delay(1.1)
-	bt.tween_interval(1.3)
+	bt.tween_property(banner, "modulate:a", 1.0, 0.3).set_delay(0.55 if quick else 1.1)
+	bt.tween_interval(0.8 if quick else 1.3)
 	bt.tween_property(banner, "modulate:a", 0.0, 0.5)
 	bt.tween_callback(func() -> void:
 		banner.queue_free()

@@ -217,17 +217,25 @@ func _battle(sc: Dictionary) -> void:
 	var look := mid + Vector3(0, 0.2, 0)
 	b.cam.look_at(look)
 	var drift := create_tween()
-	drift.tween_property(b.cam, "position", b.cam.position + Vector3(0.6, -0.7, -0.9), 7.0)
+	drift.tween_property(b.cam, "position", b.cam.position + Vector3(0.6, -0.7, -0.9), 4.0)
 	await _fade_to(0.0, 0.15)
-	Engine.time_scale = 1.4
+	Engine.time_scale = float(sc.get("speed", 1.4))
+	var acted := 0
 	for h in heroes:
+		if acted >= int(sc.get("max_heroes", 99)):
+			break
+		acted += 1
 		var target := _nearest(b, h, foes)
 		if target.is_empty():
 			continue
 		await _engage(b, h, target)
 		foes = foes.filter(func(f: Dictionary) -> bool: return b.units.has(f))
+	var moved := 0
 	for f in foes.duplicate():
+		if moved >= int(sc.get("max_foes", 99)):
+			break
 		if b.units.has(f):
+			moved += 1
 			await b._enemy_move(f)
 	Engine.time_scale = 1.0
 	drift.kill()

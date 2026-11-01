@@ -251,6 +251,11 @@ func _screenshot_mode() -> void:
 		tr.setup(map, units)
 		add_child(tr)
 		return
+	if mode == "trailer3":   # Trailer 3 (ca. 30 Sekunden): tools/make_trailer.sh trailer3
+		var tr3 := Trailer3.new()
+		tr3.setup(map, units)
+		add_child(tr3)
+		return
 	if mode == "trailer2":   # Trailer 2 (ca. 2 Minuten): tools/make_trailer.sh trailer2
 		var tr2 := Trailer2.new()
 		tr2.setup(map, units)
