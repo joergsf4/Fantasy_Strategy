@@ -14,6 +14,8 @@ var map: Dictionary
 var stage: Stage
 var party: Party
 var _music: AudioStreamPlayer
+var _pause: PauseHost
+var _in_game := false            # Hauptmenue verlassen: ab hier gibt es etwas zu speichern
 
 
 func _load_json(path: String) -> Dictionary:
@@ -27,6 +29,12 @@ func _ready() -> void:
 	if OS.get_environment("SHOT") != "":
 		_screenshot_mode()
 		return
+	if DisplayServer.get_name() != "headless":
+		PauseHost.set_fullscreen(true)           # das Spiel startet im Vollbild (F11 oder Pause-Menue schalten um)
+	_pause = PauseHost.new()
+	_pause.save_cb = func() -> void: party.save()
+	_pause.can_save_cb = func() -> bool: return _in_game
+	get_tree().root.add_child.call_deferred(_pause)
 	_run()
 
 
@@ -53,7 +61,14 @@ func _run() -> void:
 	stage.super_music = _duck_music
 	add_child(stage)
 	_play_music(TITLE_MUSIC)
-	var cheat: bool = await _title(mini(party.chapter, CHAPTERS.size()) if resumed else 0)
+	var choice: Dictionary = await _title(mini(party.chapter, CHAPTERS.size()) if resumed else 0)
+	if choice["action"] == "new":              # Neues Spiel: alter Spielstand weg
+		Party.delete_save()
+		party = Party.new_game()
+		stage.party = party
+		resumed = false
+	_in_game = true
+	var cheat: bool = choice["cheat"]
 	if cheat:
 		resumed = false          # Testmenue: die Kapitelwahl bestimmt, wo es weitergeht
 	var pick: Array = await _choose_level() if cheat else await _resume_pick(resumed)
@@ -109,20 +124,17 @@ func _fade_music(seconds := 2.5) -> void:
 	tw.tween_callback(old.queue_free)
 
 
-## Hauptmenue. Rueckgabe: true, wenn die Kapitelwahl per Cheat ("brumm") freigeschaltet wurde. N-N im Menue startet ein neues Spiel.
-func _title(save_chapter := 0) -> bool:
+## Hauptmenue (Fortfahren, Neues Spiel, Beenden). Rueckgabe: {action: "continue"|"new", cheat: Kapitelwahl per "brumm" freigeschaltet}.
+func _title(save_chapter := 0) -> Dictionary:
 	var t := TitleScreen.new()
+	t.interactive = true
 	t.save_chapter = save_chapter
-	t.new_game_requested.connect(func() -> void:
-		Party.delete_save()
-		party = Party.new_game()
-		stage.party = party)
 	add_child(t)
 	t.fading_out.connect(func() -> void: _fade_music())
-	await t.started
+	var action: String = await t.chosen
 	var cheat := t.cheat
 	t.queue_free()
-	return cheat
+	return {"action": action, "cheat": cheat}
 
 
 ## Normales Spiel ohne Kapitelwahl: dort weitermachen, wo man aufgehoert hat (nach einem Spielstand erst ins Lager).
@@ -196,9 +208,34 @@ func _chapter(cid: String, skip_intro := false, next_cid := "") -> void:
 	await _reward(res)
 	party.absorb(res)
 	party.save()
+	_toast("Spielstand automatisch gespeichert")
 	await _dialogue(story_c["outro"])
 	await _camp(Mission.load_mission(next_cid) if next_cid != "" else m)   # Lager: Gruppe der naechsten Mission waehlen
 	party.save()
+
+
+## Kurze Meldung unten in der Mitte (blendet von selbst aus).
+func _toast(text: String) -> void:
+	var layer := CanvasLayer.new()
+	layer.layer = 30
+	add_child(layer)
+	var l := Label.new()
+	l.theme = UiTheme.get_theme()
+	l.text = text
+	l.add_theme_font_override("font", UiTheme.font(UiTheme.F_HEAD))
+	l.add_theme_font_size_override("font_size", 22)
+	l.add_theme_color_override("font_color", Color(0.8, 1.0, 0.8))
+	l.add_theme_constant_override("outline_size", 8)
+	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	l.position = Vector2(0, 662)
+	l.size = Vector2(1280, 36)
+	l.modulate.a = 0.0
+	layer.add_child(l)
+	var tw := create_tween()
+	tw.tween_property(l, "modulate:a", 1.0, 0.3)
+	tw.tween_interval(2.4)
+	tw.tween_property(l, "modulate:a", 0.0, 0.6)
+	tw.tween_callback(layer.queue_free)
 
 
 func _squad_select(m: Dictionary) -> void:
@@ -335,6 +372,27 @@ func _screenshot_mode() -> void:
 		ss.setup_secret(Secrets.by_id("betrunkener_meister"), _names())
 		sl.add_child(ss)
 		await get_tree().create_timer(float(OS.get_environment("SHOT_DELAY")) if OS.get_environment("SHOT_DELAY") != "" else 4.0).timeout
+		get_viewport().get_texture().get_image().save_png(OS.get_environment("SHOT_OUT"))
+		get_tree().quit()
+		return
+	if mode == "menu" or mode == "pause":   # interaktives Hauptmenue (SHOT_CH = Kapitel des Spielstands) bzw. Pause-Menue
+		stage = Stage.new()
+		stage.setup(map, units)
+		add_child(stage)
+		if mode == "menu":
+			var tm := TitleScreen.new()
+			tm.interactive = true
+			tm.save_chapter = int(OS.get_environment("SHOT_CH")) if OS.get_environment("SHOT_CH") != "" else 3
+			add_child(tm)
+			await get_tree().create_timer(7.0).timeout
+		else:
+			stage.set_mode("battle")
+			var pl := CanvasLayer.new()
+			pl.layer = 40
+			add_child(pl)
+			var pm := PauseMenu.new()
+			pl.add_child(pm)
+			await get_tree().create_timer(1.0).timeout
 		get_viewport().get_texture().get_image().save_png(OS.get_environment("SHOT_OUT"))
 		get_tree().quit()
 		return

@@ -82,10 +82,13 @@ godot --path game
 Benötigt Godot 4.7 (Compatibility-Renderer).
 
 ### Steuerung
+- **Start im Vollbild.** F11 oder das Pause-Menü schalten zwischen Vollbild und Fenster um.
 - **Maus:** Figur wählen, Feld wählen, Menü neben der Figur. Rechtsklick geht zurück.
 - **Dialoge:** Linksklick, Enter oder Leertaste schaltet weiter.
-- **Hauptmenü:** Enter, Leertaste oder Klick startet. Mit Spielstand geht es im Lager vor dem nächsten Kapitel weiter. Zweimal **N** beginnt ein neues Spiel.
-- **Testmenü:** Im Hauptmenü kleingeschrieben `brumm` tippen, dann gibt es nach dem Start die Kapitelwahl (mit oder ohne Einleitung), das Soundlabor und „Spielstand zurücksetzen“.
+- **Esc:** öffnet das Pause-Menü (Weiter, Speichern, Vollbild, Beenden). Beim Beenden bleibt der Stand nach der letzten geschafften Mission erhalten.
+- **Hauptmenü:** *Fortfahren* (nur mit Spielstand, geht im Lager vor dem nächsten Kapitel weiter), *Neues Spiel* (mit Rückfrage, löscht den Spielstand) und *Beenden*. Bedienung mit Maus oder Pfeiltasten und Enter.
+- **Speichern:** automatisch nach jeder geschafften Mission (Meldung „Spielstand automatisch gespeichert“), zusätzlich von Hand im Pause-Menü.
+- **Testmenü:** Im Hauptmenü kleingeschrieben `brumm` tippen („Kapitelwahl freigeschaltet“), dann gibt es nach dem Start die Kapitelwahl (mit oder ohne Einleitung), das Soundlabor und „Spielstand zurücksetzen“.
 
 ## Werkzeuge
 

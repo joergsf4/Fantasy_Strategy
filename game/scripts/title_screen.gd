@@ -5,7 +5,7 @@ extends Node
 
 signal started
 signal fading_out
-signal new_game_requested     # zweimal N: Spielstand loeschen und neu beginnen
+signal chosen(action: String)     # "continue", "new" (nur im Menuemodus)
 
 const CHEAT := "brumm"      # kleingeschrieben im Hauptmenue tippen: schaltet die Kapitelwahl (Testmenue) frei
 
@@ -22,9 +22,11 @@ var _title_box: Control
 var _start_label: Label
 var _hint: Label
 var _typed := ""
-var _new_armed := 0.0
 var cheat := false            # Kapitelwahl freigeschaltet
 var save_chapter := 0         # >0: es gibt einen Spielstand (das Kapitel, in dem man weiterspielt)
+var interactive := false      # Menue (Fortfahren, Neues Spiel, Beenden) statt "Press Start" (Trailer und Screenshots lassen es aus)
+var _menu: VBoxContainer
+var _confirm: PanelContainer
 
 
 func _ready() -> void:
@@ -114,11 +116,12 @@ func _build_ui(ui: CanvasLayer) -> void:
 	ui.add_child(_start_label)
 
 	_hint = _label("", FONT_UI, 20, Color(1, 1, 1, 0.8), 5)
-	_hint.position = Vector2(0, 652)
+	_hint.position = Vector2(0, 666)
 	_hint.modulate.a = 0.0
 	ui.add_child(_hint)
-	if save_chapter > 0:
-		_show_hint("Weiter mit Kapitel %d   ·   N: neues Spiel" % save_chapter, false)
+	if interactive:
+		_start_label.visible = false
+		_build_menu(ui)
 
 	var foot := _label("Arbeitstitel  ·  Prototyp", FONT_UI, 16, Color(1, 1, 1, 0.55), 4)
 	foot.position = Vector2(-20, 684)
@@ -133,6 +136,12 @@ func _intro() -> void:
 	tw.tween_property(_fade, "color:a", 0.0, 1.4)
 	tw.parallel().tween_property(_title_box, "modulate:a", 1.0, 1.8).set_delay(0.7)
 	tw.parallel().tween_property(_title_box, "position:y", 0.0, 1.8).set_delay(0.7).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	if interactive:
+		tw.tween_property(_menu, "modulate:a", 1.0, 0.6)
+		tw.tween_callback(func() -> void:
+			_ready_for_input = true
+			(_menu.get_child(0) as Button).grab_focus())
+		return
 	tw.tween_property(_start_label, "modulate:a", 1.0, 0.8)
 	tw.tween_callback(func() -> void:
 		_ready_for_input = true
@@ -141,24 +150,100 @@ func _intro() -> void:
 		blink.tween_property(_start_label, "modulate:a", 1.0, 0.9).set_trans(Tween.TRANS_SINE))
 
 
-func _process(delta: float) -> void:
-	if _new_armed > 0.0:
-		_new_armed = maxf(0.0, _new_armed - delta)
-
-
-func _show_hint(text: String, flash := true) -> void:
+func _show_hint(text: String) -> void:
 	_hint.text = text
 	var tw := create_tween()
 	tw.tween_property(_hint, "modulate:a", 1.0, 0.25)
-	if flash:
-		tw.tween_interval(2.6)
-		tw.tween_property(_hint, "modulate:a", 0.0, 0.5)
-		tw.tween_callback(func() -> void:
-			if save_chapter > 0 and _new_armed <= 0.0:
-				_show_hint("Weiter mit Kapitel %d   ·   N: neues Spiel" % save_chapter, false))
+	tw.tween_interval(2.6)
+	tw.tween_property(_hint, "modulate:a", 0.0, 0.5)
 
 
-## Buchstaben fuettern den Cheat ("brumm") und N das neue Spiel; gestartet wird mit Enter, Leertaste, Klick oder Gamepad.
+## Menue: Fortfahren (nur mit Spielstand), Neues Spiel, Beenden. Auswahl per Maus oder Pfeiltasten und Enter.
+func _build_menu(ui: CanvasLayer) -> void:
+	_menu = VBoxContainer.new()
+	_menu.position = Vector2(470, 520)
+	_menu.size = Vector2(340, 150)
+	_menu.add_theme_constant_override("separation", 8)
+	_menu.modulate.a = 0.0
+	ui.add_child(_menu)
+	if save_chapter > 0:
+		_menu.add_child(_menu_button("Fortfahren (Kapitel %d)" % save_chapter, func() -> void: _choose("continue")))
+	_menu.add_child(_menu_button("Neues Spiel", func() -> void: _choose("new")))
+	_menu.add_child(_menu_button("Beenden", func() -> void: _choose("quit")))
+
+
+func _menu_button(text: String, cb: Callable) -> Button:
+	var b := Button.new()
+	b.text = text
+	b.custom_minimum_size = Vector2(340, 40)
+	b.add_theme_font_override("font", load(FONT_UI))
+	b.add_theme_font_size_override("font_size", 20)
+	for st in ["normal", "hover", "pressed", "disabled"]:
+		b.add_theme_stylebox_override(st, UiTheme.soft_button(st))
+	b.pressed.connect(cb)
+	return b
+
+
+func _choose(action: String) -> void:
+	if _done or not _ready_for_input:
+		return
+	match action:
+		"quit":
+			get_tree().quit()
+		"new":
+			if save_chapter > 0:
+				_ask_new_game()
+			else:
+				_finish("new")
+		_:
+			_finish(action)
+
+
+## Sicherheitsabfrage: Ein neues Spiel loescht den Spielstand.
+func _ask_new_game() -> void:
+	if _confirm != null:
+		return
+	_confirm = PanelContainer.new()
+	_confirm.add_theme_stylebox_override("panel", UiTheme.box("panel_dark_s.png", 24, Vector4(30, 20, 30, 20), 0.96))
+	_confirm.position = Vector2(400, 250)
+	var col := VBoxContainer.new()
+	col.add_theme_constant_override("separation", 10)
+	_confirm.add_child(col)
+	var l := _label("Neues Spiel beginnen?", FONT_UI, 28, GOLD, 6)
+	l.size = Vector2(480, 40)
+	l.custom_minimum_size = Vector2(480, 40)
+	col.add_child(l)
+	var t := _label("Der gespeicherte Fortschritt wird gelöscht.", FONT_UI, 20, Color(0.93, 0.88, 0.76), 4)
+	t.custom_minimum_size = Vector2(480, 30)
+	t.size = Vector2(480, 30)
+	col.add_child(t)
+	var yes := _menu_button("Ja, neu beginnen", func() -> void:
+		_confirm.queue_free()
+		_confirm = null
+		_finish("new"))
+	col.add_child(yes)
+	var no := _menu_button("Zurück", func() -> void:
+		_confirm.queue_free()
+		_confirm = null
+		(_menu.get_child(0) as Button).grab_focus())
+	col.add_child(no)
+	(_menu.get_parent() as Node).add_child(_confirm)
+	no.grab_focus()
+
+
+func _finish(action: String) -> void:
+	if _done:
+		return
+	_done = true
+	fading_out.emit()
+	var tw := create_tween()
+	tw.tween_property(_fade, "color:a", 1.0, 0.8)
+	tw.tween_callback(func() -> void:
+		chosen.emit(action)
+		started.emit())
+
+
+## Buchstaben fuettern den Cheat ("brumm"). Ohne Menue (Trailer, Screenshots) startet Enter, Leertaste oder Klick wie frueher.
 func _unhandled_input(event: InputEvent) -> void:
 	if _done or not _ready_for_input:
 		return
@@ -170,27 +255,16 @@ func _unhandled_input(event: InputEvent) -> void:
 				cheat = true
 				Sfx.event("village")
 				_show_hint("Kapitelwahl freigeschaltet")
-			elif ch == "n" and save_chapter > 0:
-				if _new_armed > 0.0:
-					_new_armed = 0.0
-					save_chapter = 0
-					new_game_requested.emit()
-					_show_hint("Neues Spiel: Spielstand gelöscht")
-				else:
-					_new_armed = 4.0
-					_show_hint("Neues Spiel löscht den Spielstand. Zum Bestätigen noch einmal N drücken.")
 			return
+	if interactive:
+		return
 	var pressed: bool = (event is InputEventKey and event.pressed and not event.echo and event.keycode in [KEY_ENTER, KEY_KP_ENTER, KEY_SPACE]) \
 		or (event is InputEventMouseButton and event.pressed) \
 		or (event is InputEventJoypadButton and event.pressed)
 	if not pressed:
 		return
 	get_viewport().set_input_as_handled()
-	_done = true
-	fading_out.emit()
-	var tw := create_tween()
-	tw.tween_property(_fade, "color:a", 1.0, 0.8)
-	tw.tween_callback(func() -> void: started.emit())
+	_finish("continue")
 
 
 ## Zierlinie mit Raute in der Mitte.

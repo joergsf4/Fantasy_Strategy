@@ -95,3 +95,10 @@ Im Biom Wüste (Kapitel 7 und 8) liegt ein gelb-orange Farbfilter über dem Bild
 
 ## Erledigt/Offen: Robina als Held (2026-11-01)
 Der Panzer aus Mission 8 ist jetzt ein vollwertiger Held (`panzer` in `units.json`, `hero: true`, `from: 9`, Rolle Tank, Breitseite, Stimme). Offen: **Fähigkeit 2** (Idee folgt) und eine Mission 9, ab der sie wählbar ist.
+
+## Erledigt: Vollbild, Pause-Menü, Hauptmenü mit Fortfahren (2026-11-01)
+- Das Spiel startet im **Vollbild** (`PauseHost.set_fullscreen`, F11 schaltet um; nicht in Screenshot- und Trailer-Modi).
+- **Esc** öffnet das Pause-Menü (`PauseMenu`, `PauseHost`): Weiter, Speichern, Vollbild an/aus, Beenden (mit Rückfrage). Das Spiel ist dabei angehalten. Gespeichert wird der Stand nach der letzten geschafften Mission (kein Speichern mitten im Kampf); Beenden speichert vorher.
+- **Automatisches Speichern** nach jeder geschafften Mission war schon da, jetzt mit Meldung.
+- **Hauptmenü** mit *Fortfahren (Kapitel X)*, *Neues Spiel* (mit Rückfrage) und *Beenden* statt „Press Start“ und N-N (`TitleScreen.interactive`). Test `tests/test_title.gd`.
+- Offen: Speichern mitten im Kampf, Lautstärkeregler im Pause-Menü, Optionen (Sprache, Tasten).
