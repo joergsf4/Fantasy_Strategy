@@ -2708,6 +2708,30 @@ func _beam_blocker(u: Dictionary, id: String, target: Dictionary) -> Dictionary:
 	return {}
 
 
+## Geheimnis "Futter fuer Brumm" (mode "catch"): Die Figur auf der Flugbahn faengt etwas auf (Heilung und ein Status mit Schadensminderung),
+## der Angriff selbst bleibt unveraendert. Beim ersten Mal laeuft die Szene.
+func _run_catch(u: Dictionary, via: Dictionary, sec: Dictionary) -> void:
+	var ef: Dictionary = sec["effects"]
+	await fx.catch_bone(u, via)
+	if not secrets_seen.has(sec["id"]):
+		secrets_seen.append(sec["id"])
+		if secret_runner.is_valid():
+			await secret_runner.call(sec)
+	var amount := mini(int(ef.get("heal", 0)), via["maxhp"] - via["hp"])
+	if amount > 0:
+		via["hp"] += amount
+		u["st"]["healed"] += amount
+		_note("heal", {"by": u, "healed": [via]})
+	var st: Dictionary = ef.get("status", {})
+	if not st.is_empty():
+		Status.add(via, str(st["id"]), int(st.get("turns", 3)), {"reduce_pct": int(st.get("reduce_pct", 25))})
+	_refresh_unit(via)
+	if amount > 0:
+		fx.on_heal("knochenwurf", u, via, amount, false)
+		_popup(via, "+%d" % amount, Color(0.4, 1, 0.5))
+	await _popup(via, "Mjam!", Color(1.0, 0.85, 0.4))
+
+
 ## Geheimnis "Laser-Reflektor": Die Figur auf der Linie lenkt den Strahl um. Er endet dort und trifft (bzw. heilt) alle Figuren im Umkreis
 ## um die Figur mit einem Teil der Wirkung. Beim ersten Mal laufen Szene und grosser Auftritt, danach nur ein kurzer Effekt.
 func _run_reflect(u: Dictionary, id: String, target: Dictionary, via: Dictionary, sec: Dictionary) -> void:
@@ -2916,9 +2940,12 @@ func _run_ability(u: Dictionary, id: String, target: Dictionary) -> void:
 		await _run_secret(u, id, target)
 		return
 	var bb := _beam_blocker(u, id, target)
+	var catch_bb := {}
 	if not bb.is_empty():
-		await _run_reflect(u, id, target, bb["via"], bb["sec"])
-		return
+		if str(bb["sec"]["effects"].get("mode", "reflect")) == "reflect":
+			await _run_reflect(u, id, target, bb["via"], bb["sec"])
+			return
+		catch_bb = bb          # "catch": der Angriff laeuft normal weiter, die Figur im Weg faengt etwas auf
 	u["st"]["abs"] += 1
 	Items.start_cooldown(u, id, int(ab["cd"]))
 	_actor = u
@@ -2933,6 +2960,8 @@ func _run_ability(u: Dictionary, id: String, target: Dictionary) -> void:
 		_banner(ab["name"])
 		await get_tree().create_timer(0.4).timeout
 	await fx.windup(id, u, target)
+	if not catch_bb.is_empty():
+		await _run_catch(u, catch_bb["via"], catch_bb["sec"])
 	var tiles := _area_tiles(ab, u["pos"] if ab["target"] == "self" else target["pos"])
 	await fx.cast(id, u, target, tiles)
 	for ef: Dictionary in ab["effects"]:

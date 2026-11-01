@@ -115,3 +115,6 @@ Der Editor-Tab „Geheimnisse“ arbeitet jetzt mit einem **Freitext-Prompt** un
 
 ## Erledigt: Geheimnis „Laser-Reflektor“ (2026-11-01)
 Zweiter Auslöser-Typ `beam_via_ally` (Strahl über einen Verbündeten umlenken), erstes Beispiel Robo und Takeda: roter Laser trifft die Gegner, grüner Laser heilt die Verbündeten im Umkreis 2 um Takeda mit 75 %. Beim ersten Mal Dialogszene und Polarlicht-Auftritt, danach kurzer Effekt. Der Editor-Tab „Geheimnisse“ kennt den neuen Typ (Auslöser-Typ-Auswahl). Die Dialoge sind vorläufig (von Claude erdacht, der Nutzer verfeinert sie später). Offen: Simulator, Feinschliff der Dialoge und Werte.
+
+## Erledigt: Geheimnis „Futter für Brumm“ (2026-11-01)
+Dritte geheime Interaktion (Hundsfreund wirft Knochen, Mira & Brumm stehen auf der Flugbahn): Heilung 8 und Status „Satt“ (3 Runden, −25 % erlittener Schaden), der Angriff läuft unverändert weiter. Dafür neue Wirkungsart `catch` beim Auslöser-Typ `beam_via_ally`. Dialoge von Claude erdacht (vorläufig), kein Polarlicht-Auftritt (im Editor optional zuschaltbar). Hinweis: Knochenwurf hat nur Reichweite 1–2, der Auslöser tritt daher nur bei Ziel in genau 2 Feldern Abstand auf.

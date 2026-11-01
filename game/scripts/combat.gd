@@ -60,6 +60,10 @@ static func damage(att: Dictionary, def: Dictionary, cover: int, pos_bonus: floa
 		dmg = maxi(1, ceili(float(dmg) * defend_factor(def)))
 	if Status.has(def, "schild"):
 		dmg = maxi(1, ceili(float(dmg) * 0.5))      # Wollmantel
+	for s: Dictionary in def.get("status", []):
+		var red := int((s.get("mods", {}) as Dictionary).get("reduce_pct", 0))
+		if red > 0:
+			dmg = maxi(1, ceili(float(dmg) * (1.0 - red / 100.0)))      # z. B. "Satt" (Futter fuer Brumm)
 	return dmg
 
 

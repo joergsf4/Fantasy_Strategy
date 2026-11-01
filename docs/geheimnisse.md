@@ -35,3 +35,8 @@ Beispiel **Laser-Reflektor** (Robo und Takeda): Steht Takeda auf der geraden Lin
 - **Kein Hinweis im Spiel:** Der Schuss verhält sich ohne Takeda auf der Linie wie bisher.
 - **Nicht modelliert:** Der Simulator kennt die Reflexion nicht, die Gegner-KI nutzt sie nicht.
 - Test: `tests/test_reflect.gd`, Editor-Test `test_geheimnis_strahl_ueber_verbuendeten`.
+
+### Wirkungsart „Auffangen“ (`effects.mode: "catch"`): Futter für Brumm
+Beispiel **Futter für Brumm** (Hundsfreund und Mira & Brumm): Wirft der Hundsfreund seinen **Knochenwurf** und Mira & Brumm stehen auf der Flugbahn (gerade Linie, Mira zwischen Hundsfreund und Ziel), fängt Brumm einen Knochen auf: Mira & Brumm werden um **8** geheilt und sind **3 Runden satt** (Status `satt`, **25 % weniger erlittener Schaden**, kleines Knochen-Symbol über dem Balken). **Der Angriff selbst bleibt unverändert** (alle drei Knochen treffen wie sonst). Anders als beim Reflektor geht der Strahl also weiter. Beim ersten Mal läuft die Dialogszene (Hundsfreund links, Mira & Brumm rechts), danach nur der kurze Effekt (Knochen fliegt zu Brumm, Sprung, „Mjam!“, +8). Bei Knochenwurf (Reichweite 1–2) ist das nur möglich, wenn das Ziel genau 2 Felder entfernt in gerader Linie steht und Mira dazwischen auf dem ersten Feld.
+- **Daten:** `trigger` wie beim Reflektor, `effects: {mode: "catch", heal, status: {id, turns, reduce_pct}}`. `Combat.damage` kennt die Schadensminderung über `mods.reduce_pct` jedes Status.
+- Im Editor wählt man bei „Wirkung“ die Wirkungsart (Reflexion oder Auffangen). Test: `tests/test_reflect.gd`, `test_geheimnis_strahl_ueber_verbuendeten`.

@@ -325,6 +325,18 @@ func reflect_beam(a: Dictionary, b: Dictionary, color: Color) -> void:
 	fx.light_flash(fx.chest(b, 0.6), color, 2.0, 3.0, 0.25)
 
 
+## Futter fuer Brumm: ein Knochen fliegt zur Figur auf der Flugbahn, sie springt hoch und schnappt zu, Herzchen und Krumen.
+func catch_bone(u: Dictionary, via: Dictionary) -> void:
+	battle._turn_towards(u, via["pos"])
+	fx.hop(u, 0.15, 0.18)
+	await fx.projectile("fx_bone", fx.chest(u, 0.7), fx.chest(via, 0.75), 0.3, 0.8, 0.7, 8.0)
+	fx.hop(via, 0.4, 0.3)
+	fx.squash(via, 1.15, 0.85, 0.3)
+	fx.particles("fx_star", fx.chest(via, 0.9), 6, 1.8, 0.2, 0.7, -0.4, Color(1.0, 0.85, 0.4), true, 160.0)
+	fx.particles("fx_flower", fx.chest(via, 1.0), 4, 1.4, 0.2, 0.9, -0.2, Color(1.0, 0.6, 0.7), false, 120.0)
+	await _wait(0.35)
+
+
 ## Treffer des umgelenkten Strahls: Funken, Aufblitzen, kleiner Rueckstoss.
 func reflect_hit(v: Dictionary) -> void:
 	fx.particles("fx_star", fx.chest(v, 0.55), 6, 2.6, 0.22, 0.5, 2.0, Color(1.0, 0.7, 0.4), true, 180.0)
@@ -485,6 +497,8 @@ func status_holder(id: String, root: Node3D) -> bool:
 			twb.tween_property(aura, "scale", aura.scale, 0.9).set_trans(Tween.TRANS_SINE)
 			fx._loop_particles(root, "fx_bubble", Vector3(0, 0.2, 0), 4, 0.8, 0.22, 1.5, -0.8, Color(1.0, 0.85, 0.45))
 			fx._loop_particles(root, "fx_foam", Vector3(0, 1.4, 0), 2, 0.5, 0.2, 1.0, -0.2, Color(1.0, 0.95, 0.75, 0.9))
+		"satt":        # kleiner Knochen als Symbol (Restdauer-Zahl daneben)
+			fx.make_sprite("fx_bone", Vector3.ZERO, 0.28, false, Color.WHITE, 1, fx.icon_node(root))
 		"angst":
 			fx._loop_particles(root, "fx_sweat", Vector3(0.2, 1.7, 0), 2, 0.5, 0.2, 1.0, 3.0, Color.WHITE)
 		_:

@@ -695,6 +695,10 @@ func secret_reveal(v: Dictionary, sec: Dictionary) -> void:
 	await nw.secret_reveal(v, sec)
 
 
+func catch_bone(u: Dictionary, via: Dictionary) -> void:
+	await nw.catch_bone(u, via)
+
+
 func reflect_beam(a: Dictionary, b: Dictionary, color: Color) -> void:
 	await nw.reflect_beam(a, b, color)
 
@@ -804,7 +808,7 @@ func sync_status(u: Dictionary) -> void:
 
 ## Kopf-Symbole (Betaeubt, Spott, Wut, Beflügelt, Übel) stehen in einer Reihe ueber dem Lebensbalken (feste Plaetze, hoechstens ICON_MAX,
 ## der Rest als "+N"), mit kleiner Restdauer. Ohne Ueberlappung mit Balken, Zahl und Meldungen.
-const ICON_IDS := ["stun", "taunt", "wut", "tempo", "uebel"]
+const ICON_IDS := ["stun", "taunt", "wut", "tempo", "uebel", "satt"]
 const ICON_MAX := 3
 const ICON_STEP := 0.36
 

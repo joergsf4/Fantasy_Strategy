@@ -4,11 +4,11 @@ extends RefCounted
 
 const NAMES := {
 	"stun": "Benommen", "poison": "Gift", "taunt": "Spott", "stealth": "Verborgen",
-	"buff": "Gestärkt", "tired": "Erschöpft", "polymorph": "Verwandelt", "defend": "Verteidigt", "scared": "Eingeschüchtert", "angst": "Panik", "betrunken": "Bierlaune", "wachsam": "Wachsam",
+	"buff": "Gestärkt", "tired": "Erschöpft", "polymorph": "Verwandelt", "defend": "Verteidigt", "scared": "Eingeschüchtert", "angst": "Panik", "betrunken": "Bierlaune", "satt": "Satt", "wachsam": "Wachsam",
 	"schild": "Wollmantel", "wut": "Wutanfall", "brennen": "Brennt", "tempo": "Beflügelt", "uebel": "Übel",
 }
 const BURN_DAMAGE := 3
-const GOOD := ["betrunken", "stealth", "buff", "defend", "wachsam", "schild", "wut", "tempo"]
+const GOOD := ["satt", "betrunken", "stealth", "buff", "defend", "wachsam", "schild", "wut", "tempo"]
 
 
 static func add(u: Dictionary, id: String, turns: int, mods := {}, src := "") -> void:

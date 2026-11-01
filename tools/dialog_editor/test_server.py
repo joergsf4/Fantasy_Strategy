@@ -213,7 +213,17 @@ class EditorTest(unittest.TestCase):
         b2["effects"].pop("cutin"); b2["effects"]["reflect_pct"] = 50
         server.save_secrets({"secrets": sl})                                        # Auftritt ist optional
         saved = [x for x in server.read(server.DATA / "secrets.json")["secrets"] if x.get("trigger", {}).get("type") == "beam_via_ally"][0]
-        self.assertEqual(saved["effects"], {"reflect_pct": 50, "radius": 2})
+        self.assertEqual(saved["effects"], {"mode": "reflect", "reflect_pct": 50, "radius": 2})
+        # Wirkungsart "catch" (Futter fuer Brumm)
+        catch = next(x for x in d["secrets"] if x.get("effects", {}).get("mode") == "catch")
+        self.assertEqual(catch["effects"]["heal"], 8)
+        self.assertEqual(catch["effects"]["status"], {"id": "satt", "turns": 3, "reduce_pct": 25})
+        for bad in ({"mode": "unbekannt"}, {"heal": 500}, {"status": {"id": "Satt!", "turns": 3, "reduce_pct": 25}}, {"status": {"id": "satt", "turns": 3, "reduce_pct": 99}}):
+            sl = copy.deepcopy(d["secrets"])
+            c = next(x for x in sl if x.get("effects", {}).get("mode") == "catch")
+            c["effects"].update(bad)
+            with self.assertRaises(ValueError):
+                server.save_secrets({"secrets": sl})
 
     def test_leere_flee_und_ideen_werden_entfernt_und_ideen_gespeichert(self):
         b = self.body("ch3")

@@ -337,20 +337,36 @@ def save_secrets(body: dict) -> None:
                         raise ValueError(f"{name}: dieser Ausloeser kommt zweimal vor")
                     triples.add((by, ab, on))
                 ef = sec["effects"]
-                rp, rad = ef.get("reflect_pct", 75), ef.get("radius", 2)
-                if not isinstance(rp, int) or isinstance(rp, bool) or not 1 <= rp <= 200:
-                    raise ValueError(f"{name}: Reflexion muss 1 bis 200 Prozent sein")
-                if not isinstance(rad, int) or isinstance(rad, bool) or not 1 <= rad <= 4:
-                    raise ValueError(f"{name}: der Umkreis muss 1 bis 4 Felder sein")
+                mode = ef.get("mode", "reflect")
+                if mode not in ("reflect", "catch"):
+                    raise ValueError(f"{name}: unbekannte Wirkungsart '{mode}'")
+                new_trigger = {"type": "beam_via_ally", "by": by, "abilities": abs_, "via": on}
+                if mode == "reflect":
+                    rp, rad = ef.get("reflect_pct", 75), ef.get("radius", 2)
+                    if not isinstance(rp, int) or isinstance(rp, bool) or not 1 <= rp <= 200:
+                        raise ValueError(f"{name}: Reflexion muss 1 bis 200 Prozent sein")
+                    if not isinstance(rad, int) or isinstance(rad, bool) or not 1 <= rad <= 4:
+                        raise ValueError(f"{name}: der Umkreis muss 1 bis 4 Felder sein")
+                    new_effects = {"mode": "reflect", "reflect_pct": rp, "radius": rad}
+                else:
+                    heal = ef.get("heal", 0)
+                    st = ef.get("status") or {}
+                    if not isinstance(heal, int) or isinstance(heal, bool) or not 0 <= heal <= 60:
+                        raise ValueError(f"{name}: Heilung muss 0 bis 60 sein")
+                    new_effects = {"mode": "catch", "heal": heal}
+                    if st:
+                        sid_ = str(st.get("id", ""))
+                        red, turns = st.get("reduce_pct", 0), st.get("turns", 3)
+                        if not re.match(r"^[a-z_]{1,20}$", sid_) or not isinstance(red, int) or isinstance(red, bool) or not 0 <= red <= 90 \
+                                or not isinstance(turns, int) or isinstance(turns, bool) or not 1 <= turns <= 9:
+                            raise ValueError(f"{name}: Status braucht eine Kennung, Schadensminderung 0 bis 90 Prozent und 1 bis 9 Runden")
+                        new_effects["status"] = {"id": sid_, "turns": turns, "reduce_pct": red}
                 cut = ef.get("cutin") or {}
                 if cut:
                     if cut.get("unit") not in units or "name" not in units[cut["unit"]]:
                         raise ValueError(f"{name}: unbekannte Figur im Auftritt")
                     if len(str(cut.get("title", ""))) > 40 or len(str(cut.get("sub", ""))) > 40:
                         raise ValueError(f"{name}: Titel und Untertitel des Auftritts hoechstens 40 Zeichen")
-                new_trigger = {"type": "beam_via_ally", "by": by, "abilities": abs_, "via": on}
-                new_effects = {"reflect_pct": rp, "radius": rad}
-                if cut:
                     new_effects["cutin"] = {"unit": cut["unit"], "title": str(cut.get("title", "")).strip(), "sub": str(cut.get("sub", "")).strip()}
             else:
                 ab = t["ability"]

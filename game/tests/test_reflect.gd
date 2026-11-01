@@ -121,6 +121,48 @@ func _initialize() -> void:
 	check(scenes.is_empty() and b.secrets_seen.has("laser_reflektor"), "Szene war schon gesehen (gemeinsames Geheimnis)")
 	check(r4["st"]["healed"] >= 27, "Heilung zaehlt fuer Robo")
 
+	# --- Futter fuer Brumm (mode "catch"): Mira steht auf der Flugbahn des Knochenwurfs
+	clear()
+	scenes.clear()
+	var hund := spawn("hund", "p", Vector2i(2, 5))
+	var mira := spawn("maedchen_baer", "p", Vector2i(3, 5))
+	var gegner := spawn("soldat_infanterie", "e", Vector2i(4, 5))
+	var ref_foe := spawn("soldat_infanterie", "e", Vector2i(4, 8))
+	mira["hp"] = 20
+	gegner["hp"] = 100
+	gegner["maxhp"] = 100
+	check(not b._beam_blocker(hund, "knochenwurf", gegner).is_empty(), "Mira steht auf der Flugbahn")
+	var normal_dmg := 0
+	for h in 3:
+		normal_dmg += Combat.damage(hund, gegner, b._cover_for(gegner, gegner["pos"]), 0.0, 0.5)
+	await b._run_ability(hund, "knochenwurf", gegner)
+	check(mira["hp"] == 28, "Mira und Brumm werden um 8 geheilt (%d)" % mira["hp"])
+	check(Status.has(mira, "satt") and int(Status.get_status(mira, "satt")["turns"]) == 3, "Satt fuer 3 Runden")
+	check(100 - gegner["hp"] >= normal_dmg - 3, "der Angriff selbst bleibt unveraendert (%d statt %d)" % [100 - gegner["hp"], normal_dmg])
+	check(scenes == ["futter_fuer_brumm"], "Szene beim ersten Mal")
+	var strong := {"atk": 30, "dmg_type": "body", "status": []}
+	var raw := Combat.damage(strong, hund, 0, 0.0)
+	var with_satt := Combat.damage(strong, mira, 0, 0.0)
+	Status.remove(mira, "satt")
+	var without_satt := Combat.damage(strong, mira, 0, 0.0)
+	check(with_satt < without_satt and with_satt == maxi(1, ceili(without_satt * 0.75)), "Satt: 25 %% weniger Schaden (%d statt %d)" % [with_satt, without_satt])
+	Status.add(mira, "satt", 3, {"reduce_pct": 25})
+	check(raw > 0, "Gegenprobe ok")
+	# zweites Mal: keine Szene, Effekt bleibt
+	scenes.clear()
+	hund["cd"] = {}
+	mira["hp"] = 10
+	await b._run_ability(hund, "knochenwurf", gegner)
+	check(scenes.is_empty() and mira["hp"] == 18, "spaeter ohne Szene, Heilung bleibt")
+	# andere Figur im Weg: nichts
+	clear()
+	var h2 := spawn("hund", "p", Vector2i(2, 5))
+	var knight := spawn("ritter", "p", Vector2i(3, 5))
+	var g2 := spawn("soldat_infanterie", "e", Vector2i(4, 5))
+	knight["hp"] = 10
+	await b._run_ability(h2, "knochenwurf", g2)
+	check(knight["hp"] == 10 and not Status.has(knight, "satt"), "andere Figur im Weg faengt nichts auf")
+
 	# --- Idee ohne trigger tut nichts
 	var only_idea := Secrets.find_beam("robo", "roter_laser", "kungfu")
 	check(only_idea.is_empty(), "ohne Eintrag keine Umlenkung")

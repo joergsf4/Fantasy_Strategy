@@ -943,6 +943,7 @@ const FX_SCENES := {
 	"tonikum": {"u": ["quacksalber", "p", [3, 7]], "tile": [5, 7], "more": [["ritter", "p", [5, 7]], ["soldat_infanterie", "e", [6, 7]], ["soldat_infanterie", "e", [5, 6]]]},
 	"hinterhalt": {"u": ["ninjas", "p", [4, 7]], "t": ["soldat_infanterie", "e", [5, 7], {"dir": [1, 0]}], "more": []},
 	"bellen": {"u": ["hund", "p", [5, 7]], "t": "self", "more": [["soldat_infanterie", "e", [7, 7]], ["soldat_infanterie", "e", [5, 5]], ["soldat_beritten", "e", [3, 8]]]},
+	"futter_fuer_brumm": {"u": ["hund", "p", [2, 7]], "t": ["soldat_infanterie", "e", [4, 7]], "ab": "knochenwurf", "more": [["maedchen_baer", "p", [3, 7], {"hp": 20}]]},
 	"laser_reflektor": {"u": ["robo", "p", [2, 7]], "t": ["soldat_infanterie", "e", [6, 7]], "ab": "roter_laser", "more": [["samurai", "p", [4, 7]], ["soldat_infanterie", "e", [4, 5]], ["soldat_beritten", "e", [5, 8]], ["soldat_infanterie", "e", [8, 7]]]},
 	"drunken_strike": {"u": ["kungfu", "p", [4, 7]], "t": ["soldat_infanterie", "e", [5, 7]], "more": []},
 	"sternschnuppe": {"u": ["magical_girl", "p", [2, 7]], "t": ["soldat_infanterie", "e", [8, 7]], "more": []},
