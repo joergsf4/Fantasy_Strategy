@@ -104,7 +104,7 @@ Weboberfläche für Gespräche und Spieldaten, nur mit der Python-Standardbiblio
 - **Gespräche:** Einleitung, Abschluss, Gespräche im Kampf mit Auslösern und Rückzug benannter Gegner. Texte bearbeiten, Figuren per Drag-and-Drop zuordnen, Zeilen umsortieren, Vorschau wie im Spiel, neue Gespräche aus einer Beschreibung entwerfen (braucht die Claude-CLI).
 - **Charaktere:** Übersicht aller Figuren (erstes Auftreten, Spezialfähigkeit, Missionen mit Dialogzeilen, Werte, Notizen aus `docs/figuren.md`, Material-Check) als Karten oder Tabelle, dazu zwei Freitextfelder für Fähigkeits-Ideen.
 - **Missionen:** Gruppe und Gegner jedes Kapitels per Drag-and-Drop ändern, mit Minikarte und **Story-Warnungen** (z. B. Figur kommt vor ihrer Einführung vor).
-- **Geheimnisse:** geheime Interaktionen zwischen Figuren (Auslöser, Wirkung, Szene), siehe [docs/geheimnisse.md](docs/geheimnisse.md).
+- **Geheimnisse:** Ideen für geheime Interaktionen als Freitext-Prompt mit Auswahl der beteiligten Figuren; die technische Umsetzung (Auslöser, Wirkung, Szene) ist optional. Siehe [docs/geheimnisse.md](docs/geheimnisse.md).
 
 <table>
 <tr>

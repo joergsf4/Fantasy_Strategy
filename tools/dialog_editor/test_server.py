@@ -161,6 +161,25 @@ class EditorTest(unittest.TestCase):
                 server.save_secrets({"secrets": b})
         self.assertEqual(server.read(server.DATA / "secrets.json")["secrets"][0]["name"], "Anderer Name")
 
+    def test_geheimnis_als_freitext_idee_ohne_technik(self):
+        d = server.secrets()
+        first = d["secrets"][0]
+        self.assertEqual(first["characters"], ["braumeisterin", "kungfu"])        # Figuren und Prompt sind Teil jedes Geheimnisses
+        self.assertIn("Fass", first["prompt"])
+        idee = {"id": "kuerbis_idee", "name": "Kuerbisse", "characters": ["maedchen_baer", "wendy"], "prompt": "  Zwei Figuren treffen einen sprechenden Kuerbis.\nDer Kuerbis stellt ein Raetsel.  "}
+        server.save_secrets({"secrets": d["secrets"] + [idee]})
+        got = server.read(server.DATA / "secrets.json")["secrets"]
+        self.assertEqual(len(got), 2)
+        self.assertNotIn("trigger", got[1])                                         # Idee ohne technische Umsetzung
+        self.assertEqual(got[1]["prompt"], "Zwei Figuren treffen einen sprechenden Kuerbis.\nDer Kuerbis stellt ein Raetsel.")
+        self.assertEqual(server.secrets()["secrets"][1]["characters"], ["maedchen_baer", "wendy"])
+        for bad in ({"characters": ["gibtsnicht"]}, {"prompt": "x" * 6001}, {"name": ""}):
+            with self.assertRaises(ValueError):
+                server.save_secrets({"secrets": d["secrets"] + [dict(idee, id="x_idee", **bad)]})
+        # nur Ideen sind im Spiel nicht aktiv: die Datei bleibt fuer das Spiel gueltig
+        for sec in got:
+            self.assertTrue(sec["id"] and sec["name"])
+
     def test_leere_flee_und_ideen_werden_entfernt_und_ideen_gespeichert(self):
         b = self.body("ch3")
         b["flee"] = {}

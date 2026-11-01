@@ -759,16 +759,13 @@ function secPreview(x) {
   const sc = x.scene;
   return `<div class="sprev" data-prev="${esc(x.id)}"><img class="l" src="/assets/portraits/${esc(sc.left)}.png" alt=""><img class="r" src="/assets/portraits/${esc(sc.right)}.png" alt=""><div class="tag">✦ GEHEIME INTERAKTION ✦ ${esc(x.name)}</div></div>`;
 }
-function secCard(x, i) {
+const SEC_PLACEHOLDER = "Beschreibe das Geheimnis frei, z. B.: Brunhilde wirft ein Fass auf Lin. Der kämpft ab dann 10 % stärker im Drunken-Master-Stil und bekommt eine Sonderfähigkeit. Was soll passieren, wie soll es aussehen, welche Szene, welche Musik? Alles, was Claude für die Umsetzung wissen muss.";
+function secTech(x, i) {
   const o = SEC, uname = id => o.units[id]?.name || id, t = x.trigger, sc = x.scene, fig = Object.entries(o.units).map(([k, u]) => [k, u.name]);
   const abs = (o.units[t.by]?.abilities || []).map(a => [a, o.abilities[a] || a]); if (!abs.length) abs.push(["", "(keine passende Fähigkeit)"]);
   const who = [[t.by, uname(t.by)], [t.target, uname(t.target)]];
   const pt = list => list.map(n => [n, n]);
-  return `<div class="scard" data-sec="${i}">
-    <div>${secPreview(x)}<p class="hint" style="margin-top:6px">Vorschau: links ${esc(uname(t.by))}, rechts ${esc(uname(t.target))}. Im Spiel liegt die Szene vor der Karte, dazu kommen Banner, Tiefenwirkung (Maus) und ein fliegendes Fass.</p></div>
-    <div class="sform">
-      <label>Name des Geheimnisses</label><input type="text" class="wide" data-f="name" value="${esc(x.name)}" maxlength="60">
-      <div class="sbox"><h4>Auslöser</h4><div class="row">
+  return `<div class="sbox"><h4>Auslöser</h4><div class="row">
         <select data-f="by" aria-label="Figur">${secOpts(fig, t.by)}</select> setzt
         <select data-f="ability" aria-label="Fähigkeit">${secOpts(abs, t.ability)}</select> auf Verbündeten
         <select data-f="target" aria-label="Verbündeter">${secOpts(fig, t.target)}</select> ein.</div>
@@ -784,28 +781,52 @@ function secCard(x, i) {
           <textarea data-f="text" data-j="${j}" rows="2" aria-label="Text der Zeile ${j + 1}">${esc(l.text)}</textarea>
           <button class="btn ghost" data-sact="rmline" data-j="${j}" aria-label="Zeile entfernen" title="Zeile entfernen">✕</button></div>`).join("")}
         <button class="btn" data-sact="addline">+ Zeile</button></div>
+      <p style="margin-top:8px"><button class="btn" data-sact="rmtech">Technische Umsetzung entfernen (wieder nur Idee)</button></p>`;
+}
+function secCard(x, i) {
+  const o = SEC, uname = id => o.units[id]?.name || id, fig = Object.entries(o.units).map(([k, u]) => [k, u.name]);
+  const tech = !!x.trigger;
+  const chips = (x.characters || []).map(c => `<span class="chip2">${esc(uname(c))} <button class="btn ghost" data-sact="rmchar" data-c="${esc(c)}" aria-label="${esc(uname(c))} entfernen" style="padding:0 4px">✕</button></span>`).join("") || '<span class="hint">noch keine Figuren</span>';
+  return `<div class="scard" data-sec="${i}" ${tech ? "" : 'style="grid-template-columns:1fr"'}>
+    ${tech ? `<div>${secPreview(x)}<p class="hint" style="margin-top:6px">Vorschau: links ${esc(uname(x.trigger.by))}, rechts ${esc(uname(x.trigger.target))}. Im Spiel liegt die Szene vor der Karte, dazu kommen Banner, Tiefenwirkung (Maus) und ein fliegendes Fass.</p></div>` : ""}
+    <div class="sform">
+      <div class="row"><b style="flex:1">${tech ? "✓ Umgesetzt (aktiv im Spiel)" : "💡 Idee (noch nicht im Spiel)"}</b></div>
+      <label>Name des Geheimnisses</label><input type="text" class="wide" data-f="name" value="${esc(x.name)}" maxlength="60">
+      <label>Beteiligte Figuren</label>
+      <div class="row">${chips} <select data-f="addchar" aria-label="Figur hinzufügen">${secOpts(fig.filter(([k]) => !(x.characters || []).includes(k)), "", "+ Figur hinzufügen")}</select></div>
+      <label>Prompt: Was soll passieren? (Freitext, wird zur Umsetzung an Claude gegeben)</label>
+      <textarea data-f="prompt" class="wide" rows="7" maxlength="6000" placeholder="${esc(SEC_PLACEHOLDER)}" style="width:100%;min-height:150px">${esc(x.prompt || "")}</textarea>
+      ${tech ? `<details class="sbox" open><summary><b>Technische Umsetzung</b> (Auslöser, Wirkung, Szene)</summary>${secTech(x, i)}</details>`
+             : `<p style="margin-top:8px"><button class="btn" data-sact="addtech" title="Auslöser, Wirkung und Szene von Hand festlegen">Technische Umsetzung von Hand anlegen …</button></p>`}
       <p style="margin-top:10px"><button class="btn" data-sact="del">Geheimnis löschen</button></p>
     </div></div>`;
 }
 async function renderSec() {
   setTimeout(updateStatus, 0);
   if (!SEC) { $("#main").innerHTML = '<p class="hint">Lade Geheimnisse …</p>'; SEC = await (await fetch("/api/secrets")).json(); sec = JSON.parse(JSON.stringify(SEC.secrets)); secSaved = JSON.stringify(sec); }
-  $("#main").innerHTML = `<div class="cnote">Geheime Interaktionen: Setzt eine Figur eine Fähigkeit auf einen Verbündeten ein, kann etwas Besonderes passieren, zum Beispiel ein Bonus und eine neue Fähigkeit bis Kampfende. Die Szene mit Sonderbild läuft beim ersten Mal. Gespeichert wird in <code>game/data/secrets.json</code> mit „Speichern“ oben.</div>
+  $("#main").innerHTML = `<div class="cnote">Geheime Interaktionen: Beschreibe die Idee frei im <b>Prompt</b> und wähle die beteiligten Figuren. Die technische Umsetzung (Auslöser, Wirkung, Szene) ist <b>optional</b>: Ohne sie bleibt das Geheimnis eine Idee, die Claude später umsetzen kann; mit ihr ist es sofort im Spiel aktiv. Gespeichert wird in <code>game/data/secrets.json</code> mit „Speichern“ oben.</div>
     ${sec.map(secCard).join("") || '<p class="hint">Noch keine Geheimnisse.</p>'}
-    <button class="btn primary" data-sact="new">+ Neues Geheimnis</button>`;
+    <button class="btn primary" data-sact="new">+ Neue Idee</button>`;
   document.querySelectorAll(".sform textarea").forEach(fit);
 }
 function secNew() {
-  const by = "braumeisterin", u = SEC.units[by] ? by : Object.keys(SEC.units)[0], ab = SEC.units[u].abilities[0] || "", other = Object.keys(SEC.units).find(k => k !== u);
   let n = 1; while (sec.some(x => x.id === "geheimnis_" + n)) n++;
-  sec.push({ id: "geheimnis_" + n, name: "Neues Geheimnis", trigger: { type: "ability_on_ally", by: u, ability: ab, target: other }, effects: { atk_pct: 10, grant_ability: "", status: "betrunken" },
-    scene: { left: SEC.portraits[0], right: SEC.portraits[1] || SEC.portraits[0], lines: [{ speaker: u, text: "" }] } });
+  sec.push({ id: "geheimnis_" + n, name: "Neue Idee", characters: [], prompt: "" });
+}
+function secAddTech(x) {
+  const ch = x.characters || [], by = ch.find(c => SEC.units[c]?.abilities.length) || Object.keys(SEC.units).find(k => SEC.units[k].abilities.length), other = ch.find(c => c !== by) || Object.keys(SEC.units).find(k => k !== by);
+  x.trigger = { type: "ability_on_ally", by, ability: SEC.units[by].abilities[0] || "", target: other };
+  x.effects = { atk_pct: 10, grant_ability: "", status: "betrunken" };
+  x.scene = { left: SEC.portraits.includes(by) ? by : SEC.portraits[0], right: SEC.portraits.includes(other) ? other : SEC.portraits[1] || SEC.portraits[0], lines: [{ speaker: by, text: "" }] };
+  for (const c of [by, other]) if (!ch.includes(c)) ch.push(c);
+  x.characters = ch;
 }
 document.addEventListener("input", e => {
   const el = e.target, card = el.closest?.(".scard"); if (!card || view !== "sec" || el.matches("select")) return;
   const x = sec[+card.dataset.sec], f = el.dataset.f;
   if (f === "text") { x.scene.lines[+el.dataset.j].text = el.value; fit(el); }
-  else if (f === "name") { x.name = el.value; card.querySelector(".tag").textContent = "✦ GEHEIME INTERAKTION ✦ " + el.value; }
+  else if (f === "prompt") { x.prompt = el.value; fit(el); }
+  else if (f === "name") { x.name = el.value; const tg = card.querySelector(".tag"); if (tg) tg.textContent = "✦ GEHEIME INTERAKTION ✦ " + el.value; }
   else if (f === "atk_pct") x.effects.atk_pct = Math.max(0, Math.min(100, parseInt(el.value || "0", 10) || 0));
   else if (f === "status") x.effects.status = el.value.trim();
   updateStatus();
@@ -813,7 +834,8 @@ document.addEventListener("input", e => {
 document.addEventListener("change", e => {
   const el = e.target, card = el.closest?.(".scard"); if (!card || view !== "sec" || !el.matches("select")) return;
   const x = sec[+card.dataset.sec], f = el.dataset.f;
-  if (f === "by") { x.trigger.by = el.value; x.trigger.ability = SEC.units[el.value].abilities[0] || ""; x.scene.lines.forEach(l => { if (l.speaker !== x.trigger.target) l.speaker = el.value; }); }
+  if (f === "addchar") { if (el.value) (x.characters ||= []).push(el.value); }
+  else if (f === "by") { x.trigger.by = el.value; x.trigger.ability = SEC.units[el.value].abilities[0] || ""; x.scene.lines.forEach(l => { if (l.speaker !== x.trigger.target) l.speaker = el.value; }); }
   else if (f === "ability" || f === "target") { x.trigger[f] = el.value; if (f === "target") x.scene.lines.forEach(l => { if (l.speaker !== x.trigger.by) l.speaker = el.value; }); }
   else if (f === "grant_ability") x.effects.grant_ability = el.value;
   else if (["left", "right"].includes(f)) x.scene[f] = el.value;
@@ -824,6 +846,9 @@ document.addEventListener("click", e => {
   const b = e.target.closest?.("[data-sact]"); if (!b || view !== "sec") return;
   const card = b.closest(".scard"), x = card ? sec[+card.dataset.sec] : null, a = b.dataset.sact;
   if (a === "new") secNew();
+  else if (a === "addtech") secAddTech(x);
+  else if (a === "rmtech") { if (!confirm("Auslöser, Wirkung und Szene entfernen? Der Prompt bleibt.")) return; delete x.trigger; delete x.effects; delete x.scene; }
+  else if (a === "rmchar") x.characters = x.characters.filter(c => c !== b.dataset.c);
   else if (a === "addline") x.scene.lines.push({ speaker: x.trigger.by, text: "" });
   else if (a === "rmline") { if (x.scene.lines.length > 1) x.scene.lines.splice(+b.dataset.j, 1); else return toast("Mindestens eine Zeile", "err"); }
   else if (a === "del") { if (!confirm(`„${x.name}“ wirklich löschen?`)) return; sec.splice(+card.dataset.sec, 1); }

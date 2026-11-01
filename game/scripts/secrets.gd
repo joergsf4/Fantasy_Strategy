@@ -8,7 +8,10 @@ static var _list: Array = []
 
 static func all() -> Array:
 	if _list.is_empty():
-		_list = (JSON.parse_string(FileAccess.get_file_as_string("res://data/secrets.json")) as Dictionary)["secrets"]
+		_list = []
+		for sec: Dictionary in (JSON.parse_string(FileAccess.get_file_as_string("res://data/secrets.json")) as Dictionary)["secrets"]:
+			if sec.has("trigger"):      # reine Ideen (nur Freitext) sind im Spiel nicht aktiv
+				_list.append(sec)
 	return _list
 
 

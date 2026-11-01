@@ -11,6 +11,8 @@ Zwischen bestimmten Figuren gibt es versteckte Wechselwirkungen. Der Spieler fin
 
 ## Daten
 
+Jedes Geheimnis ist zuerst eine **Idee**: `name`, `characters` (beteiligte Figuren) und `prompt` (Freitext, was passieren soll; wird später zur Umsetzung an Claude gegeben). Die technische Umsetzung (`trigger`, `effects`, `scene`) ist optional. **Aktiv im Spiel sind nur Einträge mit `trigger`** (`Secrets.all()` ignoriert reine Ideen). Im Editor steht oben der Prompt mit der Figurenauswahl; Auslöser, Wirkung und Szene liegen im aufklappbaren Bereich „Technische Umsetzung“ und lassen sich anlegen oder wieder entfernen.
+
 `game/data/secrets.json` (bearbeitbar im Dialog-Editor, Tab **Geheimnisse**: Auslöser, Wirkung, Bilder und Zeilen der Szene mit Vorschau; gespeichert mit dem gemeinsamen Speichern-Button). Szenenbilder sind Porträts (`game/assets/portraits/sec_*.png`, Gemini, freigestellt mit `tools/chroma_key.py neu`) (Hintergrundbilder gibt es nicht mehr; `chroma_key.py bg` und der Auftrag `bg_betrunken` in `run.mjs` bleiben als Werkzeug). Code: `scripts/secrets.gd`, `Battle._run_secret`, `scripts/secret_scene.gd`, Animation `FxNew.secret_reveal`.
 
 ## Erstes Geheimnis: Betrunkener Meister
