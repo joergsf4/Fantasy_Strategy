@@ -780,8 +780,7 @@ function secTech(x, i) {
         · <input type="number" data-f="st_red" min="0" max="90" value="${+x.effects.status?.reduce_pct || 0}" aria-label="Schadensminderung in Prozent"> % weniger erlittener Schaden</div>`
         : `<div class="row" style="margin-top:6px">Reflexion <input type="number" data-f="reflect_pct" min="1" max="200" value="${+x.effects.reflect_pct || 75}" aria-label="Reflexion in Prozent"> % des Schadens bzw. der Heilung
         · Umkreis <input type="number" data-f="radius" min="1" max="4" value="${+x.effects.radius || 2}" aria-label="Umkreis in Feldern"> Felder um ${esc(uname(t.via))}</div>`}
-        <div class="row" style="margin-top:6px"><label style="display:inline-flex;gap:4px;margin:0"><input type="checkbox" data-f="cutin_on" ${x.effects.cutin ? "checked" : ""}> Großer Polarlicht-Auftritt beim ersten Mal</label>
-        ${x.effects.cutin ? `Figur <select data-f="cutin_unit">${secOpts(fig, x.effects.cutin.unit)}</select> Titel <input type="text" data-f="cutin_title" value="${esc(x.effects.cutin.title || "")}" maxlength="40" style="width:160px"> Untertitel <input type="text" data-f="cutin_sub" value="${esc(x.effects.cutin.sub || "")}" maxlength="40" style="width:140px">` : ""}</div></div>`
+</div>`
   : `<div class="sbox"><h4>Auslöser</h4><div class="row">
         <select data-f="by" aria-label="Figur">${secOpts(fig, t.by)}</select> setzt
         <select data-f="ability" aria-label="Fähigkeit">${secOpts(abs, t.ability)}</select> auf Verbündeten
@@ -791,10 +790,13 @@ function secTech(x, i) {
         Angriff + <input type="number" data-f="atk_pct" min="0" max="100" value="${+x.effects.atk_pct || 0}" aria-label="Angriffsbonus in Prozent"> %
         · Neue Fähigkeit <select data-f="grant_ability">${secOpts(Object.entries(o.abilities), x.effects.grant_ability || "", "keine")}</select>
         · Status <input type="text" data-f="status" value="${esc(x.effects.status || "betrunken")}" style="width:110px" aria-label="Status-Kennung"></div></div>`;
-  return `${typ}${trig}
+  const cutin = `<div class="sbox"><h4>Erkennungszeichen: Polarlicht-Auftritt</h4><div class="row"><label style="display:inline-flex;gap:4px;margin:0"><input type="checkbox" data-f="cutin_on" ${x.effects.cutin ? "checked" : ""}> Großer Auftritt mit Polarlicht und vergrößerter Figur beim ersten Entdecken</label></div>
+        ${x.effects.cutin ? `<div class="row" style="margin-top:6px">Figur <select data-f="cutin_unit">${secOpts(fig, x.effects.cutin.unit)}</select> Titel <input type="text" data-f="cutin_title" value="${esc(x.effects.cutin.title || "")}" maxlength="40" style="width:170px"> Untertitel <input type="text" data-f="cutin_sub" value="${esc(x.effects.cutin.sub || "")}" maxlength="40" style="width:150px"></div>` : ""}</div>`;
+  return `${typ}${trig}${cutin}
       <div class="sbox"><h4>Szene (läuft beim ersten Mal)</h4><div class="row">
         Links <select data-f="left">${secOpts(pt(o.portraits), sc.left)}</select>
-        Rechts <select data-f="right">${secOpts(pt(o.portraits), sc.right)}</select></div>
+        Rechts <select data-f="right">${secOpts(pt(o.portraits), sc.right)}</select>
+        Fliegt durchs Bild <select data-f="fly">${secOpts(pt(o.fly_sprites || []), sc.fly || "", "nichts")}</select></div>
         ${sc.lines.map((l, j) => `<div class="sline"><select data-f="speaker" data-j="${j}" aria-label="Sprecher">${secOpts(who, l.speaker)}</select>
           <textarea data-f="text" data-j="${j}" rows="2" aria-label="Text der Zeile ${j + 1}">${esc(l.text)}</textarea>
           <button class="btn ghost" data-sact="rmline" data-j="${j}" aria-label="Zeile entfernen" title="Zeile entfernen">✕</button></div>`).join("")}
@@ -832,7 +834,7 @@ function secNew() {
   sec.push({ id: "geheimnis_" + n, name: "Neue Idee", characters: [], prompt: "" });
 }
 function secSwitchType(x, type) {
-  const t = x.trigger, second = t.via || t.target;
+  const t = x.trigger, second = t.via || t.target, keepCut = x.effects?.cutin;
   if (type === "beam_via_ally") {
     x.trigger = { type, by: t.by, abilities: (SEC.units[t.by]?.beams || []).slice(0, 1), via: second };
     x.effects = { mode: "reflect", reflect_pct: 75, radius: 2 };
@@ -840,11 +842,12 @@ function secSwitchType(x, type) {
     x.trigger = { type: "ability_on_ally", by: t.by, ability: SEC.units[t.by]?.abilities[0] || "", target: second };
     x.effects = { atk_pct: 10, grant_ability: "", status: "betrunken" };
   }
+  if (keepCut) x.effects.cutin = keepCut;
 }
 function secAddTech(x) {
   const ch = x.characters || [], by = ch.find(c => SEC.units[c]?.abilities.length) || Object.keys(SEC.units).find(k => SEC.units[k].abilities.length), other = ch.find(c => c !== by) || Object.keys(SEC.units).find(k => k !== by);
   x.trigger = { type: "ability_on_ally", by, ability: SEC.units[by].abilities[0] || "", target: other };
-  x.effects = { atk_pct: 10, grant_ability: "", status: "betrunken" };
+  x.effects = { atk_pct: 10, grant_ability: "", status: "betrunken", cutin: { unit: other, title: x.name, sub: "Geheimnis entdeckt" } };
   x.scene = { left: SEC.portraits.includes(by) ? by : SEC.portraits[0], right: SEC.portraits.includes(other) ? other : SEC.portraits[1] || SEC.portraits[0], lines: [{ speaker: by, text: "" }] };
   for (const c of [by, other]) if (!ch.includes(c)) ch.push(c);
   x.characters = ch;
@@ -882,6 +885,7 @@ document.addEventListener("change", e => {
   else if (f === "ability" || f === "target") { x.trigger[f] = el.value; if (f === "target") x.scene.lines.forEach(l => { if (l.speaker !== x.trigger.by) l.speaker = el.value; }); }
   else if (f === "grant_ability") x.effects.grant_ability = el.value;
   else if (["left", "right"].includes(f)) x.scene[f] = el.value;
+  else if (f === "fly") { if (el.value) x.scene.fly = el.value; else delete x.scene.fly; }
   else if (f === "speaker") x.scene.lines[+el.dataset.j].speaker = el.value;
   renderSec(); updateStatus();
 });

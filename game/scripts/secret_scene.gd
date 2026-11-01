@@ -65,9 +65,10 @@ func _play_intro() -> void:
 	tw.tween_property(self, "_breath", 1.0, 0.9)
 	tw.tween_property(_left, "modulate:a", 1.0, 0.5).set_delay(0.3)
 	tw.tween_property(_right, "modulate:a", 1.0, 0.5).set_delay(0.5)
-	# Vordergrund: Fass fliegt durchs Bild und zerplatzt am rechten Charakter
+	# Vordergrund: ein Objekt (zum Beispiel ein Fass) fliegt durchs Bild und zerplatzt am rechten Charakter
+	var fly: String = str(secret["scene"].get("fly", ""))
 	var barrel := TextureRect.new()
-	barrel.texture = load("res://assets/fx/fx_barrel.png")
+	barrel.texture = load("res://assets/fx/%s.png" % fly) if fly != "" else null
 	barrel.size = Vector2(190, 190)
 	barrel.pivot_offset = barrel.size * 0.5
 	barrel.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
@@ -80,7 +81,8 @@ func _play_intro() -> void:
 	fl.tween_property(barrel, "rotation", TAU * 1.5, 0.8).set_delay(0.3 if quick else 0.55)
 	fl.chain().tween_callback(func() -> void:
 		barrel.queue_free()
-		_splash(Vector2(860, 360)))
+		if fly != "":
+			_splash(Vector2(860, 360), fly))
 	# Banner
 	var banner := VBoxContainer.new()
 	banner.set_anchors_preset(Control.PRESET_CENTER_TOP)
@@ -117,10 +119,10 @@ func _banner_label(text: String, size: int, col: Color) -> Label:
 	return l
 
 
-func _splash(at: Vector2) -> void:
-	Sfx.event("barrel_splash")
+func _splash(at: Vector2, fly := "fx_barrel") -> void:
+	Sfx.event("barrel_splash" if fly == "fx_barrel" else "village")
 	var foam := TextureRect.new()
-	foam.texture = load("res://assets/fx/fx_foam.png")
+	foam.texture = load("res://assets/fx/fx_foam.png" if fly == "fx_barrel" else "res://assets/fx/fx_star.png")
 	foam.size = Vector2(120, 120)
 	foam.pivot_offset = foam.size * 0.5
 	foam.position = at - foam.size * 0.5

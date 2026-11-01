@@ -2717,6 +2717,10 @@ func _run_catch(u: Dictionary, via: Dictionary, sec: Dictionary) -> void:
 		secrets_seen.append(sec["id"])
 		if secret_runner.is_valid():
 			await secret_runner.call(sec)
+		var ci: Dictionary = ef.get("cutin", {})
+		if not ci.is_empty():
+			await _super_cutin(via, {}, str(ci.get("title", "Futter")), str(ci.get("sub", "")))
+			_super_music_stop()
 	var amount := mini(int(ef.get("heal", 0)), via["maxhp"] - via["hp"])
 	if amount > 0:
 		via["hp"] += amount
@@ -2818,11 +2822,15 @@ func _run_secret(u: Dictionary, id: String, target: Dictionary) -> void:
 	await fx.before_hit(id, u, target, 0)
 	fx.on_hit(id, u, target, 0)
 	await get_tree().create_timer(0.5).timeout
+	var ef: Dictionary = sec["effects"]
 	if not secrets_seen.has(sec["id"]):
 		secrets_seen.append(sec["id"])
 		if secret_runner.is_valid():
 			await secret_runner.call(sec)
-	var ef: Dictionary = sec["effects"]
+		var ci: Dictionary = ef.get("cutin", {})          # Erkennungszeichen: der Polarlicht-Auftritt
+		if not ci.is_empty():
+			await _super_cutin(target, {}, str(ci.get("title", sec["name"])), str(ci.get("sub", "")))
+			_super_music_stop()
 	var pct := float(ef.get("atk_pct", 0))
 	var mods := {}
 	if pct > 0.0:

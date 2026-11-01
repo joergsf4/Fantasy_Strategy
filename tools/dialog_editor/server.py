@@ -269,6 +269,9 @@ def missions() -> dict:
     return {"missions": out}
 
 
+FLY_SPRITES = ["fx_barrel", "fx_bone", "fx_star", "fx_flower", "fx_bolt", "fx_fireball", "fx_honig", "fx_bierkrug", "fx_flasche", "fx_wolle"]     # fliegende Objekte der Geheimnis-Szene
+
+
 def secrets() -> dict:
     """Geheime Interaktionen (game/data/secrets.json) samt Auswahllisten fuer den Editor."""
     units = read(DATA / "units.json")
@@ -284,7 +287,19 @@ def secrets() -> dict:
                           "hero": bool(v.get("hero"))}
                       for k, v in units.items() if isinstance(v, dict) and "name" in v},
             "abilities": {k: v["name"] for k, v in abilities.items()},
-            "portraits": portraits}
+            "portraits": portraits, "fly_sprites": FLY_SPRITES}
+
+
+def _check_cutin(name: str, ef: dict, units: dict) -> dict:
+    """Der grosse Polarlicht-Auftritt (Erkennungszeichen eines Geheimnisses): optional, Figur und Texte pruefen."""
+    cut = ef.get("cutin") or {}
+    if not cut:
+        return {}
+    if cut.get("unit") not in units or "name" not in units[cut["unit"]]:
+        raise ValueError(f"{name}: unbekannte Figur im Auftritt")
+    if len(str(cut.get("title", ""))) > 40 or len(str(cut.get("sub", ""))) > 40:
+        raise ValueError(f"{name}: Titel und Untertitel des Auftritts hoechstens 40 Zeichen")
+    return {"unit": cut["unit"], "title": str(cut.get("title", "")).strip(), "sub": str(cut.get("sub", "")).strip()}
 
 
 def save_secrets(body: dict) -> None:
@@ -361,13 +376,6 @@ def save_secrets(body: dict) -> None:
                                 or not isinstance(turns, int) or isinstance(turns, bool) or not 1 <= turns <= 9:
                             raise ValueError(f"{name}: Status braucht eine Kennung, Schadensminderung 0 bis 90 Prozent und 1 bis 9 Runden")
                         new_effects["status"] = {"id": sid_, "turns": turns, "reduce_pct": red}
-                cut = ef.get("cutin") or {}
-                if cut:
-                    if cut.get("unit") not in units or "name" not in units[cut["unit"]]:
-                        raise ValueError(f"{name}: unbekannte Figur im Auftritt")
-                    if len(str(cut.get("title", ""))) > 40 or len(str(cut.get("sub", ""))) > 40:
-                        raise ValueError(f"{name}: Titel und Untertitel des Auftritts hoechstens 40 Zeichen")
-                    new_effects["cutin"] = {"unit": cut["unit"], "title": str(cut.get("title", "")).strip(), "sub": str(cut.get("sub", "")).strip()}
             else:
                 ab = t["ability"]
                 if ab not in units[by].get("abilities", []) or abilities.get(ab, {}).get("target") != "enemy":
@@ -387,6 +395,9 @@ def save_secrets(body: dict) -> None:
                     raise ValueError(f"{name}: ungueltiger Status")
                 new_trigger = {"type": "ability_on_ally", "by": by, "ability": ab, "target": on}
                 new_effects = {"atk_pct": pct, "grant_ability": gift, "status": status}
+            cutin = _check_cutin(name, sec["effects"], units)
+            if cutin:
+                new_effects["cutin"] = cutin
             sc = sec["scene"]
             if sc["left"] not in portraits or sc["right"] not in portraits:
                 raise ValueError(f"{name}: unbekanntes Bild in der Szene")
@@ -407,7 +418,12 @@ def save_secrets(body: dict) -> None:
                     chars.append(c)
             entry["trigger"] = new_trigger
             entry["effects"] = new_effects
+            fly = str(sc.get("fly", ""))
+            if fly and fly not in FLY_SPRITES:
+                raise ValueError(f"{name}: unbekanntes fliegendes Objekt '{fly}'")
             entry["scene"] = {"left": sc["left"], "right": sc["right"], "lines": lines}
+            if fly:
+                entry["scene"]["fly"] = fly
         out.append(entry)
     path = DATA / "secrets.json"
     cur = read(path)
