@@ -152,7 +152,7 @@ class EditorTest(unittest.TestCase):
         bad = []
         for mutate in (lambda s: s["trigger"].update(ability="baerenpranke"), lambda s: s["trigger"].update(by="gibtsnicht"), lambda s: s["trigger"].update(target="braumeisterin"),
                        lambda s: s["effects"].update(atk_pct=500), lambda s: s["effects"].update(grant_ability="nix"), lambda s: s["scene"].update(left="nix"),
-                       lambda s: s["scene"].update(lines=[]), lambda s: s["scene"]["lines"][0].update(speaker="ritter"),
+                       lambda s: s["scene"]["lines"][0].update(speaker="ritter"),
                        lambda s: s.update(id="Gross Klein")):
             c = copy.deepcopy(new); mutate(c[0]); bad.append(c)
         c = copy.deepcopy(new) + copy.deepcopy(new); bad.append(c)                   # doppelte Kennung
@@ -173,6 +173,18 @@ class EditorTest(unittest.TestCase):
         self.assertNotIn("trigger", got[1])                                         # Idee ohne technische Umsetzung
         self.assertEqual(got[1]["prompt"], "Zwei Figuren treffen einen sprechenden Kuerbis.\nDer Kuerbis stellt ein Raetsel.")
         self.assertEqual(server.secrets()["secrets"][1]["characters"], ["maedchen_baer", "wendy"])
+        # frisch angelegte Technik mit leerer Zeile oder ganz ohne Zeilen speichert (leere Zeilen werden ignoriert)
+        tech = {"id": "t_idee", "name": "T", "characters": ["braumeisterin", "kungfu"], "prompt": "",
+                "trigger": {"type": "ability_on_ally", "by": "braumeisterin", "ability": "fasswurf", "target": "kungfu"},
+                "effects": {"atk_pct": 5, "grant_ability": "", "status": "betrunken"},
+                "scene": {"left": "braumeisterin", "right": "kungfu", "lines": [{"speaker": "braumeisterin", "text": ""}]}}
+        other_trigger = copy.deepcopy(tech); other_trigger["trigger"]["target"] = "ritter"; other_trigger["scene"]["right"] = "ritter"
+        server.save_secrets({"secrets": d["secrets"][:0] + [other_trigger]})
+        self.assertEqual(server.read(server.DATA / "secrets.json")["secrets"][0]["scene"]["lines"], [])
+        wrong = copy.deepcopy(other_trigger); wrong["scene"]["lines"] = [{"speaker": "wendy", "text": "Hallo"}]
+        with self.assertRaisesRegex(ValueError, "Zeile 1: Sprecher 'Wendy Wolle'"):
+            server.save_secrets({"secrets": [wrong]})
+        server.save_secrets({"secrets": d["secrets"] + [idee]})
         for bad in ({"characters": ["gibtsnicht"]}, {"prompt": "x" * 6001}, {"name": ""}):
             with self.assertRaises(ValueError):
                 server.save_secrets({"secrets": d["secrets"] + [dict(idee, id="x_idee", **bad)]})

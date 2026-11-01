@@ -339,20 +339,24 @@ def save_secrets(body: dict) -> None:
             sc = sec["scene"]
             if sc["left"] not in portraits or sc["right"] not in portraits:
                 raise ValueError(f"{name}: unbekanntes Bild in der Szene")
-            lines = sc["lines"]
-            if not 1 <= len(lines) <= 12:
-                raise ValueError(f"{name}: die Szene braucht 1 bis 12 Zeilen")
-            for l in lines:
-                txt = re.sub(r"  +", " ", str(l["text"]).strip())
-                if l["speaker"] not in (by, on) or not txt or len(txt) > 400:
-                    raise ValueError(f"{name}: Zeile mit falschem Sprecher oder ohne Text")
-                l["text"] = txt
+            lines = []
+            for n, l in enumerate(sc["lines"], 1):
+                txt = re.sub(r"  +", " ", str(l.get("text", "")).strip())
+                if not txt:
+                    continue                      # leere Zeilen werden ignoriert (zum Beispiel eine frisch angelegte)
+                if l.get("speaker") not in (by, on):
+                    raise ValueError(f"{name}: Zeile {n}: Sprecher '{units.get(l.get('speaker'), {}).get('name', l.get('speaker'))}' gehoert nicht zum Ausloeser (nur {units[by]['name']} und {units[on]['name']})")
+                if len(txt) > 400:
+                    raise ValueError(f"{name}: Zeile {n} ist zu lang (hoechstens 400 Zeichen)")
+                lines.append({"speaker": l["speaker"], "text": txt})
+            if len(lines) > 12:
+                raise ValueError(f"{name}: die Szene darf hoechstens 12 Zeilen haben")
             for c in (by, on):
                 if c not in chars:
                     chars.append(c)
             entry["trigger"] = {"type": "ability_on_ally", "by": by, "ability": ab, "target": on}
             entry["effects"] = {"atk_pct": pct, "grant_ability": gift, "status": status}
-            entry["scene"] = {"left": sc["left"], "right": sc["right"], "lines": [{"speaker": l["speaker"], "text": l["text"]} for l in lines]}
+            entry["scene"] = {"left": sc["left"], "right": sc["right"], "lines": lines}
         out.append(entry)
     path = DATA / "secrets.json"
     cur = read(path)
