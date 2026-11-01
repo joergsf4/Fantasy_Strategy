@@ -540,6 +540,7 @@ const acts = {
   cmode() { cView = cView === "cards" ? "table" : "cards"; renderChars(); },
   csel(el) { cSel = cSel === el.dataset.id ? "" : el.dataset.id; renderCharRes(); },
   cclose() { cSel = ""; renderCharRes(); },
+  async cnote_reset(el) { await saveNote(el.dataset.id, +el.dataset.slot, null); },
   csort(el) { cSort = { key: el.dataset.k, dir: cSort.key === el.dataset.k ? -cSort.dir : 1 }; renderCharRes(); },
   cgoto(el) { gotoTalks(el.dataset.ch, el.dataset.name); },
   newconv() { newConvDialog(); },
@@ -646,6 +647,7 @@ function renderCharRes() {
         ${list.map(c => `<tr class="${c.id === cSel ? "rsel" : ""}" data-act="csel" data-id="${c.id}" tabindex="0"><td>${avatar(c.id)}${esc(c.name)}</td><td><span class="kind ${c.kind}">${c.kind}</span></td><td>${esc(firstText(c))}</td><td>${esc(abShort(c))}</td>
           ${CH.chapters.map(ch => { const d = c.chapters[ch.n]; return `<td>${d ? symChips(d.roles) + (d.total ? d.total : "") : ""}</td>`; }).join("")}<td>${c.lines_total || ""}</td><td><span class="dot ${material(c)}" title="${esc(materialText(c))}"></span></td></tr>`).join("")}</tbody></table>`;
   $("#cres").innerHTML = `<div class="cwrap ${sel ? "sel" : ""}"><div>${body}</div>${sel ? charDetail(sel) : ""}</div>`;
+  document.querySelectorAll(".cnote-ta").forEach(fit);
 }
 function charDetail(c) {
   const st = c.stats;
@@ -657,9 +659,15 @@ function charDetail(c) {
     ${c.notes.tagline ? `<p><i>${esc(c.notes.tagline)}</i></p>` : ""}
     ${st ? `<div class="stats"><div><b>${st.hp}</b>Leben</div><div><b>${st.atk}</b>Angriff</div><div><b>${st.def}</b>Verteidigung</div><div><b>${st.res}</b>Resistenz</div>
       <div><b>${st.move}</b>Bewegung</div><div><b>${st.range_min === st.range ? st.range : st.range_min + "–" + st.range}</b>Reichweite</div><div><b>${c.dmg_type || "–"}</b>Schadensart</div><div><b>${c.role || "–"}</b>Rolle</div></div>${c.heal ? `<p class="kv">Heilt ${c.heal} Leben (normale Heilung)</p>` : ""}` : ""}
-    <h4>Spezialfähigkeit</h4>
+    <h4>Spezialfähigkeit (im Spiel)</h4>
     ${c.abilities.map(a => `<div class="abil"><b>${esc(a.name)}</b> ${a.source !== "Einheit" ? `<span class="kind Boss">${esc(a.source)}</span>` : ""}<small>Abklingzeit ${a.cd ?? "–"}${a.range ? " · Reichweite " + a.range.join("–") : ""}</small>${esc(a.text)}</div>`).join("") || '<p class="kv">Keine.</p>'}
     ${c.passives.length ? `<p class="kv">Passiv: ${c.passives.map(esc).join(", ")}</p>` : ""}
+    <h4>Fähigkeiten beschreiben (Entwurf)</h4>
+    <p class="kv" style="font-size:12.5px">Zwei Freitextfelder für Ideen und Beschreibungen. Vorbelegt mit den Fähigkeiten aus dem Spiel, leer wenn es keine gibt. Dein Text wird beim Verlassen des Feldes gespeichert (<code>ability_notes.json</code>) und <b>ändert das Spiel nicht</b>.</p>
+    ${[0, 1].map(i => { const nt = c.ability_notes, custom = nt.saved[i] !== null && nt.saved[i] !== undefined, val = custom ? nt.saved[i] : nt.defaults[i];
+      return `<label class="f" style="margin-bottom:8px"><span>Fähigkeit ${i + 1} ${custom ? '<span class="kind Boss">eigener Entwurf</span>' : nt.defaults[i] ? '<span class="kind">aus dem Spiel</span>' : '<span class="kind Sonstige">frei</span>'}</span>
+        <textarea class="cnote-ta" data-cnote="${c.id}" data-slot="${i}" rows="2" placeholder="Fähigkeit beschreiben …" style="width:100%;resize:none;overflow:hidden">${esc(val)}</textarea>
+        <span class="row" style="gap:10px;font-size:12px;color:var(--muted)"><span data-cstat="${c.id}:${i}"></span>${custom && nt.defaults[i] ? `<button class="btn ghost" data-act="cnote_reset" data-id="${c.id}" data-slot="${i}">↺ Spieltext wiederherstellen</button>` : ""}</span></label>`; }).join("")}
     <h4>Missionen und Dialoge</h4>
     <div class="tl">${CH.chapters.map(ch => { const d = c.chapters[ch.n]; const parts = d ? Object.entries(d.lines).map(([k, v]) => `${k} ${v}`).join(" · ") : "";
       return `<div class="tlrow ${d ? "" : "none"} ${key(d) ? "key" : ""}"><b>${ch.n}</b><span>${esc(ch.title)}${d ? `<br><small class="kv">${symChips(d.roles)} ${esc(parts) || "spricht nicht"}</small>` : ""}</span>
@@ -671,6 +679,17 @@ function charDetail(c) {
     ${c.sound ? `<p><span class="kv">Soundprofil:</span> ${esc(c.sound)}</p>` : ""}${c.gear.length ? `<p><span class="kv">Ausrüstung zu Beginn:</span> ${c.gear.map(esc).join(", ")}</p>` : ""}
     <p><span class="dot ${material(c)}"></span><span class="kv">Material:</span> ${esc(materialText(c))}</p>
   </aside>`;
+}
+async function saveNote(id, slot, text, rerender = true) {
+  const c = CH.characters.find(x => x.id === id);
+  const r = await fetch(`/api/character/${id}/note`, { method: "PUT", body: JSON.stringify({ slot, text }) });
+  if (!r.ok) return toast("Speichern fehlgeschlagen: " + (await r.json()).error, "err");
+  c.ability_notes.saved[slot] = text === null ? null : text.trim();
+  if (rerender) renderCharRes();     // beim Weitertabben nicht neu zeichnen, sonst ginge der Fokus verloren
+  const st = document.querySelector(`[data-cstat="${id}:${slot}"]`);
+  if (st) st.textContent = "✓ gespeichert";
+  const badge = st?.closest("label")?.querySelector(".kind");
+  if (badge && text !== null) { badge.textContent = "eigener Entwurf"; badge.className = "kind Boss"; }
 }
 function gotoTalks(chId, name) {
   cur = chId; filter = name; $("#q").value = name; setView("talks");
@@ -870,6 +889,13 @@ document.addEventListener("drop", e => {
 
 $("#q").oninput = e => { filter = e.target.value; render(); };
 $("#tabTalks").onclick = () => setView("talks"); $("#tabChars").onclick = () => setView("char"); $("#tabMis").onclick = () => setView("mis");
+document.addEventListener("input", e => { if (e.target.matches?.(".cnote-ta")) fit(e.target); });
+document.addEventListener("focusout", e => {
+  const el = e.target; if (!el.matches?.(".cnote-ta")) return;
+  const c = CH.characters.find(x => x.id === el.dataset.cnote), slot = +el.dataset.slot, nt = c.ability_notes;
+  const cur = nt.saved[slot] ?? nt.defaults[slot];
+  if (el.value.trim() !== cur.trim()) saveNote(c.id, slot, el.value, false);
+});
 document.addEventListener("input", e => { if (e.target.id === "cq") { cq = e.target.value; renderCharRes(); } });
 $("#undo").onclick = undo; $("#redo").onclick = redo; $("#save").onclick = save; $("#palq").oninput = renderPalette;
 $("#togglePal").onclick = () => document.body.classList.toggle("pal-open");

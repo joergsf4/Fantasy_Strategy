@@ -114,6 +114,22 @@ class EditorTest(unittest.TestCase):
                 server.save_mission("ch2", body)
         self.assertEqual(before, server.map_path("ch2").read_bytes())
 
+    def test_faehigkeitsfelder_vorbelegt_speichern_und_zuruecksetzen(self):
+        by = {c["id"]: c for c in server.characters()["characters"]}
+        ritter = by["ritter"]["ability_notes"]["defaults"]
+        self.assertTrue(ritter[0].startswith("Schlachtruf") and ritter[1].startswith("Verspotten"))     # zwei Faehigkeiten: beide Felder gefuellt
+        ninjas = by["ninjas"]["ability_notes"]["defaults"]
+        self.assertTrue(ninjas[0].startswith("Versteck") and ninjas[1] == "")                           # eine Faehigkeit: zweites Feld leer
+        self.assertEqual(by["soldat_infanterie"]["ability_notes"]["defaults"], ["", ""])                # keine: beide leer
+        server.save_ability_note("ninjas", 1, "  Rauchbombe: legt eine Nebelwand.  ")
+        n = {c["id"]: c for c in server.characters()["characters"]}["ninjas"]["ability_notes"]
+        self.assertEqual(n["saved"], [None, "Rauchbombe: legt eine Nebelwand."])
+        server.save_ability_note("ninjas", 1, None)
+        self.assertFalse((server.DATA / "ability_notes.json").read_text().strip().strip("{}").strip())  # leer, Eintrag entfernt
+        for bad in ((("gibtsnicht", 0, "x")), ("ninjas", 2, "x"), ("ninjas", 0, "x" * 2001), ("ninjas", 0, 5)):
+            with self.assertRaises(ValueError):
+                server.save_ability_note(*bad)
+
     def test_leere_flee_und_ideen_werden_entfernt_und_ideen_gespeichert(self):
         b = self.body("ch3")
         b["flee"] = {}

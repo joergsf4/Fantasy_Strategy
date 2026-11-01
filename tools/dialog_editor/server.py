@@ -92,6 +92,38 @@ def design_notes() -> dict:
     return out
 
 
+NOTE_SLOTS = 2
+
+
+def ability_defaults(uid: str, units: dict, abil: dict) -> list:
+    """Vorbelegung der zwei Faehigkeits-Felder: die Fahigkeiten der Einheit (Name, Text, Abklingzeit), Rest leer."""
+    out = []
+    for aid in (units.get(uid) or {}).get("abilities", [])[:NOTE_SLOTS]:
+        a = abil[aid]
+        cd = f" (Abklingzeit {a['cd']})" if a.get("cd") is not None else ""
+        out.append(f"{a['name']}: {a.get('text', '')}{cd}")
+    return out + [""] * (NOTE_SLOTS - len(out))
+
+
+def save_ability_note(uid: str, slot: int, text) -> None:
+    """Entwurfstext einer Faehigkeit (Feld 0 oder 1) speichern; text None = zurueck auf den Spieltext. Aendert das Spiel nicht."""
+    if uid not in read(DATA / "units.json") and uid not in EXTRA_SPEAKERS:
+        raise ValueError("unbekannte Figur")
+    if slot not in range(NOTE_SLOTS):
+        raise ValueError("Feld muss 0 oder 1 sein")
+    if text is not None and (not isinstance(text, str) or len(text) > 2000):
+        raise ValueError("Text muss eine Zeichenkette bis 2000 Zeichen sein")
+    path = DATA / "ability_notes.json"
+    notes = read(path) if path.exists() else {}
+    cur = notes.get(uid, [None] * NOTE_SLOTS)
+    cur[slot] = None if text is None else text.strip()
+    if all(v is None for v in cur):
+        notes.pop(uid, None)
+    else:
+        notes[uid] = cur
+    write_atomic(path, notes)
+
+
 def characters() -> dict:
     """Uebersicht aller Figuren: erstes Auftreten, Faehigkeiten, Rollen und Dialogzeilen je Kapitel, Material, Notizen."""
     units = read(DATA / "units.json")
@@ -152,6 +184,7 @@ def characters() -> dict:
     portraits = {p.stem for p in (ASSETS / "portraits").glob("*.png")}
     tokens = {p.stem for p in (ASSETS / "tokens").glob("*.png")}
     notes = design_notes()
+    saved_notes = read(DATA / "ability_notes.json") if (DATA / "ability_notes.json").exists() else {}
     loadout = (read(DATA / "items.json").get("loadout_chapter1") or {}).get("equipment", {})
     eq = read(DATA / "items.json").get("equipment", {})
     ids = [k for k in units if not k.startswith("_") and "name" in units[k]] + [k for k in EXTRA_SPEAKERS if k != "$hero"]
@@ -195,6 +228,7 @@ def characters() -> dict:
             "flees": bool((u or {}).get("flees")), "no_flee": no_flee.get(uid, []), "returns": sorted(set(returns.get(uid, []))),
             "from": (u or {}).get("from", 1) if (u or {}).get("hero") else None, "intro": (u or {}).get("intro"), "sound": None if special else f"{u.get('weapon', 'fist')} / {u.get('body', 'flesh')}",
             "gear": gear, "notes": notes.get(uid, {}),
+            "ability_notes": {"defaults": ability_defaults(uid, units, abil), "saved": (saved_notes.get(uid) or [None] * NOTE_SLOTS)},
         })
     return {"characters": out, "chapters": [{"n": int(c[2:]), "id": c, "title": read(DATA / "missions" / f"{c}.json")["title"]} for c in chapters]}
 
@@ -417,6 +451,14 @@ class Handler(BaseHTTPRequestHandler):
         self._send(200, f.read_bytes(), mimetypes.guess_type(f.name)[0] or "application/octet-stream")
 
     def do_PUT(self) -> None:
+        cm = re.match(r"^/api/character/([a-z_]+)/note$", self.path)
+        if cm:
+            try:
+                b = self._body()
+                save_ability_note(cm.group(1), int(b["slot"]), b.get("text"))
+                return self._json(200, {"ok": True})
+            except (ValueError, KeyError, TypeError) as e:
+                return self._json(400, {"error": str(e)})
         mm = re.match(r"^/api/mission/(ch\d+)$", self.path)
         if mm:
             try:

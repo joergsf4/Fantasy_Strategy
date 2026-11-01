@@ -62,3 +62,6 @@ Kapitel 1 heißt jetzt „Eichenfurt in Gefahr“: Büttel ziehen auf das Dorf z
 
 ## Erledigt: Dr. Humbug ab Mission 3 (2026-11-01)
 Siehe `docs/missionen.md`. Mission 3 ist durch den Nachschub (Bogenschütze und Büttel, Runde 4) härter; Messung in `docs/balance.md` Abschnitt 8.
+
+## Erledigt: Fähigkeits-Felder im Charaktere-Tab (2026-11-01)
+Pro Figur zwei Freitextfelder „Fähigkeit 1/2“: vorbelegt mit den Fähigkeiten aus dem Spiel (zwei bei Albrecht, eins bei den Kage-Schwestern, das zweite frei), leer bei Figuren ohne Fähigkeit. Beim Verlassen des Feldes wird gespeichert (`game/data/ability_notes.json`), „↺ Spieltext wiederherstellen“ setzt zurück. Das ist ein Entwurfs-Notizblock und ändert Abilities und Balancing nicht. Offen: Übernahme eines Entwurfs als echte Fähigkeit in `abilities.json`.
