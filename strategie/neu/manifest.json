@@ -125,5 +125,14 @@
  "quacksalber_wuetend": true,
  "fx_kaktus": true,
  "fx_palme": true,
- "fx_zelt": true
+ "fx_zelt": true,
+ "fx_haus1": true,
+ "fx_haus2": true,
+ "fx_haus3": true,
+ "fx_haus_wueste1": true,
+ "fx_haus_wueste2": true,
+ "fx_ruine1": true,
+ "fx_ruine2": true,
+ "fx_dorf": true,
+ "fx_dorf_wueste": true
 }

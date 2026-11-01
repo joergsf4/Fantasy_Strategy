@@ -43,3 +43,6 @@ Vorschläge des Nutzers: **Magical Girl** und/oder **Quaksalber-Arzt**. Heute he
 - **Verwundeter Drache** (Schützling-Mission), **Brückenmission**, **Wachen/Schleichen**, Xiùlán kehrt zurück.
 - **Trainingsattrappe:** Einheit samt Wirbel liegt unbenutzt in den Daten, Emotions-Porträts fehlen.
 - **Windows-Version** ist nie getestet worden.
+
+## Erledigt: Dörfer als Sprites (2026-11-01)
+Dorf-Felder (`V`) zeigen den Dorfplatz-Sprite (Wiese `fx_dorf`, Wüste `fx_dorf_wueste`), brennbare Häuser (`house`) sind Sprites (`fx_haus1..3`, Wüste `fx_haus_wueste1..2`) mit Ruinen (`fx_ruine1..2`). Brennen = dunkler getönter Sprite plus die vorhandenen Flammen, die Spiellogik (Feuer, Löschen, Ruine) ist unverändert. Die alten Klotz-Modelle (`TerrainView._village`, `_house`) sind entfernt.

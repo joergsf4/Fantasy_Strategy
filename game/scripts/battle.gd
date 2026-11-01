@@ -1195,6 +1195,10 @@ func _build_decor() -> void:
 					spots.append(["fx_kaktus", p, 1.0])
 				elif t == "G" and rng.randf() < 0.06:
 					spots.append(["fx_kaktus", p, 0.6])
+	for y in grid.height:        # Dorf-Felder: Dorfplatz-Sprite statt Mini-Haeuschen (Wiese oder Wueste)
+		for x in grid.width:
+			if grid.terrain(Vector2i(x, y)) == "V" and world.at(Vector2i(x, y)).is_empty():
+				spots.append(["fx_dorf_wueste" if map_data.get("biome", "") == "wueste" else "fx_dorf", Vector2i(x, y), 1.5])
 	for d: Dictionary in map_data.get("decor", []):
 		spots.append([d["sprite"], Vector2i(d["pos"][0], d["pos"][1]), float(d.get("size", 1.0))])
 	for sp: Array in spots:
@@ -1370,6 +1374,7 @@ func _refresh_object(o: Dictionary, animate: bool) -> void:
 			(p["body"] as Node3D).visible = st != "ruin"
 			(p["rubble"] as Node3D).visible = st == "ruin"
 			(p["flames"] as Node3D).visible = st == "burning"
+			((p["body"] as MeshInstance3D).material_override as ShaderMaterial).set_shader_parameter("tint", Color(0.55, 0.45, 0.4) if st == "burning" else Color.WHITE)
 			if animate:
 				Sfx.event("fire" if st == "burning" else ("ruin" if st == "ruin" else "extinguish"))
 			if animate and st == "burning":
@@ -1470,35 +1475,20 @@ func _make_burnable(o: Dictionary) -> void:
 	var root := Node3D.new()
 	root.position = to_world(o["pos"])
 	add_child(root)
-	var mat := StandardMaterial3D.new()
-	mat.vertex_color_use_as_albedo = true
-	mat.roughness = 1.0
 	var parts := {"root": root, "body": Node3D.new(), "rubble": Node3D.new(), "doors": [], "lever": null, "flames": Node3D.new()}
 	root.add_child(parts["body"])
 	root.add_child(parts["rubble"])
 	root.add_child(parts["flames"])
 	var big: bool = o["type"] == "house"
-	if big:
-		var k := MeshKit.new()
+	if big:      # Haus als Pixel-Sprite (Variante nach Position, in der Wueste Lehmhaeuser), Ruine als zweiter Sprite
 		var h: int = (int(o["pos"].x) * 7 + int(o["pos"].y) * 13) % 3
-		var roofs := [Color(0.62, 0.2, 0.14), Color(0.5, 0.28, 0.16), Color(0.7, 0.3, 0.18)]
-		var walls := [Color(0.9, 0.84, 0.68), Color(0.86, 0.78, 0.6), Color(0.92, 0.88, 0.76)]
-		terrain._house(k, Vector3.ZERO, Vector3(0.5, 0.3, 0.4), (h - 1) * 0.12, roofs[h], walls[h], 2 if h == 0 else 1)
-		var bi := MeshInstance3D.new()
-		bi.mesh = k.build()
-		bi.material_override = mat
+		var name := ("fx_haus_wueste%d" % (1 + h % 2)) if map_data.get("biome", "") == "wueste" else "fx_haus%d" % (1 + h)
 		root.remove_child(parts["body"])
-		parts["body"] = bi
-		root.add_child(bi)
-		var rk := MeshKit.new()
-		StoneWall.rubble(rk, o["pos"])
-		var ri := MeshInstance3D.new()
-		ri.mesh = rk.build()
-		ri.material_override = mat
+		(parts["body"] as Node).queue_free()
+		parts["body"] = _object_sprite(name, 1.15, root)
 		root.remove_child(parts["rubble"])
-		parts["rubble"] = ri
-		ri.scale = Vector3(1.3, 0.7, 1.3)
-		root.add_child(ri)
+		(parts["rubble"] as Node).queue_free()
+		parts["rubble"] = _object_sprite("fx_ruine%d" % (1 + h % 2), 1.1, root)
 	var fl: Node3D = parts["flames"]
 	var s: float = 1.5 if big else 1.0
 	fx.make_sprite("soft", Vector3(0, 0.45 * s, 0), 1.4 * s, true, Color(1.0, 0.5, 0.12, 0.85), 0, fl)

@@ -200,6 +200,21 @@ const WUESTE = {
 for (const [name, d] of Object.entries(WUESTE))
   jobs.push({ name, refs: [path.join(OUT, 'fx_fireball.jpg')], prompt: `Create ${d}, game sprite, seen slightly from above and the front, sturdy and chunky, readable at small size.` + FX_STYLE });
 
+// Doerfer als Sprites (statt Klotz-Haeuschen): Einzelhaeuser (brennbar), Ruinen, Dorfplatz fuer Dorf-Felder. Wiese und Wueste.
+const DORF = {
+  fx_haus1: 'a small cozy one-story half-timbered village cottage with a steep red-brown tiled roof, a stone chimney, a wooden door and two lit windows',
+  fx_haus2: 'a two-story half-timbered village house with an overhanging upper floor, a patched brown roof with a dormer window, a chimney, flower boxes on the windows',
+  fx_haus3: 'a small thatched-roof farm cottage with plaster walls, a round door, a tiny porch with a barrel and a stack of firewood beside it',
+  fx_haus_wueste1: 'a small flat-roofed sand-colored adobe desert house with a wooden door, a small turquoise window shutter, a ladder to the roof and a clay pot',
+  fx_haus_wueste2: 'a two-level sand-colored mud-brick desert house with a rounded top, striped cloth awning over the door, small square windows and hanging red chili strings',
+  fx_ruine1: 'the burnt-out ruin of a half-timbered house: charred black beams standing up, collapsed roof, scorched stone foundation, a little smoke and glowing embers',
+  fx_ruine2: 'the smoldering ruin of a small cottage: broken blackened walls, a fallen chimney, charred rafters and ash on the ground, a thin smoke trail',
+  fx_dorf: 'a small village square: two little half-timbered houses with red roofs side by side, a stone well with a tiny roof in the middle, a wooden fence and a haystack',
+  fx_dorf_wueste: 'a small desert village square: two little sand-colored adobe houses side by side, a stone well with a palm leaf shade in the middle, clay pots and a small striped awning',
+};
+for (const [name, d] of Object.entries(DORF))
+  jobs.push({ name, refs: [path.join(OUT, 'fx_fireball.jpg')], prompt: `Create ${d}, game sprite, seen slightly from above and the front, sturdy and chunky, readable at small size.` + FX_STYLE });
+
 async function generate(page, job) {
   await page.goto('https://gemini.google.com/app', { waitUntil: 'domcontentloaded' });
   await page.waitForSelector('div[role=textbox], .ql-editor', { timeout: 30000 });

@@ -510,9 +510,7 @@ func _build_structures() -> void:
 	for j in grid.height:
 		for i in grid.width:
 			var t := grid.terrain(Vector2i(i, j))
-			if t == "V":
-				_village(i, j)
-			elif t == "C":
+			if t == "C":     # Doerfer (V) setzt der Kampf als Sprites (Battle._build_decor)
 				_castle(i, j)
 			elif t == "P":
 				_planks(i, j)
@@ -528,38 +526,6 @@ func _build_mesh_at(k: MeshKit, x: float, y: float, z: float, name: String) -> v
 	mi.position = Vector3(x, y, z)
 	mi.name = name
 	add_child(mi)
-
-
-## Ein Fachwerkhaus: Steinsockel, Putz mit Balken, Tuer, Fenster, Giebeldach mit First, Schornstein.
-func _house(k: MeshKit, c: Vector3, size: Vector3, rot: float, roof: Color, wall: Color, floors := 1) -> void:
-	var timber := Color(0.36, 0.23, 0.13)
-	var stone := Color(0.52, 0.5, 0.47)
-	var bs := Basis(Vector3.UP, rot)
-	var h := size.y * floors
-	var P := func(x: float, y: float, z: float) -> Vector3:
-		return c + bs * Vector3(x, y, z)
-	k.box(P.call(0, 0.03, 0), Vector3(size.x * 1.06, 0.06, size.z * 1.06), stone, rot)           # Sockel
-	k.box(P.call(0, 0.06 + h * 0.5, 0), Vector3(size.x, h, size.z), wall, rot)                   # Wand
-	for sx in [-1, 1]:                                                                            # Eckbalken
-		for sz in [-1, 1]:
-			k.box(P.call(sx * size.x * 0.5, 0.06 + h * 0.5, sz * size.z * 0.5), Vector3(0.03, h + 0.02, 0.03), timber, rot)
-	k.box(P.call(0, 0.06 + h * 0.5, size.z * 0.5 + 0.004), Vector3(size.x, 0.025, 0.012), timber, rot)   # Querbalken vorn
-	if floors > 1:
-		k.box(P.call(0, 0.06 + size.y, 0), Vector3(size.x * 1.03, 0.03, size.z * 1.03), timber, rot)     # Geschossbalken
-	k.box(P.call(-size.x * 0.17, 0.06 + size.y * 0.42, size.z * 0.5 + 0.008), Vector3(size.x * 0.2, size.y * 0.68, 0.02), Color(0.28, 0.17, 0.09), rot)   # Tuer
-	k.box(P.call(-size.x * 0.17, 0.06 + size.y * 0.78, size.z * 0.5 + 0.012), Vector3(size.x * 0.12, size.y * 0.1, 0.01), Color(0.95, 0.85, 0.4), rot)   # Tuerbeleuchtung
-	for wx in [0.22, 0.38]:
-		k.box(P.call(size.x * wx, 0.06 + size.y * 0.6, size.z * 0.5 + 0.008), Vector3(size.x * 0.13, size.y * 0.24, 0.02), Color(0.98, 0.84, 0.45), rot)   # Fenster
-		k.box(P.call(size.x * wx, 0.06 + size.y * 0.6, size.z * 0.5 + 0.014), Vector3(size.x * 0.13 + 0.02, 0.012, 0.012), timber, rot)
-	if floors > 1:
-		for wx in [-0.25, 0.0, 0.25]:
-			k.box(P.call(size.x * wx, 0.06 + size.y * 1.6, size.z * 0.5 + 0.008), Vector3(size.x * 0.13, size.y * 0.24, 0.02), Color(0.98, 0.84, 0.45), rot)
-	var ridge := size.z * 0.38
-	k.gable_roof(P.call(0, 0.06 + h, 0), Vector3(size.x * 1.22, 0, size.z * 1.2), ridge, roof, rot)
-	k.box(P.call(0, 0.06 + h + ridge + 0.005, 0), Vector3(size.x * 1.24, 0.025, 0.04), roof.darkened(0.35), rot)   # First
-	var ch := bs * Vector3(size.x * 0.28, 0, -size.z * 0.15)
-	k.box(Vector3(c.x + ch.x, c.y + 0.06 + h + ridge * 0.6 + 0.07, c.z + ch.z), Vector3(0.06, 0.14, 0.06), stone.darkened(0.15), rot)   # Schornstein
-	k.box(Vector3(c.x + ch.x, c.y + 0.06 + h + ridge * 0.6 + 0.15, c.z + ch.z), Vector3(0.08, 0.02, 0.08), stone.darkened(0.3), rot)
 
 
 ## Holzsteg: Bohlen quer zur Laufrichtung, Querbalken und Pfosten, die ins Wasser ragen.
@@ -586,53 +552,6 @@ func _planks(ti: int, tj: int) -> void:
 			for e in [-1, 1]:
 				k.box(Vector3(s * 0.44, -0.15, e * 0.46), Vector3(0.06, 0.45, 0.06), dark)
 	_build_mesh_at(k, ti, height_at(ti, tj), tj, "Pier_%d_%d" % [ti, tj])
-
-
-func _village(ti: int, tj: int) -> void:
-	var k := MeshKit.new()
-	var timber := Color(0.36, 0.23, 0.13)
-	var plaster := [Color(0.9, 0.84, 0.68), Color(0.86, 0.78, 0.6), Color(0.92, 0.88, 0.76)]
-	var roofs := [Color(0.62, 0.2, 0.14), Color(0.5, 0.28, 0.16), Color(0.7, 0.3, 0.18)]
-	if biome == "wueste":      # Lehmhaeuser: sandfarbene Waende, flache braune und tuerkise Daecher
-		plaster = [Color(0.88, 0.74, 0.52), Color(0.82, 0.66, 0.46), Color(0.92, 0.8, 0.6)]
-		roofs = [Color(0.55, 0.38, 0.25), Color(0.25, 0.5, 0.5), Color(0.62, 0.45, 0.3)]
-	var houses := [
-		[Vector3(-0.3, 0, -0.27), Vector3(0.28, 0.19, 0.22), 0.12, 2],
-		[Vector3(0.3, 0, -0.22), Vector3(0.26, 0.17, 0.24), -0.2, 1],
-		[Vector3(-0.28, 0, 0.22), Vector3(0.26, 0.16, 0.2), 0.05, 1],
-		[Vector3(0.28, 0, 0.2), Vector3(0.2, 0.14, 0.2), 0.4, 1],
-	]
-	var i := 0
-	for h in houses:
-		var p: Vector3 = h[0]
-		var gy := height_at(ti + p.x, tj + p.z) - height_at(ti, tj)
-		_house(k, Vector3(p.x, gy, p.z), h[1], h[2], roofs[i % 3], plaster[i % 3], h[3])
-		i += 1
-	# Brunnen in der Mitte
-	var wc := Vector3(0.0, height_at(ti, tj) - height_at(ti, tj), -0.02)
-	k.frustum(wc, 0.075, 0.07, 0.1, Color(0.5, 0.48, 0.45), Color(0.62, 0.6, 0.56), 8, false)
-	k.frustum(wc + Vector3(0, 0.1, 0), 0.055, 0.055, 0.005, Color(0.2, 0.4, 0.6), Color(0.2, 0.4, 0.6), 8, true)
-	for sx in [-1, 1]:
-		k.box(wc + Vector3(sx * 0.07, 0.17, 0), Vector3(0.015, 0.14, 0.015), timber)
-	k.gable_roof(wc + Vector3(0, 0.24, 0), Vector3(0.2, 0, 0.14), 0.07, Color(0.55, 0.3, 0.18), PI / 2.0)
-	# Zaun mit Pfosten und zwei Latten, an zwei Seiten
-	for side in 2:
-		for n in 7:
-			var u := -0.46 + n * 0.153
-			var fx := u if side == 0 else -0.47
-			var fz := 0.47 if side == 0 else u
-			var gy := height_at(ti + fx, tj + fz) - height_at(ti, tj)
-			k.box(Vector3(fx, gy + 0.05, fz), Vector3(0.025, 0.1, 0.025), timber)
-		var rail := Vector3(0.0 if side == 0 else -0.47, 0.0, 0.47 if side == 0 else 0.0)
-		var rsize := Vector3(0.92, 0.014, 0.012) if side == 0 else Vector3(0.012, 0.014, 0.92)
-		for ry in [0.04, 0.08]:
-			k.box(rail + Vector3(0, height_at(ti + rail.x, tj + rail.z) - height_at(ti, tj) + ry, 0), rsize, timber.lightened(0.1))
-	# Heuhaufen und Fass
-	var hay := Vector3(0.42, height_at(ti + 0.42, tj + 0.46) - height_at(ti, tj), 0.46)
-	k.frustum(hay, 0.07, 0.01, 0.1, Color(0.8, 0.68, 0.3), Color(0.92, 0.8, 0.4), 7)
-	var bar := Vector3(-0.42, height_at(ti - 0.42, tj + 0.4) - height_at(ti, tj), 0.4)
-	k.frustum(bar, 0.04, 0.04, 0.08, Color(0.45, 0.28, 0.14), Color(0.5, 0.32, 0.17), 8, true)
-	_build_mesh_at(k, ti, height_at(ti, tj), tj, "Village_%d_%d" % [ti, tj])
 
 
 ## Eine Zinnenreihe entlang einer Mauer (Richtung dir = X oder Z).
