@@ -5,6 +5,9 @@ extends Node
 
 signal started
 signal fading_out
+signal new_game_requested     # zweimal N: Spielstand loeschen und neu beginnen
+
+const CHEAT := "brumm"      # kleingeschrieben im Hauptmenue tippen: schaltet die Kapitelwahl (Testmenue) frei
 
 const FONT_TITLE := "res://assets/fonts/CinzelDecorative-Black.ttf"
 const FONT_UI := "res://assets/fonts/CinzelDecorative-Bold.ttf"
@@ -17,6 +20,11 @@ var _done := false
 var _fade: ColorRect
 var _title_box: Control
 var _start_label: Label
+var _hint: Label
+var _typed := ""
+var _new_armed := 0.0
+var cheat := false            # Kapitelwahl freigeschaltet
+var save_chapter := 0         # >0: es gibt einen Spielstand (das Kapitel, in dem man weiterspielt)
 
 
 func _ready() -> void:
@@ -105,6 +113,13 @@ func _build_ui(ui: CanvasLayer) -> void:
 	_start_label.modulate.a = 0.0
 	ui.add_child(_start_label)
 
+	_hint = _label("", FONT_UI, 20, Color(1, 1, 1, 0.8), 5)
+	_hint.position = Vector2(0, 652)
+	_hint.modulate.a = 0.0
+	ui.add_child(_hint)
+	if save_chapter > 0:
+		_show_hint("Weiter mit Kapitel %d   ·   N: neues Spiel" % save_chapter, false)
+
 	var foot := _label("Arbeitstitel  ·  Prototyp", FONT_UI, 16, Color(1, 1, 1, 0.55), 4)
 	foot.position = Vector2(-20, 684)
 	foot.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
@@ -126,10 +141,46 @@ func _intro() -> void:
 		blink.tween_property(_start_label, "modulate:a", 1.0, 0.9).set_trans(Tween.TRANS_SINE))
 
 
+func _process(delta: float) -> void:
+	if _new_armed > 0.0:
+		_new_armed = maxf(0.0, _new_armed - delta)
+
+
+func _show_hint(text: String, flash := true) -> void:
+	_hint.text = text
+	var tw := create_tween()
+	tw.tween_property(_hint, "modulate:a", 1.0, 0.25)
+	if flash:
+		tw.tween_interval(2.6)
+		tw.tween_property(_hint, "modulate:a", 0.0, 0.5)
+		tw.tween_callback(func() -> void:
+			if save_chapter > 0 and _new_armed <= 0.0:
+				_show_hint("Weiter mit Kapitel %d   ·   N: neues Spiel" % save_chapter, false))
+
+
+## Buchstaben fuettern den Cheat ("brumm") und N das neue Spiel; gestartet wird mit Enter, Leertaste, Klick oder Gamepad.
 func _unhandled_input(event: InputEvent) -> void:
 	if _done or not _ready_for_input:
 		return
-	var pressed: bool = (event is InputEventKey and event.pressed and not event.echo) \
+	if event is InputEventKey and event.pressed and not event.echo:
+		var ch := char(event.unicode) if event.unicode > 0 else ""
+		if ch != "" and ch != " ":
+			_typed = (_typed + ch).right(CHEAT.length())
+			if _typed == CHEAT and not cheat:
+				cheat = true
+				Sfx.event("village")
+				_show_hint("Kapitelwahl freigeschaltet")
+			elif ch == "n" and save_chapter > 0:
+				if _new_armed > 0.0:
+					_new_armed = 0.0
+					save_chapter = 0
+					new_game_requested.emit()
+					_show_hint("Neues Spiel: Spielstand gelöscht")
+				else:
+					_new_armed = 4.0
+					_show_hint("Neues Spiel löscht den Spielstand. Zum Bestätigen noch einmal N drücken.")
+			return
+	var pressed: bool = (event is InputEventKey and event.pressed and not event.echo and event.keycode in [KEY_ENTER, KEY_KP_ENTER, KEY_SPACE]) \
 		or (event is InputEventMouseButton and event.pressed) \
 		or (event is InputEventJoypadButton and event.pressed)
 	if not pressed:

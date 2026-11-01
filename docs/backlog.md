@@ -79,3 +79,6 @@ Das Terrain setzt statt der 3D-Meshes jetzt Gemini-Pixel-Sprites (`fx_baum_ficht
 ## Erledigt: Musik für den Statistik-Bildschirm (2026-11-01)
 Nach einem Sieg läuft fröhliche Musik (`sieg_statistik.mp3`), nach einer Niederlage traurige (`niederlage_statistik.mp3`), beide mit Gemini erzeugt (`tools/gemini/music.mjs`, Originale in `strategie/musik/`). Neu: Nach einer Niederlage zeigt der Statistik-Bildschirm (`RewardScreen` mit `defeat`, `Battle.defeat_summary()`) die Bilanz ohne Beute und den Knopf „Noch einmal versuchen“; vorher begann sofort ein neuer Versuch. Die Kampfmusik startet mit dem neuen Versuch wieder.
 - Trailer 3 (ca. 55 s): `tools/make_trailer.sh trailer3`, Ablauf in `game/scripts/trailer3.gd` (ohne Zahlenangaben, ohne Regent und Bienenkorb).
+
+## Erledigt: Kapitelwahl nur per Cheat (2026-11-01)
+Normal gibt es keine Kapitelwahl mehr (weiterspielen aus dem Spielstand, ab Kapitel 2 zuerst ins Lager). Der Cheat `brumm` im Hauptmenü schaltet das Testmenü frei, N-N startet ein neues Spiel (`TitleScreen`, `Main._title`, `Main._resume_pick`, Test `tests/test_title.gd`). Eine zweite Programmversion ist damit nicht nötig. Offen: ein Ende nach dem letzten Kapitel (derzeit startet man dort wieder im Lager vor Kapitel 7).

@@ -41,6 +41,7 @@ func _names() -> Dictionary:
 
 func _run() -> void:
 	party = Party.load_from()          # Spielstand fortsetzen, falls vorhanden (entkommene Gegner, Gold, Ausruestung)
+	var resumed := party != null and party.chapter > 1
 	if party == null:
 		party = Party.new_game()
 	stage = Stage.new()
@@ -51,8 +52,10 @@ func _run() -> void:
 	stage.super_music = _duck_music
 	add_child(stage)
 	_play_music(TITLE_MUSIC)
-	await _title()
-	var pick: Array = await _choose_level()
+	var cheat: bool = await _title(mini(party.chapter, CHAPTERS.size()) if resumed else 0)
+	if cheat:
+		resumed = false          # Testmenue: die Kapitelwahl bestimmt, wo es weitergeht
+	var pick: Array = await _choose_level() if cheat else await _resume_pick(resumed)
 	for i in range(int(pick[0]), CHAPTERS.size()):
 		party.chapter = i + 1
 		var nxt: String = CHAPTERS[i + 1] if i + 1 < CHAPTERS.size() else ""
@@ -105,12 +108,28 @@ func _fade_music(seconds := 2.5) -> void:
 	tw.tween_callback(old.queue_free)
 
 
-func _title() -> void:
+## Hauptmenue. Rueckgabe: true, wenn die Kapitelwahl per Cheat ("brumm") freigeschaltet wurde. N-N im Menue startet ein neues Spiel.
+func _title(save_chapter := 0) -> bool:
 	var t := TitleScreen.new()
+	t.save_chapter = save_chapter
+	t.new_game_requested.connect(func() -> void:
+		Party.delete_save()
+		party = Party.new_game()
+		stage.party = party)
 	add_child(t)
 	t.fading_out.connect(func() -> void: _fade_music())
 	await t.started
+	var cheat := t.cheat
 	t.queue_free()
+	return cheat
+
+
+## Normales Spiel ohne Kapitelwahl: dort weitermachen, wo man aufgehoert hat (nach einem Spielstand erst ins Lager).
+func _resume_pick(resumed: bool) -> Array:
+	var idx := clampi(party.chapter - 1, 0, CHAPTERS.size() - 1)
+	if resumed and idx > 0:
+		await _camp(Mission.load_mission(CHAPTERS[idx]))
+	return [idx, false]
 
 
 ## Ein Kapitel: Einleitung, Kampf (bei Niederlage neuer Versuch), Belohnung, Abschluss, Lager.

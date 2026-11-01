@@ -29,3 +29,9 @@ godot --headless --path game --script tests/test_combat.gd
 ## Hinweise
 - **KI-generierte Inhalte:** Alle Figuren- und Effektbilder (`strategie/`, `game/assets/portraits|tokens|fx`) und die Musik (`game/assets/audio/`) wurden mit Google Gemini erzeugt. Programmcode und Daten entstanden mit Claude Code. Das Projekt ist ein nicht kommerzielles Hobbyprojekt.
 - Schriften: Cinzel Decorative und IM Fell English (SIL Open Font License, Lizenztexte im Ordner `game/assets/fonts/`).
+
+## Hauptmenü, Spielstand und Testmenü
+
+- Gestartet wird mit Enter, Leertaste oder Klick. Ohne Spielstand beginnt Kapitel 1 mit der Einleitung, mit Spielstand geht es im Lager vor dem nächsten Kapitel weiter. Es gibt keine Kapitelwahl.
+- **N, N** (zweimal) im Hauptmenü löscht den Spielstand und beginnt ein neues Spiel (nur sichtbar, wenn ein Spielstand existiert).
+- **Cheat:** Im Hauptmenü kleingeschrieben `brumm` tippen. Dann erscheint „Kapitelwahl freigeschaltet“, und nach dem Start kommt das Testmenü mit Kapitelwahl (mit oder ohne Einleitung), Soundlabor und „Spielstand zurücksetzen“. Gilt nur für diesen Start.
