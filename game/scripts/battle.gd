@@ -1833,7 +1833,9 @@ func _begin_item(id: String) -> void:
 	_close_menu()
 	_target_kind = "item"
 	_cur_item = id
-	_target_objs = _douse_targets(sel) if Items.consumables()[id].get("douse", false) else []
+	_target_objs = []
+	if Items.consumables()[id].get("douse", false):
+		_target_objs = _douse_targets(sel)
 	_target_units = _item_targets(sel, id)
 	var tiles := {sel["pos"]: COL_SELF}
 	for o in _target_units:
