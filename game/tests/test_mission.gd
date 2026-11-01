@@ -21,7 +21,7 @@ func _initialize() -> void:
 	defs = JSON.parse_string(FileAccess.get_file_as_string("res://data/units.json"))
 	map = Mission.load_mission("ch1")
 	check(map["rows"].size() == 10 and map["goals"][0]["type"] == "rout" and map["triggers"].size() >= 1, "Mission ch1 geladen: Karte, Ziel, Ausloeser")
-	check(map["title"] == "Eichenfurt brennt" and map.has("briefing") and map.has("chests"), "Mission ch1 enthaelt Titel, Briefing und Kartenfelder")
+	check(map["title"] == "Eichenfurt in Gefahr" and map.has("briefing") and map.has("chests"), "Mission ch1 enthaelt Titel, Briefing und Kartenfelder")
 	var m2 := map.duplicate(true)
 	m2["players"] = []
 	m2["enemies"] = []

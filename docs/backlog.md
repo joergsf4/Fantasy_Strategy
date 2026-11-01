@@ -56,3 +56,6 @@ Alle Kapitel durchgesehen. Ersetzt durch Pixel-Sprites: Truhen (zu und offen, Ta
 
 ## Erledigt: Dialog-Editor, Tab „Missionen“ (2026-11-01)
 Gruppe und Gegner je Kapitel bearbeiten (`GET /api/missions`, `PUT /api/mission/chN`, schreibt nur `players` und `enemies` der Karte; neue Figuren bekommen automatisch ein freies Landfeld in der Nähe der bisherigen). Story-Prüfung mit der neuen Einheiten-Eigenschaft `intro` (Kapitel der Einführung, aus dem ersten Auftreten gesetzt, in `units.json`): Warnung, wenn eine Figur vor ihrer Einführung steht, Sprecher ohne Platz, Rückkehrer ohne früheren Auftritt, Gruppengröße, kein Heiler. Offen: Positionen per Drag auf der Minikarte ändern, Beute und Sonderwerte der Gegner bearbeiten, Wirkung auf den Simulator (`tools/balance.py`) direkt anzeigen.
+
+## Erledigt: Eichenfurt brennt nicht mehr (2026-11-01)
+Kapitel 1 heißt jetzt „Eichenfurt in Gefahr“: Büttel ziehen auf das Dorf zu, es brennt nichts (Titel, Briefing, Einleitung, Abschluss). Kapitel 3 „Mühlbach in Flammen“ bleibt die Feuer-Mission.

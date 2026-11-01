@@ -99,7 +99,7 @@ Ein großer, verwundeter Drache liegt auf der Karte, die Bösen wollen an ihn he
 ## Missionsliste (Entwurf, erster Handlungsbogen)
 | # | Titel | Typ | Hauptidee |
 |--:|---|---|---|
-| 1 | Eichenfurt brennt | Rettung | Feuer löschen (Bier, Fasswurf), Dorfbewohner retten, erster Kampf. Lehrt die Interaktion. |
+| 1 | Eichenfurt in Gefahr | Verteidigung | Büttel vor dem Dorf zurückschlagen, Dorf besuchen, Truhen, erster Kampf. Lehrt Bewegung und Angriff. |
 | 2 | Der Hohlweg | Hindernislauf | Mauer und Tor, fünf Lösungen, Schalter. |
 | 3 | Die gebrochene Brücke | Hindernislauf | Fluss: fliegen, Frosch, Baum fällen, Wurf. |
 | 4 | Das Lager des Hauptmanns | Schleichen | Wachen mit Sichtfeld, Polymorph, Versteck, Verspotten. |

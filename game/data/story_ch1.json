@@ -4,7 +4,7 @@
    "left": "maedchen_baer",
    "right": "ritter",
    "speaker": "ritter",
-   "text": "Rauch über dem Tal... Das ist Eichenfurt! Kind, lauf zurück und warne die anderen."
+   "text": "Fahnen und Hufschläge im Tal… Das sind die Büttel des Regenten, und sie halten auf Eichenfurt zu! Kind, lauf zurück und warne die anderen."
   },
   {
    "left": "maedchen_baer",
@@ -23,14 +23,14 @@
    "left": "maedchen_baer",
    "right": "soldat_beritten",
    "speaker": "maedchen_baer",
-   "text": "Und dafür musstet ihr es anzünden?",
+   "text": "Und dafür braucht ihr gleich eine ganze Truppe?",
    "left_expr": "wuetend"
   },
   {
    "left": "maedchen_baer",
    "right": "soldat_beritten",
    "speaker": "soldat_beritten",
-   "text": "Das war... ein Wärmebonus. Angriff!"
+   "text": "Das war… ein Sicherheitsbonus. Angriff!"
   },
   {
    "left": "maedchen_baer",
@@ -59,7 +59,7 @@
    "left": "maedchen_baer",
    "right": "wendy",
    "speaker": "wendy",
-   "text": "Mäh... das Feuer ist aus. Seid ihr verletzt? Ich habe Kräutertee dabei.",
+   "text": "Mäh… geschafft. Seid ihr verletzt? Ich habe Kräutertee dabei.",
    "right_expr": "lachend"
   },
   {
