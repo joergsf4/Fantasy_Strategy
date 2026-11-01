@@ -87,11 +87,22 @@ def key_image(img: Image.Image, tol: float = 70.0) -> Image.Image:
 def neu_portraits() -> None:
     """Neue Bilder aus strategie/neu (Soldaten-Portraits, lachend/wuetend) -> assets/portraits."""
     for f in sorted((SRC / "neu").glob("*.jpg")):
-        if f.stem.endswith("_chibi") or f.stem.startswith("fx_"):
+        if f.stem.endswith("_chibi") or f.stem.startswith(("fx_", "bg_")):
             continue
         out = largest_component(key_image(Image.open(f)))
         out.save(DST / f"{f.stem}.png")
         print(f"portrait {f.stem}: {out.size}")
+
+
+def backgrounds() -> None:
+    """Hintergruende (bg_*.jpg aus strategie/neu) -> game/assets/secrets/*.jpg, auf 1920 Pixel Breite verkleinert (ohne Freistellen)."""
+    out_dir = DST.parent / "secrets"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    for f in sorted((SRC / "neu").glob("bg_*.jpg")):
+        im = Image.open(f).convert("RGB")
+        im = im.resize((1920, round(im.height * 1920 / im.width)), Image.LANCZOS)
+        im.save(out_dir / f"{f.stem}.jpg", quality=90)
+        print(f"bg {f.stem}: {im.size}")
 
 
 def main() -> None:
@@ -156,4 +167,4 @@ def tokens() -> None:
 
 
 if __name__ == "__main__":
-    sys.exit(fx_sprites() if "fx" in sys.argv[1:] else tokens() if "tokens" in sys.argv[1:] else (neu_portraits() if "neu" in sys.argv[1:] else main()))
+    sys.exit(backgrounds() if "bg" in sys.argv[1:] else fx_sprites() if "fx" in sys.argv[1:] else tokens() if "tokens" in sys.argv[1:] else (neu_portraits() if "neu" in sys.argv[1:] else main()))

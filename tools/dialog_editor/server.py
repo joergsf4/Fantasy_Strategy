@@ -269,6 +269,77 @@ def missions() -> dict:
     return {"missions": out}
 
 
+def secrets() -> dict:
+    """Geheime Interaktionen (game/data/secrets.json) samt Auswahllisten fuer den Editor."""
+    units = read(DATA / "units.json")
+    abilities = read(DATA / "abilities.json")
+    portraits = sorted(p.stem for p in (ASSETS / "portraits").glob("*.png"))
+    bgs = sorted(p.stem for p in (ASSETS / "secrets").glob("*.jpg"))
+    return {"secrets": read(DATA / "secrets.json")["secrets"],
+            "units": {k: {"name": v["name"], "abilities": [a for a in v.get("abilities", []) if abilities.get(a, {}).get("target") == "enemy"], "hero": bool(v.get("hero"))}
+                      for k, v in units.items() if isinstance(v, dict) and "name" in v},
+            "abilities": {k: v["name"] for k, v in abilities.items()},
+            "portraits": portraits, "backgrounds": bgs}
+
+
+def save_secrets(body: dict) -> None:
+    """Prueft und speichert die Liste der Geheimnisse (nur secrets.json; die Kopfzeile "_info" bleibt)."""
+    units = read(DATA / "units.json")
+    abilities = read(DATA / "abilities.json")
+    portraits = {p.stem for p in (ASSETS / "portraits").glob("*.png")}
+    bgs = {p.stem for p in (ASSETS / "secrets").glob("*.jpg")}
+    out, ids, triples = [], set(), set()
+    for sec in body["secrets"]:
+        sid = sec["id"]
+        if not isinstance(sid, str) or not re.match(r"^[a-z0-9_]{1,40}$", sid) or sid in ids:
+            raise ValueError(f"ungueltige oder doppelte Kennung '{sid}'")
+        ids.add(sid)
+        name = str(sec["name"]).strip()
+        if not name or len(name) > 60:
+            raise ValueError(f"{sid}: Name fehlt oder ist zu lang")
+        t = sec["trigger"]
+        by, ab, on = t["by"], t["ability"], t["target"]
+        if by not in units or "name" not in units[by] or on not in units or "name" not in units[on]:
+            raise ValueError(f"{name}: unbekannte Figur im Ausloeser")
+        if by == on:
+            raise ValueError(f"{name}: die Figur kann das Geheimnis nicht auf sich selbst ausloesen")
+        if ab not in units[by].get("abilities", []) or abilities.get(ab, {}).get("target") != "enemy":
+            raise ValueError(f"{name}: {units[by]['name']} hat keine passende Faehigkeit '{ab}' (Gegner-Ziel)")
+        if (by, ab, on) in triples:
+            raise ValueError(f"{name}: dieser Ausloeser kommt zweimal vor")
+        triples.add((by, ab, on))
+        ef = sec["effects"]
+        pct = ef.get("atk_pct", 0)
+        if not isinstance(pct, int) or isinstance(pct, bool) or not 0 <= pct <= 100:
+            raise ValueError(f"{name}: Angriffsbonus muss 0 bis 100 Prozent sein")
+        gift = ef.get("grant_ability", "")
+        if gift and gift not in abilities:
+            raise ValueError(f"{name}: unbekannte Faehigkeit '{gift}'")
+        status = ef.get("status") or "betrunken"
+        if not re.match(r"^[a-z_]{1,20}$", status):
+            raise ValueError(f"{name}: ungueltiger Status")
+        sc = sec["scene"]
+        if sc["left"] not in portraits or sc["right"] not in portraits:
+            raise ValueError(f"{name}: unbekanntes Bild in der Szene")
+        if sc.get("background", "") and sc["background"] not in bgs:
+            raise ValueError(f"{name}: unbekannter Hintergrund")
+        lines = sc["lines"]
+        if not 1 <= len(lines) <= 12:
+            raise ValueError(f"{name}: die Szene braucht 1 bis 12 Zeilen")
+        for l in lines:
+            txt = re.sub(r"  +", " ", str(l["text"]).strip())
+            if l["speaker"] not in (by, on) or not txt or len(txt) > 400:
+                raise ValueError(f"{name}: Zeile mit falschem Sprecher oder ohne Text")
+            l["text"] = txt
+        out.append({"id": sid, "name": name, "trigger": {"type": "ability_on_ally", "by": by, "ability": ab, "target": on},
+                    "effects": {"atk_pct": pct, "grant_ability": gift, "status": status},
+                    "scene": {"left": sc["left"], "right": sc["right"], "background": sc.get("background", ""), "lines": [{"speaker": l["speaker"], "text": l["text"]} for l in lines]}})
+    path = DATA / "secrets.json"
+    cur = read(path)
+    cur["secrets"] = out
+    write_atomic(path, cur)
+
+
 def save_mission(cid: str, body: dict) -> None:
     """Gruppe und Gegner einer Mission speichern (nur diese beiden Listen der Karte, alles andere bleibt)."""
     if not CHAPTER_RE.match(cid) or cid not in chapter_ids():
@@ -440,6 +511,8 @@ class Handler(BaseHTTPRequestHandler):
             return self._json(200, missions())
         if path == "/api/characters":
             return self._json(200, characters())
+        if path == "/api/secrets":
+            return self._json(200, secrets())
         if path == "/api/draft/available":
             return self._json(200, {"available": find_claude() is not None})
         if path == "/":
@@ -456,6 +529,12 @@ class Handler(BaseHTTPRequestHandler):
             try:
                 b = self._body()
                 save_ability_note(cm.group(1), int(b["slot"]), b.get("text"))
+                return self._json(200, {"ok": True})
+            except (ValueError, KeyError, TypeError) as e:
+                return self._json(400, {"error": str(e)})
+        if self.path == "/api/secrets":
+            try:
+                save_secrets(self._body())
                 return self._json(200, {"ok": True})
             except (ValueError, KeyError, TypeError) as e:
                 return self._json(400, {"error": str(e)})

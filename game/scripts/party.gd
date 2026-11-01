@@ -13,6 +13,7 @@ var equipment: Dictionary = {}     # getragen: {Held: [Ausruestung]}
 var pool: Array = []               # besitzt, aber nicht getragen
 var squads: Dictionary = {}              # {Mission: [Helden]}: vom Spieler geaenderte Aufstellung vor der Mission
 var nemesis: Array = []            # entkommene Gegner, tauchen in spaeteren Missionen wieder auf
+var secrets_seen: Array = []     # gesehene Geheimnis-Szenen (Szene laeuft nur beim ersten Mal)
 var bought: Dictionary = {}        # im aktuellen Lager gekauft {id: Anzahl} (Haendler hat nur festen Vorrat)
 
 
@@ -26,7 +27,7 @@ static func new_game() -> Party:
 
 ## Was ein Kampf zu Beginn bekommt.
 func loadout() -> Dictionary:
-	return {"inventory": inventory.duplicate(), "equipment": equipment.duplicate(true), "nemesis": nemesis.duplicate()}
+	return {"inventory": inventory.duplicate(), "equipment": equipment.duplicate(true), "nemesis": nemesis.duplicate(), "secrets_seen": secrets_seen.duplicate()}
 
 
 static func _add(into: Dictionary, from: Dictionary) -> void:
@@ -43,6 +44,9 @@ func absorb(results: Dictionary) -> void:
 	for id: String in results.get("fled", []):
 		if not nemesis.has(id):
 			nemesis.append(id)
+	for id: String in results.get("secrets_seen", []):
+		if not secrets_seen.has(id):
+			secrets_seen.append(id)
 	chapter += 1
 	bought = {}
 
@@ -60,7 +64,7 @@ func spend(price: int) -> bool:
 
 
 func to_dict() -> Dictionary:
-	return {"chapter": chapter, "gold": gold, "inventory": inventory, "materials": materials, "equipment": equipment, "pool": pool, "bought": bought, "nemesis": nemesis, "squads": squads}
+	return {"chapter": chapter, "gold": gold, "inventory": inventory, "materials": materials, "equipment": equipment, "pool": pool, "bought": bought, "nemesis": nemesis, "squads": squads, "secrets_seen": secrets_seen}
 
 
 static func from_dict(d: Dictionary) -> Party:
@@ -74,6 +78,7 @@ static func from_dict(d: Dictionary) -> Party:
 	p.bought = _ints(d.get("bought", {}))
 	p.nemesis = (d.get("nemesis", []) as Array).duplicate()
 	p.squads = (d.get("squads", {}) as Dictionary).duplicate(true)
+	p.secrets_seen = (d.get("secrets_seen", []) as Array).duplicate()
 	return p
 
 

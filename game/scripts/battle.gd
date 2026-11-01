@@ -68,6 +68,9 @@ var triggers: Array = []                 # {when, do, fired}
 var _notes: Array = []                    # Ereignisse seit der letzten Pruefung: {kind, ...}
 var kills_total := 0                      # besiegte Gegner insgesamt
 var _actor: Dictionary = {}               # zuletzt handelnde Figur (fuer "$hero" bei Ereignissen ohne eigenen Ausloeser)
+var secret_runner := Callable()           # async func(secret: Dictionary) -> von main gesetzt, zeigt die Szene einer geheimen Interaktion
+var secrets_seen: Array = []              # schon gezeigte Szenen (Party)
+var secrets_done: Array = []              # in diesem Kampf ausgeloeste Geheimnisse
 var dialogue_runner := Callable()         # async func(lines: Array) -> von main gesetzt, zeigt Dialoge ueber der Karte
 var _goal: TextBox
 var world: World
@@ -98,6 +101,7 @@ func _ready() -> void:
 	rng.randomize()
 	inventory = (loadout.get("inventory", {}) as Dictionary).duplicate()
 	nemeses = (loadout.get("nemesis", []) as Array).duplicate()
+	secrets_seen = (loadout.get("secrets_seen", []) as Array).duplicate()
 	_start_inventory = inventory.duplicate()
 	for k: String in abilities:
 		abilities[k]["id"] = k
@@ -704,6 +708,8 @@ func _forecast_text(att: Dictionary, def: Dictionary) -> String:
 	if _target_kind == "ability":
 		var ab: Dictionary = abilities[_cur_ab]
 		var dm := _first_effect(ab, "damage")
+		if ab["target"] == "enemy" and def["team"] == att["team"]:
+			return "%s: %s → %s" % [ab["name"], att["name"], def["name"]]      # geheime Interaktion: kein Hinweis
 		if ab["target"] == "enemy" and not dm.is_empty():
 			var hits: int = dm.get("hits", 1)
 			var fc := forecast(att, def, att["pos"], dm["mult"], dm.get("ignore_def", 0.0))
@@ -1153,6 +1159,7 @@ func results() -> Dictionary:
 	gained["objectives"] = done
 	gained["turns"] = turn
 	gained["fled"] = fled.duplicate()
+	gained["secrets_seen"] = secrets_seen.duplicate()
 	gained["stats"] = stats()
 	_results = gained
 	return gained
@@ -2302,6 +2309,8 @@ func _ab_targets(u: Dictionary, id: String, pos: Vector2i) -> Array[Dictionary]:
 			if o["team"] == u["team"]:
 				if (ab.get("caps", []) as Array).has("throw_ally") and o != u and not _landing_tiles_for(o).is_empty():
 					out.append(o)   # Verbuendete duerfen geworfen werden (ueber Mauern und Wasser)
+				elif o != u and _secret_for(u, id, o) != {}:
+					out.append(o)   # geheime Interaktion mit diesem Verbuendeten
 				continue
 			if Status.has(o, "stealth"):
 				continue
@@ -2350,6 +2359,54 @@ func _ab_tiles(u: Dictionary, id: String, pos: Vector2i) -> Array[Vector2i]:
 			elif unit_at(p).is_empty() and world.at(p).is_empty() and grid.cost(p) >= 0:
 				out.append(p)
 	return out
+
+
+## Das noch nicht ausgeloeste Geheimnis, das u mit Faehigkeit id auf den Verbuendeten o ausloest, oder {}.
+func _secret_for(u: Dictionary, id: String, o: Dictionary) -> Dictionary:
+	var sec := Secrets.find(u["id"], id, o["id"])
+	if sec.is_empty() or secrets_done.has(sec["id"]):
+		return {}
+	return sec
+
+
+## Geheime Interaktion: Fass trifft den Verbuendeten, beim ersten Mal laeuft die Szene, dann Bonus und neue Faehigkeit.
+func _run_secret(u: Dictionary, id: String, target: Dictionary) -> void:
+	var sec := _secret_for(u, id, target)
+	var ab: Dictionary = abilities[id]
+	u["st"]["abs"] += 1
+	Items.start_cooldown(u, id, int(ab["cd"]))
+	_actor = u
+	_note("ability", {"id": id, "by": u})
+	_turn_towards(u, target["pos"])
+	if sec.is_empty():
+		return
+	secrets_done.append(sec["id"])
+	if fx.has_fx(id):
+		_popup(u, ab["name"], Color(1.0, 0.9, 0.5))
+	await fx.windup(id, u, target)
+	await fx.before_hit(id, u, target, 0)
+	fx.on_hit(id, u, target, 0)
+	await get_tree().create_timer(0.5).timeout
+	if not secrets_seen.has(sec["id"]):
+		secrets_seen.append(sec["id"])
+		if secret_runner.is_valid():
+			await secret_runner.call(sec)
+	var ef: Dictionary = sec["effects"]
+	var pct := float(ef.get("atk_pct", 0))
+	var mods := {}
+	if pct > 0.0:
+		mods = {"atk": maxi(1, roundi(float(target["atk"]) * pct / 100.0))}
+	Status.add(target, str(ef.get("status", "betrunken")), 99, mods)
+	var gift: String = ef.get("grant_ability", "")
+	if gift != "" and not (target["abilities"] as Array).has(gift):
+		(target["abilities"] as Array).append(gift)
+	_refresh_unit(target)
+	await fx.secret_reveal(target, sec)
+	_popup(target, sec["name"] + "!", Color(1.0, 0.85, 0.4))
+	if gift != "":
+		await get_tree().create_timer(0.35).timeout
+		await _popup(target, "Neu: " + abilities[gift]["name"], Color(0.75, 1.0, 0.6))
+	_check_end()
 
 
 func _area_tiles(ab: Dictionary, center: Vector2i) -> Array[Vector2i]:
@@ -2448,6 +2505,9 @@ func _effect_targets(u: Dictionary, ab: Dictionary, target: Dictionary, to: Stri
 
 func _run_ability(u: Dictionary, id: String, target: Dictionary) -> void:
 	var ab: Dictionary = abilities[id]
+	if ab["target"] == "enemy" and target.get("team", "") == u["team"] and target != u:
+		await _run_secret(u, id, target)
+		return
 	u["st"]["abs"] += 1
 	Items.start_cooldown(u, id, int(ab["cd"]))
 	_actor = u

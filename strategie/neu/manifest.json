@@ -156,5 +156,8 @@
  "fx_wutader": true,
  "haendler": true,
  "haendler_lachend": true,
- "haendler_chibi": true
+ "haendler_chibi": true,
+ "sec_brunhilde_fass": true,
+ "sec_lin_betrunken": true,
+ "bg_betrunken": true
 }

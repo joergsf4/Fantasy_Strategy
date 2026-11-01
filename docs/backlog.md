@@ -69,3 +69,6 @@ Pro Figur zwei Freitextfelder „Fähigkeit 1/2“: vorbelegt mit den Fähigkeit
 
 ## Erledigt: 14 neue Fähigkeiten (2026-11-01)
 Wollmantel (Wendy), Bärengebrüll (Brumm), Stabwirbel (Lin), Wutanfall (Elisabeth), Bienenkorb (Stachelia), Prost (Brunhilde), Bearhug (Muskelaugust), Kyujutsu (Takeda), Brandbombe (Oskar), Flucht (Maja), Tonikum (Dr. Humbug), Hinterhalt (Kage-Schwestern), Bellen (Hundsfreund), Sternschnuppe (Lumi). Gemeinsame Abklingzeit je Figur. Details und Messwerte: `docs/faehigkeiten_plan.md`, Abschnitt 10.
+
+## Erledigt: Geheime Interaktionen (2026-11-01)
+Datengetriebenes System (`secrets.json`, Editor-Tab „Geheimnisse“, Szene mit Sonderbild und Tiefenwirkung, Spielstand merkt gesehene Szenen). Erstes Geheimnis: Brunhilde wirft ein Fass auf Lin, „Betrunkener Meister“ mit Drunken Strike. Details: `docs/geheimnisse.md`. Offen: weitere Geheimnisse (andere Auslöser wie Nachbarschaft oder gemeinsamer Angriff), Sammlung der entdeckten Geheimnisse im Lager, Simulator.

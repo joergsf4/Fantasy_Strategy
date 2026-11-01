@@ -132,6 +132,35 @@ class EditorTest(unittest.TestCase):
             with self.assertRaises(ValueError):
                 server.save_ability_note(*bad)
 
+    def test_geheimnisse_lesen_pruefen_speichern(self):
+        d = server.secrets()
+        sec = d["secrets"][0]
+        self.assertEqual((sec["trigger"]["by"], sec["trigger"]["ability"], sec["trigger"]["target"]), ("braumeisterin", "fasswurf", "kungfu"))
+        self.assertIn("fasswurf", d["units"]["braumeisterin"]["abilities"])        # nur Faehigkeiten mit Gegner-Ziel
+        self.assertIn("sec_lin_betrunken", d["portraits"])
+        before = server.read(server.DATA / "secrets.json")
+        server.save_secrets({"secrets": d["secrets"]})
+        self.assertEqual(before, server.read(server.DATA / "secrets.json"))        # unveraendert speichern aendert nichts
+        import copy
+        new = copy.deepcopy(d["secrets"])
+        new[0]["name"] = "Anderer Name"; new[0]["effects"]["atk_pct"] = 15; new[0]["scene"]["lines"][0]["text"] = "  Neu   getextet  "
+        server.save_secrets({"secrets": new})
+        got = server.read(server.DATA / "secrets.json")
+        self.assertEqual(got["secrets"][0]["name"], "Anderer Name")
+        self.assertEqual(got["secrets"][0]["scene"]["lines"][0]["text"], "Neu getextet")
+        self.assertIn("_info", got)                                                  # Kopfzeile bleibt
+        bad = []
+        for mutate in (lambda s: s["trigger"].update(ability="baerenpranke"), lambda s: s["trigger"].update(by="gibtsnicht"), lambda s: s["trigger"].update(target="braumeisterin"),
+                       lambda s: s["effects"].update(atk_pct=500), lambda s: s["effects"].update(grant_ability="nix"), lambda s: s["scene"].update(left="nix"),
+                       lambda s: s["scene"].update(background="nix"), lambda s: s["scene"].update(lines=[]), lambda s: s["scene"]["lines"][0].update(speaker="ritter"),
+                       lambda s: s.update(id="Gross Klein")):
+            c = copy.deepcopy(new); mutate(c[0]); bad.append(c)
+        c = copy.deepcopy(new) + copy.deepcopy(new); bad.append(c)                   # doppelte Kennung
+        for b in bad:
+            with self.assertRaises(ValueError):
+                server.save_secrets({"secrets": b})
+        self.assertEqual(server.read(server.DATA / "secrets.json")["secrets"][0]["name"], "Anderer Name")
+
     def test_leere_flee_und_ideen_werden_entfernt_und_ideen_gespeichert(self):
         b = self.body("ch3")
         b["flee"] = {}

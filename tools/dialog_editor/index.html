@@ -87,6 +87,24 @@ table.ct tr:hover td { background: var(--panel); }
 table.ct tr.rsel td { background: #2a2412; }
 table.ct .av { width: 28px; height: 28px; border-width: 1px; display: inline-grid; vertical-align: middle; margin-right: 8px; }
 body.view-mis nav.chapters, body.view-mis #q, body.view-mis #togglePal { display: none; }
+body.view-sec #app { grid-template-columns: minmax(0, 1fr); }
+body.view-sec nav.chapters, body.view-sec aside.pal, body.view-sec #q, body.view-sec #togglePal { display: none; }
+/* Geheimnisse */
+.scard { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); margin-bottom: 18px; padding: 14px; display: grid; grid-template-columns: minmax(280px, 420px) 1fr; gap: 18px; }
+@media (max-width: 900px) { .scard { grid-template-columns: 1fr; } }
+.sprev { position: relative; aspect-ratio: 16 / 9; border-radius: 8px; overflow: hidden; background: #000 center / cover; border: 1px solid var(--line); }
+.sprev img { position: absolute; bottom: 0; height: 88%; object-fit: contain; }
+.sprev .l { left: -2%; max-width: 62%; } .sprev .r { right: -2%; max-width: 56%; }
+.sprev .tag { position: absolute; top: 6px; left: 0; right: 0; text-align: center; color: var(--gold); font-weight: 700; text-shadow: 0 1px 4px #000; font-size: 15px; }
+.sform label { display: block; color: var(--muted); font-size: 12.5px; margin: 8px 0 3px; }
+.sform .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.sform select, .sform input[type=text], .sform input[type=number], .sform textarea { background: var(--panel2); color: var(--text); border: 1px solid var(--line); border-radius: 6px; padding: 5px 8px; font: inherit; }
+.sform input[type=text].wide { width: 100%; }
+.sform input[type=number] { width: 70px; }
+.sline { display: grid; grid-template-columns: 150px 1fr auto; gap: 6px; margin: 5px 0; align-items: start; }
+.sline textarea { width: 100%; min-height: 40px; resize: vertical; }
+.sbox { background: var(--panel2); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; margin-top: 8px; }
+.sbox h4 { font-size: 13px; color: var(--gold); margin-bottom: 4px; }
 body.view-mis #app { grid-template-columns: minmax(0, 1fr) 270px; }
 /* Missionen */
 .mbar { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 12px; }
@@ -242,6 +260,7 @@ label.f select, label.f input { min-width: 120px; }
       <button id="tabTalks" role="tab" aria-selected="true">Gespräche</button>
       <button id="tabChars" role="tab" aria-selected="false">Charaktere</button>
       <button id="tabMis" role="tab" aria-selected="false">Missionen</button>
+      <button id="tabSec" role="tab" aria-selected="false">Geheimnisse</button>
     </div>
     <input id="q" type="search" placeholder="Texte durchsuchen …" aria-label="Gespräche durchsuchen" style="width:240px">
     <span id="status" role="status" aria-live="polite"></span>
@@ -282,13 +301,13 @@ function restore(from, to) { if (!from.length) return; to.push(JSON.stringify(ch
 const undo = () => restore(hist, fut), redo = () => restore(fut, hist);
 function change(fn) { push(); fn(); render(); }
 const noteDirty = {};        // "figur:feld" -> ungespeicherter Text der Faehigkeits-Felder im Tab Charaktere
-const totalDirty = () => dirtyIds().length + misDirty().length + Object.keys(noteDirty).length;
+const totalDirty = () => dirtyIds().length + misDirty().length + Object.keys(noteDirty).length + secDirty();
 function updateStatus() {
   const n = totalDirty(), s = $("#status");
   s.textContent = n ? `● Ungespeicherte Änderungen (${n})` : "Alles gespeichert";
   s.className = n ? "dirty" : "";
   $("#save").disabled = !n;
-  const hs = view === "mis" ? [misHist, misFut] : view === "talks" ? [hist, fut] : [[], []];     // Rueckgaengig gilt je Tab
+  const hs = view === "mis" ? [misHist, misFut] : view === "talks" ? [hist, fut] : [[], []];     // Charaktere und Geheimnisse: ohne Rueckgaengig     // Rueckgaengig gilt je Tab
   $("#undo").disabled = !hs[0].length; $("#redo").disabled = !hs[1].length;
   document.querySelectorAll(".ch").forEach(b => { const d = dirtyIds().includes(b.dataset.id); b.querySelector(".dot")?.remove(); if (d) b.querySelector(".n").insertAdjacentHTML("afterend", '<span class="dot" title="Ungespeichert"></span>'); });
 }
@@ -315,8 +334,8 @@ async function saveNotes() {
 }
 /** Speichert alles Ungespeicherte aus allen drei Tabs (Gespraeche, Missionen, Faehigkeits-Texte). */
 async function save() {
-  if (!(await saveChapters()) || !(await misSave(true)) || !(await saveNotes())) return updateStatus();
-  toast("Gespeichert"); updateStatus(); if (view === "mis") renderMis(); else if (view === "char") renderCharRes();
+  if (!(await saveChapters()) || !(await misSave(true)) || !(await saveNotes()) || !(await saveSecrets())) return updateStatus();
+  toast("Gespeichert"); updateStatus(); if (view === "mis") renderMis(); else if (view === "char") renderCharRes(); else if (view === "sec") renderSec();
 }
 function toast(msg, kind, undoFn) {
   const t = document.createElement("div"); t.className = "t " + (kind || ""); t.textContent = msg;
@@ -491,7 +510,7 @@ function renderTalks() {
   updateStatus();
   fitAll();
 }
-function render() { view === "char" ? renderChars() : view === "mis" ? renderMis() : renderTalks(); }
+function render() { view === "char" ? renderChars() : view === "mis" ? renderMis() : view === "sec" ? renderSec() : renderTalks(); }
 function renderPalette() {
   const q = $("#palq").value.toLowerCase();
   const groups = [["Helden", Object.entries(DB.units).filter(([, u]) => u.hero)], ["Gegner", Object.entries(DB.units).filter(([, u]) => !u.hero && !u.special)], ["Sonstige", Object.entries(DB.units).filter(([, u]) => u.special)]];
@@ -719,11 +738,98 @@ function setView(v) {
   view = v;
   document.body.classList.toggle("view-char", v === "char");
   document.body.classList.toggle("view-mis", v === "mis");
-  for (const [id, k] of [["#tabTalks", "talks"], ["#tabChars", "char"], ["#tabMis", "mis"]]) $(id).setAttribute("aria-selected", v === k);
+  document.body.classList.toggle("view-sec", v === "sec");
+  for (const [id, k] of [["#tabTalks", "talks"], ["#tabChars", "char"], ["#tabMis", "mis"], ["#tabSec", "sec"]]) $(id).setAttribute("aria-selected", v === k);
   $("#palhint").innerHTML = v === "mis" ? "Figur in <b>Gruppe</b> oder <b>Gegner</b> ziehen, um sie in die Mission zu holen. Eine Karte hierher ziehen (oder ✕) nimmt sie wieder heraus. Gelb markierte Figuren passen nicht zur Geschichte."
     : 'Figur auf einen <b>Platz</b> in einer Zeile ziehen, oder auf <b>+ Zeile</b>, um eine neue Zeile anzulegen. Zeilen lassen sich am Griff ⋮⋮ umsortieren, auch in andere Gespräche.';
   render(); updateStatus();
 }
+
+// ---- Tab Geheimnisse: geheime Interaktionen zwischen Figuren (game/data/secrets.json)
+let SEC = null, sec = [], secSaved = "";
+const secDirty = () => SEC && JSON.stringify(sec) !== secSaved ? 1 : 0;
+async function saveSecrets() {
+  if (!secDirty()) return true;
+  const r = await fetch("/api/secrets", { method: "PUT", body: JSON.stringify({ secrets: sec }) });
+  if (!r.ok) { toast("Speichern fehlgeschlagen (Geheimnisse): " + (await r.json()).error, "err"); return false; }
+  secSaved = JSON.stringify(sec); return true;
+}
+const secOpts = (list, sel, blank) => (blank !== undefined ? `<option value="" ${sel === "" ? "selected" : ""}>${esc(blank)}</option>` : "") + list.map(([v, t]) => `<option value="${esc(v)}" ${v === sel ? "selected" : ""}>${esc(t)}</option>`).join("");
+function secPreview(x) {
+  const sc = x.scene, bg = sc.background ? `style="background-image:url(/assets/secrets/${esc(sc.background)}.jpg)"` : "";
+  return `<div class="sprev" ${bg} data-prev="${esc(x.id)}"><img class="l" src="/assets/portraits/${esc(sc.left)}.png" alt=""><img class="r" src="/assets/portraits/${esc(sc.right)}.png" alt=""><div class="tag">✦ GEHEIME INTERAKTION ✦ ${esc(x.name)}</div></div>`;
+}
+function secCard(x, i) {
+  const o = SEC, uname = id => o.units[id]?.name || id, t = x.trigger, sc = x.scene, fig = Object.entries(o.units).map(([k, u]) => [k, u.name]);
+  const abs = (o.units[t.by]?.abilities || []).map(a => [a, o.abilities[a] || a]); if (!abs.length) abs.push(["", "(keine passende Fähigkeit)"]);
+  const who = [[t.by, uname(t.by)], [t.target, uname(t.target)]];
+  const pt = list => list.map(n => [n, n]);
+  return `<div class="scard" data-sec="${i}">
+    <div>${secPreview(x)}<p class="hint" style="margin-top:6px">Vorschau: links ${esc(uname(t.by))}, rechts ${esc(uname(t.target))}. Im Spiel kommen Banner, Tiefenwirkung (Maus) und ein fliegendes Fass dazu.</p></div>
+    <div class="sform">
+      <label>Name des Geheimnisses</label><input type="text" class="wide" data-f="name" value="${esc(x.name)}" maxlength="60">
+      <div class="sbox"><h4>Auslöser</h4><div class="row">
+        <select data-f="by" aria-label="Figur">${secOpts(fig, t.by)}</select> setzt
+        <select data-f="ability" aria-label="Fähigkeit">${secOpts(abs, t.ability)}</select> auf Verbündeten
+        <select data-f="target" aria-label="Verbündeter">${secOpts(fig, t.target)}</select> ein.</div>
+        <p class="hint" style="margin:6px 0 0">Nur Fähigkeiten, die sonst auf Gegner zielen. Der Verbündete erscheint dann als Ziel, ohne Hinweis im Spiel.</p></div>
+      <div class="sbox"><h4>Wirkung (bis Kampfende)</h4><div class="row">
+        Angriff + <input type="number" data-f="atk_pct" min="0" max="100" value="${+x.effects.atk_pct || 0}" aria-label="Angriffsbonus in Prozent"> %
+        · Neue Fähigkeit <select data-f="grant_ability">${secOpts(Object.entries(o.abilities), x.effects.grant_ability || "", "keine")}</select>
+        · Status <input type="text" data-f="status" value="${esc(x.effects.status || "betrunken")}" style="width:110px" aria-label="Status-Kennung"></div></div>
+      <div class="sbox"><h4>Szene (läuft beim ersten Mal)</h4><div class="row">
+        Links <select data-f="left">${secOpts(pt(o.portraits), sc.left)}</select>
+        Rechts <select data-f="right">${secOpts(pt(o.portraits), sc.right)}</select>
+        Hintergrund <select data-f="background">${secOpts(pt(o.backgrounds), sc.background || "", "ohne")}</select></div>
+        ${sc.lines.map((l, j) => `<div class="sline"><select data-f="speaker" data-j="${j}" aria-label="Sprecher">${secOpts(who, l.speaker)}</select>
+          <textarea data-f="text" data-j="${j}" rows="2" aria-label="Text der Zeile ${j + 1}">${esc(l.text)}</textarea>
+          <button class="btn ghost" data-sact="rmline" data-j="${j}" aria-label="Zeile entfernen" title="Zeile entfernen">✕</button></div>`).join("")}
+        <button class="btn" data-sact="addline">+ Zeile</button></div>
+      <p style="margin-top:10px"><button class="btn" data-sact="del">Geheimnis löschen</button></p>
+    </div></div>`;
+}
+async function renderSec() {
+  setTimeout(updateStatus, 0);
+  if (!SEC) { $("#main").innerHTML = '<p class="hint">Lade Geheimnisse …</p>'; SEC = await (await fetch("/api/secrets")).json(); sec = JSON.parse(JSON.stringify(SEC.secrets)); secSaved = JSON.stringify(sec); }
+  $("#main").innerHTML = `<div class="cnote">Geheime Interaktionen: Setzt eine Figur eine Fähigkeit auf einen Verbündeten ein, kann etwas Besonderes passieren, zum Beispiel ein Bonus und eine neue Fähigkeit bis Kampfende. Die Szene mit Sonderbild läuft beim ersten Mal. Gespeichert wird in <code>game/data/secrets.json</code> mit „Speichern“ oben.</div>
+    ${sec.map(secCard).join("") || '<p class="hint">Noch keine Geheimnisse.</p>'}
+    <button class="btn primary" data-sact="new">+ Neues Geheimnis</button>`;
+  document.querySelectorAll(".sform textarea").forEach(fit);
+}
+function secNew() {
+  const by = "braumeisterin", u = SEC.units[by] ? by : Object.keys(SEC.units)[0], ab = SEC.units[u].abilities[0] || "", other = Object.keys(SEC.units).find(k => k !== u);
+  let n = 1; while (sec.some(x => x.id === "geheimnis_" + n)) n++;
+  sec.push({ id: "geheimnis_" + n, name: "Neues Geheimnis", trigger: { type: "ability_on_ally", by: u, ability: ab, target: other }, effects: { atk_pct: 10, grant_ability: "", status: "betrunken" },
+    scene: { left: SEC.portraits[0], right: SEC.portraits[1] || SEC.portraits[0], background: SEC.backgrounds[0] || "", lines: [{ speaker: u, text: "" }] } });
+}
+document.addEventListener("input", e => {
+  const el = e.target, card = el.closest?.(".scard"); if (!card || view !== "sec" || el.matches("select")) return;
+  const x = sec[+card.dataset.sec], f = el.dataset.f;
+  if (f === "text") { x.scene.lines[+el.dataset.j].text = el.value; fit(el); }
+  else if (f === "name") { x.name = el.value; card.querySelector(".tag").textContent = "✦ GEHEIME INTERAKTION ✦ " + el.value; }
+  else if (f === "atk_pct") x.effects.atk_pct = Math.max(0, Math.min(100, parseInt(el.value || "0", 10) || 0));
+  else if (f === "status") x.effects.status = el.value.trim();
+  updateStatus();
+});
+document.addEventListener("change", e => {
+  const el = e.target, card = el.closest?.(".scard"); if (!card || view !== "sec" || !el.matches("select")) return;
+  const x = sec[+card.dataset.sec], f = el.dataset.f;
+  if (f === "by") { x.trigger.by = el.value; x.trigger.ability = SEC.units[el.value].abilities[0] || ""; x.scene.lines.forEach(l => { if (l.speaker !== x.trigger.target) l.speaker = el.value; }); }
+  else if (f === "ability" || f === "target") { x.trigger[f] = el.value; if (f === "target") x.scene.lines.forEach(l => { if (l.speaker !== x.trigger.by) l.speaker = el.value; }); }
+  else if (f === "grant_ability") x.effects.grant_ability = el.value;
+  else if (["left", "right", "background"].includes(f)) x.scene[f] = el.value;
+  else if (f === "speaker") x.scene.lines[+el.dataset.j].speaker = el.value;
+  renderSec(); updateStatus();
+});
+document.addEventListener("click", e => {
+  const b = e.target.closest?.("[data-sact]"); if (!b || view !== "sec") return;
+  const card = b.closest(".scard"), x = card ? sec[+card.dataset.sec] : null, a = b.dataset.sact;
+  if (a === "new") secNew();
+  else if (a === "addline") x.scene.lines.push({ speaker: x.trigger.by, text: "" });
+  else if (a === "rmline") { if (x.scene.lines.length > 1) x.scene.lines.splice(+b.dataset.j, 1); else return toast("Mindestens eine Zeile", "err"); }
+  else if (a === "del") { if (!confirm(`„${x.name}“ wirklich löschen?`)) return; sec.splice(+card.dataset.sec, 1); }
+  renderSec(); updateStatus();
+});
 
 // ---- Tab Missionen: Gruppe und Gegner je Kapitel, Warnungen bei Story-Widerspruechen
 const TERR = { G: "#3f7a3a", F: "#2d5a2b", M: "#6b6b73", W: "#2f64b0", V: "#a0714a", C: "#9a9aa6", P: "#8a6a3c", D: "#d6b878" };
@@ -909,7 +1015,7 @@ document.addEventListener("drop", e => {
 });
 
 $("#q").oninput = e => { filter = e.target.value; render(); };
-$("#tabTalks").onclick = () => setView("talks"); $("#tabChars").onclick = () => setView("char"); $("#tabMis").onclick = () => setView("mis");
+$("#tabTalks").onclick = () => setView("talks"); $("#tabChars").onclick = () => setView("char"); $("#tabMis").onclick = () => setView("mis"); $("#tabSec").onclick = () => setView("sec");
 document.addEventListener("input", e => {
   const el = e.target; if (!el.matches?.(".cnote-ta")) return;
   fit(el);

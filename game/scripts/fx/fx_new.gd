@@ -88,6 +88,12 @@ func windup(id: String, u: Dictionary, target: Dictionary) -> void:
 				fx.shockwave(_pos(u), 1.0 + k * 0.7, Color(1.0, 1.0, 0.8, 0.6), 0.5)
 				await _wait(0.1)
 			await _wait(0.2)
+		"drunken_strike":
+			battle._popup(u, "Hick!", Color(1.0, 0.85, 0.4))
+			fx.particles("fx_foam", fx.chest(u, 1.0), 6, 1.2, 0.25, 0.7, 2.0, Color(1.0, 0.9, 0.6), false, 140.0)
+			fx.light_flash(fx.chest(u, 0.9), Color(1.0, 0.7, 0.25), 2.2, 4.0, 0.5)
+			for k in 3:      # taumelndes Wiegen vor dem Schlag
+				await fx.squash(u, 1.0 + 0.1 * (1 if k % 2 == 0 else -1), 1.0 - 0.1 * (1 if k % 2 == 0 else -1), 0.2)
 		"sternschnuppe":
 			fx.hop(u, 0.4, 0.4)
 			fx.particles("fx_star", fx.chest(u, 1.2), 10, 2.0, 0.25, 0.8, -0.5, Color(1.0, 0.8, 0.95), true, 180.0)
@@ -171,6 +177,19 @@ func before_hit(id: String, u: Dictionary, v: Dictionary, _i: int) -> void:
 		"brandbombe":
 			battle._turn_towards(u, v["pos"])
 			await fx.projectile("fx_bombe", fx.chest(u, 0.8), fx.chest(v, 0.5), 0.5, 1.7, 0.45, 9.0, "fx_smoke")
+		"drunken_strike":
+			battle._turn_towards(u, v["pos"])
+			var side: float = [-1.0, 1.0, -1.0][_i % 3]
+			var n: Node3D = u["node"]
+			var base := n.position
+			var off := (base - _pos(v)).normalized().rotated(Vector3.UP, side * 0.9) * 0.55   # taumelt von der Seite heran
+			var tw := fx.create_tween()
+			tw.tween_property(n, "position", _pos(v) + off, 0.14).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+			await tw.finished
+			fx.hop(u, 0.25, 0.2)
+			var trail := fx.make_sprite("fx_slash", fx.chest(u, 0.6), 1.2, true, Color(1.0, 0.85, 0.5, 0.8), 2)
+			fx.pop(trail, 1.4, 0.25, side * 0.8)
+			await _wait(0.06)
 		"sternschnuppe":
 			var to := fx.chest(v, 0.5)
 			var from := to + Vector3(-5.0, 9.0, -3.0)
@@ -207,6 +226,19 @@ func on_hit(id: String, u: Dictionary, v: Dictionary, _i: int) -> void:
 		"brandbombe":
 			fx._explosion(p, 0.8)
 			fx.shake(0.1, 0.25)
+		"drunken_strike":
+			var p2 := fx.chest(v, 0.55)
+			var sl := fx.make_sprite("fx_slash", p2, 1.2, true)
+			fx.pop(sl, 1.5, 0.25, [0.7, -0.7, 1.4][_i % 3])
+			fx.particles("fx_foam", p2, 5, 2.5, 0.25, 0.5, 4.0, Color(1.0, 0.9, 0.6), false, 140.0)
+			fx.particles("fx_star", p2, 4, 2.5, 0.2, 0.4, 2.0, Color(1.0, 0.85, 0.4), true, 160.0)
+			fx.flash_unit(v, Color(2, 1.7, 1.2), 0.1)
+			fx.knockback(v, _pos(u), 0.18, 0.18)
+			if _i == 2:       # letzter Hieb: Wucht
+				var k2 := fx.make_sprite("fx_krack", p2 + Vector3(0, 0.5, 0), 1.2, false, Color.WHITE, 4)
+				fx.pop(k2, 1.5, 0.7, 0.0, 0.3, 0.5)
+				fx.shake(0.16, 0.3)
+				fx.hitstop(0.1)
 		"sternschnuppe":
 			fx.shockwave(_pos(v), 1.5, Color(1.0, 0.75, 0.95, 0.8), 0.5)
 			fx.light_flash(p, Color(1.0, 0.75, 0.95), 3.0, 5.0, 0.5)
@@ -263,6 +295,25 @@ func status(id: String, u: Dictionary, v: Dictionary, status_id: String) -> bool
 			await _wait(0.1)
 			return true
 	return false
+
+
+## Enthuellung: goldener Lichtsaeulen-Ausbruch, Ringe, Schaum und Sterne um die Figur, kurz Zeitlupen-Hitstop.
+func secret_reveal(v: Dictionary, _sec: Dictionary) -> void:
+	var g := fx.ground(_pos(v), 0.1)
+	fx.hitstop(0.12)
+	fx.light_flash(fx.chest(v, 1.0), Color(1.0, 0.75, 0.3), 5.0, 6.0, 0.9)
+	var pillar := fx.make_sprite("soft", fx.chest(v, 1.6), 1.2, true, Color(1.0, 0.8, 0.35, 0.8), 2)
+	pillar.scale = Vector3(1.0, 5.0, 1.0)
+	fx.pop(pillar, 1.6, 0.9, 0.0, 0.5, 0.2)
+	for k in 3:
+		fx.shockwave(_pos(v), 1.0 + k * 0.9, Color(1.0, 0.8, 0.35, 0.75), 0.6)
+		await _wait(0.1)
+	fx.particles("fx_star", fx.chest(v, 0.6), 24, 4.0, 0.3, 1.1, -0.5, Color(1.0, 0.9, 0.5), true, 180.0)
+	fx.particles("fx_foam", g + Vector3(0, 0.3, 0), 12, 2.5, 0.35, 0.9, 1.0, Color(1.0, 0.9, 0.65), false, 120.0)
+	fx.particles("fx_bubble", g + Vector3(0, 0.3, 0), 10, 1.4, 0.3, 1.6, -1.0, Color(1.0, 0.8, 0.4), false, 60.0)
+	fx.shake(0.12, 0.5)
+	fx.flash_unit(v, Color(2.4, 1.8, 1.0), 0.6)
+	await fx.squash(v, 1.25, 0.8, 0.5)
 
 
 func scared_shiver(v: Dictionary) -> void:
@@ -403,6 +454,13 @@ func status_holder(id: String, root: Node3D) -> bool:
 			tw4.tween_property(sick, "position:x", 0.07, 0.3).set_trans(Tween.TRANS_SINE)
 			tw4.tween_property(sick, "position:x", -0.07, 0.3).set_trans(Tween.TRANS_SINE)
 			fx._loop_particles(root, "fx_bubble", Vector3(0, 0.4, 0), 3, 0.7, 0.2, 1.2, -0.9, Color(0.6, 1.0, 0.4))
+		"betrunken":   # goldener Schein, aufsteigender Schaum und Blasen: Bierlaune
+			var aura := fx.make_sprite("soft", Vector3(0, 0.75, 0), 1.7, true, Color(1.0, 0.75, 0.25, 0.5), 0, root)
+			var twb := root.create_tween().set_loops()
+			twb.tween_property(aura, "scale", aura.scale * 1.12, 0.9).set_trans(Tween.TRANS_SINE)
+			twb.tween_property(aura, "scale", aura.scale, 0.9).set_trans(Tween.TRANS_SINE)
+			fx._loop_particles(root, "fx_bubble", Vector3(0, 0.2, 0), 4, 0.8, 0.22, 1.5, -0.8, Color(1.0, 0.85, 0.45))
+			fx._loop_particles(root, "fx_foam", Vector3(0, 1.4, 0), 2, 0.5, 0.2, 1.0, -0.2, Color(1.0, 0.95, 0.75, 0.9))
 		"angst":
 			fx._loop_particles(root, "fx_sweat", Vector3(0.2, 1.7, 0), 2, 0.5, 0.2, 1.0, 3.0, Color.WHITE)
 		_:

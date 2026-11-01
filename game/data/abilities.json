@@ -868,5 +868,27 @@
   "caps": [
    "ranged_hit"
   ]
+ },
+ "drunken_strike": {
+  "name": "Drunken Strike",
+  "text": "Taumelnder Meisterschlag: drei Hiebe aus unmöglichen Winkeln (je ×0,9, 30 % der Verteidigung ignoriert). Nur mit Bierlaune.",
+  "cd": 3,
+  "target": "enemy",
+  "range": [
+   1,
+   1
+  ],
+  "effects": [
+   {
+    "type": "damage",
+    "mult": 0.9,
+    "hits": 3,
+    "ignore_def": 0.3
+   }
+  ],
+  "ai_bonus": 6,
+  "caps": [
+   "smash"
+  ]
  }
 }

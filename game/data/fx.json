@@ -194,5 +194,8 @@
  },
  "sternschnuppe": {
   "lunge": false
+ },
+ "drunken_strike": {
+  "lunge": false
  }
 }

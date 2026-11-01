@@ -507,6 +507,14 @@ def chime(rng):
     return fade(mix(*parts))
 
 
+def secret_sting(rng):
+    parts = []
+    for i, f in enumerate([392, 523, 659, 784, 1047]):
+        parts.append((tone(f, 0.9) * dec(0.9, 0.35) * 0.35 + tone(f * 2, 0.9) * dec(0.9, 0.2) * 0.1, i * 0.09, 0.9))
+    swell = sweep_noise(rng, 0.9, 400, 5000, 0.3, q=0.8) * 0.35
+    return fade(mix(*parts, (swell, 0, 0.8)))
+
+
 SOUNDS = {
     "w_wood": (w_wood, 3, -6), "w_metal": (w_metal, 3, -8), "w_fist": (w_fist, 3, -4),
     "t_armor": (t_armor, 3, -6), "t_wood": (t_wood, 3, -6), "t_flesh": (t_flesh, 3, -5), "t_face": (t_face, 3, -5), "t_stone": (t_stone, 2, -6),
@@ -522,7 +530,7 @@ SOUNDS = {
     "ui_click": (ui_click, 1, -9), "ui_hover": (ui_hover, 1, -16), "ui_back": (ui_back, 1, -11), "dialog_tick": (dialog_tick, 3, -18),
     "bell": (bell, 1, -6), "buzz": (buzz, 2, -12), "turn_start": (turn_start, 1, -9), "victory": (victory, 1, -7), "defeat": (defeat, 1, -8), "item_use": (item_use, 1, -9), "pickup": (pickup, 1, -9),
     "wool_poof": (wool_poof, 2, -8), "roar": (roar, 2, -5), "rage": (rage, 2, -7), "hive_drop": (hive_drop, 1, -6), "mug_slide": (mug_slide, 1, -8),
-    "crunch": (crunch, 2, -5), "fuse": (fuse, 1, -12), "glass": (glass, 2, -10), "bark": (bark, 3, -6), "star_fall": (star_fall, 1, -9), "chime": (chime, 2, -9),
+    "crunch": (crunch, 2, -5), "fuse": (fuse, 1, -12), "glass": (glass, 2, -10), "bark": (bark, 3, -6), "star_fall": (star_fall, 1, -9), "chime": (chime, 2, -9), "secret_sting": (secret_sting, 1, -7),
 }
 
 

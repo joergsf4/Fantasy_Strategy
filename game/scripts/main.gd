@@ -45,6 +45,7 @@ func _run() -> void:
 	stage.setup(map, units)
 	stage.party = party
 	stage.dialogue_runner = _battle_dialogue
+	stage.secret_runner = _secret_scene
 	add_child(stage)
 	_play_music(TITLE_MUSIC)
 	await _title()
@@ -201,6 +202,22 @@ func _battle_dialogue(lines: Array) -> void:
 	layer.queue_free()
 
 
+## Szene einer geheimen Interaktion (Sonderbild, Banner, Dialog) ueber der abgedunkelten Karte.
+func _secret_scene(sec: Dictionary) -> void:
+	var layer := CanvasLayer.new()
+	layer.layer = 8
+	add_child(layer)
+	var dim := ColorRect.new()
+	dim.color = Color(0.02, 0.01, 0.04, 0.82)
+	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
+	layer.add_child(dim)
+	var d := SecretScene.new()
+	d.setup_secret(sec, _names())
+	layer.add_child(d)
+	await d.finished
+	layer.queue_free()
+
+
 func _dialogue(lines: Array) -> void:
 	var layer := CanvasLayer.new()
 	layer.layer = 2
@@ -228,6 +245,24 @@ func _screenshot_mode() -> void:
 		ev.keycode = KEY_ENTER
 		Input.parse_input_event(ev)
 		await get_tree().create_timer(3.0).timeout
+		get_viewport().get_texture().get_image().save_png(OS.get_environment("SHOT_OUT"))
+		get_tree().quit()
+		return
+	if mode == "secret":   # Szene einer geheimen Interaktion: SHOT_DELAY = Sekunden bis zum Bild (Banner ca. 1,3 s, Dialog ab ca. 3,2 s)
+		stage = Stage.new()
+		stage.setup(map, units)
+		add_child(stage)
+		var sl := CanvasLayer.new()
+		sl.layer = 8
+		add_child(sl)
+		var sdim := ColorRect.new()
+		sdim.color = Color(0.02, 0.01, 0.04, 0.82)
+		sdim.set_anchors_preset(Control.PRESET_FULL_RECT)
+		sl.add_child(sdim)
+		var ss := SecretScene.new()
+		ss.setup_secret(Secrets.by_id("betrunkener_meister"), _names())
+		sl.add_child(ss)
+		await get_tree().create_timer(float(OS.get_environment("SHOT_DELAY")) if OS.get_environment("SHOT_DELAY") != "" else 4.0).timeout
 		get_viewport().get_texture().get_image().save_png(OS.get_environment("SHOT_OUT"))
 		get_tree().quit()
 		return
@@ -722,6 +757,7 @@ const FX_SCENES := {
 	"tonikum": {"u": ["quacksalber", "p", [3, 7]], "tile": [5, 7], "more": [["ritter", "p", [5, 7]], ["soldat_infanterie", "e", [6, 7]], ["soldat_infanterie", "e", [5, 6]]]},
 	"hinterhalt": {"u": ["ninjas", "p", [4, 7]], "t": ["soldat_infanterie", "e", [5, 7], {"dir": [1, 0]}], "more": []},
 	"bellen": {"u": ["hund", "p", [5, 7]], "t": "self", "more": [["soldat_infanterie", "e", [7, 7]], ["soldat_infanterie", "e", [5, 5]], ["soldat_beritten", "e", [3, 8]]]},
+	"drunken_strike": {"u": ["kungfu", "p", [4, 7]], "t": ["soldat_infanterie", "e", [5, 7]], "more": []},
 	"sternschnuppe": {"u": ["magical_girl", "p", [2, 7]], "t": ["soldat_infanterie", "e", [8, 7]], "more": []},
 }
 

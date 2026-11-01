@@ -691,6 +691,10 @@ func on_heal(id: String, u: Dictionary, v: Dictionary, amount: int, cured: bool)
 	nw.on_heal(id, u, v)
 
 
+func secret_reveal(v: Dictionary, sec: Dictionary) -> void:
+	await nw.secret_reveal(v, sec)
+
+
 func hive_appear(u: Dictionary, p: Vector3) -> void:
 	await nw.hive_appear(u, p)
 
