@@ -2712,6 +2712,57 @@ func _beam_blocker(u: Dictionary, id: String, target: Dictionary) -> Dictionary:
 	return {}
 
 
+## Geheimnis "Woll im Ueberfluss" (Typ ability_near_ally): Setzt u die Faehigkeit ein und steht die Figur "near" auf einem Nachbarfeld,
+## erschrickt sie und wirkt ihre Faehigkeit (react_ability) auf alle Verbuendeten im Umkreis um sich. Das kostet ihre normale Abklingzeit;
+## sie muss die Faehigkeit bereit haben. Beim ersten Mal Szene und Polarlicht-Auftritt.
+func _near_reactions(u: Dictionary, id: String) -> void:
+	if not units.has(u):
+		return
+	for o in units.duplicate():
+		if o == u or o["team"] != u["team"] or Grid.dist(o["pos"], u["pos"]) != 1:
+			continue
+		var sec := Secrets.find_near(u["id"], id, o["id"])
+		if sec.is_empty():
+			continue
+		var rid: String = sec["effects"]["react_ability"]
+		if not (o["abilities"] as Array).has(rid) or int(o["cd"].get(rid, 0)) > 0:
+			continue
+		await _run_near(u, o, sec)
+		return
+
+
+func _run_near(u: Dictionary, o: Dictionary, sec: Dictionary) -> void:
+	var ef: Dictionary = sec["effects"]
+	var rid: String = ef["react_ability"]
+	var rab: Dictionary = abilities[rid]
+	if not secrets_seen.has(sec["id"]):
+		secrets_seen.append(sec["id"])
+		if secret_runner.is_valid():
+			await secret_runner.call(sec)
+		var ci: Dictionary = ef.get("cutin", {})
+		if not ci.is_empty():
+			await _super_cutin(o, {}, str(ci.get("title", sec["name"])), str(ci.get("sub", "")))
+			_super_music_stop()
+	o["st"]["abs"] += 1
+	Items.start_cooldown(o, rid, int(rab["cd"]))
+	_actor = o
+	_turn_towards(o, u["pos"])
+	fx.hop(o, 0.4, 0.3)
+	await fx.squash(o, 0.85, 1.2, 0.3)
+	_popup(o, "Mäh!", Color(1.0, 0.95, 0.8))
+	var st: Dictionary = _first_effect(rab, "status")
+	var tiles := _area_tiles({"area": {"shape": "radius", "r": int(ef.get("radius", 2))}}, o["pos"])
+	for v in units.duplicate():
+		if v["team"] != o["team"] or not tiles.has(v["pos"]) or st.is_empty():
+			continue
+		if v != o:
+			await fx.projectile("fx_wolle", fx.chest(o, 0.8), fx.chest(v, 0.7), 0.28, 0.6, 0.55, 5.0)
+		Status.add(v, str(st["id"]), int(st["turns"]), st.get("mods", {}))
+		_refresh_unit(v)
+		fx.on_status(rid, o, v, str(st["id"]))
+	await get_tree().create_timer(0.5).timeout
+
+
 ## Geheimnis "Shuriken Regen": Wirft die Figur ihre Verbuendete, fliegt diese besonders hoch und verteilt aus der Luft einen Shuriken-Regen
 ## auf die Gegner im Umkreis um das Landefeld (Anteil ihres normalen Angriffsschadens). Beim ersten Mal Szene und Polarlicht-Auftritt.
 func _throw_with_rain(u: Dictionary, ally: Dictionary, dest: Vector2i, sec: Dictionary) -> void:
@@ -3023,6 +3074,7 @@ func _run_ability(u: Dictionary, id: String, target: Dictionary) -> void:
 	_refresh_unit(u)
 	if ab.get("super", false):
 		_super_music_stop()
+	await _near_reactions(u, id)
 	_check_end()
 
 

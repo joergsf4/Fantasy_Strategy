@@ -42,6 +42,15 @@ static func find_throw(by: String, ability: String, target: String) -> Dictionar
 	return {}
 
 
+## Das Geheimnis, bei dem "near" erschrickt/reagiert, wenn "by" die Faehigkeit "ability" einsetzt und "near" auf einem Nachbarfeld steht (Typ ability_near_ally), oder {}.
+static func find_near(by: String, ability: String, near: String) -> Dictionary:
+	for s: Dictionary in all():
+		var t: Dictionary = s["trigger"]
+		if t.get("type", "") == "ability_near_ally" and t["by"] == by and t["ability"] == ability and t["near"] == near:
+			return s
+	return {}
+
+
 static func by_id(id: String) -> Dictionary:
 	for s: Dictionary in all():
 		if s["id"] == id:

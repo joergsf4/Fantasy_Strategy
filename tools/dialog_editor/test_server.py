@@ -239,6 +239,20 @@ class EditorTest(unittest.TestCase):
             with self.assertRaises(ValueError):
                 server.save_secrets({"secrets": sl})
 
+    def test_geheimnis_reaktion_in_der_naehe(self):
+        import copy
+        d = server.secrets()
+        near = next(x for x in d["secrets"] if x.get("trigger", {}).get("type") == "ability_near_ally")
+        self.assertEqual((near["trigger"]["by"], near["trigger"]["ability"], near["trigger"]["near"], near["effects"]["react_ability"]), ("elisabeth", "kanone", "wendy", "wollmantel"))
+        self.assertIn("wollmantel", d["units"]["wendy"]["all_abilities"])
+        server.save_secrets({"secrets": d["secrets"]})
+        for mutate in (lambda s: s["trigger"].update(ability="gibtsnicht"), lambda s: s["effects"].update(react_ability="schlachtruf"), lambda s: s["effects"].update(react_ability="gruppenheilung"),
+                       lambda s: s["effects"].update(radius=0), lambda s: s["trigger"].update(near="elisabeth")):
+            sl = copy.deepcopy(d["secrets"])
+            mutate(next(x for x in sl if x.get("trigger", {}).get("type") == "ability_near_ally"))
+            with self.assertRaises(ValueError):
+                server.save_secrets({"secrets": sl})
+
     def test_leere_flee_und_ideen_werden_entfernt_und_ideen_gespeichert(self):
         b = self.body("ch3")
         b["flee"] = {}

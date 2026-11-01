@@ -5,6 +5,7 @@ extends Trailer2
 ## Die Szene und der Effekt laufen so ab wie im Kampf (erstes Mal: Dialogszene, ggf. Polarlicht-Auftritt, danach der Effekt, dann ein zweites Mal kurz).
 
 const SPECS := {
+	"woll_im_ueberfluss": {"ab": "kanone", "u": ["elisabeth", "p", [3, 7]], "t": ["soldat_infanterie", "e", [6, 7]], "more": [["wendy", "p", [3, 8]], ["ritter", "p", [4, 8]], ["kungfu", "p", [2, 6]], ["soldat_beritten", "e", [7, 6]]], "cam": [0.4, 5.0, 5.4], "fov": 40},
 	"shuriken_regen": {"throw": true, "u": ["museklaugust", "p", [2, 7]], "t": ["ninjas", "p", [3, 7]], "dest": [6, 7], "more": [["soldat_infanterie", "e", [7, 7]], ["soldat_beritten", "e", [7, 8]], ["soldat_bogenschuetze", "e", [8, 6]], ["soldat_infanterie", "e", [10, 3]]], "cam": [3.0, 8.0, 5.0], "fov": 46},
 	"futter_fuer_brumm": {"ab": "knochenwurf", "u": ["hund", "p", [2, 7]], "t": ["soldat_infanterie", "e", [4, 7]], "more": [["maedchen_baer", "p", [3, 7], {"hp": 18}], ["soldat_infanterie", "e", [6, 7]]], "cam": [0.2, 3.0, 4.6], "fov": 36},
 	"laser_reflektor": {"ab": "roter_laser", "u": ["robo", "p", [2, 7]], "t": ["soldat_infanterie", "e", [6, 7]], "more": [["samurai", "p", [4, 7]], ["soldat_infanterie", "e", [4, 5]], ["soldat_beritten", "e", [5, 8]], ["soldat_infanterie", "e", [4, 9]]], "cam": [1.0, 3.6, 5.4], "fov": 38},

@@ -121,3 +121,6 @@ Dritte geheime Interaktion (Hundsfreund wirft Knochen, Mira & Brumm stehen auf d
 
 ## Erledigt: Geheimnis „Shuriken Regen“ (2026-11-01)
 Dritter Auslöser-Typ `throw_ally`: Muskelaugust wirft die Kage-Schwestern höher, aus der Luft regnet es Wurfsterne (75 % des Angriffsschadens, Umkreis 2 um das Landefeld). Szene mit Wurfstern, Polarlicht-Auftritt als Erkennungszeichen, Editor-Typ „Einen Verbündeten werfen“. Dialoge von Claude erdacht (vorläufig). Offen: Simulator, Balancing.
+
+## Erledigt: Geheimnis „Woll im Überfluss“ (2026-11-01)
+Vierter Auslöser-Typ `ability_near_ally`: Kanone von Elisabeth mit Wendy auf einem Nachbarfeld löst Wendys Wollmantel auf alle Verbündeten im Umkreis 2 aus (normale Abklingzeit, nur wenn bereit). Szene, Polarlicht-Auftritt, Editor-Typ „Verbündeter in der Nähe erschrickt“. Dialoge von Claude erdacht (vorläufig).

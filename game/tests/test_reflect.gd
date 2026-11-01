@@ -198,6 +198,47 @@ func _initialize() -> void:
 	await b._do_throw_ally(Vector2i(6, 5))
 	check(e2["hp"] == e2["maxhp"] and scenes.is_empty(), "andere Figuren verteilen keinen Regen")
 
+	# --- Woll im Ueberfluss: Wendy steht neben Elisabeth, wenn diese die Kanone abfeuert
+	clear()
+	scenes.clear()
+	var eli := spawn("elisabeth", "p", Vector2i(3, 5))
+	var wen := spawn("wendy", "p", Vector2i(3, 6))
+	var nahe_fig := spawn("ritter", "p", Vector2i(4, 7))       # im Umkreis 2 um Wendy
+	var weitweg := spawn("kungfu", "p", Vector2i(8, 6))      # ausserhalb
+	var ziel := spawn("soldat_infanterie", "e", Vector2i(6, 5))
+	ziel["hp"] = 100
+	ziel["maxhp"] = 100
+	await b._run_ability(eli, "kanone", ziel)
+	check(Status.has(wen, "schild") and Status.has(nahe_fig, "schild") and Status.has(eli, "schild"), "Wollmantel auf alle Verbuendeten im Umkreis (Wendy, Ritter, Elisabeth)")
+	check(not Status.has(weitweg, "schild"), "Ausserhalb des Umkreises kein Wollmantel")
+	check(int(wen["cd"].get("wollmantel", 0)) == 3, "Wendys normale Abklingzeit ist ausgeloest")
+	check(100 - ziel["hp"] > 0, "die Kanone trifft wie sonst")
+	check(scenes == ["woll_im_ueberfluss"], "Szene beim ersten Mal")
+	# Wendy nicht bereit: keine Reaktion
+	clear()
+	scenes.clear()
+	var wo_e2 := spawn("elisabeth", "p", Vector2i(3, 5))
+	var wo_w2 := spawn("wendy", "p", Vector2i(3, 6))
+	var wo_z2 := spawn("soldat_infanterie", "e", Vector2i(6, 5))
+	wo_w2["cd"]["wollmantel"] = 2
+	await b._run_ability(wo_e2, "kanone", wo_z2)
+	check(not Status.has(wo_w2, "schild") and not Status.has(wo_e2, "schild"), "Wendy hat die Faehigkeit nicht bereit: kein Wollmantel")
+	# nicht benachbart: keine Reaktion
+	clear()
+	var wo_e3 := spawn("elisabeth", "p", Vector2i(3, 5))
+	var wo_w3 := spawn("wendy", "p", Vector2i(3, 7))
+	var wo_z3 := spawn("soldat_infanterie", "e", Vector2i(6, 5))
+	await b._run_ability(wo_e3, "kanone", wo_z3)
+	check(not Status.has(wo_w3, "schild"), "Wendy nicht auf einem Nachbarfeld: kein Wollmantel")
+	# zweites Mal: ohne Szene
+	clear()
+	scenes.clear()
+	var wo_e4 := spawn("elisabeth", "p", Vector2i(3, 5))
+	var wo_w4 := spawn("wendy", "p", Vector2i(2, 5))
+	var wo_z4 := spawn("soldat_infanterie", "e", Vector2i(6, 5))
+	await b._run_ability(wo_e4, "kanone", wo_z4)
+	check(Status.has(wo_w4, "schild") and scenes.is_empty(), "spaeter ohne Szene, Wollmantel weiterhin")
+
 	# --- Idee ohne trigger tut nichts
 	var only_idea := Secrets.find_beam("robo", "roter_laser", "kungfu")
 	check(only_idea.is_empty(), "ohne Eintrag keine Umlenkung")

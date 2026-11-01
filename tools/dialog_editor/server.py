@@ -284,6 +284,7 @@ def secrets() -> dict:
     return {"secrets": secs,
             "units": {k: {"name": v["name"], "abilities": [a for a in v.get("abilities", []) if abilities.get(a, {}).get("target") == "enemy"],
                           "beams": [a for a in v.get("abilities", []) if abilities.get(a, {}).get("target") in ("enemy", "ally") and any(e.get("type") in ("damage", "heal") for e in abilities[a].get("effects", []))],
+                          "all_abilities": list(v.get("abilities", [])),
                           "throws": [a for a in v.get("abilities", []) if "throw_ally" in abilities.get(a, {}).get("caps", [])],
                           "hero": bool(v.get("hero"))}
                       for k, v in units.items() if isinstance(v, dict) and "name" in v},
@@ -335,11 +336,11 @@ def save_secrets(body: dict) -> None:
         if sec.get("trigger"):
             t = sec["trigger"]
             ttype = t.get("type", "ability_on_ally")
-            if ttype not in ("ability_on_ally", "beam_via_ally", "throw_ally"):
+            if ttype not in ("ability_on_ally", "beam_via_ally", "throw_ally", "ability_near_ally"):
                 raise ValueError(f"{name}: unbekannter Ausloeser-Typ '{ttype}'")
             beam = ttype == "beam_via_ally"
             by = t["by"]
-            on = t["via"] if beam else t["target"]
+            on = t["via"] if beam else (t["near"] if ttype == "ability_near_ally" else t["target"])
             if by not in units or "name" not in units[by] or on not in units or "name" not in units[on]:
                 raise ValueError(f"{name}: unbekannte Figur im Ausloeser")
             if by == on:
@@ -380,6 +381,21 @@ def save_secrets(body: dict) -> None:
                                 or not isinstance(turns, int) or isinstance(turns, bool) or not 1 <= turns <= 9:
                             raise ValueError(f"{name}: Status braucht eine Kennung, Schadensminderung 0 bis 90 Prozent und 1 bis 9 Runden")
                         new_effects["status"] = {"id": sid_, "turns": turns, "reduce_pct": red}
+            elif ttype == "ability_near_ally":
+                ab = t["ability"]
+                if ab not in units[by].get("abilities", []):
+                    raise ValueError(f"{name}: {units[by]['name']} hat die Faehigkeit '{ab}' nicht")
+                if (by, ab, on) in triples:
+                    raise ValueError(f"{name}: dieser Ausloeser kommt zweimal vor")
+                triples.add((by, ab, on))
+                ef = sec["effects"]
+                rid, rad = ef.get("react_ability", ""), ef.get("radius", 2)
+                if rid not in units[on].get("abilities", []) or not any(e.get("type") == "status" for e in abilities.get(rid, {}).get("effects", [])):
+                    raise ValueError(f"{name}: {units[on]['name']} braucht eine Faehigkeit mit Statuswirkung als Reaktion")
+                if not isinstance(rad, int) or isinstance(rad, bool) or not 1 <= rad <= 4:
+                    raise ValueError(f"{name}: der Umkreis muss 1 bis 4 Felder sein")
+                new_trigger = {"type": "ability_near_ally", "by": by, "ability": ab, "near": on}
+                new_effects = {"react_ability": rid, "radius": rad}
             elif ttype == "throw_ally":
                 ab = t["ability"]
                 if ab not in units[by].get("abilities", []) or "throw_ally" not in abilities.get(ab, {}).get("caps", []):

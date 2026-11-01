@@ -17,7 +17,7 @@ func setup_secret(sec: Dictionary, unit_names: Dictionary) -> void:
 	secret = sec
 	var sc: Dictionary = sec["scene"]
 	var by: String = sec["trigger"]["by"]
-	var on: String = sec["trigger"].get("target", sec["trigger"].get("via", ""))
+	var on: String = sec["trigger"].get("target", sec["trigger"].get("via", sec["trigger"].get("near", "")))
 	var nm := unit_names.duplicate()
 	nm[sc["left"]] = unit_names.get(by, by)
 	nm[sc["right"]] = unit_names.get(on, on)
