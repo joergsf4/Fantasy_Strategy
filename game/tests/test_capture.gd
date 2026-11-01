@@ -49,6 +49,9 @@ func _initialize() -> void:
 		await b._capture_phase()
 	check(tank["team"] == "p" and b.goal_met(), "Nach drei Runden in Folge gehoert der Panzer uns, Ziel erreicht")
 	check(b._count_team("e") > 0, "Die uebrigen Gegner leben noch, gewonnen ist trotzdem")
+	check(b._hittable(tank), "Nach der Uebernahme ist Robina ein normales Ziel")
+	var hr: Dictionary = defs["panzer"]
+	check(hr.get("hero", false) and int(hr["from"]) == 9 and hr["role"] == "tank" and (hr["abilities"] as Array) == ["breitseite"], "Robina ist ein Held (ab Mission 9) mit der Breitseite")
 
 	# Breitseite des Panzers als Gegner
 	b = null

@@ -92,3 +92,6 @@ Die Gruppe trifft **drei Kürbisse mit lustigen Gesichtern**, die dem Spieler ei
 
 ## Erledigt: Wüstenlicht „Hollywood-Mexiko“ (2026-11-01)
 Im Biom Wüste (Kapitel 7 und 8) liegt ein gelb-orange Farbfilter über dem Bild (`shaders/grade_mexiko.gdshader`, Schicht unter dem HUD): warme gelbe Mitten, braun-orange Schatten, etwas weniger Sättigung, mehr Kontrast, leichter Dunst und Hitzeflimmern. Dazu tiefere, wärmere Sonne mit längeren Schatten (`Battle._apply_desert_light`). Abschalten pro Karte mit `"grade": "none"` in der Kartendatei; Stärke über die Uniforms des Shaders (`tint`, `saturation`, `haze`, `vignette`).
+
+## Erledigt/Offen: Robina als Held (2026-11-01)
+Der Panzer aus Mission 8 ist jetzt ein vollwertiger Held (`panzer` in `units.json`, `hero: true`, `from: 9`, Rolle Tank, Breitseite, Stimme). Offen: **Fähigkeit 2** (Idee folgt) und eine Mission 9, ab der sie wählbar ist.

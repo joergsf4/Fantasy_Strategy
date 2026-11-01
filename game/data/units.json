@@ -536,17 +536,16 @@
  },
  "panzer": {
   "name": "Robina",
-  "hp": 90,
-  "atk": 11,
-  "def": 8,
+  "hp": 70,
+  "atk": 10,
+  "def": 7,
   "res": 4,
   "move": 2,
   "range_min": 1,
   "range": 2,
-  "role": "boss",
+  "role": "tank",
   "dmg_type": "body",
   "tags": [
-   "boss",
    "unantastbar"
   ],
   "abilities": [
@@ -555,6 +554,8 @@
   "weapon": "metal",
   "body": "armor",
   "size": 2.1,
-  "intro": 8
+  "intro": 8,
+  "hero": true,
+  "from": 9
  }
 }

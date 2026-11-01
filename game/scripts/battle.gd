@@ -653,9 +653,10 @@ func damage(att: Dictionary, def: Dictionary) -> int:
 	return forecast(att, def)["dmg"]
 
 
-## Unantastbare Figuren (z. B. Robinas Panzer) sind kein Ziel von Angriffen und Faehigkeiten.
+## Unantastbare Figuren (Robinas Panzer, solange er auf der Gegenseite steht) sind kein Ziel von Angriffen und Faehigkeiten.
+## Nach der Uebernahme (oder in spaeteren Missionen als Held) ist Robina ein ganz normales Ziel.
 func _hittable(o: Dictionary) -> bool:
-	return not (o["tags"] as Array).has("unantastbar")
+	return not ((o["tags"] as Array).has("unantastbar") and o["team"] == "e")
 
 
 func _attack_targets(u: Dictionary, pos: Vector2i) -> Array[Dictionary]:
