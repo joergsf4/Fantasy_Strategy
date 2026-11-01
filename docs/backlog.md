@@ -72,3 +72,6 @@ Wollmantel (Wendy), Bärengebrüll (Brumm), Stabwirbel (Lin), Wutanfall (Elisabe
 
 ## Erledigt: Geheime Interaktionen (2026-11-01)
 Datengetriebenes System (`secrets.json`, Editor-Tab „Geheimnisse“, Szene mit Sonderbild und Tiefenwirkung, Spielstand merkt gesehene Szenen). Erstes Geheimnis: Brunhilde wirft ein Fass auf Lin, „Betrunkener Meister“ mit Drunken Strike. Details: `docs/geheimnisse.md`. Offen: weitere Geheimnisse (andere Auslöser wie Nachbarschaft oder gemeinsamer Angriff), Sammlung der entdeckten Geheimnisse im Lager, Simulator.
+
+## Erledigt: Bäume, Büsche und Felsen als Sprites (2026-11-01)
+Das Terrain setzt statt der 3D-Meshes jetzt Gemini-Pixel-Sprites (`fx_baum_fichte1/2`, `fx_baum_eiche1/2/3`, `fx_busch`, `fx_fels1/2`) als MultiMesh mit `shaders/prop_sprite.gdshader` (volles Billboard wie die Figuren, scharfe Kanten, leichtes Wiegen im Wind) und weichen Bodenschatten (`TerrainView.SPRITES`). Gelbe Birken sind selten. Nicht umgestellt: Gras, Blumen (bleiben Meshes), Holzsteg.

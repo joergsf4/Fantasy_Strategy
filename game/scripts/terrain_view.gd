@@ -279,46 +279,52 @@ func _build_water() -> void:
 	add_child(mi)
 
 
-# ---------------------------------------------------------------- Meshes fuer Pflanzen & Felsen
+# ---------------------------------------------------------------- Sprites fuer Baeume, Buesche und Felsen
+
+## Art -> [Sprite, Hoehe in Feldern, Standflaeche des Schattens]. Baeume, Buesche und Felsen sind Pixel-Sprites (Gemini), siehe prop_sprite.gdshader.
+const SPRITES := {
+	"pine0": ["fx_baum_fichte1", 1.05, 0.5], "pine1": ["fx_baum_fichte2", 1.0, 0.42],
+	"oak0": ["fx_baum_eiche1", 0.95, 0.55], "oak1": ["fx_baum_eiche2", 1.0, 0.6], "oak2": ["fx_baum_eiche3", 1.1, 0.42],
+	"bush": ["fx_busch", 0.4, 0.32], "rock0": ["fx_fels1", 0.25, 0.26], "rock1": ["fx_fels2", 0.24, 0.3],
+}
+var _prop_shader: Shader
+var _shadow_mat: StandardMaterial3D
+
+
+func _make_sprite_meshes() -> void:
+	_prop_shader = load("res://shaders/prop_sprite.gdshader")
+	for kind: String in SPRITES:
+		var tex: Texture2D = load("res://assets/fx/%s.png" % SPRITES[kind][0])
+		var h: float = SPRITES[kind][1]
+		var q := QuadMesh.new()
+		q.size = Vector2(h * tex.get_width() / float(tex.get_height()), h)
+		q.center_offset = Vector3(0, h * 0.5, 0)
+		_meshes[kind] = q
+	var grad := Gradient.new()
+	grad.set_color(0, Color(0, 0, 0, 0.42))
+	grad.set_color(1, Color(0, 0, 0, 0.0))
+	var gt := GradientTexture2D.new()
+	gt.gradient = grad
+	gt.fill = GradientTexture2D.FILL_RADIAL
+	gt.fill_from = Vector2(0.5, 0.5)
+	gt.fill_to = Vector2(1.0, 0.5)
+	gt.width = 64
+	gt.height = 64
+	_shadow_mat = StandardMaterial3D.new()
+	_shadow_mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	_shadow_mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	_shadow_mat.albedo_texture = gt
+	_shadow_mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+	var sq := QuadMesh.new()
+	sq.size = Vector2.ONE
+	sq.orientation = PlaneMesh.FACE_Y
+	_meshes["shadow"] = sq
+
+
+# ---------------------------------------------------------------- Meshes fuer Gras und Blumen
 
 func _make_meshes() -> void:
-	var bark := Color(0.30, 0.20, 0.12)
-	# Kiefern (2 Varianten)
-	for v in 2:
-		var k := MeshKit.new()
-		var s := 1.0 + 0.12 * v
-		k.frustum(Vector3.ZERO, 0.035, 0.025, 0.28, bark, bark, 6)
-		var dark := Color(0.10, 0.28, 0.14)
-		var lite := Color(0.22, 0.46, 0.20)
-		k.frustum(Vector3(0, 0.16, 0), 0.27 * s, 0.0, 0.40, dark, lite, 9)
-		k.frustum(Vector3(0, 0.38, 0), 0.21 * s, 0.0, 0.36, dark, lite, 9)
-		k.frustum(Vector3(0, 0.58 + 0.04 * v, 0), 0.14 * s, 0.0, 0.34, dark, lite, 9)
-		_meshes["pine%d" % v] = k.build()
-	# Laubbaeume (3 Varianten)
-	for v in 3:
-		var k := MeshKit.new()
-		var th := 0.34 + 0.06 * v
-		k.frustum(Vector3.ZERO, 0.055, 0.035, th, bark, bark.lightened(0.1), 7)
-		var dark := Color(0.17, 0.36, 0.12)
-		var lite := Color(0.40, 0.62, 0.20)
-		_blob_noise.seed = 100 + v
-		k.blob(Vector3(0, th + 0.12, 0), Vector3(0.27, 0.22, 0.27) * (1.0 + 0.1 * v), dark, lite, 0.28, _blob_noise)
-		k.blob(Vector3(0.14, th + 0.04, 0.05), Vector3(0.19, 0.16, 0.19), dark, lite, 0.28, _blob_noise)
-		k.blob(Vector3(-0.13, th + 0.07, -0.06), Vector3(0.20, 0.17, 0.2), dark, lite, 0.28, _blob_noise)
-		if v == 2:
-			k.blob(Vector3(0.02, th + 0.28, -0.05), Vector3(0.16, 0.14, 0.16), dark, lite.lightened(0.1), 0.25, _blob_noise)
-		_meshes["oak%d" % v] = k.build()
-	# Busch, Felsen
-	var kb := MeshKit.new()
-	_blob_noise.seed = 77
-	kb.blob(Vector3(0, 0.07, 0), Vector3(0.14, 0.1, 0.14), Color(0.14, 0.32, 0.12), Color(0.34, 0.56, 0.2), 0.3, _blob_noise, 1)
-	kb.blob(Vector3(0.1, 0.05, 0.04), Vector3(0.09, 0.07, 0.09), Color(0.14, 0.32, 0.12), Color(0.34, 0.56, 0.2), 0.3, _blob_noise, 1)
-	_meshes["bush"] = kb.build()
-	for v in 2:
-		var kr := MeshKit.new()
-		_blob_noise.seed = 200 + v
-		kr.blob(Vector3(0, 0.07, 0), Vector3(0.2, 0.13, 0.17), Color(0.26, 0.24, 0.22), Color(0.50, 0.48, 0.44), 0.35, _blob_noise, 1, false)
-		_meshes["rock%d" % v] = kr.build()
+	_make_sprite_meshes()
 	# Grasbueschel: mehrere dreieckige Halme
 	var kg := MeshKit.new()
 	var rng := RandomNumberGenerator.new()
@@ -364,6 +370,12 @@ func _add(kind: String, pos: Vector3, scale: float, tint: Color, yaw := -1.0) ->
 	var b := Basis(Vector3.UP, y).scaled(Vector3(scale, scale * _rng.randf_range(0.9, 1.15), scale))
 	_inst[kind]["xf"].append(Transform3D(b, pos))
 	_inst[kind]["col"].append(tint)
+	if SPRITES.has(kind):      # weicher Schatten am Boden, leicht von der Sonne weggeschoben
+		if not _inst.has("shadow"):
+			_inst["shadow"] = {"xf": [], "col": PackedColorArray()}
+		var r: float = float(SPRITES[kind][2]) * scale * 1.5
+		_inst["shadow"]["xf"].append(Transform3D(Basis().scaled(Vector3(r, 1.0, r * 0.8)), pos + Vector3(0.06 * scale, 0.025, 0.04 * scale)))
+		_inst["shadow"]["col"].append(Color.WHITE)
 
 
 func _tint(spread := 0.12) -> Color:
@@ -379,7 +391,8 @@ func _place(kind: String, x: float, z: float, scale: float, tint: Color, min_y :
 
 
 func _tree(x: float, z: float, scale: float, prefer_pine := 0.45) -> void:
-	var kind := ("pine%d" % _rng.randi_range(0, 1)) if _rng.randf() < prefer_pine else ("oak%d" % _rng.randi_range(0, 2))
+	var oak := 2 if _rng.randf() < 0.12 else _rng.randi_range(0, 1)      # gelbe Birken sind selten
+	var kind := ("pine%d" % _rng.randi_range(0, 1)) if _rng.randf() < prefer_pine else ("oak%d" % oak)
 	_place(kind, x, z, scale * 0.72 * _rng.randf_range(0.85, 1.25), _tint(0.14))
 
 
@@ -498,8 +511,16 @@ func _flush_instances() -> void:
 		var mmi := MultiMeshInstance3D.new()
 		mmi.multimesh = mm
 		var is_plant := kind == "grass" or kind == "flower"
-		mmi.material_override = _grass_mat if is_plant else _foliage_mat
-		mmi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF if is_plant else GeometryInstance3D.SHADOW_CASTING_SETTING_ON
+		if kind == "shadow":
+			mmi.material_override = _shadow_mat
+		elif SPRITES.has(kind):
+			var pm := ShaderMaterial.new()
+			pm.shader = _prop_shader
+			pm.set_shader_parameter("tex", load("res://assets/fx/%s.png" % SPRITES[kind][0]))
+			mmi.material_override = pm
+		else:
+			mmi.material_override = _grass_mat if is_plant else _foliage_mat
+		mmi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		mmi.name = "Inst_" + kind
 		add_child(mmi)
 

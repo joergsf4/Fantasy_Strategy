@@ -259,6 +259,20 @@ jobs.push({ name: 'sec_brunhilde_fass', refs: [ref('kq5h0v'), ref(STYLE_REF)], p
 jobs.push({ name: 'sec_lin_betrunken', refs: [ref('51gj00'), ref(STYLE_REF)], prompt: 'Create a dynamic dialogue portrait of Master Lin, the kung fu fighter with red sleeveless mandarin jacket and white sash, now in drunken-master style: soaked in golden beer, flushed red cheeks, a goofy confident half-lidded grin, swaying in a loose drunken stance with one arm holding his long wooden staff behind his back and the other hand held up in a beckoning gesture, a small gourd flask hanging from his sash, little dizzy stars and beer drops around him, upper body, seen from slightly below like a hero shot.' + SEC_ID + PORTRAIT_TAIL.replace('character on the left side of the image, upper body, facing right, nothing on the right half', 'character on the right side of the image, upper body, facing left, nothing on the left half') });
 jobs.push({ name: 'bg_betrunken', refs: [ref(STYLE_REF)], prompt: 'Create a wide cinematic pixel-art background (no characters at all): a cozy village tavern courtyard at golden dusk, wooden barrels and long tables, strings of warm glowing paper lanterns, a stone well, tavern building with lit windows in the distance, warm amber light shafts, a few foam bubbles and beer-gold sparkles floating in the air, painterly pixel-art with depth, empty center space for two characters. Same pixel-art style as the attached image (use it ONLY as a style reference, do NOT draw its character). Wide 16:9 landscape image, no text, no border.' });
 
+// Landschafts-Props als Sprites (statt 3D-Meshes im Terrain): Fichten, Eichen, Busch, Felsen.
+const PROPS = {
+  fx_baum_fichte1: 'a single tall dark-green spruce / pine tree with layered drooping branches and a short brown trunk, slightly snowless, forest tree',
+  fx_baum_fichte2: 'a single slimmer young fir tree with lighter green layered branches and a thin brown trunk, forest tree',
+  fx_baum_eiche1: 'a single round leafy oak tree with a thick brown trunk and a big bushy crown of bright green leaves with lighter highlights',
+  fx_baum_eiche2: 'a single broad old oak tree with a gnarled brown trunk, wide lumpy crown in mixed medium green leaves, a few small branches visible',
+  fx_baum_eiche3: 'a single tall birch-like deciduous tree with a slender white-and-grey trunk with dark marks and a light yellow-green airy crown',
+  fx_busch: 'a single round green bush with a few tiny pink berries and small grass tufts at its base, small shrub',
+  fx_fels1: 'a single grey boulder rock with lighter top highlights and dark cracks and a little moss at the base, small stone',
+  fx_fels2: 'a pair of two grey rocks, one big and one small, with brownish-grey shading and a few tiny pebbles, small stones',
+};
+for (const [name, d] of Object.entries(PROPS))
+  jobs.push({ name, refs: [path.join(OUT, 'fx_fireball.jpg')], prompt: `Create ${d}, game sprite, seen slightly from above and the front, chunky and readable at small size, soft pixel-art shading, nothing else in the picture.` + FX_STYLE });
+
 async function generate(page, job) {
   await page.goto('https://gemini.google.com/app', { waitUntil: 'domcontentloaded' });
   await page.waitForSelector('div[role=textbox], .ql-editor', { timeout: 30000 });

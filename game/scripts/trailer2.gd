@@ -14,18 +14,25 @@ const HEROES := [
 	[["quacksalber", "lachend", "Dr. Humbug", "Äußerst seriöser Arzt"], ["magical_girl", "lachend", "Lumi Sternenglanz", "Magical Girl"]],
 ]
 
-## Faehigkeits-Szenen: map = Kapitelkarte (Standard ch1), cam = Versatz zur Mitte, status = Dauerstatus fuer den Helden.
-const SCENES := [
-	{"ab": "sternschnuppe", "u": ["magical_girl", "p", [2, 7]], "t": ["soldat_infanterie", "e", [6, 7]], "more": [["soldat_infanterie", "e", [7, 7]], ["soldat_bogenschuetze", "e", [6, 6]]], "cam": [-0.6, 3.4, 5.8], "fov": 40},
-	{"ab": "brandbombe", "u": ["oskar", "p", [3, 7]], "t": ["soldat_infanterie", "e", [6, 7]], "more": [["soldat_infanterie", "e", [7, 8]], ["soldat_beritten", "e", [6, 6]]], "cam": [0.4, 3.0, 5.4], "fov": 36},
-	{"ab": "kanone", "u": ["elisabeth", "p", [3, 7]], "t": ["soldat_infanterie", "e", [6, 7]], "more": [["soldat_infanterie", "e", [7, 7]], ["soldat_beritten", "e", [6, 6]]], "cam": [-1.8, 3.2, 5.6], "fov": 36},
-	{"ab": "hinterhalt", "u": ["ninjas", "p", [4, 7]], "t": ["soldat_infanterie", "e", [5, 7], {"dir": [1, 0]}], "more": [["soldat_infanterie", "e", [7, 7]]], "cam": [0.6, 2.6, 4.2], "fov": 34},
-	{"ab": "todeswirbel", "u": ["samurai", "p", [5, 7]], "t": "self", "more": [["soldat_infanterie", "e", [6, 7]], ["soldat_infanterie", "e", [5, 6]], ["soldat_beritten", "e", [5, 8]], ["soldat_infanterie", "e", [4, 7]]], "cam": [2.2, 4.6, 4.0], "fov": 36},
-	{"ab": "tonikum", "u": ["quacksalber", "p", [3, 7]], "tile": [5, 7], "more": [["ritter", "p", [5, 7]], ["soldat_infanterie", "e", [6, 7]], ["soldat_infanterie", "e", [5, 6]]], "cam": [-0.2, 3.6, 5.2], "fov": 38},
-	{"ab": "bearhug", "u": ["museklaugust", "p", [4, 7]], "t": ["soldat_infanterie", "e", [5, 7]], "more": [["soldat_beritten", "e", [6, 7]]], "cam": [0.2, 2.6, 4.2], "fov": 34},
-	{"ab": "roter_laser", "u": ["robo", "p", [3, 7]], "t": ["soldat_infanterie", "e", [5, 7]], "more": [["soldat_beritten", "e", [6, 7]], ["soldat_infanterie", "e", [7, 7]], ["kungfu", "p", [4, 7]]], "cam": [1.2, 3.6, 5.6], "fov": 40, "look": [5.0, 0.5, 7.0]},
-	{"ab": "bellen", "u": ["hund", "p", [5, 7]], "t": "self", "more": [["soldat_infanterie", "e", [7, 7]], ["soldat_infanterie", "e", [5, 5]], ["soldat_beritten", "e", [3, 8]]], "cam": [1.4, 4.2, 4.6], "fov": 38},
+## Faehigkeits-Szenen (die lustigen): map = Kapitelkarte (Standard ch1), cam = Versatz zur Mitte, status = Dauerstatus fuer den Helden.
+const SCENES_A := [
+	{"ab": "fasswurf", "u": ["braumeisterin", "p", [3, 7]], "t": ["soldat_infanterie", "e", [6, 7]], "more": [["soldat_beritten", "e", [7, 7]]], "cam": [0.4, 3.0, 5.6], "fov": 38},
+	{"ab": "wurf", "u": ["museklaugust", "p", [4, 7]], "t": ["soldat_infanterie", "e", [5, 7]], "more": [["soldat_beritten", "e", [7, 6]]], "cam": [1.2, 3.6, 5.2], "fov": 38},
+	{"ab": "polymorph", "u": ["claude", "p", [3, 7]], "t": ["soldat_infanterie", "e", [6, 7]], "more": [["soldat_infanterie", "e", [7, 7]]], "cam": [-0.4, 2.8, 5.4], "fov": 36},
+	{"ab": "gebiss", "u": ["xiulan", "p", [3, 7]], "t": ["soldat_infanterie", "e", [6, 7]], "more": [["soldat_beritten", "e", [7, 7]]], "cam": [0.2, 2.8, 5.4], "fov": 36},
 ]
+const SCENES_B := [
+	{"ab": "bellen", "u": ["hund", "p", [5, 7]], "t": "self", "more": [["soldat_infanterie", "e", [7, 7]], ["soldat_infanterie", "e", [5, 5]], ["soldat_beritten", "e", [3, 8]]], "cam": [1.4, 4.2, 4.6], "fov": 38},
+	{"ab": "bearhug", "u": ["museklaugust", "p", [4, 7]], "t": ["soldat_infanterie", "e", [5, 7]], "more": [["soldat_beritten", "e", [6, 7]]], "cam": [0.2, 2.6, 4.2], "fov": 34},
+	{"ab": "tonikum", "u": ["quacksalber", "p", [3, 7]], "tile": [5, 7], "more": [["ritter", "p", [5, 7]], ["soldat_infanterie", "e", [6, 7]], ["soldat_infanterie", "e", [5, 6]]], "cam": [-0.2, 3.6, 5.2], "fov": 38},
+]
+## Schlachtszenen: echte Zuege (Helden laufen und greifen an, danach ziehen die Gegner nach).
+const BATTLE_1 := {"map": "ch3", "fire": true, "cam": [0.0, 6.2, 6.4], "fov": 38,
+	"p": [["ritter", "p", [3, 6]], ["samurai", "p", [3, 7]], ["kungfu", "p", [4, 5]], ["elisabeth", "p", [2, 8]]],
+	"e": [["soldat_infanterie", "e", [7, 6]], ["soldat_infanterie", "e", [7, 7]], ["soldat_beritten", "e", [8, 5]], ["soldat_bogenschuetze", "e", [8, 8]], ["soldat_infanterie", "e", [7, 8]]]}
+const BATTLE_2 := {"map": "ch7", "fire": false, "cam": [0.0, 6.4, 6.6], "fov": 38,
+	"p": [["robo", "p", [3, 6]], ["hund", "p", [3, 7]], ["ninjas", "p", [2, 7]], ["wendy", "p", [2, 6]]],
+	"e": [["soldat_infanterie", "e", [7, 7]], ["soldat_beritten", "e", [8, 6]], ["soldat_infanterie", "e", [8, 7]], ["soldat_bogenschuetze", "e", [9, 7]], ["soldat_infanterie", "e", [7, 8]]]}
 const DRUNKEN := {"ab": "drunken_strike", "u": ["kungfu", "p", [4, 7]], "t": ["soldat_infanterie", "e", [5, 7]], "more": [["soldat_infanterie", "e", [6, 7]], ["soldat_beritten", "e", [5, 6]]],
 	"cam": [0.8, 2.8, 4.4], "fov": 34, "status": ["betrunken"]}
 
@@ -46,27 +53,25 @@ func _run() -> void:
 	for beat: Array in HEROES:
 		await _beat(beat, 0.74)
 
-	# --- 3) Spezialfaehigkeiten
+	# --- 3) Spezialfaehigkeiten (die lustigen) und Schlachten
 	await _fade_to(1.0, 0.15)
 	_say("Über 30 Spezialfähigkeiten")
 	_play_music(BATTLE_MUSIC, -4.0)
 	stage.set_mode("battle")
 	_prep_battle()
 	Engine.time_scale = 1.4
-	var n := 0
-	for sc: Dictionary in SCENES:
+	for sc: Dictionary in SCENES_A:
 		await _scene(sc)
-		n += 1
-		if n == 5:
-			_say("Zerstören. Heilen. Verzaubern.")
 	Engine.time_scale = 1.0
-
-	# --- 4) Welten
-	_say("Sieben Kapitel. Sieben Welten.")
-	await _world("ch3", true)
-	await _world("ch4", false)
-	await _world("ch6", false)
-	await _world("ch7", false)
+	_say("Echte Schlachten, Zug um Zug")
+	await _battle(BATTLE_1)
+	_say("Zerstören. Heilen. Verzaubern.")
+	Engine.time_scale = 1.4
+	for sc: Dictionary in SCENES_B:
+		await _scene(sc)
+	Engine.time_scale = 1.0
+	_say("Jede Karte ein neues Abenteuer")
+	await _battle(BATTLE_2)
 
 	# --- 5) Geheimnis (kurzer Ausblick)
 	await _fade_to(1.0, 0.15)
@@ -174,6 +179,92 @@ func _scene(sc: Dictionary) -> void:
 	await _wait(0.15)
 	push.kill()
 	await _fade_to(1.0, 0.12)
+
+
+## Schlachtszene: zwei Seiten auf einer Kapitelkarte, die Helden greifen der Reihe nach an, dann ziehen die Gegner.
+func _battle(sc: Dictionary) -> void:
+	await _fade_to(1.0, 0.15)
+	stage.map_data = Mission.load_mission(sc["map"])
+	stage.new_battle()
+	stage.set_mode("battle")
+	_prep_battle()
+	var b := stage.battle
+	for u in b.units.duplicate() + b._away.duplicate():
+		(u["node"] as Node3D).queue_free()
+	b.units.clear()
+	b._away.clear()
+	b._enter_close_view()
+	if sc["fire"]:
+		var n := 0
+		for o in b.world.objects:
+			if o["type"] == "house" and n < 3:
+				o["state"] = "burning"
+				b._refresh_object(o, true)
+				n += 1
+	var heroes: Array[Dictionary] = []
+	var foes: Array[Dictionary] = []
+	for spec: Array in sc["p"]:
+		heroes.append(_spawn(b, spec))
+	for spec: Array in sc["e"]:
+		foes.append(_spawn(b, spec))
+	var mid := Vector3.ZERO
+	for u in heroes + foes:
+		mid += b.to_world(u["pos"])
+	mid /= float(heroes.size() + foes.size())
+	var off: Array = sc["cam"]
+	b.cam.fov = float(sc["fov"])
+	b.cam.position = mid + Vector3(off[0], off[1], off[2])
+	var look := mid + Vector3(0, 0.2, 0)
+	b.cam.look_at(look)
+	var drift := create_tween()
+	drift.tween_property(b.cam, "position", b.cam.position + Vector3(0.6, -0.7, -0.9), 7.0)
+	await _fade_to(0.0, 0.15)
+	Engine.time_scale = 1.4
+	for h in heroes:
+		var target := _nearest(b, h, foes)
+		if target.is_empty():
+			continue
+		await _engage(b, h, target)
+		foes = foes.filter(func(f: Dictionary) -> bool: return b.units.has(f))
+	for f in foes.duplicate():
+		if b.units.has(f):
+			await b._enemy_move(f)
+	Engine.time_scale = 1.0
+	drift.kill()
+	await _fade_to(1.0, 0.15)
+
+
+func _nearest(b: Battle, u: Dictionary, others: Array[Dictionary]) -> Dictionary:
+	var best: Dictionary = {}
+	var bd := 9999
+	for o in others:
+		if b.units.has(o) and Grid.dist(u["pos"], o["pos"]) < bd:
+			bd = Grid.dist(u["pos"], o["pos"])
+			best = o
+	return best
+
+
+## u laeuft auf ein Feld in Angriffsreichweite von target (das naechste) und greift an.
+func _engage(b: Battle, u: Dictionary, target: Dictionary) -> void:
+	var reach := b.grid.reachable(u["pos"], Combat.move_of(u), u["flying"], b._team_tiles("e"))
+	var occupied := {}
+	for o in b.units:
+		if o != u:
+			occupied[o["pos"]] = true
+	var best: Vector2i = u["pos"]
+	var best_d := 9999
+	for t: Vector2i in reach:
+		if occupied.has(t) or not Combat.in_range(u, Grid.dist(t, target["pos"])):
+			continue
+		var d := Grid.dist(t, u["pos"])
+		if d < best_d:
+			best_d = d
+			best = t
+	b.reach = reach
+	if best != u["pos"]:
+		await b._walk(u, best)
+	if Combat.in_range(u, Grid.dist(u["pos"], target["pos"])):
+		await b._resolve(u, target)
 
 
 ## Kapitelkarte mit Figuren: Kamerafahrt ueber die Karte, Kapitelname als Bildunterschrift; fire = Haeuser brennen.
