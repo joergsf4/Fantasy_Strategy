@@ -19,6 +19,10 @@ var _plate: PanelContainer
 var _text: RichTextLabel
 var _more: Control
 var _tween: Tween
+var voices: Dictionary = {}     # Sprecher -> Figur, deren Brabbel-Laut klingt (Standard: der Sprecher selbst)
+var _speaker := ""
+var _typed_n := 0
+var _syll := 0
 
 
 func setup(dialogue_lines: Array, unit_names: Dictionary) -> void:
@@ -123,11 +127,28 @@ func _advance() -> void:
 	_text.visible_ratio = 0.0
 	_more.visible = false
 	_typing = true
+	_speaker = voices.get(speaker, speaker)
+	_typed_n = 0
+	_syll = 0
 	_tween = create_tween()
-	_tween.tween_property(_text, "visible_ratio", 1.0, maxf(0.3, _text.text.length() * 0.025))
+	_tween.tween_method(_type_to, 0.0, 1.0, maxf(0.3, _text.text.length() * 0.025))
 	_tween.finished.connect(func() -> void:
 		_typing = false
 		_more.visible = true)
+
+
+## Tippt den Text bis Anteil r und brabbelt dabei: bei jedem zweiten Buchstaben klingt der Laut der Figur.
+func _type_to(r: float) -> void:
+	_text.visible_ratio = r
+	var shown := int(round(r * _text.get_total_character_count()))
+	var plain := _text.get_parsed_text()
+	while _typed_n < shown and _typed_n < plain.length():
+		var c := plain[_typed_n]
+		if c.to_lower() != c.to_upper() or c.is_valid_int():     # Buchstabe oder Ziffer
+			if _syll % 2 == 0:
+				Sfx.babble(_speaker)
+			_syll += 1
+		_typed_n += 1
 
 
 ## Weiterschalten: Linksklick irgendwo im Bild, Enter, Leertaste. _input statt _unhandled_input, damit kein

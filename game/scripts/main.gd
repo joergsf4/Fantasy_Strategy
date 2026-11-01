@@ -175,6 +175,11 @@ func _chapter(cid: String, skip_intro := false, next_cid := "") -> void:
 	stage.set_mode("dialog")
 	if not skip_intro:
 		await _dialogue(story_c["intro"])
+	if SquadSelect.has_choice(party, units, m):         # Gruppenwahl vor der Runde (Story-Figuren sind gesperrt)
+		await _squad_select(m)
+		m = _mission_with_squad(cid)
+		stage.map_data = m
+		stage.new_battle()
 	_play_music(BATTLE_MUSIC, 2.5)
 	while true:
 		await stage.start_battle()
@@ -193,6 +198,17 @@ func _chapter(cid: String, skip_intro := false, next_cid := "") -> void:
 	await _dialogue(story_c["outro"])
 	await _camp(Mission.load_mission(next_cid) if next_cid != "" else m)   # Lager: Gruppe der naechsten Mission waehlen
 	party.save()
+
+
+func _squad_select(m: Dictionary) -> void:
+	var layer := CanvasLayer.new()
+	layer.layer = 6
+	add_child(layer)
+	var s := SquadSelect.new()
+	s.setup(party, units, m)
+	layer.add_child(s)
+	await s.closed
+	layer.queue_free()
 
 
 func _camp(m: Dictionary) -> void:
@@ -360,6 +376,26 @@ func _screenshot_mode() -> void:
 		for i in 30:
 			await get_tree().process_frame
 		await get_tree().create_timer(1.5).timeout
+		get_viewport().get_texture().get_image().save_png(OS.get_environment("SHOT_OUT"))
+		get_tree().quit()
+		return
+	if mode == "squad":   # Gruppenwahl: SHOT_CH=ch5, SHOT_PICK=<Platz>
+		stage = Stage.new()
+		stage.setup(map, units)
+		add_child(stage)
+		stage.set_mode("dialog")
+		var sq := SquadSelect.new()
+		var sp := Party.new_game()
+		var sm := Mission.load_mission(OS.get_environment("SHOT_CH") if OS.get_environment("SHOT_CH") != "" else "ch5")
+		sq.setup(sp, units, sm)
+		if OS.get_environment("SHOT_PICK") != "":
+			sq._pick = int(OS.get_environment("SHOT_PICK"))
+		var sl2 := CanvasLayer.new()
+		sl2.layer = 6
+		add_child(sl2)
+		sl2.add_child(sq)
+		for i in 30:
+			await get_tree().process_frame
 		get_viewport().get_texture().get_image().save_png(OS.get_environment("SHOT_OUT"))
 		get_tree().quit()
 		return

@@ -118,6 +118,18 @@ static func spec(s: Variant, u := {}, v := {}, accent := false) -> void:
 		play(String(s))
 
 
+## Brabbel-Laut einer Figur beim Tippen des Dialogtextes (Klangfarbe und Tonhoehe je Figur, "voices" in sfx.json).
+static func babble(unit_id: String) -> void:
+	var voices: Dictionary = _cfg().get("voices", {})
+	if voices.is_empty():
+		return
+	var v: Dictionary = voices.get(unit_id, voices.get("default", {}))
+	if v.is_empty():
+		return
+	var pr: Array = v.get("pitch", [1.0, 1.0])
+	play(String(v["s"]), float(v.get("db", 0.0)), randf_range(float(pr[0]), float(pr[1])))
+
+
 static func _cfg() -> Dictionary:
 	var s := get_inst()
 	return s.cfg if s != null else {}

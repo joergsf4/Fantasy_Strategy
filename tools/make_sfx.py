@@ -515,6 +515,83 @@ def secret_sting(rng):
     return fade(mix(*parts, (swell, 0, 0.8)))
 
 
+# Brabbel-Laute: kurze Silben, die beim Tippen eines Dialogtextes erklingen (je Figur andere Klangfarbe und Tonhoehe, siehe sfx.json "voices")
+def _syl(f0, dur, wave="saw", cutoff=1800, vib=0.0, vib_rate=6.0, f_end=None, tau=0.05):
+    t = t_(dur)
+    x = tone(f0, dur, wave, vib=vib, vib_rate=vib_rate, f_end=f_end)
+    x = filt(x, "low", cutoff) * np.sin(np.pi * np.minimum(t / dur, 1.0)) ** 0.7 * np.exp(-t / (tau * 2.2))
+    return fade(x * 0.9, 0.004, 0.012)
+
+
+def v_mid(rng):
+    f = rng.uniform(190, 250)
+    return _syl(f, 0.075, "saw", 1500, f_end=f * rng.uniform(0.85, 1.2))
+
+
+def v_high(rng):
+    f = rng.uniform(520, 660)
+    return fade(tone(f, 0.07, f_end=f * rng.uniform(0.9, 1.25)) * dec(0.07, 0.04) * 0.6 + tone(f * 2, 0.07) * dec(0.07, 0.03) * 0.15, 0.003, 0.012)
+
+
+def v_low(rng):
+    f = rng.uniform(95, 130)
+    return _syl(f, 0.1, "saw", 700, f_end=f * rng.uniform(0.8, 1.1), tau=0.07)
+
+
+def v_robot(rng):
+    f = rng.uniform(560, 800)
+    return fade(tone(f, 0.06, "square", f_end=f * rng.uniform(0.6, 1.5)) * dec(0.06, 0.04) * 0.35, 0.002, 0.008)
+
+
+def v_bleat(rng):
+    f = rng.uniform(330, 420)
+    return _syl(f, 0.13, "saw", 2200, vib=0.07, vib_rate=rng.uniform(24, 32), f_end=f * 0.9, tau=0.08)
+
+
+def v_buzz(rng):
+    f = rng.uniform(210, 280)
+    t = t_(0.09)
+    x = tone(f, 0.09, "saw", vib=0.1, vib_rate=55) * (0.6 + 0.4 * np.sin(2 * np.pi * 85 * t))
+    return fade(filt(x, "band", [180, 2200]) * np.sin(np.pi * np.minimum(t / 0.09, 1)) ** 0.6 * 0.6, 0.004, 0.01)
+
+
+def v_bark(rng):
+    f = rng.uniform(230, 300)
+    t = t_(0.08)
+    body = tone(f, 0.08, "saw", f_end=f * 0.6) * np.exp(-t / 0.035)
+    return fade(filt(body, "band", [200, 1600]) * 0.8 + 0.15 * filt(noise(rng, len(t)), "band", [800, 3000]) * np.exp(-t / 0.02), 0.002, 0.01)
+
+
+def v_grunt(rng):
+    f = rng.uniform(70, 100)
+    t = t_(0.11)
+    return fade(filt(tone(f, 0.11, "saw", f_end=f * 0.7), "low", 600) * np.exp(-t / 0.06) * 0.9 + 0.25 * filt(noise(rng, len(t)), "low", 900) * np.exp(-t / 0.04), 0.004, 0.015)
+
+
+def v_rasp(rng):
+    f = rng.uniform(300, 380)
+    t = t_(0.08)
+    x = tone(f, 0.08, "saw", vib=0.04, vib_rate=14, f_end=f * rng.uniform(0.85, 1.2))
+    crackle = noise(rng, len(t)) * (rng.random(len(t)) > 0.8)
+    return fade(filt(x * 0.7 + crackle * 0.25, "band", [250, 2800]) * np.exp(-t / 0.05) * 0.8, 0.003, 0.012)
+
+
+def v_magic(rng):
+    f = rng.uniform(900, 1300)
+    return fade(modal(rng, [f, f * 1.5, f * 2.01], [0.05, 0.035, 0.02], [0.5, 0.3, 0.2], 0.12), 0.002, 0.02)
+
+
+def v_sack(rng):
+    f = rng.uniform(170, 230)
+    t = t_(0.1)
+    return fade(filt(thump(f, f * 0.55, 0.1, 0.045), "low", 900) * 1.1 + 0.08 * filt(noise(rng, len(t)), "low", 500) * np.exp(-t / 0.03), 0.004, 0.015)
+
+
+def v_whisper(rng):
+    t = t_(0.07)
+    return fade(filt(noise(rng, len(t)), "band", [1800, 5200]) * np.sin(np.pi * np.minimum(t / 0.07, 1)) * 0.3, 0.004, 0.012)
+
+
 SOUNDS = {
     "w_wood": (w_wood, 3, -6), "w_metal": (w_metal, 3, -8), "w_fist": (w_fist, 3, -4),
     "t_armor": (t_armor, 3, -6), "t_wood": (t_wood, 3, -6), "t_flesh": (t_flesh, 3, -5), "t_face": (t_face, 3, -5), "t_stone": (t_stone, 2, -6),
@@ -531,6 +608,8 @@ SOUNDS = {
     "bell": (bell, 1, -6), "buzz": (buzz, 2, -12), "turn_start": (turn_start, 1, -9), "victory": (victory, 1, -7), "defeat": (defeat, 1, -8), "item_use": (item_use, 1, -9), "pickup": (pickup, 1, -9),
     "wool_poof": (wool_poof, 2, -8), "roar": (roar, 2, -5), "rage": (rage, 2, -7), "hive_drop": (hive_drop, 1, -6), "mug_slide": (mug_slide, 1, -8),
     "crunch": (crunch, 2, -5), "fuse": (fuse, 1, -12), "glass": (glass, 2, -10), "bark": (bark, 3, -6), "star_fall": (star_fall, 1, -9), "chime": (chime, 2, -9), "secret_sting": (secret_sting, 1, -7),
+    "v_mid": (v_mid, 4, -12), "v_high": (v_high, 4, -13), "v_low": (v_low, 4, -11), "v_robot": (v_robot, 4, -15), "v_bleat": (v_bleat, 3, -12), "v_buzz": (v_buzz, 4, -14),
+    "v_bark": (v_bark, 4, -12), "v_grunt": (v_grunt, 4, -11), "v_rasp": (v_rasp, 4, -13), "v_magic": (v_magic, 4, -16), "v_sack": (v_sack, 4, -11), "v_whisper": (v_whisper, 4, -17),
 }
 
 

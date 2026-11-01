@@ -323,5 +323,239 @@
   "buzz": "buzz",
   "secret": "secret_sting",
   "barrel_splash": "splash"
+ },
+ "voices": {
+  "default": {
+   "s": "v_mid",
+   "pitch": [
+    0.95,
+    1.1
+   ],
+   "db": 0
+  },
+  "maedchen_baer": {
+   "s": "v_high",
+   "pitch": [
+    0.95,
+    1.1
+   ],
+   "db": 0
+  },
+  "ritter": {
+   "s": "v_low",
+   "pitch": [
+    1.0,
+    1.15
+   ],
+   "db": 0
+  },
+  "samurai": {
+   "s": "v_low",
+   "pitch": [
+    1.2,
+    1.4
+   ],
+   "db": 0
+  },
+  "kungfu": {
+   "s": "v_mid",
+   "pitch": [
+    1.1,
+    1.25
+   ],
+   "db": 0
+  },
+  "ninjas": {
+   "s": "v_whisper",
+   "pitch": [
+    0.9,
+    1.15
+   ],
+   "db": 0
+  },
+  "elisabeth": {
+   "s": "v_mid",
+   "pitch": [
+    1.35,
+    1.55
+   ],
+   "db": 0
+  },
+  "museklaugust": {
+   "s": "v_low",
+   "pitch": [
+    0.75,
+    0.9
+   ],
+   "db": 2
+  },
+  "robo": {
+   "s": "v_robot",
+   "pitch": [
+    0.9,
+    1.2
+   ],
+   "db": 0
+  },
+  "hund": {
+   "s": "v_bark",
+   "pitch": [
+    0.9,
+    1.15
+   ],
+   "db": 0
+  },
+  "wendy": {
+   "s": "v_bleat",
+   "pitch": [
+    0.95,
+    1.1
+   ],
+   "db": 0
+  },
+  "claude": {
+   "s": "v_magic",
+   "pitch": [
+    0.85,
+    1.15
+   ],
+   "db": 0
+  },
+  "bienenmaedchen": {
+   "s": "v_buzz",
+   "pitch": [
+    0.9,
+    1.2
+   ],
+   "db": 0
+  },
+  "braumeisterin": {
+   "s": "v_mid",
+   "pitch": [
+    0.85,
+    1.0
+   ],
+   "db": 0
+  },
+  "soldat_infanterie": {
+   "s": "v_mid",
+   "pitch": [
+    0.8,
+    0.95
+   ],
+   "db": 0
+  },
+  "soldat_beritten": {
+   "s": "v_mid",
+   "pitch": [
+    0.75,
+    0.9
+   ],
+   "db": 0
+  },
+  "soldat_bogenschuetze": {
+   "s": "v_mid",
+   "pitch": [
+    0.9,
+    1.05
+   ],
+   "db": 0
+  },
+  "soldat_priester": {
+   "s": "v_mid",
+   "pitch": [
+    1.0,
+    1.1
+   ],
+   "db": 0
+  },
+  "fuerst": {
+   "s": "v_low",
+   "pitch": [
+    0.9,
+    1.05
+   ],
+   "db": 0
+  },
+  "wart": {
+   "s": "v_grunt",
+   "pitch": [
+    0.9,
+    1.15
+   ],
+   "db": 2
+  },
+  "oskar": {
+   "s": "v_mid",
+   "pitch": [
+    1.1,
+    1.25
+   ],
+   "db": 0
+  },
+  "maja": {
+   "s": "v_high",
+   "pitch": [
+    0.85,
+    1.0
+   ],
+   "db": 0
+  },
+  "xiulan": {
+   "s": "v_rasp",
+   "pitch": [
+    0.9,
+    1.1
+   ],
+   "db": 0
+  },
+  "quacksalber": {
+   "s": "v_mid",
+   "pitch": [
+    1.15,
+    1.3
+   ],
+   "db": 0
+  },
+  "magical_girl": {
+   "s": "v_high",
+   "pitch": [
+    1.35,
+    1.55
+   ],
+   "db": 0
+  },
+  "haendler": {
+   "s": "v_sack",
+   "pitch": [
+    0.9,
+    1.1
+   ],
+   "db": 0
+  },
+  "mutter": {
+   "s": "v_high",
+   "pitch": [
+    0.9,
+    1.0
+   ],
+   "db": 0
+  },
+  "waisenkinder": {
+   "s": "v_high",
+   "pitch": [
+    1.5,
+    1.75
+   ],
+   "db": 0
+  },
+  "dummy": {
+   "s": "v_robot",
+   "pitch": [
+    0.6,
+    0.8
+   ],
+   "db": 0
+  }
  }
 }

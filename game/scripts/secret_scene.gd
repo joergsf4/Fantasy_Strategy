@@ -25,6 +25,7 @@ func setup_secret(sec: Dictionary, unit_names: Dictionary) -> void:
 	for l: Dictionary in sc["lines"]:
 		out.append({"speaker": sc["left"] if l["speaker"] == by else sc["right"], "left": sc["left"], "right": sc["right"], "text": l["text"]})
 	setup(out, nm)
+	voices = {sc["left"]: by, sc["right"]: on}      # Brabbel-Laut der Figuren statt der Portraitnamen
 
 
 func _ready() -> void:

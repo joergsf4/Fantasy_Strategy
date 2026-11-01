@@ -82,3 +82,7 @@ Nach einem Sieg läuft fröhliche Musik (`sieg_statistik.mp3`), nach einer Niede
 
 ## Erledigt: Kapitelwahl nur per Cheat (2026-11-01)
 Normal gibt es keine Kapitelwahl mehr (weiterspielen aus dem Spielstand, ab Kapitel 2 zuerst ins Lager). Der Cheat `brumm` im Hauptmenü schaltet das Testmenü frei, N-N startet ein neues Spiel (`TitleScreen`, `Main._title`, `Main._resume_pick`, Test `tests/test_title.gd`). Eine zweite Programmversion ist damit nicht nötig. Offen: ein Ende nach dem letzten Kapitel (derzeit startet man dort wieder im Lager vor Kapitel 7).
+
+## Erledigt: Brabbel-Laute und Gruppenwahl vor der Runde (2026-11-01)
+- **Brabbel-Laute:** Beim Tippen jedes Dialogtextes klingt bei jedem zweiten Buchstaben ein kurzer Laut der sprechenden Figur (Klangfarbe und Tonhöhe je Figur, z. B. Robo piepst, Wendy blökt, Hundsfreund bellt, Stachelia surrt, Sack „pomp“). Zuordnung: `voices` in `game/data/sfx.json`, Klänge `v_*` aus `tools/make_sfx.py`, Test `tests/test_babble.gd`. Neue Figuren brauchen einen Eintrag, sonst gilt die Standardstimme.
+- **Gruppenwahl vor der Runde:** Nach der Einleitung und vor dem Kampf erscheint die Gruppenwahl (`SquadSelect`): Wer im Kapitel spricht, ist als „🔒 Story“ gesperrt, alle anderen Plätze lassen sich mit den freigeschalteten Helden tauschen. Sie erscheint nur, wenn es etwas zu wählen gibt (`SquadSelect.has_choice`), auch bei Start über das Testmenü. Die Aufstellung im Lager bleibt zusätzlich bestehen. Test `tests/test_squad_select.gd`.
