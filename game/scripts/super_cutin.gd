@@ -107,8 +107,8 @@ func _ready() -> void:
 	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	box.modulate.a = 0.0
 	add_child(box)
-	var l1 := _label(title.to_upper(), 64, Color(1.0, 0.97, 0.8))
-	var l2 := _label(subtitle, 30, Color(0.7, 1.0, 0.9))
+	var l1 := _label(title.to_upper(), _fit_size(title.to_upper(), 64, 700.0), Color(1.0, 0.97, 0.8))
+	var l2 := _label(subtitle, _fit_size(subtitle, 30, 700.0), Color(0.7, 1.0, 0.9))
 	box.add_child(l1)
 	box.add_child(l2)
 
@@ -132,6 +132,15 @@ func _ready() -> void:
 	end.tween_callback(func() -> void:
 		finished.emit()
 		queue_free())
+
+
+## Groesste Schriftgroesse (hoechstens max_size), bei der der Text in max_width Pixel passt (lange Titel schrumpfen statt aus dem Bild zu laufen).
+func _fit_size(text: String, max_size: int, max_width: float) -> int:
+	var font := UiTheme.font(UiTheme.F_TITLE)
+	var size: int = max_size
+	while size > 20 and font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, size).x + 24.0 > max_width:
+		size -= 2
+	return size
 
 
 func _label(text: String, size: int, col: Color) -> Label:
