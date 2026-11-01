@@ -1,0 +1,240 @@
+{
+ "id": "ch8",
+ "title": "Die bewachte Oase",
+ "map": "res://data/map_ch8.json",
+ "briefing": "Im Inneren der Wüsteninsel ist es mörderisch heiß und trocken. Die einzige Oase wird von Xiùlán und Soldaten des Regenten bewacht. Nach vier Runden rollt Robinas Dampfpanzer heran, die ältere Schwester von Robo. Er hat Elisabeths Breitseite, steht aber auf der Gegenseite, und seine Panzerung hält jeden Angriff aus. Das Ziel: Bleibt drei Runden in Folge neben dem Panzer, dann übernehmt ihr sein Steuer. Xiùlán kann wieder fliehen.",
+ "goals": [
+  {
+   "type": "capture",
+   "unit": "panzer",
+   "turns": 3,
+   "wait_text": "Ziel: Haltet die Oase (in Runde 5 rollt ein Panzer heran)"
+  }
+ ],
+ "triggers": [
+  {
+   "when": {
+    "near": {
+     "a": "maedchen_baer",
+     "b": "xiulan",
+     "dist": 4
+    }
+   },
+   "if": {
+    "present": [
+     "xiulan"
+    ]
+   },
+   "note": "Xiùlán bewacht die Oase",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "maedchen_baer",
+       "right": "xiulan",
+       "speaker": "xiulan",
+       "text": "Das Bärenmädchen! Dieses Wasserloch ist gesperrt. Zwei Gold pro Schluck. Und nicht schlürfen.",
+       "right_expr": "lachend"
+      },
+      {
+       "left": "maedchen_baer",
+       "right": "xiulan",
+       "speaker": "maedchen_baer",
+       "text": "Wir wollen nur trinken."
+      },
+      {
+       "left": "maedchen_baer",
+       "right": "xiulan",
+       "speaker": "xiulan",
+       "text": "Dann zahlt, Kindchen. Oder ich werfe mein Gebiss.",
+       "right_expr": "lachend"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 3
+   },
+   "note": "Hitze",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "$hero",
+       "right": "maedchen_baer",
+       "speaker": "$hero",
+       "text": "Noch ein Tag in dieser Hitze, und ich bin ein Rosinenheld."
+      },
+      {
+       "left": "$hero",
+       "right": "maedchen_baer",
+       "speaker": "maedchen_baer",
+       "text": "Brumm sagt, er schwitzt sogar mit dem Fell nach außen.",
+       "right_expr": "lachend"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 5
+   },
+   "note": "Robinas Panzer rollt heran",
+   "do": [
+    {
+     "spawn": [
+      {
+       "id": "panzer",
+       "pos": [
+        11,
+        6
+       ],
+       "label": "Robinas Panzer rollt heran"
+      }
+     ]
+    },
+    {
+     "dialogue": [
+      {
+       "left": "robo",
+       "right": "panzer",
+       "speaker": "panzer",
+       "text": "Kleiner Bruder. Sand im Gelenk und schlechte Gesellschaft. Ich hatte es geahnt."
+      },
+      {
+       "left": "robo",
+       "right": "panzer",
+       "speaker": "robo",
+       "text": "Robina! Du … du bist gewachsen."
+      },
+      {
+       "left": "robo",
+       "right": "panzer",
+       "speaker": "panzer",
+       "text": "Und du bist geschrumpft. Der Regent hat mir ein neues Fahrgestell versprochen, wenn ich euch aufhalte.",
+       "right_expr": "lachend"
+      },
+      {
+       "left": "robo",
+       "right": "panzer",
+       "speaker": "robo",
+       "text": "Schwester, du musst das nicht tun. Du bist nicht wie er."
+      },
+      {
+       "left": "robo",
+       "right": "panzer",
+       "speaker": "panzer",
+       "text": "Mama hat gesagt, ich soll auf dich aufpassen. Ich passe auf, dass du nicht weiter gehst. Feuer frei!",
+       "right_expr": "wuetend"
+      },
+      {
+       "left": "ritter",
+       "right": "robo",
+       "speaker": "ritter",
+       "text": "Ihre Panzerung hält jeden Angriff aus. Das ist keine Mission für Schwerter."
+      },
+      {
+       "left": "ritter",
+       "right": "robo",
+       "speaker": "robo",
+       "text": "Sie ist stur, aber nicht böse. Bleibt drei Runden in Folge bei ihr, dann öffne ich den Zugang und übernehme ihr Steuer."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "ability": {
+     "id": "breitseite",
+     "by": "panzer"
+    }
+   },
+   "if": {
+    "present": [
+     "elisabeth"
+    ]
+   },
+   "note": "Elisabeth und die Breitseite",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "elisabeth",
+       "right": "panzer",
+       "speaker": "elisabeth",
+       "text": "Das ist MEINE Breitseite!"
+      },
+      {
+       "left": "elisabeth",
+       "right": "panzer",
+       "speaker": "panzer",
+       "text": "Meine ist größer, Kleine.",
+       "right_expr": "lachend"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "hp_below": {
+     "id": "xiulan",
+     "ratio": 0.5
+    }
+   },
+   "if": {
+    "present": [
+     "xiulan"
+    ]
+   },
+   "note": "Xiùlán wankt",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "ritter",
+       "right": "xiulan",
+       "speaker": "xiulan",
+       "text": "Mein Kreuz! Ihr wollt eine alte Dame wirklich in den Sand klopfen?",
+       "right_expr": "wuetend"
+      },
+      {
+       "left": "ritter",
+       "right": "xiulan",
+       "speaker": "ritter",
+       "text": "Eine alte Dame, die mit Gebissen wirft, hat Respekt verdient. Und Niederlagen."
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "flee": {
+  "xiulan": [
+   {
+    "left": "$hero",
+    "right": "xiulan",
+    "speaker": "xiulan",
+    "text": "Genug! Mein Gebiss ist verbeult und mein Kreuz auch. Ich rufe meinen Enkel an!",
+    "right_expr": "wuetend"
+   },
+   {
+    "left": "$hero",
+    "right": "xiulan",
+    "speaker": "$hero",
+    "text": "Sie rollt davon wie eine Düne im Wind."
+   },
+   {
+    "left": "$hero",
+    "right": "xiulan",
+    "speaker": "xiulan",
+    "text": "Ich komme wieder! Mit Ersatzgebiss und Kaugummi!",
+    "right_expr": "wuetend"
+   }
+  ]
+ }
+}

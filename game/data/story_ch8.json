@@ -1,0 +1,88 @@
+{
+ "intro": [
+  {
+   "left": "ritter",
+   "right": "maedchen_baer",
+   "speaker": "ritter",
+   "text": "Das Innere der Insel. Mein Brustpanzer ist ein Backofen mit Wappen."
+  },
+  {
+   "left": "ritter",
+   "right": "maedchen_baer",
+   "speaker": "maedchen_baer",
+   "text": "Brumm hechelt seit einer Stunde. Wir brauchen Wasser, und zwar schnell."
+  },
+  {
+   "left": "robo",
+   "right": "maedchen_baer",
+   "speaker": "robo",
+   "text": "Meine Gelenke knirschen. Sand ist in jedem Zahnrad. Hier bleibt kein Öl lange Öl."
+  },
+  {
+   "left": "elisabeth",
+   "right": "maedchen_baer",
+   "speaker": "elisabeth",
+   "text": "Käpt'n Elisabeth sieht eine Oase! Ostwärts, hinter den Dünen. Aber da stehen Büttel. Und eine kleine alte Dame, die mir bekannt vorkommt.",
+   "left_expr": "lachend"
+  },
+  {
+   "left": "elisabeth",
+   "right": "maedchen_baer",
+   "speaker": "maedchen_baer",
+   "text": "Xiùlán. Die mit dem Gebiss."
+  },
+  {
+   "left": "ritter",
+   "right": "maedchen_baer",
+   "speaker": "ritter",
+   "text": "Die Oase ist der einzige Weg weiter. Wir nehmen sie ein, bevor die Sonne uns einnimmt."
+  }
+ ],
+ "outro": [
+  {
+   "left": "robo",
+   "right": "panzer",
+   "speaker": "robo",
+   "text": "Es hat geklappt! Ihr Steuer gehört uns."
+  },
+  {
+   "left": "robo",
+   "right": "panzer",
+   "speaker": "panzer",
+   "text": "Gut gemacht, Brüderchen. Nicht schlecht für einen Kleinen.",
+   "right_expr": "lachend"
+  },
+  {
+   "left": "robo",
+   "right": "panzer",
+   "speaker": "robo",
+   "text": "Du fährst jetzt mit uns?"
+  },
+  {
+   "left": "robo",
+   "right": "panzer",
+   "speaker": "panzer",
+   "text": "Der Regent hat mir ein neues Fahrgestell versprochen. Er hat gelogen. Er mag keine Maschinen, nur Kanonen."
+  },
+  {
+   "left": "ritter",
+   "right": "panzer",
+   "speaker": "ritter",
+   "text": "Willkommen in der Gruppe, Robina. Der Weg zum Regenten ist offen."
+  },
+  {
+   "left": "elisabeth",
+   "right": "panzer",
+   "speaker": "elisabeth",
+   "text": "Ein Panzer als große Schwester. Robo, du hast Glück gehabt.",
+   "left_expr": "lachend"
+  },
+  {
+   "left": "elisabeth",
+   "right": "panzer",
+   "speaker": "panzer",
+   "text": "Ich fahre voran. Alle ausweichen.",
+   "right_expr": "lachend"
+  }
+ ]
+}

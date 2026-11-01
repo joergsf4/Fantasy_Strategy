@@ -5,7 +5,7 @@ const TITLE_MUSIC := "res://assets/audio/title_theme.mp3"
 const BATTLE_MUSIC := "res://assets/audio/battle_theme.mp3"
 const WIN_MUSIC := "res://assets/audio/sieg_statistik.mp3"
 const DEFEAT_MUSIC := "res://assets/audio/niederlage_statistik.mp3"
-const CHAPTERS := ["ch1", "ch2", "ch3", "ch4", "ch5", "ch6", "ch7"]
+const CHAPTERS := ["ch1", "ch2", "ch3", "ch4", "ch5", "ch6", "ch7", "ch8"]
 const MUSIC_DB := -6.0
 
 var units: Dictionary
@@ -646,6 +646,9 @@ func _screenshot_mode() -> void:
 		bk.loadout = Items.defs()["loadout_chapter1"]
 		add_child(bk)
 		await get_tree().process_frame
+		if OS.get_environment("SHOT_SPAWN") != "":      # z. B. SHOT_SPAWN=panzer,e,8,6 : eine Figur dazustellen
+			var sp := OS.get_environment("SHOT_SPAWN").split(",")
+			bk._spawn(sp[0], sp[1], Vector2i(int(sp[2]), int(sp[3])))
 		for i in 30:
 			await get_tree().process_frame
 		await get_tree().create_timer(0.8).timeout

@@ -233,3 +233,13 @@ Benannte Gegner (`"flees": true` in `units.json`: Wart, Oskar, Maja) sterben nic
 ## Änderung Mission 3 (Dr. Humbug) und Mission 7
 - **Mission 3:** Dr. Humbug stößt zur Gruppe (Einleitung und Abschluss), er ersetzt Käpt'n Elisabeth. Eines der vier Häuser ist **seine Praxis** (`praxis`, eigener Sprite `fx_haus_praxis`), Bonusziel „Dr. Humbugs Praxis bleibt heil“ (Heilhonig und 40 Gold). Dazu **Nachschub in Runde 4**: ein Bogenschütze und ein Büttel am rechten Rand.
 - **Wählbar ab Mission 3** (`intro` und `from` in `units.json`). **Mission 7:** Er ist schon im Team, nur Lumi wird dort eingeführt.
+
+## Mission 8: Die bewachte Oase (Wüsteninsel, Robinas Panzer)
+- **Lage:** Im Inneren der Wüsteninsel, sehr heiß und trocken. Die Helden wollen zur Oase, doch sie wird von Xiùlán und Soldaten des Regenten bewacht (Büttel, Bogenschützen, Priester, ein Reiter). Xiùlán kann wieder fliehen (Nemesis, Rückzugsdialog).
+- **Runde 5:** Robinas Dampfpanzer rollt vom Ostrand heran (`spawn` in `missions/ch8.json`). Robina ist Robos ältere Schwester: Dialog zwischen Robo und ihr. Sie kämpft für den Regenten, hat dieselbe Fähigkeit wie Elisabeths Schiff (**Breitseite**, Reichweite 3–9, Abklingzeit 3, `ai_bonus` für die Gegner-KI), aber auf der Gegenseite. Elisabeth kommentiert die erste Salve.
+- **Ziel `capture`:** Der Panzer ist **unantastbar** (Marke `unantastbar`: kein Ziel von Angriffen, Fähigkeiten, Flächen und Streuschaden). Wer **drei Runden in Folge** (am Ende der Spielerphase) mit mindestens einem Helden neben ihm steht, übernimmt ihn: Er wechselt auf die Spielerseite, die Mission ist gewonnen. Unterbrochene Zählung beginnt von vorn. Zieltext mit Fortschritt (x/3), Popups je Runde, Übernahme-Effekt (`Battle._capture_phase`, `_capture_unit`).
+- **Gruppe:** Robo, Mira, Albrecht und Elisabeth sprechen und sind gesperrt; die übrigen zwei Plätze (Standard: Wendy, Dr. Humbug) sind frei wählbar.
+- **Belohnung:** 180 Gold, Bonusziele „Kein Held fällt“ (80 Gold) und „In 11 Runden gewonnen“ (Heilhonig).
+- **Grafik:** Robina als Porträt (neutral, lachend, wütend) und großer Panzer-Sprite (`size` 2,1 in `units.json`), Gemini.
+- **Balancing (Simulator ohne Panzer, nur die Oasenwache):** ×1,0: 100 % (10,7 Runden), ×1,5: 85 %, ×2,0: 1 %. Der Panzer (Breitseite mit Streuschaden) kommt im echten Spiel dazu und macht es schwerer; Übernahme und Panzer kennt der Simulator nicht.
+- **Test:** `tests/test_capture.gd`.

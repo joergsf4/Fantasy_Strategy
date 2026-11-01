@@ -459,7 +459,7 @@
  },
  "breitseite": {
   "name": "Breitseite",
-  "text": "Das Schiff feuert aus der Bucht (×1,4, Reichweite 3–9). Gegner neben dem Ziel erhalten 50 %.",
+  "text": "Das Schiff oder der Panzer feuert aus der Ferne (×1,4, Reichweite 3–9). Gegner neben dem Ziel erhalten 50 %.",
   "cd": 3,
   "target": "enemy",
   "range": [
@@ -479,7 +479,8 @@
   "caps": [
    "blast",
    "ranged_hit"
-  ]
+  ],
+  "ai_bonus": 6
  },
  "wirbel": {
   "name": "Wirbel",

@@ -277,12 +277,12 @@ func _spawn(id: String, team: String, pos: Vector2i, extra := {}) -> void:
 	ring.top_radius = 0.33
 	ring.bottom_radius = 0.33
 	ring.height = 0.05
-	_mesh(ring, TEAM_COLOR[team], Vector3(0, 0.03, 0), node)
+	u["ring"] = _mesh(ring, TEAM_COLOR[team], Vector3(0, 0.03, 0), node)
 	var lift := 0.35 if u["flying"] else 0.0
 	var tex := _portrait_tex(d.get("portrait", id))
 	var sp := Sprite3D.new()
 	sp.texture = tex
-	sp.pixel_size = 1.35 / maxf(tex.get_width(), tex.get_height())
+	sp.pixel_size = float(d.get("size", 1.35)) / maxf(tex.get_width(), tex.get_height())
 	sp.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	sp.shaded = false
 	sp.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
@@ -304,7 +304,7 @@ func _spawn(id: String, team: String, pos: Vector2i, extra := {}) -> void:
 	lbl.outline_size = 14
 	lbl.no_depth_test = true
 	lbl.modulate = TEAM_COLOR[team].lerp(Color.WHITE, 0.5)
-	lbl.position = Vector3(0, 1.9 + lift, 0)
+	lbl.position = Vector3(0, 1.9 + (float(d.get("size", 1.35)) - 1.35) * 1.2 + lift, 0)
 	node.add_child(lbl)
 	u["node"] = node
 	u["sprite"] = sp
@@ -483,7 +483,7 @@ func _show_card(u: Dictionary) -> void:
 
 func _update_status() -> void:
 	_status.text = "Runde %d  –  %s" % [turn, "Deine Phase" if state != State.BUSY else "Gegner / Aktion"]
-	_goal.text = Mission.goal_text(goal, _count_team("e"), turn)
+	_goal.text = Mission.goal_text(goal, _count_team("e"), turn, _capture_info())
 	match state:
 		State.IDLE:
 			_hint.text = "Wähle eine blaue Figur."
@@ -629,10 +629,15 @@ func damage(att: Dictionary, def: Dictionary) -> int:
 	return forecast(att, def)["dmg"]
 
 
+## Unantastbare Figuren (z. B. Robinas Panzer) sind kein Ziel von Angriffen und Faehigkeiten.
+func _hittable(o: Dictionary) -> bool:
+	return not (o["tags"] as Array).has("unantastbar")
+
+
 func _attack_targets(u: Dictionary, pos: Vector2i) -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
 	for o in units:
-		if o["team"] != u["team"] and not Status.has(o, "stealth") and Combat.in_range(u, Grid.dist(pos, o["pos"])):
+		if o["team"] != u["team"] and _hittable(o) and not Status.has(o, "stealth") and Combat.in_range(u, Grid.dist(pos, o["pos"])):
 			out.append(o)
 	return out
 
@@ -2088,6 +2093,9 @@ func goal_met() -> bool:
 			return turn > int(goal["turns"])
 		"free":
 			return world.by_id(goal["id"])["state"] == "free"
+		"capture":
+			var cu := _find(str(goal["unit"]))
+			return not cu.is_empty() and cu["team"] == "p"
 		"reach":
 			var t := Vector2i(goal["tile"][0], goal["tile"][1])
 			for u in units:
@@ -2320,7 +2328,7 @@ func _ab_targets(u: Dictionary, id: String, pos: Vector2i) -> Array[Dictionary]:
 				elif o != u and _secret_for(u, id, o) != {}:
 					out.append(o)   # geheime Interaktion mit diesem Verbuendeten
 				continue
-			if Status.has(o, "stealth"):
+			if Status.has(o, "stealth") or not _hittable(o):
 				continue
 			if ab.has("require_tag") and not (o["tags"] as Array).has(ab["require_tag"]):
 				continue
@@ -2367,6 +2375,63 @@ func _ab_tiles(u: Dictionary, id: String, pos: Vector2i) -> Array[Vector2i]:
 			elif unit_at(p).is_empty() and world.at(p).is_empty() and grid.cost(p) >= 0:
 				out.append(p)
 	return out
+
+
+# ------------------------------------------------------------------ Uebernahme (Ziel "capture")
+
+var capture_progress := 0           # aufeinanderfolgende Spielerphasen mit einem Helden neben dem Ziel
+
+
+func _capture_info() -> Dictionary:
+	if goal.get("type", "") != "capture":
+		return {}
+	var cu := _find(str(goal["unit"]))
+	return {"present": not cu.is_empty(), "progress": capture_progress, "name": cu.get("name", "")}
+
+
+## Ende der Spielerphase: Steht mindestens ein Held neben dem Ziel, zaehlt die Runde, sonst beginnt die Zaehlung von vorn.
+## Nach goal["turns"] Runden in Folge wechselt das Ziel die Seite (Mission gewonnen).
+func _capture_phase() -> void:
+	if goal.get("type", "") != "capture":
+		return
+	var cu := _find(str(goal["unit"]))
+	if cu.is_empty() or cu["team"] != "e":
+		capture_progress = 0
+		return
+	var near := false
+	for h in units:
+		if h["team"] == "p" and Grid.dist(h["pos"], cu["pos"]) == 1:
+			near = true
+	if not near:
+		if capture_progress > 0:
+			await _popup(cu, "Übernahme abgebrochen", Color(1.0, 0.6, 0.4))
+		capture_progress = 0
+		_update_status()
+		return
+	capture_progress += 1
+	_update_status()
+	if capture_progress < int(goal.get("turns", 3)):
+		await _popup(cu, "Übernahme %d/%d" % [capture_progress, int(goal.get("turns", 3))], Color(0.6, 0.85, 1.0))
+		return
+	await _capture_unit(cu)
+	_check_end()
+
+
+## Die Figur wechselt auf die Seite der Spieler.
+func _capture_unit(cu: Dictionary) -> void:
+	cu["team"] = "p"
+	cu["done"] = true
+	cu["status"] = []
+	(cu["ring"] as MeshInstance3D).material_override = _mat(TEAM_COLOR["p"])
+	((cu["arrow"] as Node3D).get_child(0) as MeshInstance3D).material_override = _mat(TEAM_COLOR["p"].lerp(Color.WHITE, 0.55))
+	(cu["label"] as Label3D).modulate = TEAM_COLOR["p"].lerp(Color.WHITE, 0.5)
+	_refresh_unit(cu)
+	Sfx.event("secret")
+	fx.shockwave((cu["node"] as Node3D).position, 2.2, Color(0.4, 0.75, 1.0, 0.8), 0.7)
+	fx.light_flash(fx.chest(cu, 1.0), Color(0.5, 0.8, 1.0), 4.0, 6.0, 0.8)
+	fx.particles("fx_smoke", fx.chest(cu, 1.2), 12, 1.6, 0.8, 1.0, -0.3, Color(1, 1, 1, 0.8), false, 120.0)
+	await _popup(cu, "Übernommen!", Color(0.6, 0.9, 1.0))
+	await get_tree().create_timer(0.6).timeout
 
 
 ## Super-Attacke: Polarlicht-Auftritt mit dem vergroesserten Chibi, dazu eigene Musik (die Kampfmusik wird leiser).
@@ -2531,7 +2596,7 @@ func _effect_targets(u: Dictionary, ab: Dictionary, target: Dictionary, to: Stri
 			var d := Vector2i(signi(target["pos"].x - u["pos"].x), signi(target["pos"].y - u["pos"].y))
 			for k in range(1, int(ab["range"][1]) + 1):
 				var o := unit_at(u["pos"] + d * k)
-				if not o.is_empty() and o["team"] != u["team"] and not Status.has(o, "stealth"):
+				if not o.is_empty() and o["team"] != u["team"] and _hittable(o) and not Status.has(o, "stealth"):
 					out.append(o)
 		"area_enemies", "area_allies":
 			var center: Vector2i = u["pos"] if ab["target"] == "self" else target["pos"]
@@ -2540,7 +2605,7 @@ func _effect_targets(u: Dictionary, ab: Dictionary, target: Dictionary, to: Stri
 				if not tiles.has(o["pos"]):
 					continue
 				var enemy: bool = o["team"] != u["team"]
-				if (to == "area_enemies" and enemy and not Status.has(o, "stealth")) or (to == "area_allies" and not enemy):
+				if (to == "area_enemies" and enemy and _hittable(o) and not Status.has(o, "stealth")) or (to == "area_allies" and not enemy):
 					out.append(o)
 	return out
 
@@ -2594,7 +2659,7 @@ func _apply_effect(u: Dictionary, ab: Dictionary, target: Dictionary, ef: Dictio
 					first = false
 		"splash":
 			var near := units.filter(func(o: Dictionary) -> bool:
-				return o["team"] != u["team"] and o != target and Grid.dist(o["pos"], target["pos"]) == 1)
+				return o["team"] != u["team"] and _hittable(o) and o != target and Grid.dist(o["pos"], target["pos"]) == 1)
 			for v in near:
 				fx.on_splash(ab["id"], u, v)
 				await _strike(u, v, ef["mult"], 0.0, false)
@@ -2800,6 +2865,9 @@ func _end_player_turn() -> void:
 	_show_card({})
 	_update_status()
 	_status.text = "Runde %d  –  Gegnerphase" % turn
+	await _capture_phase()
+	if state == State.OVER:
+		return
 	await _begin_phase("e")
 	if state == State.OVER:
 		return

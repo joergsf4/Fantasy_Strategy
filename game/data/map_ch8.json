@@ -1,0 +1,202 @@
+{
+ "biome": "wueste",
+ "rows": [
+  "GGDDGGGGGDDG",
+  "GDDGGGFGGGGG",
+  "GGGGGGGGWWGG",
+  "GGFGGGGWWWWG",
+  "GGGGDGGGWWGG",
+  "GDDGGGGGGGFG",
+  "GGGGGFGGGGGG",
+  "GGGDGGGGDDGG",
+  "GGGGGGGGGGGG",
+  "GGGGGGGGGGGG"
+ ],
+ "players": [
+  {
+   "id": "robo",
+   "pos": [
+    1,
+    8
+   ]
+  },
+  {
+   "id": "maedchen_baer",
+   "pos": [
+    2,
+    8
+   ]
+  },
+  {
+   "id": "ritter",
+   "pos": [
+    3,
+    8
+   ]
+  },
+  {
+   "id": "elisabeth",
+   "pos": [
+    2,
+    7
+   ]
+  },
+  {
+   "id": "wendy",
+   "pos": [
+    3,
+    7
+   ]
+  },
+  {
+   "id": "quacksalber",
+   "pos": [
+    1,
+    7
+   ]
+  }
+ ],
+ "enemies": [
+  {
+   "id": "xiulan",
+   "pos": [
+    8,
+    5
+   ],
+   "hp": 40,
+   "carry": {
+    "gold": 60
+   }
+  },
+  {
+   "id": "soldat_infanterie",
+   "pos": [
+    6,
+    4
+   ]
+  },
+  {
+   "id": "soldat_infanterie",
+   "pos": [
+    6,
+    6
+   ]
+  },
+  {
+   "id": "soldat_infanterie",
+   "pos": [
+    7,
+    1
+   ]
+  },
+  {
+   "id": "soldat_bogenschuetze",
+   "pos": [
+    9,
+    5
+   ]
+  },
+  {
+   "id": "soldat_priester",
+   "pos": [
+    7,
+    4
+   ]
+  },
+  {
+   "id": "soldat_beritten",
+   "pos": [
+    10,
+    7
+   ]
+  },
+  {
+   "id": "soldat_bogenschuetze",
+   "pos": [
+    8,
+    0
+   ]
+  },
+  {
+   "id": "soldat_infanterie",
+   "pos": [
+    5,
+    5
+   ]
+  }
+ ],
+ "objects": [
+  {
+   "id": "zelt1",
+   "type": "tent",
+   "pos": [
+    5,
+    2
+   ]
+  },
+  {
+   "id": "zelt2",
+   "type": "tent",
+   "pos": [
+    10,
+    6
+   ]
+  }
+ ],
+ "decor": [
+  {
+   "sprite": "fx_palme",
+   "pos": [
+    7,
+    2
+   ],
+   "size": 1.5
+  },
+  {
+   "sprite": "fx_palme",
+   "pos": [
+    10,
+    4
+   ],
+   "size": 1.5
+  },
+  {
+   "sprite": "fx_palme",
+   "pos": [
+    7,
+    5
+   ],
+   "size": 1.4
+  },
+  {
+   "sprite": "fx_palme",
+   "pos": [
+    10,
+    2
+   ],
+   "size": 1.4
+  }
+ ],
+ "rewards": {
+  "gold": 180
+ },
+ "objectives": [
+  {
+   "id": "alle_leben",
+   "text": "Kein Held fällt",
+   "reward": {
+    "gold": 80
+   }
+  },
+  {
+   "id": "schnell",
+   "text": "In 11 Runden gewonnen",
+   "turns": 11,
+   "reward": {
+    "items": {
+     "heilhonig": 1
+    }
+   }
+  }
+ ]
+}

@@ -273,6 +273,14 @@ const PROPS = {
 for (const [name, d] of Object.entries(PROPS))
   jobs.push({ name, refs: [path.join(OUT, 'fx_fireball.jpg')], prompt: `Create ${d}, game sprite, seen slightly from above and the front, chunky and readable at small size, soft pixel-art shading, nothing else in the picture.` + FX_STYLE });
 
+// Robina (Kapitel 8): Robos aeltere Schwester, ein riesiger Dampf-Panzer. id "panzer".
+const ROBINA = 'Robina, the much older and bigger sister of the attached little brass robot: a huge steampunk tank-robot with riveted brass and copper armor plates, a round turret head with a glowing cyan eye like her little brother, a small lace frill and a tiny pink flower on the turret, a short cannon barrel at her shoulder, two smokestacks puffing steam, a proud, bossy big-sister attitude';
+const ROBINA_ID = ' IMPORTANT: the FIRST attached image is her little brother Robo (keep the same design language: brass, gears, glowing cyan eye), but she is a much bigger, tank-like machine. The SECOND attached image is ONLY a pixel-art style reference, do NOT draw its character.';
+const ROBINA_EMO = { '': 'with a stern, proud look, one plate-eyebrow raised', lachend: 'laughing hissing steam from her smokestacks, eye bright and happy', wuetend: 'furious, her eye glowing hot orange-red, steam blasting from the stacks, cannon aimed forward' };
+for (const [emo, d] of Object.entries(ROBINA_EMO))
+  jobs.push({ name: emo ? `panzer_${emo}` : 'panzer', refs: [ref('96miwt'), ref(STYLE_REF)], prompt: `Create a dialogue portrait of ${ROBINA}, ${d}. Upper body of the tank-robot with the tread belts visible at the bottom of the picture.` + ROBINA_ID + PORTRAIT_TAIL });
+jobs.push({ name: 'panzer_chibi', refs: [ref('96miwt'), path.join(OUT, 'ritter_chibi.jpg')], prompt: `Create a game-map sprite of ${ROBINA}, as a chunky chibi: the whole tank-robot visible, seen from the front-right three-quarter side slightly from above, wide caterpillar tread belts touching the ground, turret head with the glowing cyan eye and cannon pointing right, smokestacks with steam.` + ROBINA_ID + ' Use the second image ONLY as a style reference. Output exactly ONE machine, nothing cropped, entire tank inside the image with margin. Flat solid bright green chroma-key background, no shadow, no text, no border.' });
+
 async function generate(page, job) {
   await page.goto('https://gemini.google.com/app', { waitUntil: 'domcontentloaded' });
   await page.waitForSelector('div[role=textbox], .ql-editor', { timeout: 30000 });
