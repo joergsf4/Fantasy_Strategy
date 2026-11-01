@@ -58,7 +58,8 @@ class EditorTest(unittest.TestCase):
         self.assertEqual(by["hund"]["first"]["chapter"], 5)
         self.assertIn("stößt dazu", by["hund"]["first"]["roles"])
         self.assertEqual(by["magical_girl"]["first"]["chapter"], 7)
-        self.assertEqual(by["quacksalber"]["first"]["chapter"], 7)
+        self.assertEqual(by["quacksalber"]["first"]["chapter"], 3)      # stößt in Mühlbach zur Gruppe
+        self.assertEqual(by["quacksalber"]["intro"], 3)
         for uid in ("claude", "fuerst", "dummy"):
             self.assertIsNone(by[uid]["first"], uid)       # noch in keiner Mission
         self.assertEqual(by["wart"]["abilities"][0]["name"], "Raketenwerfer")
