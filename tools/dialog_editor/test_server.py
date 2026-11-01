@@ -125,7 +125,7 @@ class EditorTest(unittest.TestCase):
         n = {c["id"]: c for c in server.characters()["characters"]}["ninjas"]["ability_notes"]
         self.assertEqual(n["saved"], [None, "Rauchbombe: legt eine Nebelwand."])
         server.save_ability_note("ninjas", 1, None)
-        self.assertFalse((server.DATA / "ability_notes.json").read_text().strip().strip("{}").strip())  # leer, Eintrag entfernt
+        self.assertNotIn("ninjas", server.read(server.DATA / "ability_notes.json"))                       # Eintrag entfernt
         for bad in ((("gibtsnicht", 0, "x")), ("ninjas", 2, "x"), ("ninjas", 0, "x" * 2001), ("ninjas", 0, 5)):
             with self.assertRaises(ValueError):
                 server.save_ability_note(*bad)

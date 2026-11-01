@@ -39,7 +39,7 @@ header.top h1 { font-size: 20px; color: var(--gold); }
 .tabs button:hover { color: var(--text); }
 .tabs button[aria-selected="true"] { color: var(--gold); border-bottom-color: var(--gold); }
 body.view-char #app { grid-template-columns: minmax(0, 1fr); }
-body.view-char nav.chapters, body.view-char aside.pal, body.view-char #q, body.view-char #status, body.view-char #togglePal, body.view-char #undo, body.view-char #redo, body.view-char #save { display: none; }
+body.view-char nav.chapters, body.view-char aside.pal, body.view-char #q, body.view-char #togglePal { display: none; }
 /* Charaktere */
 .ctool { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 10px; }
 .chip2 { background: var(--panel2); border: 1px solid var(--line); border-radius: 20px; padding: 3px 12px; font-size: 13px; }
@@ -86,7 +86,7 @@ table.ct td { padding: 5px 8px; border-bottom: 1px solid var(--line); vertical-a
 table.ct tr:hover td { background: var(--panel); }
 table.ct tr.rsel td { background: #2a2412; }
 table.ct .av { width: 28px; height: 28px; border-width: 1px; display: inline-grid; vertical-align: middle; margin-right: 8px; }
-body.view-mis nav.chapters, body.view-mis #q, body.view-mis #status, body.view-mis #togglePal, body.view-mis #undo, body.view-mis #redo, body.view-mis #save { display: none; }
+body.view-mis nav.chapters, body.view-mis #q, body.view-mis #togglePal { display: none; }
 body.view-mis #app { grid-template-columns: minmax(0, 1fr) 270px; }
 /* Missionen */
 .mbar { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 12px; }
@@ -281,21 +281,42 @@ function push() { hist.push(JSON.stringify(chapters)); if (hist.length > 200) hi
 function restore(from, to) { if (!from.length) return; to.push(JSON.stringify(chapters)); chapters = JSON.parse(from.pop()); render(); }
 const undo = () => restore(hist, fut), redo = () => restore(fut, hist);
 function change(fn) { push(); fn(); render(); }
+const noteDirty = {};        // "figur:feld" -> ungespeicherter Text der Faehigkeits-Felder im Tab Charaktere
+const totalDirty = () => dirtyIds().length + misDirty().length + Object.keys(noteDirty).length;
 function updateStatus() {
-  const n = dirtyIds().length, s = $("#status");
-  s.textContent = n ? `● Ungespeicherte Änderungen in ${n} Kapitel${n > 1 ? "n" : ""}` : "Alles gespeichert";
+  const n = totalDirty(), s = $("#status");
+  s.textContent = n ? `● Ungespeicherte Änderungen (${n})` : "Alles gespeichert";
   s.className = n ? "dirty" : "";
-  $("#save").disabled = !n; $("#undo").disabled = !hist.length; $("#redo").disabled = !fut.length;
+  $("#save").disabled = !n;
+  const hs = view === "mis" ? [misHist, misFut] : view === "talks" ? [hist, fut] : [[], []];     // Rueckgaengig gilt je Tab
+  $("#undo").disabled = !hs[0].length; $("#redo").disabled = !hs[1].length;
   document.querySelectorAll(".ch").forEach(b => { const d = dirtyIds().includes(b.dataset.id); b.querySelector(".dot")?.remove(); if (d) b.querySelector(".n").insertAdjacentHTML("afterend", '<span class="dot" title="Ungespeichert"></span>'); });
 }
-async function save() {
+const undoCur = () => view === "mis" ? misRestore(misHist, misFut) : view === "talks" ? undo() : null;
+const redoCur = () => view === "mis" ? misRestore(misFut, misHist) : view === "talks" ? redo() : null;
+async function saveChapters() {
   for (const id of dirtyIds()) {
     const c = chapters.find(x => x.id === id);
     const r = await fetch(`/api/chapter/${id}`, { method: "PUT", body: JSON.stringify({ intro: c.intro, outro: c.outro, triggers: c.triggers, flee: c.flee, ideas: c.ideas }) });
-    if (!r.ok) return toast(`Speichern fehlgeschlagen (${c.title}): ${(await r.json()).error}`, "err");
+    if (!r.ok) { toast(`Speichern fehlgeschlagen (${c.title}): ${(await r.json()).error}`, "err"); return false; }
     saved[id] = part(c);
   }
-  toast("Gespeichert"); updateStatus();
+  return true;
+}
+async function saveNotes() {
+  for (const [k, text] of Object.entries(noteDirty)) {
+    const [id, slot] = k.split(":");
+    const r = await fetch(`/api/character/${id}/note`, { method: "PUT", body: JSON.stringify({ slot: +slot, text }) });
+    if (!r.ok) { toast("Speichern fehlgeschlagen: " + (await r.json()).error, "err"); return false; }
+    CH.characters.find(c => c.id === id).ability_notes.saved[+slot] = text.trim();
+    delete noteDirty[k];
+  }
+  return true;
+}
+/** Speichert alles Ungespeicherte aus allen drei Tabs (Gespraeche, Missionen, Faehigkeits-Texte). */
+async function save() {
+  if (!(await saveChapters()) || !(await misSave(true)) || !(await saveNotes())) return updateStatus();
+  toast("Gespeichert"); updateStatus(); if (view === "mis") renderMis(); else if (view === "char") renderCharRes();
 }
 function toast(msg, kind, undoFn) {
   const t = document.createElement("div"); t.className = "t " + (kind || ""); t.textContent = msg;
@@ -535,12 +556,11 @@ const acts = {
   mch(el) { mCur = el.dataset.id; renderMis(); },
   mrem(el) { misRemove(el.dataset.side, +el.dataset.i); },
   madd(el) { const side = el.dataset.side; openPicker(el, id => misAdd(side, id)); },
-  mundo() { misRestore(misHist, misFut); }, mredo() { misRestore(misFut, misHist); }, msave() { misSave(); },
   cfilter(el) { cFilter = el.dataset.k; renderChars(); },
   cmode() { cView = cView === "cards" ? "table" : "cards"; renderChars(); },
   csel(el) { cSel = cSel === el.dataset.id ? "" : el.dataset.id; renderCharRes(); },
   cclose() { cSel = ""; renderCharRes(); },
-  async cnote_reset(el) { await saveNote(el.dataset.id, +el.dataset.slot, null); },
+  async cnote_reset(el) { delete noteDirty[el.dataset.id + ":" + el.dataset.slot]; await saveNote(el.dataset.id, +el.dataset.slot, null); },
   csort(el) { cSort = { key: el.dataset.k, dir: cSort.key === el.dataset.k ? -cSort.dir : 1 }; renderCharRes(); },
   cgoto(el) { gotoTalks(el.dataset.ch, el.dataset.name); },
   newconv() { newConvDialog(); },
@@ -633,6 +653,7 @@ async function renderChars() {
   renderCharRes();
 }
 function renderCharRes() {
+  updateStatus();
   const f = FILTERS.find(x => x[0] === cFilter)[2], q = cq.toLowerCase();
   let list = CH.characters.filter(c => f(c) && (!q || c.name.toLowerCase().includes(q) || c.id.includes(q)));
   const sorts = { name: c => c.name.toLowerCase(), first: c => (c.first ? c.first.chapter : 99) * 100 + CH.characters.indexOf(c), lines: c => -c.lines_total, kind: c => c.kind };
@@ -663,11 +684,11 @@ function charDetail(c) {
     ${c.abilities.map(a => `<div class="abil"><b>${esc(a.name)}</b> ${a.source !== "Einheit" ? `<span class="kind Boss">${esc(a.source)}</span>` : ""}<small>Abklingzeit ${a.cd ?? "–"}${a.range ? " · Reichweite " + a.range.join("–") : ""}</small>${esc(a.text)}</div>`).join("") || '<p class="kv">Keine.</p>'}
     ${c.passives.length ? `<p class="kv">Passiv: ${c.passives.map(esc).join(", ")}</p>` : ""}
     <h4>Fähigkeiten beschreiben (Entwurf)</h4>
-    <p class="kv" style="font-size:12.5px">Zwei Freitextfelder für Ideen und Beschreibungen. Vorbelegt mit den Fähigkeiten aus dem Spiel, leer wenn es keine gibt. Dein Text wird beim Verlassen des Feldes gespeichert (<code>ability_notes.json</code>) und <b>ändert das Spiel nicht</b>.</p>
-    ${[0, 1].map(i => { const nt = c.ability_notes, custom = nt.saved[i] !== null && nt.saved[i] !== undefined, val = custom ? nt.saved[i] : nt.defaults[i];
+    <p class="kv" style="font-size:12.5px">Zwei Freitextfelder für Ideen und Beschreibungen. Vorbelegt mit den Fähigkeiten aus dem Spiel, leer wenn es keine gibt. Mit „Speichern“ (oben, Strg+S) wird er abgelegt (<code>ability_notes.json</code>); er <b>ändert das Spiel nicht</b>.</p>
+    ${[0, 1].map(i => { const nt = c.ability_notes, pend = noteDirty[c.id + ":" + i], custom = nt.saved[i] !== null && nt.saved[i] !== undefined, val = pend !== undefined ? pend : custom ? nt.saved[i] : nt.defaults[i];
       return `<label class="f" style="margin-bottom:8px"><span>Fähigkeit ${i + 1} ${custom ? '<span class="kind Boss">eigener Entwurf</span>' : nt.defaults[i] ? '<span class="kind">aus dem Spiel</span>' : '<span class="kind Sonstige">frei</span>'}</span>
         <textarea class="cnote-ta" data-cnote="${c.id}" data-slot="${i}" rows="2" placeholder="Fähigkeit beschreiben …" style="width:100%;resize:none;overflow:hidden">${esc(val)}</textarea>
-        <span class="row" style="gap:10px;font-size:12px;color:var(--muted)"><span data-cstat="${c.id}:${i}"></span>${custom && nt.defaults[i] ? `<button class="btn ghost" data-act="cnote_reset" data-id="${c.id}" data-slot="${i}">↺ Spieltext wiederherstellen</button>` : ""}</span></label>`; }).join("")}
+        <span class="row" style="gap:10px;font-size:12px;color:var(--muted)"><span data-cstat="${c.id}:${i}">${pend !== undefined ? "● ungespeichert" : ""}</span>${custom && nt.defaults[i] ? `<button class="btn ghost" data-act="cnote_reset" data-id="${c.id}" data-slot="${i}">↺ Spieltext wiederherstellen</button>` : ""}</span></label>`; }).join("")}
     <h4>Missionen und Dialoge</h4>
     <div class="tl">${CH.chapters.map(ch => { const d = c.chapters[ch.n]; const parts = d ? Object.entries(d.lines).map(([k, v]) => `${k} ${v}`).join(" · ") : "";
       return `<div class="tlrow ${d ? "" : "none"} ${key(d) ? "key" : ""}"><b>${ch.n}</b><span>${esc(ch.title)}${d ? `<br><small class="kv">${symChips(d.roles)} ${esc(parts) || "spricht nicht"}</small>` : ""}</span>
@@ -701,7 +722,7 @@ function setView(v) {
   for (const [id, k] of [["#tabTalks", "talks"], ["#tabChars", "char"], ["#tabMis", "mis"]]) $(id).setAttribute("aria-selected", v === k);
   $("#palhint").innerHTML = v === "mis" ? "Figur in <b>Gruppe</b> oder <b>Gegner</b> ziehen, um sie in die Mission zu holen. Eine Karte hierher ziehen (oder ✕) nimmt sie wieder heraus. Gelb markierte Figuren passen nicht zur Geschichte."
     : 'Figur auf einen <b>Platz</b> in einer Zeile ziehen, oder auf <b>+ Zeile</b>, um eine neue Zeile anzulegen. Zeilen lassen sich am Griff ⋮⋮ umsortieren, auch in andere Gespräche.';
-  render();
+  render(); updateStatus();
 }
 
 // ---- Tab Missionen: Gruppe und Gegner je Kapitel, Warnungen bei Story-Widerspruechen
@@ -755,14 +776,14 @@ function misAdd(side, id) {
   misPush(); (side === "p" ? m.players : m.enemies).push({ id, pos: freeSpot(m, side) }); renderMis();
 }
 function misRemove(side, i) { misPush(); (side === "p" ? mCh().players : mCh().enemies).splice(i, 1); renderMis(); }
-async function misSave() {
+async function misSave(quiet = false) {
   for (const id of misDirty()) {
     const m = mis.find(x => x.id === id);
     const r = await fetch(`/api/mission/${id}`, { method: "PUT", body: JSON.stringify({ players: m.players, enemies: m.enemies }) });
-    if (!r.ok) return toast(`Speichern fehlgeschlagen (${m.title}): ${(await r.json()).error}`, "err");
+    if (!r.ok) { toast(`Speichern fehlgeschlagen (${m.title}): ${(await r.json()).error}`, "err"); return false; }
     misSaved[id] = misPart(m);
   }
-  CH = null; toast("Gespeichert"); renderMis();
+  return true;
 }
 function miniMap(m) {
   const h = m.rows.length, w = m.rows[0].length, S = 27;
@@ -772,6 +793,7 @@ function miniMap(m) {
   return `<div class="mm" style="width:${w * S}px;height:${h * S}px">${tiles}${obj}${m.players.map(e => pin(e, "p")).join("")}${m.enemies.map(e => pin(e, "e")).join("")}</div>`;
 }
 async function renderMis() {
+  setTimeout(updateStatus, 0);
   if (!MIS) {
     $("#main").innerHTML = '<p class="hint">Lade Missionen …</p>';
     MIS = await (await fetch("/api/missions")).json(); mis = JSON.parse(JSON.stringify(MIS.missions)); mis.forEach(m => misSaved[m.id] = misPart(m));
@@ -786,9 +808,7 @@ async function renderMis() {
       ${w.map(t => `<div class="wn">⚠ ${esc(t)}</div>`).join("")}</div>`;
   };
   $("#main").innerHTML = `<div class="mbar">${mis.map(x => `<button class="chip2" data-act="mch" data-id="${x.id}" aria-pressed="${x.id === mCur}">${x.n} ${esc(x.title)}${dirty.includes(x.id) ? ' <span class="dot warn"></span>' : ""}</button>`).join("")}
-      <span class="sp"><span class="hint">${dirty.length ? "● Ungespeichert in " + dirty.length + " Kapitel" : "Alles gespeichert"}</span>
-      <button class="btn" data-act="mundo" ${misHist.length ? "" : "disabled"}>↶ Rückgängig</button><button class="btn" data-act="mredo" ${misFut.length ? "" : "disabled"}>↷</button>
-      <button class="btn primary" data-act="msave" ${dirty.length ? "" : "disabled"}>Speichern</button></span></div>
+      </div>
     <p class="hint" style="margin:0 0 10px">${esc(m.briefing)}</p>
     <div class="mgrid"><div>
       <div class="mlist" data-drop="mgroup"><h3>Gruppe <span class="count">${m.players.length}</span><button class="btn" data-act="madd" data-side="p" style="margin-left:auto">+ Held</button></h3>
@@ -800,6 +820,7 @@ async function renderMis() {
       ${miniMap(m)}
       <div class="mwarn"><h3>Story-Prüfung</h3><ul>${(() => { const all = [...wn.global, ...Object.values(wn.byCard).flat()]; return all.length ? all.map(t => `<li>⚠ ${esc(t)}</li>`).join("") : '<li class="ok">✓ Keine Widersprüche zur Geschichte gefunden.</li>'; })()}</ul></div>
     </div></div>`;
+  updateStatus();
 }
 // ---- Ereignisse
 document.addEventListener("click", e => {
@@ -811,8 +832,8 @@ document.addEventListener("click", e => {
 document.addEventListener("keydown", e => {
   const mod = e.ctrlKey || e.metaKey, inField = /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName);
   if (mod && e.key === "s") { e.preventDefault(); save(); }
-  else if (mod && e.key === "z" && !inField) { e.preventDefault(); e.shiftKey ? redo() : undo(); }
-  else if (mod && e.key === "y" && !inField) { e.preventDefault(); redo(); }
+  else if (mod && e.key === "z" && !inField) { e.preventDefault(); e.shiftKey ? redoCur() : undoCur(); }
+  else if (mod && e.key === "y" && !inField) { e.preventDefault(); redoCur(); }
   else if ((e.key === "Enter" || e.key === " ") && e.target.matches?.("[data-act=pick], [data-act=toggle]") && e.target === document.activeElement) { e.preventDefault(); acts[e.target.dataset.act](e.target); }
 });
 document.addEventListener("focusin", e => { if (e.target.matches("textarea, input[data-bind]")) typingSnap = true; });
@@ -889,17 +910,19 @@ document.addEventListener("drop", e => {
 
 $("#q").oninput = e => { filter = e.target.value; render(); };
 $("#tabTalks").onclick = () => setView("talks"); $("#tabChars").onclick = () => setView("char"); $("#tabMis").onclick = () => setView("mis");
-document.addEventListener("input", e => { if (e.target.matches?.(".cnote-ta")) fit(e.target); });
-document.addEventListener("focusout", e => {
+document.addEventListener("input", e => {
   const el = e.target; if (!el.matches?.(".cnote-ta")) return;
-  const c = CH.characters.find(x => x.id === el.dataset.cnote), slot = +el.dataset.slot, nt = c.ability_notes;
+  fit(el);
+  const c = CH.characters.find(x => x.id === el.dataset.cnote), slot = +el.dataset.slot, nt = c.ability_notes, key = c.id + ":" + slot;
   const cur = nt.saved[slot] ?? nt.defaults[slot];
-  if (el.value.trim() !== cur.trim()) saveNote(c.id, slot, el.value, false);
+  if (el.value.trim() === cur.trim()) delete noteDirty[key]; else noteDirty[key] = el.value;
+  const st = document.querySelector(`[data-cstat="${c.id}:${slot}"]`); if (st) st.textContent = noteDirty[key] !== undefined ? "● ungespeichert" : "";
+  updateStatus();
 });
 document.addEventListener("input", e => { if (e.target.id === "cq") { cq = e.target.value; renderCharRes(); } });
-$("#undo").onclick = undo; $("#redo").onclick = redo; $("#save").onclick = save; $("#palq").oninput = renderPalette;
+$("#undo").onclick = undoCur; $("#redo").onclick = redoCur; $("#save").onclick = save; $("#palq").oninput = renderPalette;
 $("#togglePal").onclick = () => document.body.classList.toggle("pal-open");
-addEventListener("beforeunload", e => { if (dirtyIds().length || misDirty().length) { e.preventDefault(); e.returnValue = ""; } });
+addEventListener("beforeunload", e => { if (totalDirty()) { e.preventDefault(); e.returnValue = ""; } });
 
 (async () => {
   DB = await (await fetch("/api/data")).json();
