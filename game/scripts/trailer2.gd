@@ -3,13 +3,15 @@ extends Trailer
 ## Trailer 2 (ca. 2 Minuten) fuer YouTube, direkt aus dem Spiel: Prolog, Helden, Spezialfaehigkeiten, Welten, Geheimnis, Abspann.
 ## Aufnahme: SHOT=trailer2 godot --path game --write-movie out.avi --fixed-fps 30   (tools/make_trailer.sh trailer2)
 
-const VILLAINS := [
-	[["wart", "wuetend", "Wart", "Söldner mit Raketenwerfer"], ["xiulan", "lachend", "Xiùlán", "Oma mit Gebiss-Wurf"]],
-	[["oskar", "lachend", "Oskar", "General mit Charme"], ["maja", "wuetend", "Maja", "Eisiger Blick"]],
-]
-const NEW_HEROES := [
-	[["quacksalber", "lachend", "Dr. Humbug", "Äußerst seriöser Arzt"], ["magical_girl", "lachend", "Lumi Sternenglanz", "Magical Girl"]],
+## Helden-Auftritte nach Mira (sie hat ihren eigenen Auftritt zu Beginn).
+const HEROES := [
+	[["ritter", "", "Ser Albrecht", "Gealterter Ritter"], ["samurai", "wuetend", "Takeda", "Samurai"]],
+	[["kungfu", "lachend", "Meister Lin", "Kung-Fu mit Stab"], ["ninjas", "", "Kage-Schwestern", "Ninja-Duo"]],
+	[["elisabeth", "lachend", "Käpt’n Elisabeth", "Piratin mit Kanone"], ["museklaugust", "wuetend", "Muskelaugust", "Kurfürst und König"]],
+	[["robo", "", "Robo", "Dampfroboter"], ["hund", "wuetend", "Blauer Hundsfreund", "Knochenkämpfer"]],
+	[["wendy", "lachend", "Wendy Wolle", "Schaf-Heilerin"], ["claude", "lachend", "Claude", "Flaschengeist-Magier"]],
 	[["bienenmaedchen", "wuetend", "Stachelia", "Giftige Fliegerin"], ["braumeisterin", "lachend", "Brunhilde Bräu", "Braumeisterin mit Fass"]],
+	[["quacksalber", "lachend", "Dr. Humbug", "Äußerst seriöser Arzt"], ["magical_girl", "lachend", "Lumi Sternenglanz", "Magical Girl"]],
 ]
 
 ## Faehigkeits-Szenen: map = Kapitelkarte (Standard ch1), cam = Versatz zur Mitte, status = Dauerstatus fuer den Helden.
@@ -23,93 +25,65 @@ const SCENES := [
 	{"ab": "bearhug", "u": ["museklaugust", "p", [4, 7]], "t": ["soldat_infanterie", "e", [5, 7]], "more": [["soldat_beritten", "e", [6, 7]]], "cam": [0.2, 2.6, 4.2], "fov": 34},
 	{"ab": "roter_laser", "u": ["robo", "p", [3, 7]], "t": ["soldat_infanterie", "e", [5, 7]], "more": [["soldat_beritten", "e", [6, 7]], ["soldat_infanterie", "e", [7, 7]], ["kungfu", "p", [4, 7]]], "cam": [1.2, 3.6, 5.6], "fov": 40, "look": [5.0, 0.5, 7.0]},
 	{"ab": "bellen", "u": ["hund", "p", [5, 7]], "t": "self", "more": [["soldat_infanterie", "e", [7, 7]], ["soldat_infanterie", "e", [5, 5]], ["soldat_beritten", "e", [3, 8]]], "cam": [1.4, 4.2, 4.6], "fov": 38},
-	{"ab": "bienenkorb", "u": ["bienenmaedchen", "p", [4, 7]], "tile": [6, 7], "more": [["soldat_infanterie", "e", [9, 7]]], "cam": [1.0, 3.8, 5.4], "fov": 38},
-	{"ab": "stabwirbel", "u": ["kungfu", "p", [5, 7]], "t": "self", "more": [["soldat_infanterie", "e", [6, 7]], ["soldat_infanterie", "e", [5, 6]], ["soldat_beritten", "e", [4, 8]]], "cam": [2.0, 4.4, 4.2], "fov": 36},
-	{"ab": "wollmantel", "u": ["wendy", "p", [3, 7]], "t": ["ritter", "p", [5, 7]], "more": [["soldat_infanterie", "e", [7, 7]], ["soldat_beritten", "e", [7, 6]]], "cam": [-0.2, 3.4, 5.4], "fov": 38},
-	{"ab": "prost", "u": ["braumeisterin", "p", [4, 7]], "t": ["ritter", "p", [5, 7], {"hp": 14}], "more": [["soldat_infanterie", "e", [8, 7]]], "cam": [0.2, 2.8, 4.6], "fov": 36},
-	{"ab": "baerengebruell", "u": ["maedchen_baer", "p", [4, 7]], "t": ["soldat_infanterie", "e", [6, 7]], "more": [["soldat_infanterie", "e", [7, 6]]], "cam": [0.4, 2.8, 5.0], "fov": 36},
-	{"ab": "kyujutsu", "u": ["samurai", "p", [2, 7]], "t": ["soldat_infanterie", "e", [6, 7]], "more": [["soldat_beritten", "e", [7, 7]]], "cam": [0.2, 3.2, 6.0], "fov": 40},
-	{"ab": "polymorph", "u": ["claude", "p", [3, 7]], "t": ["soldat_infanterie", "e", [6, 7]], "more": [["soldat_infanterie", "e", [7, 7]]], "cam": [-0.4, 2.8, 5.4], "fov": 36},
 ]
 const DRUNKEN := {"ab": "drunken_strike", "u": ["kungfu", "p", [4, 7]], "t": ["soldat_infanterie", "e", [5, 7]], "more": [["soldat_infanterie", "e", [6, 7]], ["soldat_beritten", "e", [5, 6]]],
 	"cam": [0.8, 2.8, 4.4], "fov": 34, "status": ["betrunken"]}
 
 
 func _run() -> void:
-	# --- 1) Prolog: ein friedliches Tal, der Regent, Mira und Brumm
+	# --- 1) Mira und Brumm
 	_play_music(TITLE_MUSIC, -4.0)
 	stage.set_mode("title")
 	_fade.color.a = 1.0
-	await _fade_to(0.0, 1.2)
-	_say("Ein friedliches Tal.")
-	await _wait(4.0)
-	_say("Dann kommt der Regent.")
+	await _fade_to(0.0, 0.8)
+	_say("Ein Mädchen. Ein Bär.")
+	await _wait(1.4)
 	stage.set_mode("dialog")
-	await _beat([["fuerst", "lachend", "Der Regent", "Steuern. Rückwirkend. Mit Zinsen."], []], 3.2)
-	_say("Sein Gegner? Ein Mädchen. Ein Bär.")
-	await _beat([["maedchen_baer", "wuetend", "Mira & Brumm", "Der Anfang einer Legende"], ["ritter", "", "Ser Albrecht", "Gealterter Ritter"]], 3.0)
+	await _beat([["maedchen_baer", "wuetend", "Mira & Brumm", "Der Anfang einer Legende"], []], 1.7)
 
 	# --- 2) Helden
 	_say("Sammle deine Helden")
-	for beat: Array in SHOWCASE.slice(0, 6):
-		await _beat(beat, 1.0)
-	for beat: Array in NEW_HEROES:
-		await _beat(beat, 1.1)
-	_say("… und Schurken mit Charakter")
-	for beat: Array in VILLAINS:
-		await _beat(beat, 1.3)
+	for beat: Array in HEROES:
+		await _beat(beat, 0.74)
 
 	# --- 3) Spezialfaehigkeiten
-	await _fade_to(1.0, 0.2)
+	await _fade_to(1.0, 0.15)
 	_say("Über 30 Spezialfähigkeiten")
 	_play_music(BATTLE_MUSIC, -4.0)
 	stage.set_mode("battle")
 	_prep_battle()
-	Engine.time_scale = 1.15
+	Engine.time_scale = 1.4
 	var n := 0
 	for sc: Dictionary in SCENES:
 		await _scene(sc)
 		n += 1
-		if n == 4:
+		if n == 5:
 			_say("Zerstören. Heilen. Verzaubern.")
-		elif n == 9:
-			_say("Jede Figur hat ihren Auftritt")
 	Engine.time_scale = 1.0
 
 	# --- 4) Welten
 	_say("Sieben Kapitel. Sieben Welten.")
 	await _world("ch3", true)
 	await _world("ch4", false)
-	await _world("ch5", false)
-	await _dialogue_part()
 	await _world("ch6", false)
 	await _world("ch7", false)
-	_say("Taktik auf lebendiger Karte")
-	stage.map_data = Mission.load_mission("ch1")
-	await _map_part()
 
-	# --- 5) Geheimnis
-	await _fade_to(1.0, 0.2)
-	_say("… und Geheimnisse, die man nur zu zweit entdeckt")
+	# --- 5) Geheimnis (kurzer Ausblick)
+	await _fade_to(1.0, 0.15)
+	_say("Und manche Geheimnisse entdeckt man nur zu zweit")
 	await _secret()
 	stage.map_data = Mission.load_mission("ch1")
 	stage.new_battle()
 	stage.set_mode("battle")
 	_prep_battle()
-	Engine.time_scale = 1.15
+	Engine.time_scale = 1.3
 	await _scene(DRUNKEN)
 	Engine.time_scale = 1.0
 
 	# --- 6) Abspann
-	await _fade_to(1.0, 0.25)
+	await _fade_to(1.0, 0.2)
 	_say("")
-	stage.set_mode("dialog")
-	await _fade_to(0.0, 0.2)
-	_say("Händler, Brauen, Ausrüstung")
-	await _beat([["haendler", "lachend", "Wulle", "Lebender Wollsack, Händler"], []], 3.2)
-	await _fade_to(1.0, 0.3)
-	_say("")
-	_fade_out_music(2.5)
+	_fade_out_music(2.0)
 	await _end_card2()
 	get_tree().quit()
 
@@ -230,7 +204,7 @@ func _world(ch: String, fire: bool) -> void:
 	set_cam.call(0.0)
 	await _fade_to(0.0, 0.2)
 	var pan := create_tween()
-	pan.tween_method(set_cam, 0.0, 1.0, 4.8)
+	pan.tween_method(set_cam, 0.0, 1.0, 3.4)
 	await pan.finished
 
 
@@ -255,8 +229,8 @@ func _sub(text: String) -> void:
 	tw.tween_property(_sub_label, "modulate:a", 0.0, 0.1)
 	tw.tween_callback(func() -> void: _sub_label.text = text)
 	tw.tween_property(_sub_label, "modulate:a", 1.0, 0.35)
-	tw.tween_interval(3.6)
-	tw.tween_property(_sub_label, "modulate:a", 0.0, 0.35)
+	tw.tween_interval(2.2)
+	tw.tween_property(_sub_label, "modulate:a", 0.0, 0.3)
 
 
 var _sub_label: Label
@@ -279,9 +253,9 @@ func _secret() -> void:
 	layer.add_child(d)
 	await _fade_to(0.0, 0.25)
 	await _wait(3.4)        # Banner, dann erste Zeile
-	await _wait(1.3)
+	await _wait(1.0)
 	d._advance()
-	await _wait(0.4 + 90 * 0.025 + 0.9)
+	await _wait(0.4 + 40 * 0.025 + 0.4)
 	await _fade_to(1.0, 0.25)
 	layer.queue_free()
 
@@ -328,5 +302,5 @@ func _end_card2() -> void:
 	tw.tween_property(b, "modulate:a", 1.0, 0.5)
 	tw.tween_property(c, "modulate:a", 1.0, 0.5)
 	tw.tween_property(d, "modulate:a", 1.0, 0.5)
-	await _wait(6.5)
-	await _fade_to(1.0, 0.8)
+	await _wait(4.4)
+	await _fade_to(1.0, 0.6)
