@@ -169,7 +169,7 @@
  "fx_fels1": true,
  "fx_fels2": true,
  "panzer": true,
- "panzer_lachend": true,
  "panzer_wuetend": true,
- "panzer_chibi": true
+ "panzer_chibi": true,
+ "panzer_lachend": true
 }
