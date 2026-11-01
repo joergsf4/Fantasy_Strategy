@@ -207,9 +207,9 @@ Benannte Gegner (`"flees": true` in `units.json`: Wart, Oskar, Maja) sterben nic
 - **Bienenstöcke** (3, Weltobjekt `hive`, 22 Leben, angreifbar): alle 2 Gegnerphasen schlüpft ein Bienenkrieger (höchstens 6). Der Schwarm zieht zum Waisenhaus, wenn kein Held in Reichweite ist. Eine Biene neben dem Haus sticht die Kinder (`kids_stung`).
 - **Glocke** (Weltobjekt `bell`): ein Held daneben wählt „Glocke läuten“. Die Kinder weisen in Runde 2 und 4 darauf hin, weil sie zu klein sind. Zwei Runden später kommt der Hundsfreund als Held ins Gefecht (Schritt `later` mit `fire`, Ereignis `id: hund` mit `when: {manual: true}`). Er schließt sich am Ende der Gruppe an.
 - **Honigtöpfe** (Truhen mit `look: honey`): Heilhonig (heilt 10, entfernt Gift).
-- **Stachelia:** 40 Leben, Wendung bei unter 50 % (die Kinder bitten sie), dann Rückzug. Später als Spezialfähigkeit: Bienen rufen und Heilhonig fallen lassen.
+- **Stachelia:** 50 Leben und Angriff 7 (Kartenfeld `atk_mult` 1,1; früher 40 Leben, Angriff 6), Wendung bei unter 50 % (die Kinder bitten sie), dann Rückzug. Später als Spezialfähigkeit: Bienen rufen und Heilhonig fallen lassen.
 - **Neue Technik:** `later`-Schritt (zeitversetztes Ereignis), `spawn` mit `team: p`, `hp`-Überschreibung für Gegner, Wachen-Marke `schwarm`.
-- Simulator: abgebildet (Stöcke, Glocke, Hundsfreund, Stiche, Rückzug), Messung in `docs/balance.md` Abschnitt 9. Startaufstellung: Stachelia (40 Leben) und 5 Bienenkrieger.
+- Simulator: abgebildet (Stöcke, Glocke, Hundsfreund, Stiche, Rückzug), Messung in `docs/balance.md` Abschnitt 9. Startaufstellung: Stachelia (50 Leben) und 5 Bienenkrieger.
 
 ## Mission 6: Möwenbucht (Hafenstadt, Ziel: Schiff)
 

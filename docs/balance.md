@@ -13,7 +13,7 @@ Erzeugt von `tools/balance.py` mit dem grafikfreien Simulator (`game/sim/`). Er 
 - Kapitel-1-Ausstattung hebt die Siegquote um +19.1 Pp
 - Verteidigen: Gruppen +3.2 Pp Siegquote, 16.5 Einsätze pro Kampf
 - Mission 3: ohne Löschen gehen im Schnitt 4.0 von 4 Häusern verloren, mit voller Löschung 0.1
-- Mission 5: bei ×1,0 gewinnt die Gruppe 100%, Kinder werden in 38% der Kämpfe gestochen (ohne Glocke und Stöcke: 99% / 35%)
+- Mission 5: bei ×1,0 gewinnt die Gruppe 100%, Kinder werden in 32% der Kämpfe gestochen (ohne Glocke und Stöcke: 98% / 39%)
 - Mission 6: bei ×1,0 gewinnt die Gruppe 100% in 7.2 Runden (ohne Breitseite 100%)
 - Warten (wachsam, +2 Angriff): Siegquote 61.0% gegen 62.9% ohne Bonus (Verteidigen an)
 - Mission 7: bei ×1,0 gewinnt die Gruppe mit den neuen Heilern 100% (mit Wendy und Robo 100%)
@@ -299,14 +299,14 @@ Aufstellung wie im Spiel (Albrecht, Mira, Brunhilde, Wendy, Dr. Humbug, Takeda g
 
 ## 9. Mission 5: Waisenhaus, Bienenstöcke und Glocke
 
-Aufstellung wie im Spiel (Mira, Albrecht, Wendy, Elisabeth, Kage-Schwestern, Takeda gegen Stachelia mit 40 Leben und 5 Bienenkrieger, dazu 3 Stöcke). Zahlen: Siegquote / Anteil der Kämpfe mit gestochenen Kindern / durchschnittliche Runden, bei steigender Gegnerstärke.
+Aufstellung wie im Spiel (Mira, Albrecht, Wendy, Elisabeth, Kage-Schwestern, Takeda gegen Stachelia mit 50 Leben (Angriff 7) und 5 Bienenkrieger, dazu 3 Stöcke). Zahlen: Siegquote / Anteil der Kämpfe mit gestochenen Kindern / durchschnittliche Runden, bei steigender Gegnerstärke.
 
 | Variante | ×1.0 | ×1.5 | ×2.0 |
 |---|--:|--:|--:|
-| Voll (Glocke und Stöcke) | 100% / 38% / 6.4 | 100% / 44% / 7.9 | 70% / 100% / 14.8 |
-| Ohne Glocke (kein Hundsfreund) | 100% / 43% / 6.3 | 100% / 53% / 8.5 | 20% / 100% / 15.4 |
-| Stöcke ignoriert | 100% / 90% / 8.9 | 92% / 49% / 12.6 | 26% / 100% / 18.3 |
-| Weder Glocke noch Stöcke | 99% / 35% / 9.5 | 72% / 86% / 18.9 | 10% / 100% / 16.5 |
+| Voll (Glocke und Stöcke) | 100% / 32% / 6.9 | 100% / 63% / 9.4 | 44% / 100% / 15.8 |
+| Ohne Glocke (kein Hundsfreund) | 100% / 4% / 6.9 | 99% / 60% / 9.7 | 10% / 99% / 14.7 |
+| Stöcke ignoriert | 99% / 62% / 9.4 | 96% / 56% / 11.6 | 13% / 100% / 17.1 |
+| Weder Glocke noch Stöcke | 98% / 39% / 9.8 | 23% / 100% / 19.3 | 3% / 100% / 14.8 |
 
 ## 10. Mission 6: Hafenstadt, Ziel Schiff
 

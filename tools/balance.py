@@ -802,7 +802,7 @@ def report():
         nm = {"voll": "Voll (Glocke und Stöcke)", "ohne_glocke": "Ohne Glocke (kein Hundsfreund)", "ohne_staecke": "Stöcke ignoriert",
               "weder_noch": "Weder Glocke noch Stöcke"}
         w("## 9. Mission 5: Waisenhaus, Bienenstöcke und Glocke\n")
-        w("Aufstellung wie im Spiel (Mira, Albrecht, Wendy, Elisabeth, Kage-Schwestern, Takeda gegen Stachelia mit 40 Leben und 5 Bienenkrieger, dazu 3 Stöcke). "
+        w("Aufstellung wie im Spiel (Mira, Albrecht, Wendy, Elisabeth, Kage-Schwestern, Takeda gegen Stachelia mit 50 Leben (Angriff 7) und 5 Bienenkrieger, dazu 3 Stöcke). "
           "Zahlen: Siegquote / Anteil der Kämpfe mit gestochenen Kindern / durchschnittliche Runden, bei steigender Gegnerstärke.\n")
         w("| Variante | " + " | ".join(f"×{m}" for m in e8["mults"]) + " |")
         w("|---|" + "--:|" * len(e8["mults"]))

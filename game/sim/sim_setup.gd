@@ -128,7 +128,7 @@ static func build(spec: Dictionary, seed_: int) -> SimBattle:
 			var base_hp: float = float(d2.get("hp", 1.0))
 			if e.has("hp"):   # Karte setzt absolute Leben (Stachelia 34): als Faktor auf die Grundwerte
 				base_hp *= float(e["hp"]) / float(SimBattle.defs()[d2.get("id", e["id"])]["hp"])
-			b.spawn(d2.get("id", e["id"]), "e", Vector2i(e["pos"][0], e["pos"][1]), base_hp, d2.get("atk", 1.0))
+			b.spawn(d2.get("id", e["id"]), "e", Vector2i(e["pos"][0], e["pos"][1]), base_hp, float(d2.get("atk", 1.0)) * float(e.get("atk_mult", 1.0)))
 			ei += 1
 		for k in range(ei, enemies.size()):   # zusaetzliche Gegner: freie Felder rechts
 			var free := _start_tiles(b, b.grid.width - 4, b.grid.width - 1, rng)

@@ -62,13 +62,14 @@
     6,
     3
    ],
-   "hp": 40,
+   "hp": 50,
    "carry": {
     "gold": 60,
     "items": {
      "heilhonig": 1
     }
-   }
+   },
+   "atk_mult": 1.1
   },
   {
    "id": "bienenkrieger",
