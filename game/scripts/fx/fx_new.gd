@@ -337,6 +337,50 @@ func catch_bone(u: Dictionary, via: Dictionary) -> void:
 	await _wait(0.35)
 
 
+## Flug der Geworfenen beim Shuriken-Regen: steigt in einem Bogen auf, schwebt kurz oben (langsame Drehung, leichtes Wippen), landet dann.
+func hover_throw(u: Dictionary, dest: Vector2i, height: float, hover: float) -> void:
+	var n := u["node"] as Node3D
+	var from := n.position
+	var to := battle.to_world(dest)
+	var peak := from.lerp(to, 0.55)
+	peak.y = maxf(from.y, to.y) + height
+	u["pos"] = dest
+	var shadow := fx.make_flat("soft", fx.ground(from), 0.9, Color(0, 0, 0, 0.4))
+	fx.tumble_begin(u)
+	var follow := func(p: Vector3) -> void:
+		var g := fx.ground(Vector3(p.x, 0, p.z), 0.05)
+		shadow.position = g
+		shadow.scale = Vector3.ONE * clampf(1.15 - (p.y - g.y) * 0.1, 0.35, 1.15)
+	var tw := fx.create_tween()
+	tw.tween_method(func(t: float) -> void:                                    # Aufstieg mit einem Salto
+		if not is_instance_valid(n):
+			return
+		var e := 1.0 - pow(1.0 - t, 2.0)
+		n.position = from.lerp(peak, e)
+		follow.call(n.position)
+		fx.tumble_set(u, t * TAU), 0.0, 1.0, 0.5)
+	tw.tween_method(func(t: float) -> void:                                    # Schweben: wippen und sich langsam drehen
+		if not is_instance_valid(n):
+			return
+		n.position = peak + Vector3(0, sin(t * TAU * 1.5) * 0.09, 0)
+		follow.call(n.position)
+		fx.tumble_set(u, TAU + t * TAU * 0.5), 0.0, 1.0, hover)
+	tw.tween_method(func(t: float) -> void:                                    # Abstieg, am Ende aufrecht
+		if not is_instance_valid(n):
+			return
+		n.position = peak.lerp(to, t * t)
+		follow.call(n.position)
+		fx.tumble_set(u, lerpf(TAU * 1.5, TAU * 2.0, t)), 0.0, 1.0, 0.4)
+	await tw.finished
+	fx.tumble_end(u)
+	shadow.queue_free()
+	if is_instance_valid(n):
+		n.position = to
+		fx.shockwave(to, 1.0, Color(1, 0.95, 0.8, 0.7), 0.35)
+		fx.particles("fx_smoke", fx.ground(to, 0.15), 6, 1.6, 0.45, 0.6, 1.0, Color(0.9, 0.85, 0.75), false, 60.0)
+		await fx.squash(u, 1.2, 0.82, 0.18)
+
+
 ## Shuriken-Regen: Wurfsterne fallen aus der Luft auf die Gegner und streuen ueber die Felder im Umkreis.
 func shuriken_rain(from_unit: Dictionary, dest: Vector2i, victims: Array[Dictionary], tiles: Array[Vector2i]) -> void:
 	Sfx.play("whoosh_l", -4.0, 1.4)
@@ -352,7 +396,7 @@ func shuriken_rain(from_unit: Dictionary, dest: Vector2i, victims: Array[Diction
 		var star := fx.make_sprite("fx_shuriken", target + Vector3(randf_range(-0.4, 0.4), 3.4, randf_range(-0.4, 0.4)), 0.42, false, Color.WHITE, 2)
 		var from := star.position
 		var tw := fx.create_tween()
-		tw.tween_interval(float(i % 6) * 0.06)
+		tw.tween_interval(minf(float(i) * 0.07, 1.1))
 		tw.tween_method(func(t: float) -> void:
 			if is_instance_valid(star):
 				star.position = from.lerp(target, t * t)
@@ -362,7 +406,7 @@ func shuriken_rain(from_unit: Dictionary, dest: Vector2i, victims: Array[Diction
 				fx.particles("fx_star", target, 3, 1.6, 0.14, 0.35, 2.0, Color(0.9, 0.95, 1.0), true, 160.0)
 				star.queue_free())
 	fx.particles("fx_shuriken", peak, 10, 2.5, 0.25, 0.7, 3.0, Color.WHITE, false, 180.0)
-	await _wait(0.34 + 0.06 * float(mini(spots.size(), 6)) + 0.1)
+	await _wait(0.34 + minf(float(spots.size()) * 0.07, 1.1) + 0.1)
 
 
 ## Treffer des umgelenkten Strahls: Funken, Aufblitzen, kleiner Rueckstoss.

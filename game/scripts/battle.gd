@@ -2730,9 +2730,16 @@ func _throw_with_rain(u: Dictionary, ally: Dictionary, dest: Vector2i, sec: Dict
 		if o["team"] != u["team"] and _hittable(o) and not Status.has(o, "stealth") and tiles.has(o["pos"]):
 			victims.append(o)
 	await fx.squash(u, 1.22, 0.8, 0.3)
-	fx.leap(ally, dest, float(ef.get("height", 4.2)), 1.0, 2.0)       # laeuft parallel zum Regen
-	await get_tree().create_timer(0.3).timeout
+	# Die Schwestern steigen auf, schweben waehrend des Regens kurz in der Luft und landen danach (der Flug laeuft parallel)
+	var flight_done := [false]
+	var flight := func() -> void:
+		await fx.hover_throw(ally, dest, float(ef.get("height", 4.2)), float(ef.get("hover", 1.3)))
+		flight_done[0] = true
+	flight.call()
+	await get_tree().create_timer(0.5).timeout           # Aufstieg
 	await fx.shuriken_rain(ally, dest, victims, tiles)
+	while not flight_done[0]:
+		await get_tree().create_timer(0.05).timeout
 	var pct := float(ef.get("rain_pct", 75)) / 100.0
 	_actor = ally
 	for v in victims:
