@@ -517,7 +517,7 @@
   "weapon": "wood",
   "body": "flesh",
   "hero": true,
-  "from": 7,
-  "intro": 7
+  "from": 3,
+  "intro": 3
  }
 }

@@ -227,6 +227,9 @@ const REST = {
 for (const [name, d] of Object.entries(REST))
   jobs.push({ name, refs: [path.join(OUT, 'fx_fireball.jpg')], prompt: `Create ${d}, game sprite, seen slightly from above and the front, readable at small size.` + FX_STYLE });
 
+// Dr. Humbugs "aeusserst seriöse" Praxis (Mission 3): Fachwerkhaus mit Schild, rotem Kreuz und Flaschen im Fenster.
+jobs.push({ name: 'fx_haus_praxis', refs: [path.join(OUT, 'fx_haus1.jpg')], prompt: 'Create a small half-timbered village house that is a shady quack doctor\'s practice, in exactly the same pixel-art style as the attached image (use it ONLY as a style reference): a wooden hanging sign with a red cross and a skull-and-bones joke, a big window full of colorful potion bottles and jars, a mortar and pestle on a barrel by the door, a steep red tiled roof with a chimney, readable at small size, game sprite, seen slightly from above and the front.' + FX_STYLE });
+
 async function generate(page, job) {
   await page.goto('https://gemini.google.com/app', { waitUntil: 'domcontentloaded' });
   await page.waitForSelector('div[role=textbox], .ql-editor', { timeout: 30000 });

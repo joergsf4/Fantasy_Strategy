@@ -41,7 +41,7 @@
    ]
   },
   {
-   "id": "elisabeth",
+   "id": "quacksalber",
    "pos": [
     3,
     9
@@ -153,12 +153,13 @@
    ]
   },
   {
-   "id": "h3",
+   "id": "praxis",
    "type": "house",
    "pos": [
     2,
     4
-   ]
+   ],
+   "look": "fx_haus_praxis"
   },
   {
    "id": "h4",
@@ -204,6 +205,16 @@
     "items": {
      "aether": 1
     }
+   }
+  },
+  {
+   "id": "praxis",
+   "text": "Dr. Humbugs Praxis bleibt heil",
+   "reward": {
+    "items": {
+     "heilhonig": 1
+    },
+    "gold": 40
    }
   }
  ]

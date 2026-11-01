@@ -35,15 +35,15 @@
   },
   {
    "left": "quacksalber",
-   "right": "elisabeth",
+   "right": "magical_girl",
    "speaker": "quacksalber",
-   "text": "Und ich bin Dr. Humbug, Wunderheiler! Mein Elixier kuriert alles. Die Nebenwirkungen sind überschaubar."
+   "text": "Willkommen im Team, Lumi! Wer heilt, sollte sich kennen: Ich mit Salbe, du mit Sternen. Meine Nebenwirkungen sind überschaubar."
   },
   {
    "left": "quacksalber",
    "right": "elisabeth",
    "speaker": "elisabeth",
-   "text": "Überschaubar? Ich nehme zwei Flaschen.",
+   "text": "Überschaubar? Ich nehme trotzdem zwei Flaschen.",
    "right_expr": "lachend"
   },
   {

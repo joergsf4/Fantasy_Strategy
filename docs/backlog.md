@@ -59,3 +59,6 @@ Gruppe und Gegner je Kapitel bearbeiten (`GET /api/missions`, `PUT /api/mission/
 
 ## Erledigt: Eichenfurt brennt nicht mehr (2026-11-01)
 Kapitel 1 heißt jetzt „Eichenfurt in Gefahr“: Büttel ziehen auf das Dorf zu, es brennt nichts (Titel, Briefing, Einleitung, Abschluss). Kapitel 3 „Mühlbach in Flammen“ bleibt die Feuer-Mission.
+
+## Erledigt: Dr. Humbug ab Mission 3 (2026-11-01)
+Siehe `docs/missionen.md`. Mission 3 ist durch den Nachschub (Bogenschütze und Büttel, Runde 4) härter; Messung in `docs/balance.md` Abschnitt 8.

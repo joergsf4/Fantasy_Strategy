@@ -19,6 +19,32 @@
    "speaker": "braumeisterin",
    "left_expr": "lachend",
    "text": "Brandstifter und Feuer. Für sowas gibt es Bier. Zum Löschen und zum Feiern."
+  },
+  {
+   "left": "quacksalber",
+   "right": "wendy",
+   "speaker": "quacksalber",
+   "text": "Halt, halt! Das ist meine Praxis dort hinten, Dr. Humbugs äußerst seriöse Heilanstalt! Wer hat das Dorf angezündet?"
+  },
+  {
+   "left": "quacksalber",
+   "right": "wendy",
+   "speaker": "wendy",
+   "text": "Mäh, du bist Arzt?"
+  },
+  {
+   "left": "quacksalber",
+   "right": "wendy",
+   "speaker": "quacksalber",
+   "text": "Wunderheiler. Mein Elixier kuriert alles, solange niemand die Zutaten prüft. Ich schließe mich euch an, wenn ihr meine Praxis rettet.",
+   "left_expr": "lachend"
+  },
+  {
+   "left": "braumeisterin",
+   "right": "quacksalber",
+   "speaker": "braumeisterin",
+   "text": "Ein Mann mit Flaschen, ich mag ihn schon. Willkommen im Team.",
+   "left_expr": "lachend"
   }
  ],
  "outro": [
@@ -34,6 +60,12 @@
    "right": "ritter",
    "speaker": "ritter",
    "text": "Der Regent zündet Dörfer an, um uns aufzuhalten. Das wird er bereuen."
+  },
+  {
+   "left": "quacksalber",
+   "right": "maedchen_baer",
+   "speaker": "quacksalber",
+   "text": "Praxis hin oder her: Ich komme mit. Wundersalbe wirkt im Feld am besten, und die Nebenwirkungen sind überschaubar."
   }
  ]
 }

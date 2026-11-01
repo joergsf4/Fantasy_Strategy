@@ -140,5 +140,6 @@
  "fx_burg": true,
  "fx_beutel": true,
  "fx_pfahl": true,
- "fx_hebel": true
+ "fx_hebel": true,
+ "fx_haus_praxis": true
 }

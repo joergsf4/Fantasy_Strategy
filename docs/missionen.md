@@ -229,3 +229,7 @@ Benannte Gegner (`"flees": true` in `units.json`: Wart, Oskar, Maja) sterben nic
 - **Gruppe:** Elisabeth, Hundsfreund, Mira, Albrecht (tauschbar) und die neuen Heiler **Lumi Sternenglanz** und **Dr. Humbug**, die in der Einleitung zur Gruppe stoßen.
 - **Verstärkung:** Runde 4 aus der Wüste (zwei Büttel, rechts unten).
 - **Simulator:** abgebildet (E11, `docs/balance.md` Abschnitt 12).
+
+## Änderung Mission 3 (Dr. Humbug) und Mission 7
+- **Mission 3:** Dr. Humbug stößt zur Gruppe (Einleitung und Abschluss), er ersetzt Käpt'n Elisabeth. Eines der vier Häuser ist **seine Praxis** (`praxis`, eigener Sprite `fx_haus_praxis`), Bonusziel „Dr. Humbugs Praxis bleibt heil“ (Heilhonig und 40 Gold). Dazu **Nachschub in Runde 4**: ein Bogenschütze und ein Büttel am rechten Rand.
+- **Wählbar ab Mission 3** (`intro` und `from` in `units.json`). **Mission 7:** Er ist schon im Team, nur Lumi wird dort eingeführt.

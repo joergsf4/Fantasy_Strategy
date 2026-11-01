@@ -21,7 +21,7 @@ func _init(list: Array = []) -> void:
 		objects.append({
 			"id": e.get("id", "%s_%d_%d" % [e["type"], pos.x, pos.y]), "type": e["type"], "pos": pos,
 			"state": e.get("state", d["start"]), "hp": int(d.get("hp", 0)), "maxhp": int(d.get("hp", 0)), "age": 0,
-			"link": e.get("link", []), "dir": e.get("dir", "v"),
+			"link": e.get("link", []), "dir": e.get("dir", "v"), "look": e.get("look", ""),
 		})
 
 

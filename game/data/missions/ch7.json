@@ -6,7 +6,7 @@
   "oskar",
   "maja"
  ],
- "briefing": "Das Schiff hat im Sandhafen angelegt, der letzten Station vor der Insel des Regenten. Die Wüste ist neu: Dünen (Bewegung kostet 2) und Kakteen bremsen, die Oase und die Zelte geben Deckung. Hier warten die Zwillinge Oskar und Maja, die Generäle des Regenten. Diesmal fliehen sie nicht: Besiegt sie beide. Lumi und Dr. Humbug stoßen als neue Heiler zur Gruppe.",
+ "briefing": "Das Schiff hat im Sandhafen angelegt, der letzten Station vor der Insel des Regenten. Die Wüste ist neu: Dünen (Bewegung kostet 2) und Kakteen bremsen, die Oase und die Zelte geben Deckung. Hier warten die Zwillinge Oskar und Maja, die Generäle des Regenten. Diesmal fliehen sie nicht: Besiegt sie beide. Lumi stößt als neue Heilerin zur Gruppe, Dr. Humbug ist schon seit Mühlbach dabei.",
  "goals": [
   {
    "type": "rout"

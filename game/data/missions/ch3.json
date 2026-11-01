@@ -369,6 +369,98 @@
      ]
     }
    ]
+  },
+  {
+   "when": {
+    "turn": 3
+   },
+   "if": {
+    "object": {
+     "id": "praxis",
+     "state": "intact"
+    }
+   },
+   "note": "Dr. Humbug sorgt sich um seine Praxis",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "quacksalber",
+       "right": "ritter",
+       "speaker": "quacksalber",
+       "text": "Meine Praxis steht noch! Wenn dort etwas brennt, gibt es nie wieder Wundersalbe nach Hausrezept.",
+       "left_expr": "wuetend"
+      },
+      {
+       "left": "quacksalber",
+       "right": "ritter",
+       "speaker": "ritter",
+       "text": "Dann verteidigen wir sie, Herr Doktor."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 3
+   },
+   "if": {
+    "object": {
+     "id": "praxis",
+     "state": "burning"
+    }
+   },
+   "note": "Die Praxis brennt",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "quacksalber",
+       "right": "braumeisterin",
+       "speaker": "quacksalber",
+       "text": "Meine Praxis brennt! Mein Lebenswerk, äußerst seriös! Brunhilde, ein Fass, schnell!",
+       "left_expr": "wuetend"
+      },
+      {
+       "left": "quacksalber",
+       "right": "braumeisterin",
+       "speaker": "braumeisterin",
+       "text": "Für Dr. Humbug gibt es Bier gratis. Zum Löschen.",
+       "right_expr": "lachend"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 4
+   },
+   "note": "Nachschub der Brandstifter: ein Büttel und ein Bogenschütze",
+   "do": [
+    {
+     "popup": "Verstärkung der Brandstifter!"
+    },
+    {
+     "spawn": [
+      {
+       "id": "soldat_bogenschuetze",
+       "pos": [
+        11,
+        1
+       ]
+      },
+      {
+       "id": "soldat_infanterie",
+       "pos": [
+        11,
+        2
+       ]
+      }
+     ]
+    }
+   ]
   }
  ],
  "flee": {

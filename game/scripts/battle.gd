@@ -1113,6 +1113,8 @@ func results() -> Dictionary:
 				ok = turn <= int(o["turns"])
 			"haeuser":
 				ok = world.houses_lost() == 0
+			"praxis":
+				ok = world.by_id("praxis")["state"] != "ruin"
 			"keine_stiche":
 				ok = kids_stung == 0
 			"alle_gegner":
@@ -1396,6 +1398,8 @@ func _make_burnable(o: Dictionary) -> void:
 	if big:      # Haus als Pixel-Sprite (Variante nach Position, in der Wueste Lehmhaeuser), Ruine als zweiter Sprite
 		var h: int = (int(o["pos"].x) * 7 + int(o["pos"].y) * 13) % 3
 		var name := ("fx_haus_wueste%d" % (1 + h % 2)) if map_data.get("biome", "") == "wueste" else "fx_haus%d" % (1 + h)
+		if o.get("look", "") != "":     # Sonderhaus (z. B. Dr. Humbugs Praxis)
+			name = o["look"]
 		root.remove_child(parts["body"])
 		(parts["body"] as Node).queue_free()
 		parts["body"] = _object_sprite(name, 1.15, root)
