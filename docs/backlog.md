@@ -89,3 +89,6 @@ Normal gibt es keine Kapitelwahl mehr (weiterspielen aus dem Spielstand, ab Kapi
 
 ## Idee (später): Kürbis-Rätsel
 Die Gruppe trifft **drei Kürbisse mit lustigen Gesichtern**, die dem Spieler ein **einfaches Rätsel** stellen. Noch offen: wo in der Geschichte (Mission, Zwischenszene, Nebenbegegnung), Art des Rätsels (Texträtsel mit Antwortauswahl im Dialog oder Rätsel im Gelände), Belohnung, Gesichter als Gemini-Sprites. Bräuchte eventuell ein neues Dialog-Element mit Antwortauswahl.
+
+## Erledigt: Wüstenlicht „Hollywood-Mexiko“ (2026-11-01)
+Im Biom Wüste (Kapitel 7 und 8) liegt ein gelb-orange Farbfilter über dem Bild (`shaders/grade_mexiko.gdshader`, Schicht unter dem HUD): warme gelbe Mitten, braun-orange Schatten, etwas weniger Sättigung, mehr Kontrast, leichter Dunst und Hitzeflimmern. Dazu tiefere, wärmere Sonne mit längeren Schatten (`Battle._apply_desert_light`). Abschalten pro Karte mit `"grade": "none"` in der Kartendatei; Stärke über die Uniforms des Shaders (`tint`, `saturation`, `haze`, `vignette`).

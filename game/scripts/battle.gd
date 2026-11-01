@@ -154,6 +154,28 @@ func _ready() -> void:
 
 # ---------------------------------------------------------------- Darstellung
 
+## Wuestenlicht ("Hollywood-Mexiko"): tiefe, harte, gelb-orange Sonne mit laengeren Schatten, warmes Umgebungslicht und
+## ein Farbfilter ueber dem ganzen Bild (unter dem HUD, siehe shaders/grade_mexiko.gdshader).
+func _apply_desert_light(env: Environment, sun: DirectionalLight3D) -> void:
+	sun.rotation_degrees = Vector3(-34, -50, 0)
+	sun.light_color = Color(1.0, 0.86, 0.62)
+	sun.light_energy = 0.95
+	sun.shadow_opacity = 0.8
+	env.ambient_light_color = Color(1.0, 0.84, 0.62)
+	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
+	env.ambient_light_energy = 0.42
+	var layer := CanvasLayer.new()
+	layer.layer = 2
+	add_child(layer)
+	var rect := ColorRect.new()
+	rect.size = Vector2(1280, 720)
+	rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var mat := ShaderMaterial.new()
+	mat.shader = load("res://shaders/grade_mexiko.gdshader")
+	rect.material = mat
+	layer.add_child(rect)
+
+
 func _mat(c: Color, transparent := false, unshaded := false) -> StandardMaterial3D:
 	var key := [c, transparent, unshaded]
 	if _mats.has(key):
@@ -219,6 +241,8 @@ func _build_environment() -> void:
 	sun.shadow_blur = 1.5
 	sun.shadow_opacity = 0.65
 	add_child(sun)
+	if map_data.get("biome", "") == "wueste" and map_data.get("grade", "mexiko") != "none":
+		_apply_desert_light(env, sun)
 	var center := Vector3((grid.width - 1) / 2.0, 0, (grid.height - 1) / 2.0)
 	cam = Camera3D.new()
 	cam.fov = 40
