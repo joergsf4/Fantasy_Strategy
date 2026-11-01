@@ -2,7 +2,7 @@
 
 # フザケタ・タクティクス
 
-*Fuzaketa Tactics*
+*Fuzaketa Tactics*  (Lesung des Namens: „Fuzaketa“, ausgesprochen mit langem „a“ wie im Japanischen)
 
 **Rundenstrategie mit Herz, Humor und Pixel-Art**
 
@@ -68,12 +68,13 @@ Manche Fähigkeiten wirken auf Verbündete anders, als man denkt. Wer es herausf
 - **Gemeinsame Abklingzeit** je Figur: Man hat die Wahl, nicht mehr Spezialeffekte pro Runde.
 - **Gruppenwahl mit Story-Sperre:** Nur wer im Kapitel spricht, muss mit, der Rest ist frei wählbar.
 - **Brabbel-Laute** beim Dialogtext (Robo piept, Wendy blökt, der Hundsfreund bellt …) statt Sprachausgabe.
+- **Messbares Balancing:** Der grafikfreie Simulator in `game/sim/` spielt Missionen tausendfach durch (auch Mission 5 mit Bienenstöcken, Mission 6 mit Schiff, Mission 7 mit den Zwillingen und Mission 8 mit dem Panzer, den man nach drei Runden übernimmt). Damit werden Leben, Schaden und Verstärkungen eingestellt, nicht geraten. Ergebnisse in [docs/balance.md](docs/balance.md).
 - **Alles datengetrieben:** Einheiten, Fähigkeiten, Missionen, Karten, Dialoge und Geheimnisse liegen als JSON in `game/data/` und lassen sich mit dem Dialog-Editor bearbeiten.
 
 ## Spielen
 
 ### Fertige Testversion
-Unter [Releases](https://github.com/joergsf4/Fantasy_Strategy/releases) liegen ZIPs für macOS und Windows.
+Unter [Releases](https://github.com/joergsf4/Fantasy_Strategy/releases) liegen ZIPs für macOS (`FuzaketaTactics-macOS.zip`) und Windows (`FuzaketaTactics-Windows.zip`). Aktuell: **Testversion 0.6.1** mit acht spielbaren Missionen.
 - **macOS:** ZIP entpacken, Rechtsklick auf die App, „Öffnen“ (nicht notarisiert). Falls macOS sie sperrt: `xattr -cr "Fuzaketa Tactics.app"`.
 - **Windows:** ZIP entpacken, `game.exe` starten. SmartScreen warnt eventuell („Weitere Informationen“, „Trotzdem ausführen“). Die Windows-Version wurde noch nicht getestet.
 
@@ -90,7 +91,7 @@ Benötigt Godot 4.7 (Compatibility-Renderer).
 - **Alt (gedrückt halten):** zeigt über allen Figuren Lebenszahl und alle Status mit Restdauer. Sonst steht über jeder Figur nur ein schmaler Lebensbalken, Details zeigen Auswahl und Hover.
 - **Esc:** öffnet das Pause-Menü (Weiter, Speichern, Vollbild, Beenden). Beim Beenden bleibt der Stand nach der letzten geschafften Mission erhalten.
 - **Hauptmenü:** *Fortfahren* (nur mit Spielstand, geht im Lager vor dem nächsten Kapitel weiter), *Neues Spiel* (mit Rückfrage, löscht den Spielstand) und *Beenden*. Bedienung mit Maus oder Pfeiltasten und Enter.
-- **Speichern:** automatisch nach jeder geschafften Mission (Meldung „Spielstand automatisch gespeichert“), zusätzlich von Hand im Pause-Menü.
+- **Speichern:** automatisch nach jeder geschafften Mission (Meldung „Spielstand automatisch gespeichert“), zusätzlich von Hand im Pause-Menü. Der Spielstand liegt im Nutzerordner `Strategy Adventure` (der Ordnername blieb bei der Umbenennung des Spiels, damit alte Spielstände weiter gelten).
 - **Testmenü:** Im Hauptmenü kleingeschrieben `brumm` tippen („Kapitelwahl freigeschaltet“), dann gibt es nach dem Start die Kapitelwahl (mit oder ohne Einleitung), das Soundlabor und „Spielstand zurücksetzen“.
 
 ## Werkzeuge
@@ -144,5 +145,5 @@ Dazu viele weitere in `game/tests/` (Fähigkeiten, Missionen, Feuer, Gruppenwahl
 
 ## Hinweise
 - **KI-generierte Inhalte:** Alle Figuren-, Effekt- und Hintergrundbilder (`strategie/`, `game/assets/portraits|tokens|fx`) und die Musik (`game/assets/audio/`) wurden mit Google Gemini erzeugt, die Soundeffekte synthetisch. Programmcode und Daten entstanden mit Claude Code. Das Projekt ist ein nicht kommerzielles Hobbyprojekt.
-- **Stand:** Testversion. Werte und Balancing sind vorläufig, Fehler bitte als Issue melden.
+- **Stand:** Testversion 0.6.1. Werte und Balancing sind vorläufig, Fehler bitte als Issue melden.
 - **Schriften:** Cinzel Decorative, IM Fell English und Dela Gothic One (für die Katakana des Namens, nur ein Auszug; SIL Open Font License, Lizenztexte im Ordner `game/assets/fonts/`).
