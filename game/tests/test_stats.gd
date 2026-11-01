@@ -50,5 +50,17 @@ func _initialize() -> void:
 	root.add_child(rs)
 	await process_frame
 	check(rs.find_children("*", "GridContainer", true, false).size() == 1, "Belohnungsbildschirm zeigt die Statistik-Tabelle")
+	# Niederlage: nur Statistik, keine Beute
+	var ds: Dictionary = b.defeat_summary()
+	check(ds["defeat"] and ds["gold"] == 0 and (ds["stats"]["rows"] as Array).size() == 2, "Niederlage-Bilanz: Statistik ohne Beute")
+	var dr := RewardScreen.new()
+	dr.setup(ds)
+	root.add_child(dr)
+	await process_frame
+	check(dr.find_children("*", "GridContainer", true, false).size() == 1, "Niederlage-Bildschirm zeigt die Statistik-Tabelle")
+	var texts: Array = dr.find_children("*", "Button", true, false).map(func(x: Button) -> String: return x.text)
+	check(texts.has("Noch einmal versuchen"), "Niederlage-Bildschirm: Knopf zum neuen Versuch")
+	var labels: Array = dr.find_children("*", "Label", true, false).map(func(x: Label) -> String: return x.text)
+	check(labels.has("Niederlage …") and not labels.has("Beute"), "Niederlage-Bildschirm ohne Beute")
 	print("Tests fertig, Fehler: ", fails)
 	quit(1 if fails > 0 else 0)

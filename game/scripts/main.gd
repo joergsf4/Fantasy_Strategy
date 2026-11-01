@@ -3,6 +3,8 @@ extends Node
 
 const TITLE_MUSIC := "res://assets/audio/title_theme.mp3"
 const BATTLE_MUSIC := "res://assets/audio/battle_theme.mp3"
+const WIN_MUSIC := "res://assets/audio/sieg_statistik.mp3"
+const DEFEAT_MUSIC := "res://assets/audio/niederlage_statistik.mp3"
 const CHAPTERS := ["ch1", "ch2", "ch3", "ch4", "ch5", "ch6", "ch7"]
 const MUSIC_DB := -6.0
 
@@ -160,7 +162,9 @@ func _chapter(cid: String, skip_intro := false, next_cid := "") -> void:
 		var won: bool = await stage.battle.finished
 		if won:
 			break
-		stage.new_battle()   # Niederlage: neuer Versuch auf frischem Schlachtfeld
+		await _reward(stage.battle.defeat_summary())     # Niederlage: Statistik mit trauriger Musik, dann neuer Versuch
+		stage.new_battle()                               # frisches Schlachtfeld
+		_play_music(BATTLE_MUSIC, 2.0)
 	_fade_music(3.0)
 	stage.backdrop_again()
 	var res := stage.battle.results()
@@ -184,6 +188,7 @@ func _camp(m: Dictionary) -> void:
 
 
 func _reward(res: Dictionary) -> void:
+	_play_music(DEFEAT_MUSIC if res.get("defeat", false) else WIN_MUSIC, 1.0)      # froehlich nach dem Sieg, traurig nach der Niederlage
 	var layer := CanvasLayer.new()
 	layer.layer = 6
 	add_child(layer)
@@ -192,6 +197,7 @@ func _reward(res: Dictionary) -> void:
 	layer.add_child(r)
 	await r.closed
 	layer.queue_free()
+	_fade_music(1.2)
 
 
 ## Dialog mitten im Kampf: ueber der abgedunkelten Karte, ohne die Buehne zu wechseln.
@@ -330,6 +336,26 @@ func _screenshot_mode() -> void:
 		for i in 30:
 			await get_tree().process_frame
 		await get_tree().create_timer(1.5).timeout
+		get_viewport().get_texture().get_image().save_png(OS.get_environment("SHOT_OUT"))
+		get_tree().quit()
+		return
+	if mode == "defeat":   # Niederlage-Bildschirm vor der Karte
+		var bd0 := Battle.new()
+		bd0.setup(map, units)
+		add_child(bd0)
+		await get_tree().process_frame
+		bd0.enter_title_mode()
+		var dl := CanvasLayer.new()
+		dl.layer = 6
+		add_child(dl)
+		var ds := RewardScreen.new()
+		ds.setup({"defeat": true, "turns": 5, "objectives": [], "stats": {"rows": [
+				{"id": "ritter", "name": "Ser Albrecht", "alive": false, "hp": 0, "maxhp": 34, "dealt": 18, "taken": 34, "healed": 0, "kills": 1, "abs": 1, "bonus": 0},
+				{"id": "wendy", "name": "Wendy Wolle", "alive": false, "hp": 0, "maxhp": 18, "dealt": 2, "taken": 18, "healed": 14, "kills": 0, "abs": 2, "bonus": 0}],
+				"awards": [{"title": "Prügelknabe", "name": "Ser Albrecht", "text": "34 Schaden eingesteckt"}]}})
+		dl.add_child(ds)
+		for i in 40:
+			await get_tree().process_frame
 		get_viewport().get_texture().get_image().save_png(OS.get_environment("SHOT_OUT"))
 		get_tree().quit()
 		return

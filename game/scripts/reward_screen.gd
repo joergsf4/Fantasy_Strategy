@@ -1,6 +1,7 @@
 class_name RewardScreen
 extends Control
-## Belohnungsbildschirm nach einem gewonnenen Kampf: Beute, Gold, Bonusziele. "Weiter" schliesst ihn.
+## Belohnungsbildschirm nach einem gewonnenen Kampf: Beute, Gold, Bonusziele, Statistik. "Weiter" schliesst ihn.
+## Nach einer Niederlage (results["defeat"]) zeigt er nur die Statistik mit dem Knopf "Noch einmal versuchen".
 
 signal closed
 
@@ -27,13 +28,20 @@ func _ready() -> void:
 	var col := VBoxContainer.new()
 	col.add_theme_constant_override("separation", 6)
 	panel.add_child(col)
-	col.add_child(_label("Sieg!", UiTheme.F_TITLE, 44, UiTheme.GOLD, HORIZONTAL_ALIGNMENT_CENTER))
-	col.add_child(_label("Beute", UiTheme.F_HEAD, 22, UiTheme.GOLD))
-	var lines := _loot_lines()
-	if lines.is_empty():
-		col.add_child(_label("Nichts gefunden.", UiTheme.F_BODY, 22, Color(0.8, 0.78, 0.72)))
-	for l in lines:
-		col.add_child(_label(l, UiTheme.F_BODY, 24, UiTheme.CREAM))
+	var defeat: bool = results.get("defeat", false)
+	col.add_child(_label("Niederlage …" if defeat else "Sieg!", UiTheme.F_TITLE, 44, Color(0.72, 0.78, 0.95) if defeat else UiTheme.GOLD, HORIZONTAL_ALIGNMENT_CENTER))
+	if defeat:
+		var sad := _label("Die Gruppe ist gefallen. Ein neuer Versuch auf frischem Schlachtfeld wartet. Die Statistik zeigt, was schiefging.", UiTheme.F_BODY, 22, Color(0.82, 0.82, 0.9))
+		sad.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		sad.custom_minimum_size = Vector2(500, 0)
+		col.add_child(sad)
+	else:
+		col.add_child(_label("Beute", UiTheme.F_HEAD, 22, UiTheme.GOLD))
+		var lines := _loot_lines()
+		if lines.is_empty():
+			col.add_child(_label("Nichts gefunden.", UiTheme.F_BODY, 22, Color(0.8, 0.78, 0.72)))
+		for l in lines:
+			col.add_child(_label(l, UiTheme.F_BODY, 24, UiTheme.CREAM))
 	var objs: Array = results.get("objectives", [])
 	if not objs.is_empty():
 		col.add_child(_label("Bonusziele", UiTheme.F_HEAD, 22, UiTheme.GOLD))
@@ -42,8 +50,8 @@ func _ready() -> void:
 			var txt := "%s: %s%s" % [("erfüllt" if o["done"] else "verpasst"), o["text"], ("  (" + rew + ")") if o["done"] and rew != "" else ""]
 			col.add_child(_label(txt, UiTheme.F_BODY, 22, Color(0.65, 1.0, 0.65) if o["done"] else Color(0.75, 0.6, 0.6)))
 	var b := Button.new()
-	b.text = "Weiter"
-	b.custom_minimum_size = Vector2(180, 38)
+	b.text = "Noch einmal versuchen" if defeat else "Weiter"
+	b.custom_minimum_size = Vector2(260 if defeat else 180, 38)
 	b.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	b.focus_mode = Control.FOCUS_NONE
 	for st in ["normal", "hover", "pressed", "disabled"]:
@@ -68,7 +76,7 @@ func _build_stats() -> void:
 	var col := VBoxContainer.new()
 	col.add_theme_constant_override("separation", 5)
 	panel.add_child(col)
-	col.add_child(_label("Statistik – Runde %d" % int(results.get("turns", 0)), UiTheme.F_HEAD, 24, UiTheme.GOLD))
+	col.add_child(_label("Statistik – Runde %d" % int(results.get("turns", 0)), UiTheme.F_HEAD, 24, Color(0.72, 0.78, 0.95) if results.get("defeat", false) else UiTheme.GOLD))
 	var grid := GridContainer.new()
 	grid.columns = 5
 	grid.add_theme_constant_override("h_separation", 14)

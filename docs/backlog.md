@@ -75,3 +75,6 @@ Datengetriebenes System (`secrets.json`, Editor-Tab „Geheimnisse“, Szene mit
 
 ## Erledigt: Bäume, Büsche und Felsen als Sprites (2026-11-01)
 Das Terrain setzt statt der 3D-Meshes jetzt Gemini-Pixel-Sprites (`fx_baum_fichte1/2`, `fx_baum_eiche1/2/3`, `fx_busch`, `fx_fels1/2`) als MultiMesh mit `shaders/prop_sprite.gdshader` (volles Billboard wie die Figuren, scharfe Kanten, leichtes Wiegen im Wind) und weichen Bodenschatten (`TerrainView.SPRITES`). Gelbe Birken sind selten. Nicht umgestellt: Gras, Blumen (bleiben Meshes), Holzsteg.
+
+## Erledigt: Musik für den Statistik-Bildschirm (2026-11-01)
+Nach einem Sieg läuft fröhliche Musik (`sieg_statistik.mp3`), nach einer Niederlage traurige (`niederlage_statistik.mp3`), beide mit Gemini erzeugt (`tools/gemini/music.mjs`, Originale in `strategie/musik/`). Neu: Nach einer Niederlage zeigt der Statistik-Bildschirm (`RewardScreen` mit `defeat`, `Battle.defeat_summary()`) die Bilanz ohne Beute und den Knopf „Noch einmal versuchen“; vorher begann sofort ein neuer Versuch. Die Kampfmusik startet mit dem neuen Versuch wieder.

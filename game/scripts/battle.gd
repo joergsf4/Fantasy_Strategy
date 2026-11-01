@@ -1166,6 +1166,11 @@ func results() -> Dictionary:
 	return gained
 
 
+## Bilanz einer verlorenen Mission: nur die Statistik (keine Beute, keine Belohnungen), fuer den Niederlage-Bildschirm.
+func defeat_summary() -> Dictionary:
+	return {"defeat": true, "stats": stats(), "turns": turn, "objectives": [], "gold": 0, "items": {}, "materials": {}, "equipment": []}
+
+
 # ------------------------------------------------------------------ Weltobjekte
 
 ## Dekoration ohne Spielwirkung: im Biom Wueste Kakteen auf "F"-Feldern (und vereinzelt auf Sand), dazu die "decor"-Liste der Karte
