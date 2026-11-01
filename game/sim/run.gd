@@ -112,7 +112,7 @@ func run_cell(cell: Dictionary) -> Dictionary:
 			"players": p_units,
 			"enemies": _units(e_ids, emods),
 			"disabled": cell.get("disabled", {}),
-			"e_mods": emods, "nemesis": cell.get("nemesis", []),
+			"e_mods": emods, "nemesis": cell.get("nemesis", []), "capture_squad": cell.get("capture_squad", 2),
 			"p_ai": cell.get("p_ai", {}), "e_ai": cell.get("e_ai", {}),
 		}
 		var b := SimSetup.build(spec, seed_)

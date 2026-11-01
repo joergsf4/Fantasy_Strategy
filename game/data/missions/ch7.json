@@ -219,35 +219,6 @@
      ]
     }
    ]
-  },
-  {
-   "when": {
-    "turn": 4
-   },
-   "note": "Verstärkung aus der Wüste",
-   "do": [
-    {
-     "popup": "Verstärkung aus der Wüste!"
-    },
-    {
-     "spawn": [
-      {
-       "id": "soldat_infanterie",
-       "pos": [
-        11,
-        8
-       ]
-      },
-      {
-       "id": "soldat_infanterie",
-       "pos": [
-        11,
-        9
-       ]
-      }
-     ]
-    }
-   ]
   }
  ]
 }

@@ -225,9 +225,9 @@ Benannte Gegner (`"flees": true` in `units.json`: Wart, Oskar, Maja) sterben nic
 ## Mission 7: Sandhafen (Wüste, Zwillinge)
 
 - **Ort:** Der Hafen, an dem das Schiff aus Mission 6 ankommt. **Neues Biom Wüste** (Kartenfeld `biome: "wueste"`): Sandboden im Shader, Dünen (`D`, Bewegung 2), Kakteen auf `F`-Feldern, Oase mit Palmen (`decor`), Zelte (`tent`) als Hindernisse, Lehmhäuser.
-- **Ziel:** alle Gegner besiegen. Die **Zwillinge Oskar (36 Leben) und Maja (32 Leben) fliehen diesmal nicht** (Missionsfeld `no_flee: ["oskar", "maja"]`), sie müssen fallen. Beim Fall des einen reagiert der andere.
+- **Ziel:** alle Gegner besiegen. Die **Zwillinge Oskar (34 Leben) und Maja (30 Leben, die Grundwerte aus `units.json`) fliehen diesmal nicht** (Missionsfeld `no_flee: ["oskar", "maja"]`), sie müssen fallen. Beim Fall des einen reagiert der andere.
 - **Gruppe:** Elisabeth, Hundsfreund, Mira, Albrecht (tauschbar) und die neuen Heiler **Lumi Sternenglanz** und **Dr. Humbug**, die in der Einleitung zur Gruppe stoßen.
-- **Verstärkung:** Runde 4 aus der Wüste (zwei Büttel, rechts unten).
+- **Keine Verstärkung** mehr (früher zwei Büttel in Runde 4) und keine erhöhten Leben der Zwillinge (früher 36 und 32): Die Simulation zeigte die Mission als deutlich schwerer als Mission 8 (bei ×1,25 gewonnen: 76 % gegen 99 %); mit der Änderung 95 % (`docs/balance.md`, Abschnitt 12).
 - **Simulator:** abgebildet (E11, `docs/balance.md` Abschnitt 12).
 
 ## Änderung Mission 3 (Dr. Humbug) und Mission 7
@@ -241,5 +241,5 @@ Benannte Gegner (`"flees": true` in `units.json`: Wart, Oskar, Maja) sterben nic
 - **Gruppe:** Robo, Mira, Albrecht und Elisabeth sprechen und sind gesperrt; die übrigen zwei Plätze (Standard: Wendy, Dr. Humbug) sind frei wählbar.
 - **Belohnung:** 180 Gold, Bonusziele „Kein Held fällt“ (80 Gold) und „In 11 Runden gewonnen“ (Heilhonig).
 - **Grafik:** Robina als Porträt (neutral, lachend, wütend) und großer Panzer-Sprite (`size` 2,1 in `units.json`), Gemini.
-- **Balancing (Simulator ohne Panzer, nur die Oasenwache):** ×1,0: 100 % (10,7 Runden), ×1,5: 85 %, ×2,0: 1 %. Der Panzer (Breitseite mit Streuschaden) kommt im echten Spiel dazu und macht es schwerer; Übernahme und Panzer kennt der Simulator nicht.
+- **Balancing:** Der Simulator kennt den Panzer (E12, `docs/balance.md` Abschnitt 13): unantastbar, Breitseite, Übernahme nach drei Runden; mit zwei Helden am Panzer gewinnt die Gruppe bei ×1,25 zu 99 %, bei ×1,5 zu 75 %.
 - **Test:** `tests/test_capture.gd`.

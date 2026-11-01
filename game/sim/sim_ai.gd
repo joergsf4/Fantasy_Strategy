@@ -390,9 +390,24 @@ static func choose(b: SimBattle, u: Dictionary, no_move: bool) -> Dictionary:
 			cands.append(act)
 		var wait_s := tile * 0.5 - absf(float(dmap.get(t, 99)) - float(goal[1]))
 		cands.append({"kind": "wait", "tile": t, "score": wait_s, "free": false})
+	if u["team"] == "p" and b.capture_id != "" and not b.capture_unit().is_empty() and _in_squad(b, u):   # Mission 8: zum Panzer und neben ihm bleiben
+		var tp: Vector2i = b.capture_unit()["pos"]
+		for c: Dictionary in cands:
+			var dd := Grid.dist(c["tile"], tp)
+			c["score"] += 1000.0 if dd == 1 else -10.0 * float(dd)
 	cands.sort_custom(func(a: Dictionary, c: Dictionary) -> bool: return a["score"] > c["score"])
 	var pick: Dictionary = cands[0]
 	var noise := float(cfg.get("noise", 0.0))
 	if noise > 0.0 and b.rng.randf() < noise:
 		pick = cands[b.rng.randi_range(0, mini(2, cands.size() - 1))]
 	return pick
+
+
+## Die capture_squad stabilsten Nicht-Heiler (meiste Leben) laufen zum Panzer.
+static func _in_squad(b: SimBattle, u: Dictionary) -> bool:
+	var pool: Array[Dictionary] = []
+	for o in b.units:
+		if o["team"] == "p" and o["role"] != "healer":
+			pool.append(o)
+	pool.sort_custom(func(x: Dictionary, y: Dictionary) -> bool: return x["maxhp"] > y["maxhp"])
+	return pool.slice(0, b.capture_squad).has(u)

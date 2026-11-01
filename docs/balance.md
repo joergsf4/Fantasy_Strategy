@@ -13,10 +13,11 @@ Erzeugt von `tools/balance.py` mit dem grafikfreien Simulator (`game/sim/`). Er 
 - Kapitel-1-Ausstattung hebt die Siegquote um +19.1 Pp
 - Verteidigen: Gruppen +3.2 Pp Siegquote, 16.5 Einsätze pro Kampf
 - Mission 3: ohne Löschen gehen im Schnitt 4.0 von 4 Häusern verloren, mit voller Löschung 0.1
-- Mission 5: bei ×1,0 gewinnt die Gruppe 100%, Kinder werden in 27% der Kämpfe gestochen (ohne Glocke und Stöcke: 94% / 77%)
-- Mission 6: bei ×1,0 gewinnt die Gruppe 100% in 6.5 Runden (ohne Breitseite 100%)
+- Mission 5: bei ×1,0 gewinnt die Gruppe 100%, Kinder werden in 38% der Kämpfe gestochen (ohne Glocke und Stöcke: 99% / 35%)
+- Mission 6: bei ×1,0 gewinnt die Gruppe 100% in 7.2 Runden (ohne Breitseite 100%)
 - Warten (wachsam, +2 Angriff): Siegquote 61.0% gegen 62.9% ohne Bonus (Verteidigen an)
 - Mission 7: bei ×1,0 gewinnt die Gruppe mit den neuen Heilern 100% (mit Wendy und Robo 100%)
+- Mission 8: mit zwei Helden am Panzer gewinnt die Gruppe bei ×1,25 99% (8.8 Runden)
 
 ## 1. Einzelwertung: Wert in Infanteristen
 
@@ -291,10 +292,10 @@ Aufstellung wie im Spiel (Albrecht, Mira, Brunhilde, Wendy, Dr. Humbug, Takeda g
 
 | Variante | ×1.0 | ×1.6 | ×2.2 |
 |---|--:|--:|--:|
-| Voll (Fasswurf + Löschen von Hand) | 100% / 0.1 | 19% / 0.8 | 0% / 0.7 |
-| Ohne Fasswurf (nur Löschen von Hand) | 100% / 0.1 | 12% / 1.7 | 0% / 1.7 |
-| Gar nicht löschen | 100% / 4.0 | 33% / 4.0 | 0% / 4.0 |
-| Ohne Brunhilde (Lin statt ihr, nur Löschen von Hand) | 100% / 0.0 | 6% / 0.1 | 0% / 1.6 |
+| Voll (Fasswurf + Löschen von Hand) | 100% / 0.1 | 17% / 0.4 | 0% / 0.9 |
+| Ohne Fasswurf (nur Löschen von Hand) | 100% / 0.4 | 13% / 1.6 | 0% / 3.2 |
+| Gar nicht löschen | 100% / 4.0 | 16% / 4.0 | 0% / 4.0 |
+| Ohne Brunhilde (Lin statt ihr, nur Löschen von Hand) | 100% / 0.2 | 16% / 0.8 | 0% / 1.9 |
 
 ## 9. Mission 5: Waisenhaus, Bienenstöcke und Glocke
 
@@ -302,10 +303,10 @@ Aufstellung wie im Spiel (Mira, Albrecht, Wendy, Elisabeth, Kage-Schwestern, Tak
 
 | Variante | ×1.0 | ×1.5 | ×2.0 |
 |---|--:|--:|--:|
-| Voll (Glocke und Stöcke) | 100% / 27% / 6.4 | 99% / 53% / 11.1 | 31% / 90% / 14.4 |
-| Ohne Glocke (kein Hundsfreund) | 100% / 32% / 6.9 | 93% / 48% / 13.4 | 19% / 89% / 14.5 |
-| Stöcke ignoriert | 100% / 84% / 8.5 | 51% / 71% / 18.9 | 17% / 91% / 15.9 |
-| Weder Glocke noch Stöcke | 94% / 77% / 12.6 | 17% / 69% / 21.5 | 19% / 94% / 16.3 |
+| Voll (Glocke und Stöcke) | 100% / 38% / 6.4 | 100% / 44% / 7.9 | 70% / 100% / 14.8 |
+| Ohne Glocke (kein Hundsfreund) | 100% / 43% / 6.3 | 100% / 53% / 8.5 | 20% / 100% / 15.4 |
+| Stöcke ignoriert | 100% / 90% / 8.9 | 92% / 49% / 12.6 | 26% / 100% / 18.3 |
+| Weder Glocke noch Stöcke | 99% / 35% / 9.5 | 72% / 86% / 18.9 | 10% / 100% / 16.5 |
 
 ## 10. Mission 6: Hafenstadt, Ziel Schiff
 
@@ -313,8 +314,8 @@ Aufstellung wie im Spiel (Hundsfreund, Mira, Elisabeth, Albrecht, Robo, Takeda g
 
 | Variante | ×1.0 | ×1.5 | ×2.0 |
 |---|--:|--:|--:|
-| Voll (Wart, Beiboot, Breitseite) | 100% / 6.5 | 93% / 13.1 | 1% / 14.4 |
-| Ohne Breitseite | 100% / 6.9 | 68% / 15.9 | 0% / 13.8 |
+| Voll (Wart, Beiboot, Breitseite) | 100% / 7.2 | 93% / 14.9 | 1% / 13.7 |
+| Ohne Breitseite | 100% / 7.5 | 81% / 16.3 | 0% / 13.4 |
 
 ## 11. Warten (wachsam) und Verteidigen
 
@@ -329,12 +330,22 @@ Die Simulations-KI wartet nur, wenn sie nichts zu tun hat, und nutzt Gegenschlä
 
 ## 12. Mission 7: Sandhafen (Wüste, Zwillinge)
 
-Aufstellung der Karte: Elisabeth, Hundsfreund, Mira, Albrecht und je zwei Heiler gegen Oskar (36 Leben), Maja (32 Leben), 3 Büttel, 1 Bogenschützen und 2 Büttel Verstärkung aus der Wüste in Runde 4. Mit den alten Heilern (Wendy und Robo, Robo ist ein Tank) ist die Mission viel leichter: Lumi und Dr. Humbug sind reine Heiler, deshalb liegt die Schwierigkeit mit ihnen höher. Zahlen: Siegquote / durchschnittliche Runden, bei steigender Gegnerstärke.
+Aufstellung der Karte: Elisabeth, Hundsfreund, Mira, Albrecht und je zwei Heiler gegen Oskar (34 Leben), Maja (30 Leben), 3 Büttel und 1 Bogenschützen. Die frühere Verstärkung (zwei Büttel in Runde 4) und die erhöhten Leben der Zwillinge (36 und 32) sind entfernt, weil die Mission in der Simulation deutlich schwerer war als die Oase (bei ×1,25: 76 % gegen 99 %). Mit den alten Heilern (Wendy und Robo, Robo ist ein Tank) ist die Mission viel leichter: Lumi und Dr. Humbug sind reine Heiler, deshalb liegt die Schwierigkeit mit ihnen höher. Zahlen: Siegquote / durchschnittliche Runden, bei steigender Gegnerstärke.
 
-| Heiler | ×1.0 | ×1.25 | ×1.5 |
-|---|--:|--:|--:|
-| Mit Lumi und Dr. Humbug | 100% / 12.5 | 86% / 16.3 | 17% / 16.7 |
-| Mit Wendy und Robo | 100% / 9.8 | 100% / 12.0 | 90% / 15.1 |
+| Heiler | ×1.0 | ×1.25 | ×1.5 | ×1.75 |
+|---|--:|--:|--:|--:|
+| Mit Lumi und Dr. Humbug | 100% / 10.7 | 95% / 15.2 | 17% / 16.9 | 0% / 14.2 |
+| Mit Wendy und Robo | 100% / 8.8 | 100% / 10.6 | 96% / 14.2 | 53% / 16.0 |
+
+## 13. Mission 8: Die bewachte Oase (Panzer, Übernahme)
+
+Aufstellung der Karte: Robo, Mira, Albrecht, Elisabeth, Wendy und Dr. Humbug gegen Xiùlán (40 Leben) und acht Soldaten; in Runde 5 rollt Robinas Panzer heran (unantastbar, Breitseite). Gewonnen ist, wenn mindestens ein Held drei Runden in Folge neben dem Panzer steht. Die Simulations-KI schickt die stabilsten 1, 2 oder 3 Nicht-Heiler zum Panzer, die übrigen kämpfen normal. Zahlen: Siegquote / durchschnittliche Runden, bei steigender Gegnerstärke.
+
+| zum Panzer | ×1.0 | ×1.25 | ×1.5 | ×1.75 |
+|---|--:|--:|--:|--:|
+| 1 Held | 100% / 8.2 | 92% / 10.1 | 36% / 10.5 | 12% / 9.4 |
+| 2 Helden | 100% / 8.0 | 99% / 8.8 | 75% / 9.4 | 31% / 9.0 |
+| 3 Helden | 100% / 7.7 | 100% / 8.6 | 84% / 9.0 | 39% / 8.8 |
 
 ## Grenzen
 

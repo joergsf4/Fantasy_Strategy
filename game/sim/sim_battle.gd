@@ -24,6 +24,10 @@ var _uid := 1
 var world := World.new([])                # Weltobjekte (Feuer, Haeuser ...); leer = keine
 var flammable: Dictionary = {}            # Waldfelder
 var goal_tile := Vector2i(-1, -1)          # Ziel "reach": ein Held auf diesem Feld gewinnt
+var capture_id := ""                       # Ziel "capture" (Mission 8): wer N Runden in Folge neben dieser Figur steht, uebernimmt sie
+var capture_turns := 3
+var capture_progress := 0
+var capture_squad := 2                     # so viele Helden schickt die Spieler-KI zum Panzer (die uebrigen kaempfen normal)
 var late: Array = []                      # Missions-Spawns nach Runde: {turn, id, team, pos, hp, atk}
 var kids_stung := 0                       # Kapitel 5: Bienen am Waisenhaus
 var retreated: Array = []                 # Gegner, die sich zurueckgezogen haben (Stachelia)
@@ -252,12 +256,38 @@ func foes_of(u: Dictionary) -> Array[Dictionary]:
 	return out
 
 
+func untouchable(o: Dictionary) -> bool:
+	return o["team"] == "e" and (o["tags"] as Array).has("unantastbar")
+
+
 func visible_foes(u: Dictionary) -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
 	for o in units:
-		if o["team"] != u["team"] and not Status.has(o, "stealth"):
+		if o["team"] != u["team"] and not Status.has(o, "stealth") and not untouchable(o):
 			out.append(o)
 	return out
+
+
+## Mission 8: der Panzer (Spielerfiguren neben ihm zaehlen am Ende der Spielerphase).
+func capture_unit() -> Dictionary:
+	if capture_id == "":
+		return {}
+	for o in units:
+		if o["id"] == capture_id and o["team"] == "e":
+			return o
+	return {}
+
+
+func capture_phase() -> void:
+	var cu := capture_unit()
+	if cu.is_empty():
+		capture_progress = 0
+		return
+	var near := false
+	for h in units:
+		if h["team"] == "p" and Grid.dist(h["pos"], cu["pos"]) == 1:
+			near = true
+	capture_progress = capture_progress + 1 if near else 0
 
 
 func friends_of(u: Dictionary) -> Array[Dictionary]:
@@ -455,7 +485,7 @@ func ab_targets(u: Dictionary, id: String, pos: Vector2i) -> Array[Dictionary]:
 		if dd < r[0] or dd > r[1]:
 			continue
 		if ab["target"] == "enemy":
-			if o["team"] == u["team"] or Status.has(o, "stealth"):
+			if o["team"] == u["team"] or Status.has(o, "stealth") or untouchable(o):
 				continue
 			if ab.get("require_back", false) and not from_behind(pos, o):
 				continue
@@ -519,7 +549,7 @@ func effect_victims(u: Dictionary, ab: Dictionary, target: Dictionary, to: Strin
 			var d := Vector2i(signi(target["pos"].x - pos.x), signi(target["pos"].y - pos.y))
 			for k in range(1, int(ab["range"][1]) + 1):
 				var o := unit_at(pos + d * k)
-				if not o.is_empty() and o["team"] != u["team"] and not Status.has(o, "stealth"):
+				if not o.is_empty() and o["team"] != u["team"] and not Status.has(o, "stealth") and not untouchable(o):
 					out.append(o)
 		"area_enemies", "area_allies":
 			var center: Vector2i = pos if ab["target"] == "self" else target["pos"]
@@ -528,7 +558,7 @@ func effect_victims(u: Dictionary, ab: Dictionary, target: Dictionary, to: Strin
 				if not tiles.has(o["pos"]):
 					continue
 				var enemy: bool = o["team"] != u["team"]
-				if (to == "area_enemies" and enemy and not Status.has(o, "stealth")) or (to == "area_allies" and not enemy):
+				if (to == "area_enemies" and enemy and not Status.has(o, "stealth") and not untouchable(o)) or (to == "area_allies" and not enemy):
 					out.append(o)
 	return out
 
@@ -557,7 +587,7 @@ func _apply_effect(u: Dictionary, ab: Dictionary, target: Dictionary, ef: Dictio
 					strike(u, v, ef["mult"], ef.get("ignore_def", 0.0), false, id)
 		"splash":
 			var near := units.filter(func(o: Dictionary) -> bool:
-				return o["team"] != u["team"] and o != target and Grid.dist(o["pos"], target["pos"]) == 1)
+				return o["team"] != u["team"] and o != target and not untouchable(o) and Grid.dist(o["pos"], target["pos"]) == 1)
 			for v in near:
 				strike(u, v, ef["mult"], 0.0, false, id)
 		"assassinate":
@@ -687,6 +717,8 @@ func begin_phase(team: String) -> void:
 func winner() -> String:
 	var p := 0
 	var e := 0
+	if capture_id != "" and capture_progress >= capture_turns:
+		return "p"
 	for u in units + away:
 		if u["team"] == "p":
 			p += 1
@@ -694,7 +726,7 @@ func winner() -> String:
 				return "p"
 		else:
 			e += 1
-	if e == 0 and goal_tile.x < 0:
+	if e == 0 and goal_tile.x < 0 and capture_id == "":
 		return "p"
 	if p == 0:
 		return "e"
@@ -748,6 +780,7 @@ func play(max_turns := MAX_TURNS) -> String:
 				return winner()
 		first = false
 		act_phase("p")
+		capture_phase()
 		if winner() != "":
 			return winner()
 		begin_phase("e")

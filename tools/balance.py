@@ -373,7 +373,7 @@ def e11_desert():
     new = ["elisabeth", "hund", "maedchen_baer", "ritter", "magical_girl", "quacksalber"]
     old = ["elisabeth", "hund", "maedchen_baer", "ritter", "wendy", "robo"]
     variants = {"neue_heiler": new, "alte_heiler": old}
-    mults = [1.0, 1.25, 1.5]
+    mults = [1.0, 1.25, 1.5, 1.75]
     quick = bool(os.environ.get("E11_QUICK"))
     if quick:
         variants = {"neue_heiler": new}
@@ -387,6 +387,26 @@ def e11_desert():
         print("  ", v, [(m, round(wr(res[f'{v}|{m}']), 2), round(res[f'{v}|{m}']['turns'] / res[f'{v}|{m}']['n'], 1)) for m in mults])
     if not quick:
         save("e11", {"cells": res, "mults": mults, "variants": list(variants)})
+
+
+def e12_oasis():
+    """Mission 8 (Die bewachte Oase): Siegquote mit Panzer (unantastbar, Breitseite) und Uebernahme nach drei Runden neben ihm;
+    capture_squad = so viele Helden (die stabilsten Nicht-Heiler) schickt die KI zum Panzer."""
+    print("E12: Mission 8, Oase und Panzer")
+    mission = json.loads((GAME / "data" / "map_ch8.json").read_text())
+    foes = [e["id"] for e in mission["enemies"]]
+    party = [p["id"] for p in mission["players"]]
+    mults = [1.0, 1.25, 1.5, 1.75]
+    squads = [1, 2, 3]
+    cells = []
+    for sq in squads:
+        for m in mults:
+            cells.append({"name": f"sq{sq}|{m}", "n": 400, "seed": 1010000, "map": "ch8", "party": {"fixed": party},
+                          "enemy": {"fixed": foes}, "e_mods": {"hp": m, "atk": m}, "e_ai": {}, "capture_squad": sq})
+    res = run_cells(cells)
+    for sq in squads:
+        print("  ", sq, [(m, round(wr(res[f'sq{sq}|{m}']), 2), round(res[f'sq{sq}|{m}']['turns'] / res[f'sq{sq}|{m}']['n'], 1)) for m in mults])
+    save("e12", {"cells": res, "mults": mults, "squads": squads})
 
 
 def e7_fire():
@@ -841,7 +861,7 @@ def report():
         cells = e11["cells"]
         nm = {"neue_heiler": "Mit Lumi und Dr. Humbug", "alte_heiler": "Mit Wendy und Robo"}
         w("## 12. Mission 7: Sandhafen (Wüste, Zwillinge)\n")
-        w("Aufstellung der Karte: Elisabeth, Hundsfreund, Mira, Albrecht und je zwei Heiler gegen Oskar (36 Leben), Maja (32 Leben), 3 Büttel, 1 Bogenschützen und 2 Büttel Verstärkung aus der Wüste in Runde 4. Mit den alten Heilern (Wendy und Robo, Robo ist ein Tank) ist die Mission viel leichter: Lumi und Dr. Humbug sind reine Heiler, deshalb liegt die Schwierigkeit mit ihnen höher. "
+        w("Aufstellung der Karte: Elisabeth, Hundsfreund, Mira, Albrecht und je zwei Heiler gegen Oskar (34 Leben), Maja (30 Leben), 3 Büttel und 1 Bogenschützen. Die frühere Verstärkung (zwei Büttel in Runde 4) und die erhöhten Leben der Zwillinge (36 und 32) sind entfernt, weil die Mission in der Simulation deutlich schwerer war als die Oase (bei ×1,25: 76 % gegen 99 %). Mit den alten Heilern (Wendy und Robo, Robo ist ein Tank) ist die Mission viel leichter: Lumi und Dr. Humbug sind reine Heiler, deshalb liegt die Schwierigkeit mit ihnen höher. "
           "Zahlen: Siegquote / durchschnittliche Runden, bei steigender Gegnerstärke.\n")
         w("| Heiler | " + " | ".join(f"×{m}" for m in e11["mults"]) + " |")
         w("|---|" + "--:|" * len(e11["mults"]))
@@ -854,6 +874,24 @@ def report():
         w("")
         a0, a1 = cells["neue_heiler|1.0"], cells["alte_heiler|1.0"]
         notes.append(f"Mission 7: bei ×1,0 gewinnt die Gruppe mit den neuen Heilern {wr(a0):.0%} (mit Wendy und Robo {wr(a1):.0%})")
+
+    # ---- E12
+    e12 = R.get("e12")
+    if e12:
+        cells = e12["cells"]
+        w("## 13. Mission 8: Die bewachte Oase (Panzer, Übernahme)\n")
+        w("Aufstellung der Karte: Robo, Mira, Albrecht, Elisabeth, Wendy und Dr. Humbug gegen Xiùlán (40 Leben) und acht Soldaten; in Runde 5 rollt Robinas Panzer heran (unantastbar, Breitseite). Gewonnen ist, wenn mindestens ein Held drei Runden in Folge neben dem Panzer steht. Die Simulations-KI schickt die stabilsten 1, 2 oder 3 Nicht-Heiler zum Panzer, die übrigen kämpfen normal. Zahlen: Siegquote / durchschnittliche Runden, bei steigender Gegnerstärke.\n")
+        w("| zum Panzer | " + " | ".join(f"×{m}" for m in e12["mults"]) + " |")
+        w("|---|" + "--:|" * len(e12["mults"]))
+        for sq in e12["squads"]:
+            row = []
+            for m in e12["mults"]:
+                a = cells[f"sq{sq}|{m}"]
+                row.append(f"{wr(a):.0%} / {a['turns'] / a['n']:.1f}")
+            w(f"| {sq} Held{'en' if sq > 1 else ''} | " + " | ".join(row) + " |")
+        w("")
+        a2 = cells["sq2|1.25"]
+        notes.append(f"Mission 8: mit zwei Helden am Panzer gewinnt die Gruppe bei ×1,25 {wr(a2):.0%} ({a2['turns'] / a2['n']:.1f} Runden)")
 
     # ---- Kurzfassung oben
     head = ["## Kurzfassung\n"] + [f"- {n}" for n in notes] + [""]
@@ -874,7 +912,7 @@ def report():
 
 
 STEPS = {"calib": calib, "e0": e0_ratings, "e1": e1_contribution, "e2": e2_ablation, "e3": e3_difficulty,
-         "e3base": lambda: e3_difficulty(False), "e4": e4_power_ratio, "e5": e5_items, "e6": e6_defend, "e7": e7_fire, "e8": e8_bees, "e9": e9_harbor, "e10": e10_wait, "e11": e11_desert, "report": report}
+         "e3base": lambda: e3_difficulty(False), "e4": e4_power_ratio, "e5": e5_items, "e6": e6_defend, "e7": e7_fire, "e8": e8_bees, "e9": e9_harbor, "e10": e10_wait, "e11": e11_desert, "e12": e12_oasis, "report": report}
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
