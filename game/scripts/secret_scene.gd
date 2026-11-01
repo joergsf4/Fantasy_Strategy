@@ -1,13 +1,10 @@
 class_name SecretScene
 extends Dialogue
 ## Szene einer geheimen Interaktion: bekanntes Dialogformat (links ein Charakter, rechts der zweite), dazu ein Sonderbild mit
-## Tiefenwirkung: Hintergrund, zwei Charakterebenen und ein fliegendes Vordergrundobjekt verschieben sich gegeneinander
+## Tiefenwirkung: zwei Charakterebenen und ein fliegendes Vordergrundobjekt verschieben sich gegeneinander
 ## (Maus und leichtes Schwanken), vorneweg ein Titelbanner "Geheime Interaktion".
 
-const BG_DIR := "res://assets/secrets/"
-
 var secret: Dictionary = {}
-var _bg: TextureRect
 var _fore: Control
 var _intro_done := false
 var _t := 0.0
@@ -32,21 +29,6 @@ func setup_secret(sec: Dictionary, unit_names: Dictionary) -> void:
 func _ready() -> void:
 	theme = UiTheme.get_theme()
 	set_anchors_preset(Control.PRESET_FULL_RECT)
-	_bg = TextureRect.new()
-	var bgp: String = BG_DIR + str(secret["scene"].get("background", "")) + ".jpg"
-	if ResourceLoader.exists(bgp):
-		_bg.texture = load(bgp)
-	_bg.position = Vector2(-60, -40)
-	_bg.size = Vector2(1400, 800)
-	_bg.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	_bg.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-	_bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(_bg)
-	var shade := ColorRect.new()          # leichte Abdunklung, damit die Figuren stehen
-	shade.color = Color(0.05, 0.03, 0.08, 0.25)
-	shade.set_anchors_preset(Control.PRESET_FULL_RECT)
-	shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(shade)
 	super._ready()
 	_left.position = Vector2(-40, 60)       # breitere Buehne: Brunhildes Pose samt Fass braucht Platz
 	_left.size = Vector2(900, 540)
@@ -164,8 +146,6 @@ func _process(delta: float) -> void:
 	var vp := get_viewport_rect().size
 	var m := (get_viewport().get_mouse_position() / vp - Vector2(0.5, 0.5)) if vp.x > 0 else Vector2.ZERO
 	var sway := Vector2(sin(_t * 0.9), cos(_t * 1.3) * 0.6)
-	_bg.position = Vector2(-60, -40) - m * 18.0 - sway * 5.0
-	_bg.scale = Vector2.ONE * (1.0 + 0.02 * sin(_t * 0.4))
 	if _breath >= 1.0 or _intro_done:
 		_left.position = _base["l"] - m * 38.0 + sway * 7.0
 		_right.position = _base["r"] - m * 52.0 - Vector2(sway.x, -sway.y) * 9.0

@@ -336,7 +336,7 @@ func _secret() -> void:
 	layer.layer = 6
 	add_child(layer)
 	var dim := ColorRect.new()
-	dim.color = Color(0.02, 0.01, 0.04, 0.9)
+	dim.color = Color(0.02, 0.03, 0.08, 0.5)
 	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
 	layer.add_child(dim)
 	var d := SecretScene.new()

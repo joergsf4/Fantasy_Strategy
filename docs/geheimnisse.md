@@ -6,12 +6,12 @@ Zwischen bestimmten Figuren gibt es versteckte Wechselwirkungen. Der Spieler fin
 
 - **Auslöser** (`ability_on_ally`): Figur A setzt eine Fähigkeit, die sonst auf Gegner zielt, auf einen Verbündeten B ein. B erscheint dann als Ziel. Ohne passendes Geheimnis ist B kein Ziel. Im Zielhinweis steht nur „Fähigkeit: A → B“, kein Schaden und keine Erklärung.
 - **Wirkung** (bis Kampfende): Angriffsbonus in Prozent (dauerhafter Status, mindestens +1), eine neue Fähigkeit, ein Statussymbol. Der Verbündete nimmt keinen Schaden.
-- **Szene** beim ersten Mal (`SecretScene`, Erbe von `Dialogue`): das bekannte Format, links ein Charakter, rechts der zweite, dazu Sonderbild mit Tiefenwirkung: Hintergrund, zwei Charakterebenen und ein fliegendes Vordergrundobjekt (Fass) verschieben sich gegeneinander (Maus und leichtes Schwanken), Banner „Geheime Interaktion“, Schaumausbruch und Goldblitz. Später läuft nur noch der Effekt. Gesehene Szenen speichert `Party.secrets_seen` im Spielstand.
+- **Szene** beim ersten Mal (`SecretScene`, Erbe von `Dialogue`): das bekannte Format, links ein Charakter, rechts der zweite, dazu Sonderbild mit Tiefenwirkung: zwei Charakterebenen und ein fliegendes Vordergrundobjekt (Fass) verschieben sich gegeneinander (Maus und leichtes Schwanken), Banner „Geheime Interaktion“, Schaumausbruch und Goldblitz. Die Szene liegt wie jeder Dialog vor der (leicht abgedunkelten) Karte, nicht vor einem eigenen Hintergrundbild, damit sie zu jedem Schauplatz passt. Später läuft nur noch der Effekt. Gesehene Szenen speichert `Party.secrets_seen` im Spielstand.
 - Ein Geheimnis löst pro Kampf einmal aus.
 
 ## Daten
 
-`game/data/secrets.json` (bearbeitbar im Dialog-Editor, Tab **Geheimnisse**: Auslöser, Wirkung, Bilder und Zeilen der Szene mit Vorschau; gespeichert mit dem gemeinsamen Speichern-Button). Szenenbilder sind Porträts (`game/assets/portraits/sec_*.png`, Gemini, freigestellt mit `tools/chroma_key.py neu`) und Hintergründe (`game/assets/secrets/bg_*.jpg`, `chroma_key.py bg`). Code: `scripts/secrets.gd`, `Battle._run_secret`, `scripts/secret_scene.gd`, Animation `FxNew.secret_reveal`.
+`game/data/secrets.json` (bearbeitbar im Dialog-Editor, Tab **Geheimnisse**: Auslöser, Wirkung, Bilder und Zeilen der Szene mit Vorschau; gespeichert mit dem gemeinsamen Speichern-Button). Szenenbilder sind Porträts (`game/assets/portraits/sec_*.png`, Gemini, freigestellt mit `tools/chroma_key.py neu`) (Hintergrundbilder gibt es nicht mehr; `chroma_key.py bg` und der Auftrag `bg_betrunken` in `run.mjs` bleiben als Werkzeug). Code: `scripts/secrets.gd`, `Battle._run_secret`, `scripts/secret_scene.gd`, Animation `FxNew.secret_reveal`.
 
 ## Erstes Geheimnis: Betrunkener Meister
 
@@ -19,4 +19,4 @@ Brunhilde wirft ihren Fasswurf auf Meister Lin. Lin bekommt Bierlaune (goldene A
 
 ## Neues Geheimnis anlegen
 
-Im Editor-Tab „Neues Geheimnis“: Figur und Fähigkeit wählen (nur Fähigkeiten mit Gegner-Ziel), Verbündeten wählen, Wirkung eintragen, Bilder und Text der Szene setzen. Eigene Bilder: in `tools/gemini/run.mjs` Aufträge `sec_<name>_<figur>` (Porträt, Figur links bzw. rechts) und `bg_<name>` anlegen, dann `chroma_key.py neu` und `bg`. Neue Fähigkeiten stehen in `abilities.json`.
+Im Editor-Tab „Neues Geheimnis“: Figur und Fähigkeit wählen (nur Fähigkeiten mit Gegner-Ziel), Verbündeten wählen, Wirkung eintragen, Bilder und Text der Szene setzen. Eigene Bilder: in `tools/gemini/run.mjs` Aufträge `sec_<name>_<figur>` (Porträt, Figur links bzw. rechts) anlegen, dann `chroma_key.py neu`. Neue Fähigkeiten stehen in `abilities.json`.

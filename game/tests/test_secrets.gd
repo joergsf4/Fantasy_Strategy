@@ -54,7 +54,6 @@ func run_tests() -> void:
 	check(not sec.is_empty() and sec["id"] == "betrunkener_meister", "Geheimnis in secrets.json gefunden")
 	check(Secrets.find("braumeisterin", "fasswurf", "ritter").is_empty(), "Fasswurf auf Albrecht ist kein Geheimnis")
 	check(ResourceLoader.exists("res://assets/portraits/%s.png" % sec["scene"]["left"]) and ResourceLoader.exists("res://assets/portraits/%s.png" % sec["scene"]["right"]), "Bilder der Szene existieren")
-	check(ResourceLoader.exists("res://assets/secrets/%s.jpg" % sec["scene"]["background"]), "Hintergrund existiert")
 
 	# Zielwahl: nur Lin ist als Verbuendeter zielbar
 	clear()

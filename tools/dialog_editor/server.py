@@ -274,12 +274,11 @@ def secrets() -> dict:
     units = read(DATA / "units.json")
     abilities = read(DATA / "abilities.json")
     portraits = sorted(p.stem for p in (ASSETS / "portraits").glob("*.png"))
-    bgs = sorted(p.stem for p in (ASSETS / "secrets").glob("*.jpg"))
     return {"secrets": read(DATA / "secrets.json")["secrets"],
             "units": {k: {"name": v["name"], "abilities": [a for a in v.get("abilities", []) if abilities.get(a, {}).get("target") == "enemy"], "hero": bool(v.get("hero"))}
                       for k, v in units.items() if isinstance(v, dict) and "name" in v},
             "abilities": {k: v["name"] for k, v in abilities.items()},
-            "portraits": portraits, "backgrounds": bgs}
+            "portraits": portraits}
 
 
 def save_secrets(body: dict) -> None:
@@ -287,7 +286,6 @@ def save_secrets(body: dict) -> None:
     units = read(DATA / "units.json")
     abilities = read(DATA / "abilities.json")
     portraits = {p.stem for p in (ASSETS / "portraits").glob("*.png")}
-    bgs = {p.stem for p in (ASSETS / "secrets").glob("*.jpg")}
     out, ids, triples = [], set(), set()
     for sec in body["secrets"]:
         sid = sec["id"]
@@ -321,8 +319,6 @@ def save_secrets(body: dict) -> None:
         sc = sec["scene"]
         if sc["left"] not in portraits or sc["right"] not in portraits:
             raise ValueError(f"{name}: unbekanntes Bild in der Szene")
-        if sc.get("background", "") and sc["background"] not in bgs:
-            raise ValueError(f"{name}: unbekannter Hintergrund")
         lines = sc["lines"]
         if not 1 <= len(lines) <= 12:
             raise ValueError(f"{name}: die Szene braucht 1 bis 12 Zeilen")
@@ -333,7 +329,7 @@ def save_secrets(body: dict) -> None:
             l["text"] = txt
         out.append({"id": sid, "name": name, "trigger": {"type": "ability_on_ally", "by": by, "ability": ab, "target": on},
                     "effects": {"atk_pct": pct, "grant_ability": gift, "status": status},
-                    "scene": {"left": sc["left"], "right": sc["right"], "background": sc.get("background", ""), "lines": [{"speaker": l["speaker"], "text": l["text"]} for l in lines]}})
+                    "scene": {"left": sc["left"], "right": sc["right"], "lines": [{"speaker": l["speaker"], "text": l["text"]} for l in lines]}})
     path = DATA / "secrets.json"
     cur = read(path)
     cur["secrets"] = out

@@ -208,7 +208,7 @@ func _secret_scene(sec: Dictionary) -> void:
 	layer.layer = 8
 	add_child(layer)
 	var dim := ColorRect.new()
-	dim.color = Color(0.02, 0.01, 0.04, 0.82)
+	dim.color = Color(0.02, 0.03, 0.08, 0.5)
 	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
 	layer.add_child(dim)
 	var d := SecretScene.new()
@@ -257,11 +257,12 @@ func _screenshot_mode() -> void:
 		stage = Stage.new()
 		stage.setup(map, units)
 		add_child(stage)
+		stage.start_battle()
 		var sl := CanvasLayer.new()
 		sl.layer = 8
 		add_child(sl)
 		var sdim := ColorRect.new()
-		sdim.color = Color(0.02, 0.01, 0.04, 0.82)
+		sdim.color = Color(0.02, 0.03, 0.08, 0.5)
 		sdim.set_anchors_preset(Control.PRESET_FULL_RECT)
 		sl.add_child(sdim)
 		var ss := SecretScene.new()

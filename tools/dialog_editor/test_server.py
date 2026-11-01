@@ -152,7 +152,7 @@ class EditorTest(unittest.TestCase):
         bad = []
         for mutate in (lambda s: s["trigger"].update(ability="baerenpranke"), lambda s: s["trigger"].update(by="gibtsnicht"), lambda s: s["trigger"].update(target="braumeisterin"),
                        lambda s: s["effects"].update(atk_pct=500), lambda s: s["effects"].update(grant_ability="nix"), lambda s: s["scene"].update(left="nix"),
-                       lambda s: s["scene"].update(background="nix"), lambda s: s["scene"].update(lines=[]), lambda s: s["scene"]["lines"][0].update(speaker="ritter"),
+                       lambda s: s["scene"].update(lines=[]), lambda s: s["scene"]["lines"][0].update(speaker="ritter"),
                        lambda s: s.update(id="Gross Klein")):
             c = copy.deepcopy(new); mutate(c[0]); bad.append(c)
         c = copy.deepcopy(new) + copy.deepcopy(new); bad.append(c)                   # doppelte Kennung

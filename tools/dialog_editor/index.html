@@ -92,7 +92,7 @@ body.view-sec nav.chapters, body.view-sec aside.pal, body.view-sec #q, body.view
 /* Geheimnisse */
 .scard { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); margin-bottom: 18px; padding: 14px; display: grid; grid-template-columns: minmax(280px, 420px) 1fr; gap: 18px; }
 @media (max-width: 900px) { .scard { grid-template-columns: 1fr; } }
-.sprev { position: relative; aspect-ratio: 16 / 9; border-radius: 8px; overflow: hidden; background: #000 center / cover; border: 1px solid var(--line); }
+.sprev { position: relative; aspect-ratio: 16 / 9; border-radius: 8px; overflow: hidden; background: linear-gradient(#3f6e3a, #2a4a2a) center / cover; border: 1px solid var(--line); }
 .sprev img { position: absolute; bottom: 0; height: 88%; object-fit: contain; }
 .sprev .l { left: -2%; max-width: 62%; } .sprev .r { right: -2%; max-width: 56%; }
 .sprev .tag { position: absolute; top: 6px; left: 0; right: 0; text-align: center; color: var(--gold); font-weight: 700; text-shadow: 0 1px 4px #000; font-size: 15px; }
@@ -756,8 +756,8 @@ async function saveSecrets() {
 }
 const secOpts = (list, sel, blank) => (blank !== undefined ? `<option value="" ${sel === "" ? "selected" : ""}>${esc(blank)}</option>` : "") + list.map(([v, t]) => `<option value="${esc(v)}" ${v === sel ? "selected" : ""}>${esc(t)}</option>`).join("");
 function secPreview(x) {
-  const sc = x.scene, bg = sc.background ? `style="background-image:url(/assets/secrets/${esc(sc.background)}.jpg)"` : "";
-  return `<div class="sprev" ${bg} data-prev="${esc(x.id)}"><img class="l" src="/assets/portraits/${esc(sc.left)}.png" alt=""><img class="r" src="/assets/portraits/${esc(sc.right)}.png" alt=""><div class="tag">✦ GEHEIME INTERAKTION ✦ ${esc(x.name)}</div></div>`;
+  const sc = x.scene;
+  return `<div class="sprev" data-prev="${esc(x.id)}"><img class="l" src="/assets/portraits/${esc(sc.left)}.png" alt=""><img class="r" src="/assets/portraits/${esc(sc.right)}.png" alt=""><div class="tag">✦ GEHEIME INTERAKTION ✦ ${esc(x.name)}</div></div>`;
 }
 function secCard(x, i) {
   const o = SEC, uname = id => o.units[id]?.name || id, t = x.trigger, sc = x.scene, fig = Object.entries(o.units).map(([k, u]) => [k, u.name]);
@@ -765,7 +765,7 @@ function secCard(x, i) {
   const who = [[t.by, uname(t.by)], [t.target, uname(t.target)]];
   const pt = list => list.map(n => [n, n]);
   return `<div class="scard" data-sec="${i}">
-    <div>${secPreview(x)}<p class="hint" style="margin-top:6px">Vorschau: links ${esc(uname(t.by))}, rechts ${esc(uname(t.target))}. Im Spiel kommen Banner, Tiefenwirkung (Maus) und ein fliegendes Fass dazu.</p></div>
+    <div>${secPreview(x)}<p class="hint" style="margin-top:6px">Vorschau: links ${esc(uname(t.by))}, rechts ${esc(uname(t.target))}. Im Spiel liegt die Szene vor der Karte, dazu kommen Banner, Tiefenwirkung (Maus) und ein fliegendes Fass.</p></div>
     <div class="sform">
       <label>Name des Geheimnisses</label><input type="text" class="wide" data-f="name" value="${esc(x.name)}" maxlength="60">
       <div class="sbox"><h4>Auslöser</h4><div class="row">
@@ -779,8 +779,7 @@ function secCard(x, i) {
         · Status <input type="text" data-f="status" value="${esc(x.effects.status || "betrunken")}" style="width:110px" aria-label="Status-Kennung"></div></div>
       <div class="sbox"><h4>Szene (läuft beim ersten Mal)</h4><div class="row">
         Links <select data-f="left">${secOpts(pt(o.portraits), sc.left)}</select>
-        Rechts <select data-f="right">${secOpts(pt(o.portraits), sc.right)}</select>
-        Hintergrund <select data-f="background">${secOpts(pt(o.backgrounds), sc.background || "", "ohne")}</select></div>
+        Rechts <select data-f="right">${secOpts(pt(o.portraits), sc.right)}</select></div>
         ${sc.lines.map((l, j) => `<div class="sline"><select data-f="speaker" data-j="${j}" aria-label="Sprecher">${secOpts(who, l.speaker)}</select>
           <textarea data-f="text" data-j="${j}" rows="2" aria-label="Text der Zeile ${j + 1}">${esc(l.text)}</textarea>
           <button class="btn ghost" data-sact="rmline" data-j="${j}" aria-label="Zeile entfernen" title="Zeile entfernen">✕</button></div>`).join("")}
@@ -800,7 +799,7 @@ function secNew() {
   const by = "braumeisterin", u = SEC.units[by] ? by : Object.keys(SEC.units)[0], ab = SEC.units[u].abilities[0] || "", other = Object.keys(SEC.units).find(k => k !== u);
   let n = 1; while (sec.some(x => x.id === "geheimnis_" + n)) n++;
   sec.push({ id: "geheimnis_" + n, name: "Neues Geheimnis", trigger: { type: "ability_on_ally", by: u, ability: ab, target: other }, effects: { atk_pct: 10, grant_ability: "", status: "betrunken" },
-    scene: { left: SEC.portraits[0], right: SEC.portraits[1] || SEC.portraits[0], background: SEC.backgrounds[0] || "", lines: [{ speaker: u, text: "" }] } });
+    scene: { left: SEC.portraits[0], right: SEC.portraits[1] || SEC.portraits[0], lines: [{ speaker: u, text: "" }] } });
 }
 document.addEventListener("input", e => {
   const el = e.target, card = el.closest?.(".scard"); if (!card || view !== "sec" || el.matches("select")) return;
@@ -817,7 +816,7 @@ document.addEventListener("change", e => {
   if (f === "by") { x.trigger.by = el.value; x.trigger.ability = SEC.units[el.value].abilities[0] || ""; x.scene.lines.forEach(l => { if (l.speaker !== x.trigger.target) l.speaker = el.value; }); }
   else if (f === "ability" || f === "target") { x.trigger[f] = el.value; if (f === "target") x.scene.lines.forEach(l => { if (l.speaker !== x.trigger.by) l.speaker = el.value; }); }
   else if (f === "grant_ability") x.effects.grant_ability = el.value;
-  else if (["left", "right", "background"].includes(f)) x.scene[f] = el.value;
+  else if (["left", "right"].includes(f)) x.scene[f] = el.value;
   else if (f === "speaker") x.scene.lines[+el.dataset.j].speaker = el.value;
   renderSec(); updateStatus();
 });
