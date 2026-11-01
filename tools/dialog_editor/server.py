@@ -70,6 +70,134 @@ def load_all() -> dict:
     return {"chapters": chapters, "units": out_units, "abilities": abilities}
 
 
+# ---------------------------------------------------------------- Charaktere (Uebersicht, nur lesen)
+ROLE_DE = {"tank": "Tank", "damage": "Schaden", "healer": "Heiler", "mage": "Magier", "": ""}
+ROLE_ORDER = ["Gruppe", "Gegner", "Verstärkung", "stößt dazu", "im Gespräch"]
+
+
+def design_notes() -> dict:
+    """Entwurfsnotizen je Figur aus docs/figuren.md: Abschnitte ab '### ', die ID steht in Backticks (`id` · Chibi ...)."""
+    out: dict = {}
+    text = (ROOT / "docs" / "figuren.md").read_text(encoding="utf-8")
+    for block in re.split(r"\n(?=### )", text):
+        m = re.search(r"^`([a-z_]+)` ·", block, re.M)
+        if not m:
+            continue
+        tag = re.search(r"^\*(.+?)\*\s*$", block, re.M)
+        def field(name):
+            f = re.search(r"\*\*" + name + r"[^*]*\*\*\s*\n?(.*?)(?=\n\*\*|\n---|\Z)", block, re.S)
+            return re.sub(r"\s+", " ", f.group(1)).strip() if f else ""
+        out[m.group(1)] = {"tagline": tag.group(1).strip() if tag else "", "typ": field("Typ"), "spezial": field("Spezialattacke"), "sonstiges": field("Sonstiges")}
+    return out
+
+
+def characters() -> dict:
+    """Uebersicht aller Figuren: erstes Auftreten, Faehigkeiten, Rollen und Dialogzeilen je Kapitel, Material, Notizen."""
+    units = read(DATA / "units.json")
+    abil = read(DATA / "abilities.json")
+    chapters = chapter_ids()
+    app: dict = {}         # id -> {Kapitelnummer: {"roles": set, "lines": {Art: n}, "convs": n}}
+    quote: dict = {}
+    grants: dict = {}      # id -> [(Kapitel, Faehigkeit)]
+    returns: dict = {}     # id -> Kapitel, in denen ein Ausloeser auf "entkommen" prueft
+    no_flee: dict = {}
+
+    def slot(uid, n):
+        return app.setdefault(uid, {}).setdefault(n, {"roles": set(), "lines": {}, "convs": 0})
+
+    def lines_in(n, kind, lines):
+        speakers = set()
+        for l in lines:
+            for k in ("left", "right"):
+                if l.get(k) and l[k] != "$hero":
+                    slot(l[k], n)["roles"].add("im Gespräch")
+            sp = l.get("speaker")
+            if sp and sp != "$hero":
+                sl = slot(sp, n)
+                sl["lines"][kind] = sl["lines"].get(kind, 0) + 1
+                speakers.add(sp)
+                txt = l.get("text") or next(iter((l.get("text_by") or {}).values()), "")
+                quote.setdefault(sp, txt)
+        for sp in speakers:
+            slot(sp, n)["convs"] += 1
+
+    for cid in chapters:
+        n = int(cid[2:])
+        m = read(DATA / "missions" / f"{cid}.json")
+        st = read(DATA / f"story_{cid}.json")
+        mp = read(ROOT / "game" / m["map"].removeprefix("res://"))
+        for e in mp["players"]:
+            slot(e["id"], n)["roles"].add("Gruppe")
+        for e in mp["enemies"]:
+            slot(e["id"], n)["roles"].add("Gegner")
+        for hero, ids in (mp.get("grants") or m.get("grants") or {}).items():
+            for a in ids:
+                grants.setdefault(hero, []).append((n, a))
+        for uid in m.get("no_flee", []):
+            no_flee.setdefault(uid, []).append(n)
+        lines_in(n, "Einleitung", st["intro"])
+        for t in m.get("triggers", []):
+            for uid in (t.get("if") or {}).get("fled", []):
+                returns.setdefault(uid, []).append(n)
+            for step in t.get("do", []):
+                for sp in step.get("spawn", []):
+                    slot(sp["id"], n)["roles"].add("Verstärkung" if sp.get("team", "e") == "e" else "stößt dazu")
+                if "dialogue" in step:
+                    lines_in(n, "Kampf", step["dialogue"])
+        for lines in (m.get("flee") or {}).values():
+            lines_in(n, "Rückzug", lines)
+        lines_in(n, "Abschluss", st["outro"])
+
+    portraits = {p.stem for p in (ASSETS / "portraits").glob("*.png")}
+    tokens = {p.stem for p in (ASSETS / "tokens").glob("*.png")}
+    notes = design_notes()
+    loadout = (read(DATA / "items.json").get("loadout_chapter1") or {}).get("equipment", {})
+    eq = read(DATA / "items.json").get("equipment", {})
+    ids = [k for k in units if not k.startswith("_") and "name" in units[k]] + [k for k in EXTRA_SPEAKERS if k != "$hero"]
+    out = []
+    for uid in ids:
+        u = units.get(uid)
+        special = u is None
+        a = app.get(uid, {})
+        per = {}
+        for n, d in sorted(a.items()):
+            per[str(n)] = {"roles": sorted(d["roles"], key=ROLE_ORDER.index), "lines": d["lines"], "total": sum(d["lines"].values()), "convs": d["convs"]}
+        first = None
+        if a:
+            n0 = min(a)
+            first = {"chapter": n0, "roles": per[str(n0)]["roles"]}
+        enemy_seen = any("Gegner" in d["roles"] or "Verstärkung" in d["roles"] for d in a.values())
+        if special:
+            kind = "Sonstige"
+        elif u.get("hero"):
+            kind = "Held"
+        elif "boss" in u.get("tags", []):
+            kind = "Boss"
+        else:
+            kind = "Gegner" if enemy_seen or not a else "Sonstige"
+        abilities = []
+        for aid in (u or {}).get("abilities", []):
+            ab = abil[aid]
+            abilities.append({"id": aid, "name": ab["name"], "text": ab.get("text", ""), "cd": ab.get("cd"), "range": ab.get("range"), "source": "Einheit"})
+        for n, aid in grants.get(uid, []):
+            ab = abil[aid]
+            abilities.append({"id": aid, "name": ab["name"], "text": ab.get("text", ""), "cd": ab.get("cd"), "range": ab.get("range"), "source": f"nur in Kapitel {n}"})
+        exprs = [e for e in ("lachend", "wuetend") if f"{uid}_{e}" in portraits]
+        gear = [eq.get(i, {}).get("name", i) for i in loadout.get(uid, [])]
+        out.append({
+            "id": uid, "name": (u or {}).get("name", EXTRA_SPEAKERS.get(uid, uid)), "kind": kind,
+            "stats": None if special else {k: u.get(k) for k in ("hp", "atk", "def", "res", "move", "range_min", "range")},
+            "role": ROLE_DE.get((u or {}).get("role", ""), ""), "dmg_type": "Magie" if (u or {}).get("dmg_type") == "magic" else ("Körper" if u else ""),
+            "heal": (u or {}).get("heal", 0), "passives": (u or {}).get("passives", []), "abilities": abilities,
+            "first": first, "chapters": per, "lines_total": sum(v["total"] for v in per.values()), "quote": quote.get(uid, ""),
+            "assets": {"portrait": uid in portraits, "exprs": exprs, "token": special or uid in tokens or (u or {}).get("portrait", uid) in tokens},
+            "flees": bool((u or {}).get("flees")), "no_flee": no_flee.get(uid, []), "returns": sorted(set(returns.get(uid, []))),
+            "from": (u or {}).get("from", 1) if (u or {}).get("hero") else None, "sound": None if special else f"{u.get('weapon', 'fist')} / {u.get('body', 'flesh')}",
+            "gear": gear, "notes": notes.get(uid, {}),
+        })
+    return {"characters": out, "chapters": [{"n": int(c[2:]), "id": c, "title": read(DATA / "missions" / f"{c}.json")["title"]} for c in chapters]}
+
+
 # ---------------------------------------------------------------- Pruefung (Vertrauensgrenze: nichts Kaputtes in die Spieldaten)
 def check_lines(lines, where: str, speakers: set) -> None:
     if not isinstance(lines, list):
@@ -203,6 +331,8 @@ class Handler(BaseHTTPRequestHandler):
         path = self.path.split("?")[0]
         if path == "/api/data":
             return self._json(200, load_all())
+        if path == "/api/characters":
+            return self._json(200, characters())
         if path == "/api/draft/available":
             return self._json(200, {"available": find_claude() is not None})
         if path == "/":

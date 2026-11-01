@@ -48,6 +48,34 @@ class EditorTest(unittest.TestCase):
         server.save_chapter("ch4", b)
         self.assertFalse(any(s.get("dialogue") == [] for t in server.read(server.DATA / "missions" / "ch4.json")["triggers"] for s in t["do"]))
 
+    def test_charaktere_erstes_auftreten_und_faehigkeiten(self):
+        data = server.characters()
+        by = {c["id"]: c for c in data["characters"]}
+        self.assertEqual(len(data["chapters"]), len(server.chapter_ids()))
+        self.assertEqual(by["wart"]["first"]["chapter"], 2)
+        self.assertIn("Gegner", by["wart"]["first"]["roles"])
+        self.assertEqual(by["xiulan"]["first"]["chapter"], 4)
+        self.assertEqual(by["hund"]["first"]["chapter"], 5)
+        self.assertIn("stößt dazu", by["hund"]["first"]["roles"])
+        self.assertEqual(by["magical_girl"]["first"]["chapter"], 7)
+        self.assertEqual(by["quacksalber"]["first"]["chapter"], 7)
+        for uid in ("claude", "fuerst", "dummy"):
+            self.assertIsNone(by[uid]["first"], uid)       # noch in keiner Mission
+        self.assertEqual(by["wart"]["abilities"][0]["name"], "Raketenwerfer")
+        eli = {a["id"]: a["source"] for a in by["elisabeth"]["abilities"]}
+        self.assertEqual(eli["kanone"], "Einheit")
+        self.assertEqual(eli["breitseite"], "nur in Kapitel 6")
+
+    def test_charaktere_dialogzeilen_stimmen_mit_den_daten(self):
+        by = {c["id"]: c for c in server.characters()["characters"]}
+        story = server.read(server.DATA / "story_ch1.json")
+        n = sum(1 for k in ("intro", "outro") for l in story[k] if l.get("speaker") == "wendy")
+        self.assertGreaterEqual(by["wendy"]["chapters"]["1"]["total"], n)
+        self.assertEqual(by["wendy"]["chapters"]["1"]["lines"].get("Einleitung", 0), sum(1 for l in story["intro"] if l.get("speaker") == "wendy"))
+        self.assertEqual(by["oskar"]["no_flee"], [7])
+        self.assertTrue(by["wart"]["flees"])
+        self.assertTrue(all(c["lines_total"] == sum(v["total"] for v in c["chapters"].values()) for c in by.values()))
+
     def test_leere_flee_und_ideen_werden_entfernt_und_ideen_gespeichert(self):
         b = self.body("ch3")
         b["flee"] = {}

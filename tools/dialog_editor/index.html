@@ -33,7 +33,60 @@ input:hover, select:hover, textarea:hover { border-color: #4a4770; }
 /* Raster: Kopfleiste, Kapitel links, Inhalt, Figuren rechts */
 #app { display: grid; grid-template-columns: 250px minmax(0, 1fr) 270px; grid-template-rows: 56px minmax(0, 1fr); height: 100vh; }
 header.top { grid-column: 1 / -1; display: flex; align-items: center; gap: 12px; padding: 0 16px; background: var(--panel); border-bottom: 1px solid var(--line); }
-header.top h1 { font-size: 20px; color: var(--gold); margin-right: auto; }
+header.top h1 { font-size: 20px; color: var(--gold); }
+.tabs { display: flex; gap: 4px; margin-right: auto; margin-left: 10px; }
+.tabs button { background: none; border: 0; border-bottom: 3px solid transparent; color: var(--muted); padding: 16px 14px 13px; font-weight: 600; }
+.tabs button:hover { color: var(--text); }
+.tabs button[aria-selected="true"] { color: var(--gold); border-bottom-color: var(--gold); }
+body.view-char #app { grid-template-columns: minmax(0, 1fr); }
+body.view-char nav.chapters, body.view-char aside.pal, body.view-char #q, body.view-char #status, body.view-char #togglePal, body.view-char #undo, body.view-char #redo, body.view-char #save { display: none; }
+/* Charaktere */
+.ctool { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 10px; }
+.chip2 { background: var(--panel2); border: 1px solid var(--line); border-radius: 20px; padding: 3px 12px; font-size: 13px; }
+.chip2[aria-pressed="true"] { border-color: var(--gold); color: var(--gold); background: #2a2412; }
+.chip2 small { color: var(--muted); margin-left: 4px; }
+.cnote { background: var(--panel); border: 1px dashed var(--gold-d); border-radius: var(--r); padding: 10px 14px; margin-bottom: 14px; font-size: 13.5px; color: var(--muted); }
+.cnote b { color: var(--text); }
+.cwrap { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; align-items: start; }
+.cwrap.sel { grid-template-columns: minmax(0, 1fr) 450px; }
+.cgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px; }
+.ccard { text-align: left; background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 10px; display: grid; grid-template-columns: 56px 1fr; gap: 4px 10px; align-items: start; }
+.ccard:hover { border-color: var(--gold-d); }
+.ccard[aria-pressed="true"] { border-color: var(--gold); box-shadow: 0 0 0 2px #e8c06633; }
+.ccard .av { grid-row: 1 / span 3; width: 56px; height: 56px; }
+.ccard h3 { font-size: 15px; display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.ccard .meta { color: var(--muted); font-size: 12.5px; }
+.ccard .ab { font-size: 12.5px; color: var(--text); }
+.kind { font-size: 11px; border-radius: 6px; padding: 1px 7px; font-family: system-ui; background: #1d2a3d; color: var(--blue); }
+.kind.Gegner { background: #3a1c1c; color: var(--red); } .kind.Boss { background: #3b2f12; color: var(--gold); } .kind.Sonstige { background: #2a2a38; color: var(--muted); }
+.dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 3px; vertical-align: middle; }
+.dot.ok { background: var(--green); } .dot.warn { background: var(--gold); } .dot.bad { background: var(--red); }
+.cdetail { position: sticky; top: 0; background: var(--panel); border: 1px solid var(--gold-d); border-radius: 14px; padding: 16px; max-height: calc(100vh - 100px); overflow: auto; }
+.cdetail h2 { font-size: 20px; color: var(--gold); display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.cdetail h4 { margin: 14px 0 6px; font-family: "Cinzel", serif; color: var(--gold); font-size: 14px; letter-spacing: .04em; }
+.cdetail .big { display: flex; gap: 12px; align-items: center; margin-bottom: 8px; }
+.cdetail .big .av { width: 84px; height: 84px; }
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.stats div { background: var(--panel2); border-radius: 8px; padding: 4px 8px; font-size: 12px; color: var(--muted); }
+.stats b { display: block; color: var(--text); font-size: 15px; }
+.abil { background: var(--panel2); border-radius: 8px; padding: 8px 10px; margin-bottom: 6px; font-size: 13.5px; }
+.abil b { color: var(--gold); } .abil small { color: var(--muted); display: block; }
+.tl { display: grid; gap: 4px; }
+.tlrow { display: grid; grid-template-columns: 26px minmax(0, 1fr) auto; gap: 8px; align-items: center; background: var(--panel2); border-radius: 8px; padding: 4px 8px; font-size: 13px; }
+.tlrow.key { border-left: 3px solid var(--gold); }
+.tlrow.none { opacity: .45; }
+.sym { display: inline-block; min-width: 20px; text-align: center; border-radius: 5px; padding: 0 5px; font-size: 11px; font-weight: 700; color: #12111c; margin-right: 3px; }
+.cdetail blockquote { margin: 6px 0; padding: 6px 12px; border-left: 3px solid var(--gold-d); font: 17px/1.4 "IM Fell", Georgia, serif; color: var(--text); }
+.cdetail p { margin: 4px 0; font-size: 13.5px; }
+.cdetail .kv { color: var(--muted); }
+table.ct { width: 100%; border-collapse: collapse; font-size: 13px; }
+table.ct th { text-align: left; color: var(--muted); font-weight: 600; padding: 6px 8px; border-bottom: 1px solid var(--line); position: sticky; top: -18px; background: var(--bg); cursor: pointer; white-space: nowrap; }
+table.ct th:hover { color: var(--gold); }
+table.ct td { padding: 5px 8px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+table.ct tr:hover td { background: var(--panel); }
+table.ct tr.rsel td { background: #2a2412; }
+table.ct .av { width: 28px; height: 28px; border-width: 1px; display: inline-grid; vertical-align: middle; margin-right: 8px; }
+@media (max-width: 1100px) { .cwrap.sel { grid-template-columns: minmax(0, 1fr); } .cdetail { position: static; max-height: none; } }
 #status { color: var(--muted); font-size: 13px; }
 #status.dirty { color: var(--gold); }
 nav.chapters { background: var(--panel); border-right: 1px solid var(--line); overflow: auto; padding: 12px 8px; }
@@ -156,6 +209,10 @@ label.f select, label.f input { min-width: 120px; }
 <div id="app">
   <header class="top">
     <h1>Dialog-Editor</h1>
+    <div class="tabs" role="tablist" aria-label="Ansicht">
+      <button id="tabTalks" role="tab" aria-selected="true">Gespräche</button>
+      <button id="tabChars" role="tab" aria-selected="false">Charaktere</button>
+    </div>
     <input id="q" type="search" placeholder="Texte durchsuchen …" aria-label="Gespräche durchsuchen" style="width:240px">
     <span id="status" role="status" aria-live="polite"></span>
     <button class="btn ghost" id="togglePal" title="Figuren ein- oder ausblenden">Figuren</button>
@@ -182,6 +239,7 @@ const EXPR = { "": "Normal", lachend: "Lachend", wuetend: "Wütend" };
 const STATES = { wall: ["intact", "broken"], gate: ["closed", "open", "broken"], switch: ["off", "on"], fire: ["burning", "out"], house: ["intact", "burning", "ruin"], hostage: ["bound", "free"], teahouse: ["standing"], hive: ["active", "broken"], bell: ["ready", "rung"], orphanage: ["standing"], ship: ["anchored"], crate: ["intact", "broken"] };
 const STATE_DE = { intact: "heil", broken: "zerstört", closed: "geschlossen", open: "offen", off: "aus", on: "umgelegt", burning: "brennt", out: "gelöscht", ruin: "Ruine", bound: "gefesselt", free: "befreit", standing: "steht", active: "aktiv", ready: "bereit", rung: "geläutet", anchored: "vor Anker" };
 
+let view = "talks", CH = null, cView = "cards", cFilter = "alle", cq = "", cSort = { key: "first", dir: 1 }, cSel = "";
 let DB, chapters = [], saved = {}, cur = "", hist = [], fut = [], canDraft = false, typingSnap = false, filter = "", open = {};
 
 // ---- Zustand, Rückgängig, Speichern
@@ -362,7 +420,7 @@ function cardHtml(c, cv) {
 }
 const fit = el => { el.style.height = "auto"; el.style.height = el.scrollHeight + 2 + "px"; };
 const fitAll = () => document.querySelectorAll(".card.open textarea").forEach(fit);
-function render() {
+function renderTalks() {
   const c = ch();
   $("#nav").innerHTML = `<h2>Kapitel</h2>` + chapters.map((x, i) => `<button class="ch" data-id="${x.id}" aria-current="${x.id === cur}"><span class="n">${i + 1}</span> ${esc(x.title)}<small>${x.triggers.length} Gespräche im Kampf</small></button>`).join("");
   const cs = convs(c), q = filter.toLowerCase();
@@ -381,6 +439,7 @@ function render() {
   updateStatus();
   fitAll();
 }
+function render() { view === "char" ? renderChars() : renderTalks(); }
 function renderPalette() {
   const q = $("#palq").value.toLowerCase();
   const groups = [["Helden", Object.entries(DB.units).filter(([, u]) => u.hero)], ["Gegner", Object.entries(DB.units).filter(([, u]) => !u.hero && !u.special)], ["Sonstige", Object.entries(DB.units).filter(([, u]) => u.special)]];
@@ -442,6 +501,12 @@ const acts = {
   preview(el) { const { c, key } = lineCtx(el); const cv = convs(c).find(x => x.key === key); preview(linesOf(c, key, false), cv.t); },
   rmcond(el) { const { c, key } = lineCtx(el), t = c.triggers[+key.slice(2)], k = el.dataset.k; change(() => { if (k === "object") delete t.if.object; else t.if[k].splice(+el.dataset.j, 1); if (!t.if[k]?.length) delete t.if[k]; if (!Object.keys(t.if).length) delete t.if; }); },
   addcond(el) { const { c, key } = lineCtx(el), t = c.triggers[+key.slice(2)], k = el.dataset.k; openPicker(el, id => { open["w" + key.slice(2)] = true; change(() => { t.if ??= {}; (t.if[k] ??= []).includes(id) || t.if[k].push(id); }); }); },
+  cfilter(el) { cFilter = el.dataset.k; renderChars(); },
+  cmode() { cView = cView === "cards" ? "table" : "cards"; renderChars(); },
+  csel(el) { cSel = cSel === el.dataset.id ? "" : el.dataset.id; renderCharRes(); },
+  cclose() { cSel = ""; renderCharRes(); },
+  csort(el) { cSort = { key: el.dataset.k, dir: cSort.key === el.dataset.k ? -cSort.dir : 1 }; renderCharRes(); },
+  cgoto(el) { gotoTalks(el.dataset.ch, el.dataset.name); },
   newconv() { newConvDialog(); },
   delidea(el) { const c = ch(); change(() => c.ideas.splice(+el.dataset.i, 1)); },
   idea2conv(el) { const c = ch(), idea = c.ideas[+el.dataset.i]; newConvDialog(idea.text, +el.dataset.i); },
@@ -506,6 +571,80 @@ function preview(lines, t) {
   bg.onclick = () => (++i >= lines.length ? bg.remove() : show());
   bg.onkeydown = e => { if (e.key === "Escape") bg.remove(); else if (e.key === "ArrowLeft") { i = Math.max(0, i - 1); show(); } else if ([" ", "Enter", "ArrowRight"].includes(e.key)) { e.preventDefault(); bg.onclick(); } };
   show(); document.body.append(bg); bg.focus();
+}
+
+// ---- Tab Charaktere (Uebersicht, nur lesen; Daten von /api/characters)
+const SYM = { "Gruppe": ["G", "in der Gruppe", "#7aa8e8"], "Gegner": ["E", "als Gegner", "#e07070"], "Verstärkung": ["V", "als Verstärkung", "#e8a050"], "stößt dazu": ["+", "stößt zur Gruppe", "#7fd08f"], "im Gespräch": ["…", "nur im Gespräch", "#a39fb8"] };
+const FILTERS = [["alle", "Alle", c => true], ["Held", "Helden", c => c.kind === "Held"], ["Gegner", "Gegner", c => c.kind === "Gegner" || c.kind === "Boss"],
+  ["Sonstige", "Sonstige", c => c.kind === "Sonstige"], ["unused", "Nicht eingesetzt", c => !c.first], ["mute", "Ohne Dialog", c => c.lines_total === 0]];
+const firstText = c => c.first ? `Kapitel ${c.first.chapter} · ${c.first.roles.join(", ")}` : "nicht eingesetzt";
+const symChips = roles => roles.map(r => `<span class="sym" style="background:${SYM[r][2]}" title="${SYM[r][1]}">${SYM[r][0]}</span>`).join("");
+const material = c => { const a = c.assets, full = a.portrait && a.token && (a.exprs.length === 2 || c.kind === "Sonstige"); return full ? "ok" : (a.portrait && a.token ? "warn" : "bad"); };
+const materialText = c => `Porträt ${c.assets.portrait ? "✓" : "✗"}, Emotionen ${c.assets.exprs.length}/2, Karten-Figur ${c.assets.token ? "✓" : "✗"}`;
+const abShort = c => c.abilities.map(a => a.name).join(", ") || "–";
+async function renderChars() {
+  if (!CH) { $("#main").innerHTML = '<p class="hint">Lade Charaktere …</p>'; CH = await (await fetch("/api/characters")).json(); }
+  const list = CH.characters;
+  const unused = list.filter(c => !c.first).map(c => c.name), mute = list.filter(c => c.kind === "Held" && c.lines_total === 0 && c.first).map(c => c.name);
+  const missing = list.filter(c => c.lines_total > 0 && !c.assets.portrait).map(c => c.name);
+  $("#main").innerHTML = `<div class="ctool">
+      ${FILTERS.map(([k, l, f]) => `<button class="chip2" data-act="cfilter" data-k="${k}" aria-pressed="${cFilter === k}">${l}<small>${list.filter(f).length}</small></button>`).join("")}
+      <input id="cq" type="search" placeholder="Figur suchen …" aria-label="Figur suchen" value="${esc(cq)}" style="width:200px;margin-left:auto">
+      <button class="chip2" data-act="cmode" aria-pressed="${cView === "cards"}">${cView === "cards" ? "▦ Karten" : "☰ Tabelle"} (wechseln)</button></div>
+    <div class="cnote"><b>Auffällig:</b> nicht eingesetzt: ${unused.map(esc).join(", ") || "keine"}. Helden ohne eigene Dialogzeile: ${mute.map(esc).join(", ") || "keine"}. Sprecher ohne Porträt: ${missing.map(esc).join(", ") || "keine"}.
+      <span style="display:block;margin-top:4px">Zeichen: ${Object.keys(SYM).map(r => `<span class="sym" style="background:${SYM[r][2]}">${SYM[r][0]}</span>${SYM[r][1]}`).join(" &nbsp; ")} &nbsp; Zahl = Dialogzeilen des Kapitels</span></div>
+    <div id="cres"></div>`;
+  renderCharRes();
+}
+function renderCharRes() {
+  const f = FILTERS.find(x => x[0] === cFilter)[2], q = cq.toLowerCase();
+  let list = CH.characters.filter(c => f(c) && (!q || c.name.toLowerCase().includes(q) || c.id.includes(q)));
+  const sorts = { name: c => c.name.toLowerCase(), first: c => (c.first ? c.first.chapter : 99) * 100 + CH.characters.indexOf(c), lines: c => -c.lines_total, kind: c => c.kind };
+  list = list.slice().sort((a, b) => { const x = sorts[cSort.key](a), y = sorts[cSort.key](b); return (x > y ? 1 : x < y ? -1 : 0) * cSort.dir; });
+  const sel = CH.characters.find(c => c.id === cSel);
+  const body = cView === "cards"
+    ? `<div class="cgrid">${list.map(c => `<button class="ccard" data-act="csel" data-id="${c.id}" aria-pressed="${c.id === cSel}">${avatar(c.id)}
+        <h3>${esc(c.name)} <span class="kind ${c.kind}">${c.kind}</span><span class="dot ${material(c)}" title="${esc(materialText(c))}"></span></h3>
+        <div class="meta">${esc(firstText(c))}</div><div class="ab">${esc(abShort(c))}${c.lines_total ? ` · 💬 ${c.lines_total}` : ""}</div></button>`).join("") || '<div class="empty">Keine Figur passt.</div>'}</div>`
+    : `<table class="ct"><thead><tr><th data-act="csort" data-k="name">Figur</th><th data-act="csort" data-k="kind">Art</th><th data-act="csort" data-k="first">Erstes Auftreten</th><th>Fähigkeit</th>
+        ${CH.chapters.map(ch => `<th title="${esc(ch.title)}">K${ch.n}</th>`).join("")}<th data-act="csort" data-k="lines">Zeilen</th><th>Material</th></tr></thead><tbody>
+        ${list.map(c => `<tr class="${c.id === cSel ? "rsel" : ""}" data-act="csel" data-id="${c.id}" tabindex="0"><td>${avatar(c.id)}${esc(c.name)}</td><td><span class="kind ${c.kind}">${c.kind}</span></td><td>${esc(firstText(c))}</td><td>${esc(abShort(c))}</td>
+          ${CH.chapters.map(ch => { const d = c.chapters[ch.n]; return `<td>${d ? symChips(d.roles) + (d.total ? d.total : "") : ""}</td>`; }).join("")}<td>${c.lines_total || ""}</td><td><span class="dot ${material(c)}" title="${esc(materialText(c))}"></span></td></tr>`).join("")}</tbody></table>`;
+  $("#cres").innerHTML = `<div class="cwrap ${sel ? "sel" : ""}"><div>${body}</div>${sel ? charDetail(sel) : ""}</div>`;
+}
+function charDetail(c) {
+  const st = c.stats;
+  const key = d => d && (d.total >= 4 || d.lines.Einleitung || d.lines.Abschluss);
+  return `<aside class="cdetail" aria-label="Details ${esc(c.name)}">
+    <div class="big">${avatar(c.id)}<div><h2>${esc(c.name)} <span class="kind ${c.kind}">${c.kind}</span></h2>
+      <div class="kv">${esc(firstText(c))}${c.from && c.from > 1 ? ` · wählbar ab Kapitel ${c.from}` : ""}</div></div>
+      <button class="btn ghost" data-act="cclose" aria-label="Schließen" style="margin-left:auto">✕</button></div>
+    ${c.notes.tagline ? `<p><i>${esc(c.notes.tagline)}</i></p>` : ""}
+    ${st ? `<div class="stats"><div><b>${st.hp}</b>Leben</div><div><b>${st.atk}</b>Angriff</div><div><b>${st.def}</b>Verteidigung</div><div><b>${st.res}</b>Resistenz</div>
+      <div><b>${st.move}</b>Bewegung</div><div><b>${st.range_min === st.range ? st.range : st.range_min + "–" + st.range}</b>Reichweite</div><div><b>${c.dmg_type || "–"}</b>Schadensart</div><div><b>${c.role || "–"}</b>Rolle</div></div>${c.heal ? `<p class="kv">Heilt ${c.heal} Leben (normale Heilung)</p>` : ""}` : ""}
+    <h4>Spezialfähigkeit</h4>
+    ${c.abilities.map(a => `<div class="abil"><b>${esc(a.name)}</b> ${a.source !== "Einheit" ? `<span class="kind Boss">${esc(a.source)}</span>` : ""}<small>Abklingzeit ${a.cd ?? "–"}${a.range ? " · Reichweite " + a.range.join("–") : ""}</small>${esc(a.text)}</div>`).join("") || '<p class="kv">Keine.</p>'}
+    ${c.passives.length ? `<p class="kv">Passiv: ${c.passives.map(esc).join(", ")}</p>` : ""}
+    <h4>Missionen und Dialoge</h4>
+    <div class="tl">${CH.chapters.map(ch => { const d = c.chapters[ch.n]; const parts = d ? Object.entries(d.lines).map(([k, v]) => `${k} ${v}`).join(" · ") : "";
+      return `<div class="tlrow ${d ? "" : "none"} ${key(d) ? "key" : ""}"><b>${ch.n}</b><span>${esc(ch.title)}${d ? `<br><small class="kv">${symChips(d.roles)} ${esc(parts) || "spricht nicht"}</small>` : ""}</span>
+        ${d && d.total ? `<button class="btn ghost" data-act="cgoto" data-ch="${ch.id}" data-name="${esc(c.name)}" title="Gespräche ansehen">💬 ${d.total}</button>` : ""}</div>`; }).join("")}</div>
+    ${c.quote ? `<h4>Erste Zeile</h4><blockquote>${esc(c.quote)}</blockquote>` : ""}
+    <h4>Weiteres</h4>
+    ${c.notes.typ ? `<p><span class="kv">Typ:</span> ${esc(c.notes.typ)}</p>` : ""}${c.notes.sonstiges ? `<p><span class="kv">Notiz:</span> ${esc(c.notes.sonstiges)}</p>` : ""}
+    ${c.flees ? `<p><span class="kv">Flieht statt zu sterben</span>${c.returns.length ? `; kehrt in Kapitel ${c.returns.join(", ")} zurück` : ""}${c.no_flee.length ? `; <b>fällt wirklich</b> in Kapitel ${c.no_flee.join(", ")}` : ""}.</p>` : ""}
+    ${c.sound ? `<p><span class="kv">Soundprofil:</span> ${esc(c.sound)}</p>` : ""}${c.gear.length ? `<p><span class="kv">Ausrüstung zu Beginn:</span> ${c.gear.map(esc).join(", ")}</p>` : ""}
+    <p><span class="dot ${material(c)}"></span><span class="kv">Material:</span> ${esc(materialText(c))}</p>
+  </aside>`;
+}
+function gotoTalks(chId, name) {
+  cur = chId; filter = name; $("#q").value = name; setView("talks");
+}
+function setView(v) {
+  view = v;
+  document.body.classList.toggle("view-char", v === "char");
+  $("#tabTalks").setAttribute("aria-selected", v === "talks"); $("#tabChars").setAttribute("aria-selected", v === "char");
+  render();
 }
 
 // ---- Ereignisse
@@ -590,6 +729,8 @@ document.addEventListener("drop", e => {
 });
 
 $("#q").oninput = e => { filter = e.target.value; render(); };
+$("#tabTalks").onclick = () => setView("talks"); $("#tabChars").onclick = () => setView("char");
+document.addEventListener("input", e => { if (e.target.id === "cq") { cq = e.target.value; renderCharRes(); } });
 $("#undo").onclick = undo; $("#redo").onclick = redo; $("#save").onclick = save; $("#palq").oninput = renderPalette;
 $("#togglePal").onclick = () => document.body.classList.toggle("pal-open");
 addEventListener("beforeunload", e => { if (dirtyIds().length) { e.preventDefault(); e.returnValue = ""; } });
