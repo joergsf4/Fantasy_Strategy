@@ -186,6 +186,8 @@ func _chapter(cid: String, skip_intro := false, next_cid := "") -> void:
 		return
 	var m := _mission_with_squad(cid)
 	var story_c := _load_json("res://data/story_%s.json" % cid)
+	if m.has("interlude_before") and not skip_intro:      # Reise vor der Mission (z. B. Ueberfahrt), ohne Text
+		await _play_interlude(m["interlude_before"])
 	if stage.map_data.get("id", "") != cid:
 		stage.map_data = m
 		stage.new_battle()
@@ -316,22 +318,27 @@ func _secret_scene(sec: Dictionary) -> void:
 func _interlude_chapter(cid: String) -> void:
 	var m := Mission.load_mission(cid)
 	var story_c := _load_json("res://data/story_%s.json" % cid)
-	var layer := CanvasLayer.new()
-	layer.layer = 8
-	add_child(layer)
-	var it := Interlude.new()
-	it.setup(m.get("interlude", {}))
-	layer.add_child(it)
 	if stage.map_data.get("id", "") != cid:
 		stage.map_data = m
 		stage.new_battle()
 	stage.set_mode("dialog")
-	await it.finished
-	layer.queue_free()
+	await _play_interlude(m.get("interlude", {}))
 	await _dialogue(story_c["intro"])
 	if not (story_c["outro"] as Array).is_empty():
 		await _dialogue(story_c["outro"])
 	party.save()
+
+
+## Reisebild ueber allem abspielen (Daten wie Mission-Feld "interlude").
+func _play_interlude(data: Dictionary) -> void:
+	var layer := CanvasLayer.new()
+	layer.layer = 8
+	add_child(layer)
+	var it := Interlude.new()
+	it.setup(data)
+	layer.add_child(it)
+	await it.finished
+	layer.queue_free()
 
 
 func _dialogue(lines: Array) -> void:
@@ -411,7 +418,7 @@ func _screenshot_mode() -> void:
 		return
 	if mode == "interlude":   # Reisebild von ch10: SHOT_DELAY = Sekunden bis zum Bild
 		var il := Interlude.new()
-		il.setup(Mission.load_mission("ch10").get("interlude", {}))
+		il.setup(Mission.load_mission(OS.get_environment("SHOT_CH") if OS.get_environment("SHOT_CH") != "" else "ch10").get("interlude_before" if OS.get_environment("SHOT_CH") != "" else "interlude", {}))
 		var ll := CanvasLayer.new()
 		add_child(ll)
 		ll.add_child(il)

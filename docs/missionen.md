@@ -261,3 +261,4 @@ Benannte Gegner (`"flees": true` in `units.json`: Wart, Oskar, Maja) sterben nic
 - **Bausteine:** `Interlude` (`scripts/interlude.gd`), Missionsfeld `stub: true` (Kapitel ohne Kampf, wird in `Main._interlude_chapter` abgespielt) und `interlude: {image, kicker, title, duration, zoom, pan}`. Das Reisebild lässt sich für spätere Überfahrten mit anderem Bild wiederverwenden. Screenshot: `SHOT=interlude SHOT_DELAY=4.5`.
 - **Offen:** die Kampfmission in Möwenbucht (Ort: `map_ch10.json`, Mission `ch10` wird dann zur echten Mission).
 - **Test:** `tests/test_interlude.gd`.
+- **Überfahrt vor Mission 7:** Missionsfeld `interlude_before: {scene: "sea", dir: "right", duration: 7}` in `missions/ch7.json` spielt dieselbe Meer-Szene ohne Titel ab (Schiff gespiegelt, fährt nach rechts), nach dem Lager und vor der Einleitung. Beim Sprung „Direkt in den Kampf“ entfällt sie. Screenshot: `SHOT=interlude SHOT_CH=ch7`.

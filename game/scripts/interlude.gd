@@ -11,6 +11,7 @@ var title := ""
 var duration := 8.0
 var zoom_to := 1.16
 var pan := Vector2(-40, -14)       # Verschiebung in Pixeln waehrend des Zooms
+var heading := -1.0                # Fahrtrichtung im 3D-Meer: -1 nach links, 1 nach rechts (Sprite wird gespiegelt)
 var scene3d := ""                  # "sea": Schiff faehrt in 3D ueber das Wasser (statt Standbild mit Ken Burns)
 var _pic: TextureRect
 var _cam: Camera3D
@@ -28,6 +29,7 @@ func setup(data: Dictionary) -> void:
 	kicker = data.get("kicker", "")
 	title = data.get("title", "")
 	scene3d = data.get("scene", "")
+	heading = 1.0 if data.get("dir", "left") == "right" else -1.0
 	duration = float(data.get("duration", duration))
 	zoom_to = float(data.get("zoom", zoom_to))
 	if data.has("pan"):
@@ -59,8 +61,9 @@ func _ready() -> void:
 	box.alignment = BoxContainer.ALIGNMENT_CENTER
 	box.modulate.a = 0.0
 	add_child(box)
-	box.add_child(_label(kicker, 34, UiTheme.GOLD))
-	box.add_child(_label(title, _fit_size(title, 58, 1100.0), Color(1.0, 0.97, 0.85)))
+	if title != "":
+		box.add_child(_label(kicker, 34, UiTheme.GOLD))
+		box.add_child(_label(title, _fit_size(title, 58, 1100.0), Color(1.0, 0.97, 0.85)))
 	_black = ColorRect.new()
 	_black.color = Color.BLACK
 	_black.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -161,6 +164,7 @@ func _build_sea() -> void:
 	var sm := ShaderMaterial.new()
 	sm.shader = load("res://shaders/ship_sprite.gdshader")
 	sm.set_shader_parameter("tex", ship_tex)
+	sm.set_shader_parameter("flip", heading > 0.0)
 	sm.render_priority = 2
 	_ship.material_override = sm
 	_ship.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
@@ -207,16 +211,16 @@ func sea_height(p: Vector2, t: float) -> float:
 func _sail() -> void:
 	var k := clampf(_t / duration, 0.0, 1.0)
 	_sea_mat.set_shader_parameter("t_sea", _t)
-	var x := 5.0 - _t * 0.9                                       # der Bug zeigt nach links: das Schiff faehrt nach links
+	var x := -heading * 5.0 + heading * _t * 0.9                                       # der Bug zeigt nach links: das Schiff faehrt nach links
 	var h := sea_height(Vector2(x, 0.0), _t)
 	_ship.position = Vector3(x, 1.9 + h * 0.9, 0.0)
 	for i in _foam.size():
 		var f: MeshInstance3D = _foam[i]
-		f.position = Vector3(x + 0.5 * i, 0.04 + h * 0.9, 0.1)
+		f.position = Vector3(x - heading * 0.5 * i, 0.04 + h * 0.9, 0.1)
 		f.scale = Vector3(1.0 + 0.05 * sin(_t * 1.5 + i), 0.42, 1.0)
 	var a := lerpf(0.55, -0.25, smoothstep(0.0, 1.0, k))          # Bogen: erst von vorn links, dann hinter dem Schiff vorbei
-	var focus := Vector3(x - 0.6, 1.9, 0.0)
-	_cam.position = focus + Vector3(-sin(a) * 8.5, 0.5 + k * 0.7, cos(a) * 8.5)
+	var focus := Vector3(x + heading * 0.6, 1.9, 0.0)
+	_cam.position = focus + Vector3(heading * sin(a) * 8.5, 0.5 + k * 0.7, cos(a) * 8.5)
 	_cam.position.y += sea_height(Vector2(_cam.position.x, _cam.position.z), _t) * 0.6
 	_cam.look_at(focus)
 

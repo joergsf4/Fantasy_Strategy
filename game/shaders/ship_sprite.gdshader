@@ -5,6 +5,7 @@ render_mode blend_mix, unshaded, cull_disabled, depth_draw_never, shadows_disabl
 // zur Wasserfarbe hin ausgeblendet, davor liegt eine leicht wogende, helle Wasserlinie mit Schaumkranz (Schiff schwimmt statt zu schweben).
 uniform sampler2D tex : source_color, filter_linear_mipmap;
 uniform vec4 water_color : source_color = vec4(0.07, 0.30, 0.52, 1.0);
+uniform bool flip = false;                            // Schiff nach rechts fahren lassen (Sprite spiegeln)
 uniform float sink : hint_range(0.0, 0.5) = 0.075;      // Anteil der Bildhoehe unter der Wasserlinie
 
 varying vec2 vuv;
@@ -18,6 +19,9 @@ void vertex() {
 	vec3 world = center + right * VERTEX.x * sx + up * VERTEX.y * sy;
 	POSITION = PROJECTION_MATRIX * VIEW_MATRIX * vec4(world, 1.0);
 	vuv = UV;
+	if (flip) {
+		vuv.x = 1.0 - UV.x;
+	}
 }
 
 void fragment() {
