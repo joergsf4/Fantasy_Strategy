@@ -1,0 +1,236 @@
+{
+ "id": "ch9",
+ "title": "Die Festung im Gebirge",
+ "map": "res://data/map_ch9.json",
+ "no_flee": [
+  "wart"
+ ],
+ "briefing": "Das Land wird gebirgig: Berge kosten Bewegung und geben Deckung. Auf dem Pass thront die Festung des Regenten, und davor wartet Wart, diesmal mit seinen Frischlingsjungs. Die drei kleinen Wildschweine zählen als eine Figur, sind klein, aber fies. Besiegt Wart. Diesmal flieht er nicht. Robina fährt von nun an mit euch.",
+ "goals": [
+  {
+   "type": "defeat",
+   "unit": "wart",
+   "text": "Ziel: Besiegt Wart (er flieht nicht mehr)",
+   "then": [
+    {
+     "if": {
+      "present": [
+       "frischlinge"
+      ]
+     },
+     "do": [
+      {
+       "dialogue": [
+        {
+         "left": "ritter",
+         "right": "frischlinge",
+         "speaker": "frischlinge",
+         "text": "Der Boss is' hinüber! Hilfe! Mama!",
+         "right_expr": "wuetend"
+        },
+        {
+         "left": "ritter",
+         "right": "frischlinge",
+         "speaker": "frischlinge",
+         "text": "Wir wollten eh Feierabend machen!"
+        }
+       ]
+      },
+      {
+       "retreat": "frischlinge"
+      }
+     ]
+    },
+    {
+     "do": [
+      {
+       "spawn": [
+        {
+         "id": "fuerst",
+         "pos": [
+          9,
+          3
+         ],
+         "label": "Der Regent tritt aus der Festung"
+        }
+       ]
+      },
+      {
+       "dialogue": [
+        {
+         "left": "ritter",
+         "right": "fuerst",
+         "speaker": "fuerst",
+         "text": "Genug, genug! Hört auf, bitte! Ich ergebe mich!",
+         "right_expr": "weinerlich"
+        },
+        {
+         "left": "maedchen_baer",
+         "right": "fuerst",
+         "speaker": "maedchen_baer",
+         "text": "Du bist der Regent? Du siehst aus wie ein nasser Teppich."
+        },
+        {
+         "left": "maedchen_baer",
+         "right": "fuerst",
+         "speaker": "fuerst",
+         "text": "Ich wollte das alles nie! Die Festung, die Armee, die Insel... Ich bin doch nur ein Strohmann!",
+         "right_expr": "weinerlich"
+        },
+        {
+         "left": "robo",
+         "right": "fuerst",
+         "speaker": "robo",
+         "text": "Ein Strohmann? Wessen?"
+        },
+        {
+         "left": "robo",
+         "right": "fuerst",
+         "speaker": "fuerst",
+         "text": "Das weiß ich nicht! Ich kenne nur die Briefe. Sie sind immer im Schatten gesiegelt. Und wer nicht gehorcht... *schnief*",
+         "right_expr": "weinerlich"
+        },
+        {
+         "left": "elisabeth",
+         "right": "fuerst",
+         "speaker": "elisabeth",
+         "text": "Also gibt es noch jemanden, der größer ist als er?"
+        },
+        {
+         "left": "elisabeth",
+         "right": "fuerst",
+         "speaker": "fuerst",
+         "text": "Viel größer. Er ist bald hier. Bitte lasst mich gehen, ich will heim zu meiner Mama!",
+         "right_expr": "weinerlich"
+        }
+       ]
+      },
+      {
+       "retreat": "fuerst"
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "triggers": [
+  {
+   "when": {
+    "near": {
+     "a": "maedchen_baer",
+     "b": "wart",
+     "dist": 6
+    }
+   },
+   "if": {
+    "present": [
+     "wart"
+    ]
+   },
+   "note": "Wart bewacht die Festung",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "ritter",
+       "right": "wart",
+       "speaker": "wart",
+       "text": "Na, wen haben wir denn da? Die Helden! Diesmal bin ich nicht allein, ich hab meine Jungs mitgebracht.",
+       "right_expr": "lachend"
+      },
+      {
+       "left": "ritter",
+       "right": "frischlinge",
+       "speaker": "frischlinge",
+       "text": "Chef, dürfen wir sie hauen? Dürfen wir? Bitte!",
+       "right_expr": "wuetend"
+      },
+      {
+       "left": "ritter",
+       "right": "wart",
+       "speaker": "ritter",
+       "text": "Der Mann mit dem Raketenwerfer. Und drei Ferkel mit Keulen.",
+       "left_expr": "wuetend"
+      },
+      {
+       "left": "ritter",
+       "right": "frischlinge",
+       "speaker": "frischlinge",
+       "text": "FERKEL?! Wir sind Frischlinge!",
+       "right_expr": "wuetend"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 3
+   },
+   "note": "Die Festung",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "$hero",
+       "right": "maedchen_baer",
+       "speaker": "maedchen_baer",
+       "text": "Die Festung sieht aus, als hätte sie schlechte Laune."
+      },
+      {
+       "left": "$hero",
+       "right": "maedchen_baer",
+       "speaker": "$hero",
+       "text": "Brumm sträubt das Fell. Er mag keine Türme."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "hp_below": {
+     "id": "wart",
+     "ratio": 0.4
+    }
+   },
+   "if": {
+    "present": [
+     "wart"
+    ]
+   },
+   "note": "Wart wankt",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "ritter",
+       "right": "wart",
+       "speaker": "wart",
+       "text": "Diesmal laufe ich nicht weg! Der Regent hat mir das Bleiben befohlen!",
+       "right_expr": "wuetend"
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "flee": {
+  "frischlinge": [
+   {
+    "left": "$hero",
+    "right": "frischlinge",
+    "speaker": "frischlinge",
+    "text": "Nich' hauen! Wir sagen's dem Boss! Der kommt gleich!",
+    "right_expr": "wuetend"
+   },
+   {
+    "left": "$hero",
+    "right": "frischlinge",
+    "speaker": "frischlinge",
+    "text": "Wir kommen wieder! Mit größeren Keulen!",
+    "right_expr": "wuetend"
+   }
+  ]
+ }
+}

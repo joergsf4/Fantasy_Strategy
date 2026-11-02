@@ -1,0 +1,67 @@
+{
+ "intro": [
+  {
+   "left": "ritter",
+   "right": "maedchen_baer",
+   "speaker": "ritter",
+   "text": "Berge. Endlich Schatten. Und eine Festung, die aussieht, als wolle sie uns fressen."
+  },
+  {
+   "left": "robo",
+   "right": "maedchen_baer",
+   "speaker": "robo",
+   "text": "Meine Sensoren melden: viele Feinde, viele Stufen, wenig Spaß."
+  },
+  {
+   "left": "elisabeth",
+   "right": "maedchen_baer",
+   "speaker": "elisabeth",
+   "text": "Dort oben auf dem Pass steht jemand, den ich kenne. Der Kerl mit dem Raketenwerfer."
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "maedchen_baer",
+   "speaker": "maedchen_baer",
+   "text": "Wart! Und er ist nicht allein."
+  },
+  {
+   "left": "quacksalber",
+   "right": "maedchen_baer",
+   "speaker": "quacksalber",
+   "text": "Ich schlage vor: vorsichtig sein. Und im Zweifel hinten stehen."
+  },
+  {
+   "left": "ritter",
+   "right": "maedchen_baer",
+   "speaker": "ritter",
+   "text": "Wir gehen durch. Der Weg zur Insel des Regenten führt an dieser Festung vorbei."
+  }
+ ],
+ "outro": [
+  {
+   "left": "robo",
+   "right": "maedchen_baer",
+   "speaker": "robo",
+   "text": "Der Regent ein Strohmann. Das ändert alles."
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "maedchen_baer",
+   "speaker": "maedchen_baer",
+   "text": "Wer zieht hier eigentlich die Fäden?"
+  },
+  {
+   "left": "ritter",
+   "right": "maedchen_baer",
+   "speaker": "ritter",
+   "text": "Das werden wir herausfinden. Aber erst mal Rast. Die Festung gehört uns."
+  },
+  {
+   "left": "elisabeth",
+   "right": "maedchen_baer",
+   "speaker": "elisabeth",
+   "text": "Und diesmal weint der Gegner mehr als ich.",
+   "left_expr": "lachend"
+  }
+ ]
+}

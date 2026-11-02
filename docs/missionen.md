@@ -243,3 +243,13 @@ Benannte Gegner (`"flees": true` in `units.json`: Wart, Oskar, Maja) sterben nic
 - **Grafik:** Robina als Porträt (neutral, lachend, wütend) und großer Panzer-Sprite (`size` 2,1 in `units.json`), Gemini.
 - **Balancing:** Der Simulator kennt den Panzer (E12, `docs/balance.md` Abschnitt 13): unantastbar, Breitseite, Übernahme nach drei Runden; mit zwei Helden am Panzer gewinnt die Gruppe bei ×1,25 zu 99 %, bei ×1,5 zu 75 %.
 - **Test:** `tests/test_capture.gd`.
+
+## Mission 9: Die Festung im Gebirge (Wüsteninsel, Wart und die Frischlinge)
+- **Lage:** Das Land wird gebirgig (Berge `M`, Bewegung 3, Deckung). Auf dem Pass steht eine bedrohliche, dunkle Festung (`decor`, Sprite `fx_festung`). Wart bewacht sie und hat diesmal **Wartens Frischlinge** dabei: drei kleine, fiese Wildschweine mit Stachelkeulen und Äxten, die als **eine Figur** (`frischlinge`, Leben 38, Größe 2,1) kämpfen. Dazu Büttel, Bogenschützen, Priester und ein Reiter.
+- **Ziel `defeat`:** Wart besiegen (Missionsfeld `no_flee: ["wart"]`, er flieht nicht mehr). Die Frischlinge fliehen wie üblich, wenn sie fallen (Rückzugsdialog).
+- **Abschlussszene (Ziel-Feld `then`, neu):** Sobald das Ziel erreicht ist, laufen die Frischlinge weg (`retreat`, nur wenn noch da), der Regent tritt aus der Festung (`spawn`) und gesteht in der **weinerlichen Grafik** (`fuerst_weinerlich`, Ausdruck `weinerlich`), dass er nur ein **Strohmann** für eine größere, noch unbekannte Bedrohung ist; danach zieht er sich zurück. `then` ist eine Liste von Ausloesern (`if`/`do`) und läuft in `Battle._check_end` vor dem Sieg-Signal.
+- **Gruppe:** Robina (Panzer) ist ab hier wählbar (`from: 9`); sonst Standard wie Mission 8.
+- **Belohnung:** 200 Gold, Bonusziele „Kein Held fällt“ (90 Gold) und „In 10 Runden gewonnen“ (Heilhonig).
+- **Hinweis:** Die Datei heißt `ch9`, weil Kapitel 8 die Oase ist; im Gespräch „Mission 8“.
+- **Simulator:** noch nicht abgebildet (Ziel `defeat` und Frischlinge-Werte ungeprüft, Balancing offen).
+- **Test:** `tests/test_festung.gd`.

@@ -1,0 +1,159 @@
+{
+ "biome": "wueste",
+ "rows": [
+  "MMGGGGGMMMMM",
+  "MGGDGGGGMMGM",
+  "GGMMGGFGGGGG",
+  "GDGMMGGGGMMG",
+  "GGGGMGDGGGMM",
+  "GFGGGGGGMGGG",
+  "GGDGGMMGGGDG",
+  "GGGGGGMGGFGG",
+  "GGGDGGGGGGGG",
+  "GGGGGGGGGGGG"
+ ],
+ "players": [
+  {
+   "id": "robo",
+   "pos": [
+    1,
+    8
+   ]
+  },
+  {
+   "id": "maedchen_baer",
+   "pos": [
+    2,
+    8
+   ]
+  },
+  {
+   "id": "ritter",
+   "pos": [
+    3,
+    8
+   ]
+  },
+  {
+   "id": "elisabeth",
+   "pos": [
+    2,
+    7
+   ]
+  },
+  {
+   "id": "wendy",
+   "pos": [
+    3,
+    7
+   ]
+  },
+  {
+   "id": "quacksalber",
+   "pos": [
+    1,
+    7
+   ]
+  }
+ ],
+ "enemies": [
+  {
+   "id": "wart",
+   "pos": [
+    8,
+    2
+   ],
+   "hp": 50
+  },
+  {
+   "id": "frischlinge",
+   "pos": [
+    7,
+    3
+   ]
+  },
+  {
+   "id": "soldat_infanterie",
+   "pos": [
+    6,
+    4
+   ]
+  },
+  {
+   "id": "soldat_infanterie",
+   "pos": [
+    9,
+    4
+   ]
+  },
+  {
+   "id": "soldat_bogenschuetze",
+   "pos": [
+    9,
+    1
+   ]
+  },
+  {
+   "id": "soldat_bogenschuetze",
+   "pos": [
+    5,
+    2
+   ]
+  },
+  {
+   "id": "soldat_priester",
+   "pos": [
+    7,
+    1
+   ]
+  },
+  {
+   "id": "soldat_beritten",
+   "pos": [
+    10,
+    5
+   ]
+  }
+ ],
+ "objects": [],
+ "decor": [
+  {
+   "sprite": "fx_festung",
+   "pos": [
+    10,
+    1
+   ],
+   "size": 3.4
+  },
+  {
+   "sprite": "fx_palme",
+   "pos": [
+    1,
+    5
+   ],
+   "size": 1.3
+  }
+ ],
+ "rewards": {
+  "gold": 200
+ },
+ "objectives": [
+  {
+   "id": "alle_leben",
+   "text": "Kein Held fällt",
+   "reward": {
+    "gold": 90
+   }
+  },
+  {
+   "id": "schnell",
+   "text": "In 10 Runden gewonnen",
+   "turns": 10,
+   "reward": {
+    "items": {
+     "heilhonig": 1
+    }
+   }
+  }
+ ]
+}

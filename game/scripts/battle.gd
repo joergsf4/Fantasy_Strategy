@@ -2344,6 +2344,8 @@ func goal_met() -> bool:
 		"capture":
 			var cu := _find(str(goal["unit"]))
 			return not cu.is_empty() and cu["team"] == "p"
+		"defeat":
+			return _find(str(goal["unit"])).is_empty()
 		"reach":
 			var t := Vector2i(goal["tile"][0], goal["tile"][1])
 			for u in units:
@@ -2352,6 +2354,9 @@ func goal_met() -> bool:
 			return false
 		_:
 			return _count_team("e") == 0
+
+
+var goal_then_done := false
 
 
 func _check_end() -> void:
@@ -2364,6 +2369,11 @@ func _check_end() -> void:
 		_show_tiles({})
 		_close_menu()
 		_hint.text = ""
+		if won and not goal_then_done:   # Abschlussszene des Ziels (Mission-Ziel "then": Ausloeser mit if/do)
+			goal_then_done = true
+			for t: Dictionary in (goal.get("then", []) as Array):
+				if _cond_ok(t.get("if", {})):
+					await _fire(t, {})
 		_status.text = "Sieg!" if won else "Niederlage"
 		Sfx.event("victory" if won else "defeat")
 		await get_tree().create_timer(1.2).timeout

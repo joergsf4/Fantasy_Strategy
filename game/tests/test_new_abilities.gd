@@ -51,7 +51,7 @@ func run_tests() -> void:
 	var rit := spawn("ritter", "p", Vector2i(5, 5))
 	spawn("soldat_infanterie", "e", Vector2i(9, 9))
 	await b._run_ability(rit, "schlachtruf", rit)
-	check(rit["cd"]["schlachtruf"] == 4 and rit["cd"]["verspotten"] == 4, "Albrecht: beide Faehigkeiten teilen die Abklingzeit")
+	check(rit["cd"]["schlachtruf"] == 4 and not rit["cd"].has("verspotten"), "Albrecht: Schlachtruf und Verspotten sind solo (eigene Abklingzeit)")
 	clear()
 	var maja := spawn("maja", "e", Vector2i(5, 5))
 	await b._run_ability(maja, "einschuechtern", maja)

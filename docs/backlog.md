@@ -133,3 +133,6 @@ Der frühere Punkt „Simulator kennt Geheimnisse nicht“ ist **gestrichen**: G
 
 ## Erledigt: Nur kennengelernte Helden wählbar (2026-11-02)
 In Gruppenwahl und Lager-Aufstellung sind nur Helden wählbar, die man schon kennengelernt hat (`Party.join_mission`): zählt `from` (wenn gesetzt), sonst `intro` (erstes Auftreten in der Geschichte). Gruppenwahl (nach der Einleitung) zählt auch Helden, die in der Einleitung dieser Mission auftreten; das Lager vor der Mission nur frühere Auftritte. Kapitel 1: nur die sechs Startfiguren, also keine Wahl; Takeda ab 3, Kage-Schwestern ab 4. **Claude (Flaschengeist)** ist in der Geschichte noch nie aufgetreten und deshalb nicht mehr wählbar, bis er eingeführt ist (`intro` oder `from` in `units.json` setzen).
+
+## Mission 9 (Festung im Gebirge)
+Gebaut (`ch9`): Wart ohne Flucht, Frischlinge als eine Figur, Regent als Strohmann in weinerlicher Grafik. Offen: Balancing im Simulator (Ziel `defeat`), Gruppenwahl und Sprecher-Sperre prüfen, Anschluss-Mission zur größeren Bedrohung.

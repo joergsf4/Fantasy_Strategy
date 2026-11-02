@@ -171,5 +171,10 @@
  "panzer": true,
  "panzer_wuetend": true,
  "panzer_chibi": true,
- "panzer_lachend": true
+ "panzer_lachend": true,
+ "frischlinge": true,
+ "frischlinge_wuetend": true,
+ "frischlinge_chibi": true,
+ "fuerst_weinerlich": true,
+ "fx_festung": true
 }

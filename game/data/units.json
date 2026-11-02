@@ -557,5 +557,25 @@
   "intro": 8,
   "hero": true,
   "from": 9
+ },
+ "frischlinge": {
+  "name": "Wartens Frischlinge",
+  "hp": 38,
+  "atk": 9,
+  "def": 3,
+  "res": 1,
+  "move": 4,
+  "range_min": 1,
+  "range": 1,
+  "role": "damage",
+  "dmg_type": "body",
+  "tags": [
+   "standard"
+  ],
+  "abilities": [],
+  "weapon": "wood",
+  "body": "flesh",
+  "size": 2.1,
+  "flees": true
  }
 }
