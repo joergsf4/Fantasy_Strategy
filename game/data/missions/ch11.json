@@ -65,20 +65,20 @@
        "left": "bienenmaedchen",
        "right": "oskar",
        "speaker": "oskar",
-       "text": "Da ist er also, der magische Honig. Schwesterherz, riechst du das? Flüssiges Gold in Wachs.",
+       "text": "Da ist er also, der magische Honig. Schwesterherz, riechst du das? Flüssiges Gold für uns!",
        "right_expr": "lachend"
       },
       {
        "left": "bienenmaedchen",
        "right": "maja",
        "speaker": "maja",
-       "text": "Nicht für uns. Der Honig gehört dem, der größer ist als der Regent. Und der wartet nicht gern."
+       "text": "Nicht nur für uns. Der Meister wird sehr zufrieden sein."
       },
       {
        "left": "bienenmaedchen",
        "right": "oskar",
        "speaker": "bienenmaedchen",
-       "text": "Ihr kommt nicht im Namen des Regenten? Dann erst recht nicht an meine Stöcke!",
+       "text": "Ihr kommt nicht im Namen des Regenten? Wer soll dieser Meister sein?",
        "left_expr": "wuetend"
       },
       {
@@ -92,7 +92,7 @@
        "left": "bienenmaedchen",
        "right": "maja",
        "speaker": "bienenmaedchen",
-       "text": "Schwärmt aus, Mädels! Keine Waffe, kein Befehl, nur Bienen gegen die Welt!",
+       "text": "Schwärmt aus, Mädels! Sie sollen eure Stachel spüren!",
        "left_expr": "wuetend"
       }
      ]
@@ -121,7 +121,7 @@
        "left": "bienenmaedchen",
        "right": "maja",
        "speaker": "bienenmaedchen",
-       "text": "Noch nicht! Noch nicht... meine Stöcke!",
+       "text": "Lasst meine Bienenkörbe in Frieden!",
        "left_expr": "wuetend"
       }
      ]
@@ -223,7 +223,7 @@
        "left": "bienenmaedchen",
        "right": "oskar",
        "speaker": "oskar",
-       "text": "Lass sie laufen, Schwesterherz. Sammelt den Honig ein. Alles, was noch nicht verbrannt ist.",
+       "text": "Lass sie laufen, Schwesterherz. Sammelt den Honig ein.",
        "right_expr": "lachend"
       }
      ]
