@@ -33,7 +33,7 @@ Beispiel **Laser-Reflektor** (Robo und Takeda): Steht Takeda auf der geraden Lin
 - **Daten:** `trigger: {type: "beam_via_ally", by, abilities: [...], via}`, `effects: {reflect_pct, radius, cutin: {unit, title, sub}}`, `scene` wie beim ersten Typ. Der Umkreis und die Prozente stehen im Editor.
 - **Ablauf** (`Battle._beam_blocker`, `_run_reflect`): Beim **ersten Mal** erscheinen die Dialogszene (Robo links, Takeda rechts) und der große Polarlicht-Auftritt (`SuperCutin` mit Takeda, Titel „Laser-Reflektor“, Untertitel „Schwertwirbel“, Super-Musik). **Danach** nur ein kurzer Effekt: Strahl zu Takeda, Schwertwirbel, „Reflektiert!“, Strahlen zu den Opfern. Anders als beim Betrunkenen Meister gilt der Effekt **bei jedem Schuss**, nicht nur einmal pro Kampf. Abklingzeit und Statistik zählen für Robo.
 - **Kein Hinweis im Spiel:** Der Schuss verhält sich ohne Takeda auf der Linie wie bisher.
-- **Nicht modelliert:** Der Simulator kennt die Reflexion nicht, die Gegner-KI nutzt sie nicht.
+- **Nicht modelliert (bewusst):** Der Simulator kennt Geheimnisse nicht und soll sie auch nicht kennen, die Gegner-KI nutzt sie nicht.
 - Test: `tests/test_reflect.gd`, Editor-Test `test_geheimnis_strahl_ueber_verbuendeten`.
 
 ### Wirkungsart „Auffangen“ (`effects.mode: "catch"`): Futter für Brumm
@@ -58,3 +58,6 @@ Der große Auftritt mit Polarlicht-Himmel, vergrößerter Figur und Super-Musik 
 **Inspiration von oben** (Lumi und Ser Albrecht): Trifft **Lumis Sternschnuppe** einen Gegner und steht **Ser Albrecht direkt daneben**, wird er **inspiriert**: **2 Runden 25 % mehr Angriff** (bei Angriff 8 sind das +2), goldener Stern über dem Balken. Die Sternschnuppe trifft wie sonst. Beim ersten Mal Szene (Lumi links, Albrecht rechts, ein Stern fliegt durchs Bild) und Polarlicht-Auftritt, danach Sternenstaub, der auf Albrecht rieselt. (Lesart des Prompts: „25 Schaden“ = 25 % mehr Schaden.)
 - **Daten:** `trigger: {type: "hit_near_ally", by, ability, near}`, `effects: {status: {id, turns, atk_pct}, cutin}`. Gilt für jede Schadens-Fähigkeit.
 - Code: `Battle._hit_near_reactions`, `_run_inspire`, `FxNew.inspire`. Test: `tests/test_reflect.gd`, `test_geheimnis_treffer_neben_verbuendetem`.
+
+## Balancing: Geheimnisse bleiben außen vor (Entscheidung des Nutzers, 2026-11-02)
+Geheimnisse fließen **nicht** in Balancing, Simulator oder Gegnerwerte ein: Man kann nicht davon ausgehen, dass Spieler sie entdecken, also muss jede Mission auch ohne sie fair schaffbar sein. Sie sind reiner Bonus. Ihre Stärke ist bewusst ungleich: Der **Laser-Reflektor** (Robo und Takeda) kann mit einem Angriff ganze Schlachten entscheiden, der **Shuriken Regen** (Muskelaugust und Kage-Schwestern) ist dagegen eher schwach. Das ist vorerst okay und wird nicht angeglichen.

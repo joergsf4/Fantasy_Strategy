@@ -114,16 +114,19 @@ Standardmäßig nur ein **Lebensbalken** (`shaders/hpbar.gdshader`, Teamfarbe, g
 Der Editor-Tab „Geheimnisse“ arbeitet jetzt mit einem **Freitext-Prompt** und der **Auswahl der beteiligten Figuren**; Auslöser, Wirkung und Szene sind optional (aufklappbar). Einträge ohne technische Umsetzung gelten als Idee und sind im Spiel nicht aktiv. Test: `tools/dialog_editor/test_server.py` (`test_geheimnis_als_freitext_idee_ohne_technik`).
 
 ## Erledigt: Geheimnis „Laser-Reflektor“ (2026-11-01)
-Zweiter Auslöser-Typ `beam_via_ally` (Strahl über einen Verbündeten umlenken), erstes Beispiel Robo und Takeda: roter Laser trifft die Gegner, grüner Laser heilt die Verbündeten im Umkreis 2 um Takeda mit 75 %. Beim ersten Mal Dialogszene und Polarlicht-Auftritt, danach kurzer Effekt. Der Editor-Tab „Geheimnisse“ kennt den neuen Typ (Auslöser-Typ-Auswahl). Die Dialoge sind vorläufig (von Claude erdacht, der Nutzer verfeinert sie später). Offen: Simulator, Feinschliff der Dialoge und Werte.
+Zweiter Auslöser-Typ `beam_via_ally` (Strahl über einen Verbündeten umlenken), erstes Beispiel Robo und Takeda: roter Laser trifft die Gegner, grüner Laser heilt die Verbündeten im Umkreis 2 um Takeda mit 75 %. Beim ersten Mal Dialogszene und Polarlicht-Auftritt, danach kurzer Effekt. Der Editor-Tab „Geheimnisse“ kennt den neuen Typ (Auslöser-Typ-Auswahl). Die Dialoge sind vorläufig (von Claude erdacht, der Nutzer verfeinert sie später). Offen: Feinschliff der Dialoge und Werte.
 
 ## Erledigt: Geheimnis „Futter für Brumm“ (2026-11-01)
 Dritte geheime Interaktion (Hundsfreund wirft Knochen, Mira & Brumm stehen auf der Flugbahn): Heilung 8 und Status „Satt“ (3 Runden, −25 % erlittener Schaden), der Angriff läuft unverändert weiter. Dafür neue Wirkungsart `catch` beim Auslöser-Typ `beam_via_ally`. Dialoge von Claude erdacht (vorläufig), kein Polarlicht-Auftritt (im Editor optional zuschaltbar). Hinweis: Knochenwurf hat nur Reichweite 1–2, der Auslöser tritt daher nur bei Ziel in genau 2 Feldern Abstand auf.
 
 ## Erledigt: Geheimnis „Shuriken Regen“ (2026-11-01)
-Dritter Auslöser-Typ `throw_ally`: Muskelaugust wirft die Kage-Schwestern höher, aus der Luft regnet es Wurfsterne (75 % des Angriffsschadens, Umkreis 2 um das Landefeld). Szene mit Wurfstern, Polarlicht-Auftritt als Erkennungszeichen, Editor-Typ „Einen Verbündeten werfen“. Dialoge von Claude erdacht (vorläufig). Offen: Simulator, Balancing.
+Dritter Auslöser-Typ `throw_ally`: Muskelaugust wirft die Kage-Schwestern höher, aus der Luft regnet es Wurfsterne (75 % des Angriffsschadens, Umkreis 2 um das Landefeld). Szene mit Wurfstern, Polarlicht-Auftritt als Erkennungszeichen, Editor-Typ „Einen Verbündeten werfen“. Dialoge von Claude erdacht (vorläufig).
 
 ## Erledigt: Geheimnis „Woll im Überfluss“ (2026-11-01)
 Vierter Auslöser-Typ `ability_near_ally`: Kanone von Elisabeth mit Wendy auf einem Nachbarfeld löst Wendys Wollmantel auf alle Verbündeten im Umkreis 2 aus (normale Abklingzeit, nur wenn bereit). Szene, Polarlicht-Auftritt, Editor-Typ „Verbündeter in der Nähe erschrickt“. Dialoge von Claude erdacht (vorläufig).
 
 ## Erledigt: Geheimnis „Inspiration von oben“ (2026-11-01)
 Fünfter Auslöser-Typ `hit_near_ally`: Lumis Sternschnuppe trifft einen Gegner, Albrecht steht daneben → 2 Runden +25 % Angriff. Szene, Polarlicht-Auftritt, Status-Symbol, Editor-Typ „Verbündeter neben dem getroffenen Gegner“. Dialoge von Claude erdacht (vorläufig).
+
+## Entscheidung: Geheimnisse nicht balancen (2026-11-02)
+Der frühere Punkt „Simulator kennt Geheimnisse nicht“ ist **gestrichen**: Geheimnisse gehören absichtlich nicht ins Balancing (Spieler müssen sie nicht entdecken). Ungleiche Stärke (Laser-Reflektor sehr stark, Shuriken Regen schwach) ist vorerst okay. Siehe `docs/geheimnisse.md`.
