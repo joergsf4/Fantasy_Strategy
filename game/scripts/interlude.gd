@@ -17,6 +17,7 @@ var _cam: Camera3D
 var _ship: MeshInstance3D
 var _foam: Array = []
 var _t := 0.0
+var _sea_mat: ShaderMaterial
 var _black: ColorRect
 var _done := false
 var _age := 0.0
@@ -141,10 +142,13 @@ func _build_sea() -> void:
 	vp.add_child(sun)
 	var water := MeshInstance3D.new()
 	var plane := PlaneMesh.new()
-	plane.size = Vector2(400, 400)
+	plane.size = Vector2(170, 170)
+	plane.subdivide_width = 340
+	plane.subdivide_depth = 340
 	water.mesh = plane
 	var wm := ShaderMaterial.new()
-	wm.shader = load("res://shaders/water.gdshader")
+	wm.shader = load("res://shaders/sea.gdshader")
+	_sea_mat = wm
 	water.material_override = wm
 	vp.add_child(water)
 	var ship_tex: Texture2D = load("res://assets/fx/fx_schiff.png")
@@ -195,18 +199,25 @@ func _build_sea() -> void:
 	_sail()
 
 
+## Wellenhoehe an dieser Stelle, dieselbe Formel wie sea_h() in shaders/sea.gdshader.
+func sea_height(p: Vector2, t: float) -> float:
+	return 0.30 * sin(p.dot(Vector2(0.55, 0.20)) + t * 1.3) + 0.18 * sin(p.dot(Vector2(-0.35, 0.80)) + t * 1.05 + 1.7) + 0.10 * sin(p.dot(Vector2(1.10, 0.60)) + t * 1.9 + 0.6)
+
+
 func _sail() -> void:
 	var k := clampf(_t / duration, 0.0, 1.0)
-	var x := -5.0 + _t * 0.9
-	var bob := sin(_t * 1.5) * 0.07 + sin(_t * 0.9 + 1.0) * 0.05
-	_ship.position = Vector3(x, 1.95 + bob, 0.0)
+	_sea_mat.set_shader_parameter("t_sea", _t)
+	var x := 5.0 - _t * 0.9                                       # der Bug zeigt nach links: das Schiff faehrt nach links
+	var h := sea_height(Vector2(x, 0.0), _t)
+	_ship.position = Vector3(x, 1.9 + h * 0.9, 0.0)
 	for i in _foam.size():
 		var f: MeshInstance3D = _foam[i]
-		f.position = Vector3(x - 0.5 * i, 0.02, 0.1)
+		f.position = Vector3(x + 0.5 * i, 0.04 + h * 0.9, 0.1)
 		f.scale = Vector3(1.0 + 0.05 * sin(_t * 1.5 + i), 0.42, 1.0)
-	var a := lerpf(0.55, -0.25, smoothstep(0.0, 1.0, k))          # Bogen: erst von vorn rechts, dann hinter dem Schiff vorbei
-	var focus := Vector3(x + 0.6, 1.9, 0.0)
-	_cam.position = focus + Vector3(sin(a) * 8.5, 0.5 + k * 0.7 + sin(_t * 0.7) * 0.06, cos(a) * 8.5)
+	var a := lerpf(0.55, -0.25, smoothstep(0.0, 1.0, k))          # Bogen: erst von vorn links, dann hinter dem Schiff vorbei
+	var focus := Vector3(x - 0.6, 1.9, 0.0)
+	_cam.position = focus + Vector3(-sin(a) * 8.5, 0.5 + k * 0.7, cos(a) * 8.5)
+	_cam.position.y += sea_height(Vector2(_cam.position.x, _cam.position.z), _t) * 0.6
 	_cam.look_at(focus)
 
 
