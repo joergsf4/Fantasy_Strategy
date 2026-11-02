@@ -4,19 +4,19 @@
    "left": "ritter",
    "right": "maedchen_baer",
    "speaker": "ritter",
-   "text": "Berge. Endlich Schatten. Und eine Festung, die aussieht, als wolle sie uns fressen."
+   "text": "Berge. Endlich Schatten. Da ist die Festung vom Regenten!"
   },
   {
    "left": "robo",
    "right": "maedchen_baer",
    "speaker": "robo",
-   "text": "Meine Sensoren melden: viele Feinde, viele Stufen, wenig Spaß."
+   "text": "Meine Sensoren melden: viele Feinde, viele Stufen, meine Servos mögen die Steigung gar nicht."
   },
   {
    "left": "elisabeth",
    "right": "maedchen_baer",
    "speaker": "elisabeth",
-   "text": "Dort oben auf dem Pass steht jemand, den ich kenne. Der Kerl mit dem Raketenwerfer."
+   "text": "Dort oben auf dem Pass steht jemand, den wir kennen. Der fiese Kerl mit dem Raketenwerfer."
   },
   {
    "left": "maedchen_baer",
@@ -25,16 +25,11 @@
    "text": "Wart! Und er ist nicht allein."
   },
   {
-   "left": "quacksalber",
-   "right": "maedchen_baer",
-   "speaker": "quacksalber",
-   "text": "Ich schlage vor: vorsichtig sein. Und im Zweifel hinten stehen."
-  },
-  {
    "left": "ritter",
    "right": "maedchen_baer",
    "speaker": "ritter",
-   "text": "Wir gehen durch. Der Weg zur Insel des Regenten führt an dieser Festung vorbei."
+   "text": "Wir müssen uns den Weg freikämpfen. Wir sind nicht so weit gekommen, um hier halt zu machen!",
+   "left_expr": "wuetend"
   }
  ],
  "outro": [

@@ -32,15 +32,21 @@ func _ready() -> void:
 	col.add_child(_label("Testmenü", UiTheme.F_BODY, 18, Color(0.75, 0.75, 0.7), HORIZONTAL_ALIGNMENT_CENTER))
 	_info = _label(save_info, UiTheme.F_BODY, 16, Color(0.8, 0.85, 0.7), HORIZONTAL_ALIGNMENT_CENTER)
 	col.add_child(_info)
+	var dd := OptionButton.new()
+	dd.focus_mode = Control.FOCUS_NONE
+	dd.custom_minimum_size = Vector2(420, 40)
+	dd.add_theme_font_override("font", UiTheme.font(UiTheme.F_HEAD))
+	dd.add_theme_font_size_override("font_size", 22)
 	for i in chapters.size():
-		var row := HBoxContainer.new()
-		row.add_theme_constant_override("separation", 12)
-		var nm := _label("%d  %s" % [i + 1, chapters[i]["title"]], UiTheme.F_HEAD, 22, UiTheme.CREAM)
-		nm.custom_minimum_size = Vector2(300, 0)
-		row.add_child(nm)
-		row.add_child(_button("Mit Einleitung", func() -> void: pick(i, false)))
-		row.add_child(_button("Direkt in den Kampf", func() -> void: pick(i, true)))
-		col.add_child(row)
+		dd.add_item("%d  %s" % [i + 1, chapters[i]["title"]], i)
+	dd.select(chapters.size() - 1)          # zuletzt gebautes Kapitel vorgewaehlt
+	col.add_child(dd)
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 12)
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	row.add_child(_button("Mit Einleitung", func() -> void: pick(dd.selected, false)))
+	row.add_child(_button("Direkt in den Kampf", func() -> void: pick(dd.selected, true)))
+	col.add_child(row)
 	col.add_child(_button("Soundlabor", _open_lab))
 	col.add_child(_button("Spielstand zurücksetzen", func() -> void: new_game_requested.emit()))
 
