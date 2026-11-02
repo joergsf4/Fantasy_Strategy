@@ -38,7 +38,7 @@
    "right": "elisabeth",
    "speaker": "hund",
    "text": "Wir sind an Bord. Und alles schwankt. Wieso schwankt alles?",
-   "left_expr": "wuetend"
+   "left_expr": "seekrank"
   },
   {
    "left": "hund",
@@ -51,7 +51,8 @@
    "left": "hund",
    "right": "elisabeth",
    "speaker": "hund",
-   "text": "Mir ist schlecht. Hab ich erwähnt, dass mir schlecht ist? Mir ist sehr schlecht."
+   "text": "Mir ist schlecht. Hab ich erwähnt, dass mir schlecht ist? Mir ist sehr schlecht.",
+   "left_expr": "seekrank"
   },
   {
    "left": "hund",
@@ -64,7 +65,8 @@
    "left": "hund",
    "right": "elisabeth",
    "speaker": "hund",
-   "text": "Der Horizont schwankt auch! Alles schwankt! Sogar mein Frühstück schwankt!"
+   "text": "Der Horizont schwankt auch! Alles schwankt! Sogar mein Frühstück schwankt!",
+   "left_expr": "seekrank"
   },
   {
    "left": "hund",
@@ -78,7 +80,7 @@
    "right": "elisabeth",
    "speaker": "hund",
    "text": "Ich bin Hund. Ich gehöre an Land. Ich gehöre unter einen Baum.",
-   "left_expr": "wuetend"
+   "left_expr": "seekrank"
   },
   {
    "left": "robo",
