@@ -81,7 +81,7 @@
        "left": "$hero",
        "right": "maedchen_baer",
        "speaker": "$hero",
-       "text": "Brumm sträubt das Fell. Das ist kein gutes Zeichen!",
+       "text": "Brumm sträubt sich das Fell. Seid auf der Hut!",
        "right_expr": "wuetend"
       }
      ]
@@ -108,7 +108,7 @@
        "left": "ritter",
        "right": "wart",
        "speaker": "wart",
-       "text": "Diesmal laufe ich nicht weg! Der Regent hat mir das Bleiben befohlen!",
+       "text": "Ich kämpfe bis zum Ende! Es gibt größere Schrecken als eure Klingen, die mich sonst erwarten.",
        "right_expr": "wuetend"
       }
      ]
@@ -127,7 +127,7 @@
        "left": "ritter",
        "right": "wart",
        "speaker": "wart",
-       "text": "Ahh... es ist vorbei... Ich spüre das Licht... es riecht nach Trüffeln...",
+       "text": "Ahh... es ist vorbei... Ich sehe das Licht... es riecht nach Trüffeln...",
        "right_expr": "sterbend"
       },
       {
@@ -140,20 +140,21 @@
        "left": "ritter",
        "right": "wart",
        "speaker": "wart",
-       "text": "Sagt meiner Rakete... dass ich sie geliebt habe. Und meinen Jungs... sie sollen... nie wieder... Ferkel genannt werden...",
+       "text": "Sagt meiner Rakete... dass ich sie geliebt habe. Und meinen Jungs, dass sie auch ganz okay waren...",
        "right_expr": "sterbend"
       },
       {
-       "left": "maedchen_baer",
+       "left": "elisabeth",
        "right": "wart",
-       "speaker": "maedchen_baer",
-       "text": "Er stirbt wirklich theatralisch."
+       "speaker": "elisabeth",
+       "text": "Das ist ja wie bei Shakespeare.",
+       "left_expr": "lachend"
       },
       {
        "left": "maedchen_baer",
        "right": "wart",
        "speaker": "wart",
-       "text": "Lebt wohl, grausame Welt! ...Autsch. Das Gelenk. ...Lebt wohl!",
+       "text": "Lebe wohl, grausame Welt! ...Autsch. Hey das tut ja wirklich weh! Urgsss..",
        "right_expr": "sterbend"
       }
      ]
@@ -177,7 +178,7 @@
        "left": "ritter",
        "right": "frischlinge",
        "speaker": "frischlinge",
-       "text": "BOSS!! Ihr habt unseren Boss umgehauen! Dafür zahlt ihr!",
+       "text": "Papa!! Ihr habt unseren Vater umgehauen! Dafür zahlt ihr!",
        "right_expr": "wuetend"
       },
       {
@@ -251,20 +252,20 @@
        "left": "robo",
        "right": "fuerst",
        "speaker": "fuerst",
-       "text": "Das weiß ich nicht! Ich kenne nur die Briefe. Sie sind immer im Schatten gesiegelt. Und wer nicht gehorcht... *schnief*",
+       "text": "Das weiß ich nicht! Ich kenne nur die Briefe mit Anweisungen. Und wer nicht gehorcht... *schnief*",
        "right_expr": "weinerlich"
       },
       {
        "left": "elisabeth",
        "right": "fuerst",
        "speaker": "elisabeth",
-       "text": "Also gibt es noch jemanden, der größer ist als er?"
+       "text": "Also gibt es noch jemanden, der größer ist als du?"
       },
       {
        "left": "elisabeth",
        "right": "fuerst",
        "speaker": "fuerst",
-       "text": "Viel größer. Er ist bald hier. Bitte lasst mich gehen, ich will heim zu meiner Mama!",
+       "text": "Viel größer. Bitte lasst mich gehen, ich will heim zu meiner Mama!",
        "right_expr": "weinerlich"
       }
      ]
@@ -281,7 +282,7 @@
     "left": "$hero",
     "right": "frischlinge",
     "speaker": "frischlinge",
-    "text": "Nich' hauen! Wir sagen's Papa! Der kommt gleich!",
+    "text": "Nich' hauen! Das tut doch weh!",
     "right_expr": "wuetend"
    },
    {
