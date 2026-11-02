@@ -577,5 +577,23 @@
   "body": "flesh",
   "size": 2.1,
   "flees": true
+ },
+ "lotte": {
+  "name": "Lotte",
+  "hp": 8,
+  "atk": 1,
+  "def": 0,
+  "res": 0,
+  "move": 3,
+  "range_min": 1,
+  "range": 1,
+  "role": "support",
+  "dmg_type": "body",
+  "tags": [
+   "npc"
+  ],
+  "abilities": [],
+  "weapon": "fist",
+  "body": "flesh"
  }
 }

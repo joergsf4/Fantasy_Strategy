@@ -92,6 +92,7 @@ var _target_objs: Array[Dictionary] = []  # anwaehlbare Weltobjekte beim Zielen
 var _landing_ally: Dictionary = {}
 var _landing_tiles: Array[Vector2i] = []
 var retreated: Array = []           # Gegner, die sich freiwillig zurueckgezogen haben
+var story_lost := false            # Missionsfeld "story_loss": die Figur ist zurueckgeschlagen worden (Szene folgt, Mission gilt als geschafft)
 var fled: Array = []                # in dieser Mission geflohene Gegner (kehren spaeter zurueck)
 var nemeses: Array = []             # aus frueheren Missionen entkommene Gegner (Party)
 var loadout: Dictionary = {}      # {inventory: {Gegenstand: Anzahl}, equipment: {Held: [Ausruestung]}}
@@ -155,7 +156,7 @@ func _ready() -> void:
 	_cursor.visible = false
 	add_child(_cursor)
 	for e: Dictionary in map_data["players"]:
-		_spawn(e["id"], "p", Vector2i(e["pos"][0], e["pos"][1]))
+		_spawn(e["id"], "p", Vector2i(e["pos"][0], e["pos"][1]), {"hp": e["hp"]} if e.has("hp") else {})
 	for e: Dictionary in map_data["enemies"]:
 		var extra := {"carry": e.get("carry", {}), "guard": e.get("guard", false)}
 		if e.has("hp"):
@@ -211,6 +212,73 @@ func _apply_desert_light(env: Environment, sun: DirectionalLight3D) -> void:
 		mat.set_shader_parameter("contrast", 1.22)
 		mat.set_shader_parameter("haze", 0.03)
 		mat.set_shader_parameter("vignette", 0.55)
+
+
+## Kartenfeld "mood": "nacht_regen": Mondlicht, tiefblauer Himmel, Dunst, kuehler Farbfilter und Regen (Hafen in Kapitel 10).
+func _apply_night_rain(env: Environment, sun: DirectionalLight3D) -> void:
+	sun.rotation_degrees = Vector3(-38, -30, 0)
+	sun.light_color = Color(0.5, 0.62, 1.0)
+	sun.light_energy = 0.32
+	sun.shadow_opacity = 0.7
+	env.ambient_light_color = Color(0.16, 0.21, 0.4)
+	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
+	env.ambient_light_energy = 0.5
+	env.fog_enabled = true
+	env.fog_light_color = Color(0.1, 0.14, 0.26)
+	env.fog_density = 0.02
+	env.tonemap_exposure = 0.95
+	var sk := env.sky.sky_material as ProceduralSkyMaterial
+	sk.sky_top_color = Color(0.03, 0.05, 0.14)
+	sk.sky_horizon_color = Color(0.16, 0.2, 0.34)
+	sk.ground_horizon_color = Color(0.12, 0.16, 0.28)
+	sk.ground_bottom_color = Color(0.05, 0.07, 0.14)
+	var layer := CanvasLayer.new()
+	layer.layer = 2
+	add_child(layer)
+	var rect := ColorRect.new()
+	rect.size = Vector2(1280, 720)
+	rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var mat := ShaderMaterial.new()
+	mat.shader = load("res://shaders/grade_mexiko.gdshader")
+	mat.set_shader_parameter("tint", Vector3(0.72, 0.84, 1.08))
+	mat.set_shader_parameter("shadow_tint", Vector3(0.0, 0.01, 0.05))
+	mat.set_shader_parameter("saturation", 0.78)
+	mat.set_shader_parameter("contrast", 1.18)
+	mat.set_shader_parameter("haze", 0.0)
+	mat.set_shader_parameter("vignette", 0.6)
+	mat.set_shader_parameter("shimmer", 0.0)
+	rect.material = mat
+	layer.add_child(rect)
+	_build_rain()
+
+
+## Regen: dichte Streifen, die schraeg ueber der Karte fallen (CPUParticles3D, laeuft im Compatibility-Renderer sicher).
+func _build_rain() -> void:
+	var p := CPUParticles3D.new()
+	var q := QuadMesh.new()
+	q.size = Vector2(0.018, 0.5)
+	var m := StandardMaterial3D.new()
+	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	m.albedo_color = Color(0.75, 0.85, 1.0, 0.38)
+	m.billboard_mode = BaseMaterial3D.BILLBOARD_PARTICLES
+	m.billboard_keep_scale = true
+	q.material = m
+	p.mesh = q
+	p.amount = 1600
+	p.lifetime = 0.8
+	p.preprocess = 1.0
+	p.emission_shape = CPUParticles3D.EMISSION_SHAPE_BOX
+	p.emission_box_extents = Vector3(grid.width * 0.5 + 5.0, 0.2, grid.height * 0.5 + 5.0)
+	p.position = Vector3((grid.width - 1) / 2.0, 9.0, (grid.height - 1) / 2.0)
+	p.direction = Vector3(0.18, -1.0, 0.0)
+	p.spread = 3.0
+	p.gravity = Vector3.ZERO
+	p.initial_velocity_min = 13.0
+	p.initial_velocity_max = 16.0
+	p.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	p.name = "Rain"
+	add_child(p)
 
 
 func _mat(c: Color, transparent := false, unshaded := false) -> StandardMaterial3D:
@@ -280,6 +348,8 @@ func _build_environment() -> void:
 	add_child(sun)
 	if map_data.get("biome", "") == "wueste" and map_data.get("grade", "mexiko") != "none":
 		_apply_desert_light(env, sun)
+	if map_data.get("mood", "") == "nacht_regen":
+		_apply_night_rain(env, sun)
 	var center := Vector3((grid.width - 1) / 2.0, 0, (grid.height - 1) / 2.0)
 	cam = Camera3D.new()
 	cam.fov = 40
@@ -1221,6 +1291,11 @@ func _on_death(def: Dictionary) -> void:
 ## zurueck, alle anderen sterben.
 func _down(def: Dictionary) -> void:
 	_on_death(def)
+	if def["team"] == "p" and map_data.get("story_loss", "") == def["id"]:     # erzaehlte Niederlage: sie flieht statt zu fallen
+		fallen.erase(def["id"])
+		story_lost = true
+		await _flee(def, false)
+		return
 	if def["team"] == "e" and unit_defs[def["id"]].get("flees", false) and not (map_data.get("no_flee", []) as Array).has(def["id"]):
 		await _flee(def)
 	else:
@@ -1322,6 +1397,8 @@ func results() -> Dictionary:
 				ok = _count_team("e") == 0
 			"ueberzeugt":
 				ok = retreated.has(o["unit"])
+			"durchgehalten":
+				ok = turn > int(o["turns"])     # so viele Runden ausgehalten, bevor die Szene den Kampf beendet
 		done.append({"id": o["id"], "text": o["text"], "done": ok, "reward": o.get("reward", {})})
 	# Kapitelbelohnung und erfuellte Ziele gutschreiben
 	var bonus: Array = [map_data.get("rewards", {})]
@@ -1386,6 +1463,22 @@ func _build_decor() -> void:
 		root.position = to_world(sp[1]) + Vector3(rng.randf_range(-0.12, 0.12), 0, rng.randf_range(-0.1, 0.1))
 		add_child(root)
 		_object_sprite(sp[0], sp[2], root)
+		if map_data.get("mood", "") == "nacht_regen" and (sp[0] as String).begins_with("fx_dorf"):     # warmes Licht aus den Fenstern
+			_window_glow(root)
+
+
+## Lichtschein aus den Haeusern in der Nacht: weicher warmer Fleck, ein schwaches Flackern und ein kleines Punktlicht.
+func _window_glow(root: Node3D) -> void:
+	var glow := fx.make_sprite("soft", Vector3(0, 0.5, 0.15), 1.7, true, Color(1.0, 0.72, 0.3, 0.75), 0, root)
+	var tw := glow.create_tween().set_loops()
+	tw.tween_property(glow, "scale", glow.scale * 1.06, 0.7).set_trans(Tween.TRANS_SINE)
+	tw.tween_property(glow, "scale", glow.scale * 0.95, 0.9).set_trans(Tween.TRANS_SINE)
+	var l := OmniLight3D.new()
+	l.light_color = Color(1.0, 0.7, 0.35)
+	l.light_energy = 1.3
+	l.omni_range = 3.0
+	l.position = Vector3(0, 0.8, 0.5)
+	root.add_child(l)
 
 
 func _build_objects() -> void:
@@ -2387,6 +2480,9 @@ func _check_end() -> void:
 		return
 	var lost := _count_team("p") == 0
 	var won := not lost and goal_met()
+	if story_lost:
+		won = true
+		lost = false
 	if won or lost:
 		state = State.OVER
 		_show_tiles({})
@@ -2564,6 +2660,18 @@ func _fire(t: Dictionary, who := {}) -> void:
 				units.erase(rt)
 				retreated.append(rt["id"])
 				await _flee(rt, false)
+		if step.has("burn"):   # {"burn": "hive_p"}: alle Objekte dieser Art gehen in Flammen auf (und verschwinden)
+			for bo in world.objects.duplicate():
+				if bo["type"] == step["burn"] and bo["state"] == "active":
+					var bp := to_world(bo["pos"]) + Vector3(0, 0.4, 0)
+					fx.particles("fx_fireball", bp, 14, 2.5, 0.7, 0.9, -1.2, Color(1.0, 0.7, 0.3), true, 70.0)
+					fx.particles("fx_smoke", bp, 10, 1.5, 0.7, 1.2, -0.4, Color(0.25, 0.22, 0.2), false, 70.0)
+					fx.light_flash(bp, Color(1.0, 0.55, 0.2), 3.0, 4.0, 0.9)
+					bo["state"] = "gone"
+					_refresh_object(bo, true)
+			grid.blocked = world.blocked()
+			Sfx.event("fire")
+			await get_tree().create_timer(1.1).timeout
 		if step.has("spawn"):
 			for e: Dictionary in step["spawn"]:
 				var pos := _free_tile_near(Vector2i(e["pos"][0], e["pos"][1]), {"flying": false})
@@ -3571,14 +3679,14 @@ func _player_hive_phase() -> void:
 		if o["type"] != "hive_p" or o["state"] != "active":
 			continue
 		o["age"] = int(o["age"]) + 1
-		if int(o["age"]) >= HIVE_P_LIFE:
+		if int(o["age"]) >= HIVE_P_LIFE and not o.get("perm", false):
 			o["state"] = "gone"
 			grid.blocked = world.blocked()
 			_refresh_object(o, true)
 			fx.particles("fx_smoke", to_world(o["pos"]) + Vector3(0, 0.4, 0), 10, 1.5, 0.6, 0.9, -0.3, Color(0.8, 0.7, 0.4), false, 70.0)
 			continue
 		var alive := units.filter(func(u: Dictionary) -> bool: return u["id"] == "bienenkrieger" and u["team"] == "p").size()
-		if int(o["age"]) % 2 != 0 or alive >= HIVE_P_CAP:
+		if int(o["age"]) % 2 != 0 or alive >= int(map_data.get("drone_cap", HIVE_P_CAP)):
 			continue
 		var pos := _free_tile_near(o["pos"], {"flying": true})
 		_spawn("bienenkrieger", "p", pos, {})

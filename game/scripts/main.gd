@@ -5,7 +5,7 @@ const TITLE_MUSIC := "res://assets/audio/title_theme.mp3"
 const BATTLE_MUSIC := "res://assets/audio/battle_theme.mp3"
 const WIN_MUSIC := "res://assets/audio/sieg_statistik.mp3"
 const DEFEAT_MUSIC := "res://assets/audio/niederlage_statistik.mp3"
-const CHAPTERS := ["ch1", "ch2", "ch3", "ch4", "ch5", "ch6", "ch7", "ch8", "ch9", "ch10"]
+const CHAPTERS := ["ch1", "ch2", "ch3", "ch4", "ch5", "ch6", "ch7", "ch8", "ch9", "ch10", "ch11"]
 const MUSIC_DB := -6.0
 
 var units: Dictionary
@@ -489,6 +489,11 @@ func _screenshot_mode() -> void:
 		stage = Stage.new()
 		stage.setup(map, units)
 		add_child(stage)
+		var shot_ch := OS.get_environment("SHOT_CH")      # SHOT_CH=ch10: Dialog vor der Karte und mit der Geschichte dieses Kapitels
+		if shot_ch != "":
+			story = _load_json("res://data/story_%s.json" % shot_ch)
+			stage.map_data = Mission.load_mission(shot_ch)
+			stage.new_battle()
 		if mode == "title":
 			add_child(TitleScreen.new())
 		else:

@@ -1,0 +1,237 @@
+{
+ "id": "ch11",
+ "title": "Stachelias Stand",
+ "map": "res://data/map_ch11.json",
+ "fixed_squad": true,
+ "story_loss": "bienenmaedchen",
+ "briefing": "Stachelia ist allein im Bienenwald, umgeben von ihren Stöcken. Du führst sie und ihre Drohnen: Die Bienenkörbe lassen alle zwei Runden eine Drohne schlüpfen. Halte acht Runden durch, dann gibt es eine Belohnung. Aber die Zwillinge Oskar und Maja kommen mit Soldaten und mit Feuer, und am Ende wird Stachelia ihnen nicht standhalten.",
+ "goals": [
+  {
+   "type": "survive",
+   "turns": 8
+  }
+ ],
+ "triggers": [
+  {
+   "when": {
+    "turn": 2
+   },
+   "note": "Die Zwillinge tauchen auf",
+   "do": [
+    {
+     "spawn": [
+      {
+       "id": "oskar",
+       "pos": [
+        11,
+        3
+       ],
+       "label": "Oskar taucht auf"
+      },
+      {
+       "id": "maja",
+       "pos": [
+        11,
+        6
+       ],
+       "label": "Maja taucht auf"
+      },
+      {
+       "id": "soldat_infanterie",
+       "pos": [
+        11,
+        4
+       ]
+      },
+      {
+       "id": "soldat_infanterie",
+       "pos": [
+        11,
+        5
+       ]
+      },
+      {
+       "id": "soldat_bogenschuetze",
+       "pos": [
+        10,
+        2
+       ]
+      }
+     ]
+    },
+    {
+     "dialogue": [
+      {
+       "left": "bienenmaedchen",
+       "right": "oskar",
+       "speaker": "oskar",
+       "text": "Da ist er also, der magische Honig. Schwesterherz, riechst du das? Flüssiges Gold in Wachs.",
+       "right_expr": "lachend"
+      },
+      {
+       "left": "bienenmaedchen",
+       "right": "maja",
+       "speaker": "maja",
+       "text": "Nicht für uns. Der Honig gehört dem, der größer ist als der Regent. Und der wartet nicht gern."
+      },
+      {
+       "left": "bienenmaedchen",
+       "right": "oskar",
+       "speaker": "bienenmaedchen",
+       "text": "Ihr kommt nicht im Namen des Regenten? Dann erst recht nicht an meine Stöcke!",
+       "left_expr": "wuetend"
+      },
+      {
+       "left": "bienenmaedchen",
+       "right": "oskar",
+       "speaker": "oskar",
+       "text": "Der Regent ist Geschichte. Wir kommen für das, was hinter ihm steht.",
+       "right_expr": "lachend"
+      },
+      {
+       "left": "bienenmaedchen",
+       "right": "maja",
+       "speaker": "bienenmaedchen",
+       "text": "Schwärmt aus, Mädels! Keine Waffe, kein Befehl, nur Bienen gegen die Welt!",
+       "left_expr": "wuetend"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "hp_below": {
+     "id": "bienenmaedchen",
+     "ratio": 0.5
+    }
+   },
+   "note": "Stachelia wankt",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "bienenmaedchen",
+       "right": "maja",
+       "speaker": "maja",
+       "text": "Oskar, sie wird müde. Zeit für das Feuer.",
+       "right_expr": "lachend"
+      },
+      {
+       "left": "bienenmaedchen",
+       "right": "maja",
+       "speaker": "bienenmaedchen",
+       "text": "Noch nicht! Noch nicht... meine Stöcke!",
+       "left_expr": "wuetend"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 4
+   },
+   "note": "Verstärkung der Zwillinge",
+   "do": [
+    {
+     "spawn": [
+      {
+       "id": "soldat_infanterie",
+       "pos": [
+        11,
+        4
+       ],
+       "label": "Verstärkung"
+      },
+      {
+       "id": "soldat_bogenschuetze",
+       "pos": [
+        11,
+        6
+       ],
+       "label": "Verstärkung"
+      },
+      {
+       "id": "soldat_priester",
+       "pos": [
+        11,
+        5
+       ],
+       "label": "Verstärkung"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "victory": true
+   },
+   "note": "Das Feuer der Zwillinge",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "bienenmaedchen",
+       "right": "oskar",
+       "speaker": "oskar",
+       "text": "Genug gespielt. Feuer frei, Schwesterherz!",
+       "right_expr": "lachend"
+      },
+      {
+       "left": "bienenmaedchen",
+       "right": "maja",
+       "speaker": "maja",
+       "text": "Mit Vergnügen. Brennt alles nieder, was summt.",
+       "right_expr": "wuetend"
+      }
+     ]
+    },
+    {
+     "burn": "hive_p"
+    },
+    {
+     "dialogue": [
+      {
+       "left": "bienenmaedchen",
+       "right": "maja",
+       "speaker": "bienenmaedchen",
+       "text": "Meine Stöcke! Meine Bienen! Nein, nein, NEIN!",
+       "left_expr": "wuetend"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "victory": true
+   },
+   "note": "Stachelia flieht und schwört Rache",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "bienenmaedchen",
+       "right": "oskar",
+       "speaker": "bienenmaedchen",
+       "text": "Ich kann nicht mehr... Aber das war nicht das Ende! Ich schwöre euch Rache. Euch beiden, und eurem finsteren Meister!",
+       "left_expr": "wuetend"
+      },
+      {
+       "left": "bienenmaedchen",
+       "right": "oskar",
+       "speaker": "oskar",
+       "text": "Lass sie laufen, Schwesterherz. Sammelt den Honig ein. Alles, was noch nicht verbrannt ist.",
+       "right_expr": "lachend"
+      }
+     ]
+    },
+    {
+     "retreat": "bienenmaedchen"
+    }
+   ]
+  }
+ ]
+}

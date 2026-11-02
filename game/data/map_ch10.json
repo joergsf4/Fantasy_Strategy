@@ -55,83 +55,7 @@
    ]
   }
  ],
- "enemies": [
-  {
-   "id": "soldat_infanterie",
-   "pos": [
-    4,
-    2
-   ]
-  },
-  {
-   "id": "soldat_infanterie",
-   "pos": [
-    4,
-    5
-   ]
-  },
-  {
-   "id": "soldat_infanterie",
-   "pos": [
-    7,
-    3
-   ],
-   "carry": {
-    "items": {
-     "heilhonig": 1
-    }
-   }
-  },
-  {
-   "id": "soldat_infanterie",
-   "pos": [
-    7,
-    5
-   ]
-  },
-  {
-   "id": "soldat_bogenschuetze",
-   "pos": [
-    7,
-    2
-   ]
-  },
-  {
-   "id": "soldat_bogenschuetze",
-   "pos": [
-    8,
-    4
-   ]
-  },
-  {
-   "id": "soldat_beritten",
-   "pos": [
-    7,
-    7
-   ]
-  },
-  {
-   "id": "soldat_infanterie",
-   "pos": [
-    8,
-    6
-   ]
-  },
-  {
-   "id": "soldat_infanterie",
-   "pos": [
-    9,
-    6
-   ]
-  },
-  {
-   "id": "soldat_bogenschuetze",
-   "pos": [
-    8,
-    5
-   ]
-  }
- ],
+ "enemies": [],
  "objects": [
   {
    "id": "schiff",
@@ -139,94 +63,6 @@
    "pos": [
     11,
     7
-   ]
-  },
-  {
-   "id": "kiste1",
-   "type": "crate",
-   "pos": [
-    4,
-    3
-   ]
-  },
-  {
-   "id": "kiste4",
-   "type": "crate",
-   "pos": [
-    5,
-    7
-   ]
-  },
-  {
-   "id": "sperre0",
-   "type": "crate",
-   "pos": [
-    6,
-    0
-   ]
-  },
-  {
-   "id": "sperre1",
-   "type": "crate",
-   "pos": [
-    6,
-    1
-   ]
-  },
-  {
-   "id": "sperre2",
-   "type": "crate",
-   "pos": [
-    6,
-    2
-   ]
-  },
-  {
-   "id": "sperre3",
-   "type": "crate",
-   "pos": [
-    6,
-    3
-   ]
-  },
-  {
-   "id": "sperre4",
-   "type": "crate",
-   "pos": [
-    6,
-    4
-   ]
-  },
-  {
-   "id": "sperre6",
-   "type": "crate",
-   "pos": [
-    6,
-    6
-   ]
-  },
-  {
-   "id": "sperre7",
-   "type": "crate",
-   "pos": [
-    6,
-    7
-   ]
-  },
-  {
-   "id": "sperre8",
-   "type": "crate",
-   "pos": [
-    6,
-    8
-   ]
-  },
-  {
-   "id": "sperre9",
-   "type": "crate",
-   "pos": [
-    6,
-    9
    ]
   }
  ],
@@ -251,5 +87,6 @@
     }
    }
   }
- ]
+ ],
+ "mood": "nacht_regen"
 }

@@ -1,0 +1,33 @@
+{
+ "intro": [
+  {
+   "left": "bienenmaedchen",
+   "right": "",
+   "speaker": "bienenmaedchen",
+   "text": "Ruhig, meine Süßen. Der Honig reift, der Stock summt. Hier findet uns niemand."
+  },
+  {
+   "left": "bienenmaedchen",
+   "right": "",
+   "speaker": "bienenmaedchen",
+   "text": "Seit dem Waisenhaus gehören Wald und Honig wieder uns. Kein Regent, kein Befehl. Nur Bienen.",
+   "left_expr": "lachend"
+  },
+  {
+   "left": "bienenmaedchen",
+   "right": "",
+   "speaker": "bienenmaedchen",
+   "text": "...Warum ist es so still? Selbst die Vögel schweigen.",
+   "left_expr": "wuetend"
+  }
+ ],
+ "outro": [
+  {
+   "left": "bienenmaedchen",
+   "right": "",
+   "speaker": "bienenmaedchen",
+   "text": "Asche. Überall Asche. Aber ich bin noch da. Und ich merke mir jedes Gesicht.",
+   "left_expr": "wuetend"
+  }
+ ]
+}

@@ -4,39 +4,52 @@
    "left": "elisabeth",
    "right": "robo",
    "speaker": "elisabeth",
-   "text": "Die Rostige Möwe liegt noch genauso schief am Steg, wie wir sie verlassen haben. Willkommen zurück in Möwenbucht!",
-   "left_expr": "lachend"
+   "text": "Möwenbucht, mitten in der Nacht. Seltsam: Die Barrikaden am Kai sind weg, und in den Häusern brennt Licht."
   },
   {
    "left": "elisabeth",
    "right": "robo",
    "speaker": "robo",
-   "text": "Der Regent ein Strohmann. Wenn das stimmt, haben wir bisher gegen eine Marionette gekämpft."
+   "text": "Regen, Dunkelheit, eine Stadt ohne Wachen. Meine Sensoren mögen das nicht."
   },
   {
-   "left": "maedchen_baer",
-   "right": "robo",
-   "speaker": "maedchen_baer",
-   "text": "Und wer zieht an den Fäden? Der Regent sagte, es ist jemand, der viel größer ist."
+   "left": "hund",
+   "right": "lotte",
+   "speaker": "lotte",
+   "text": "Blauer Hundsfreund! Ich habe auf euch gewartet. Die ganze Nacht, im Regen.",
+   "right_expr": ""
   },
   {
-   "left": "ritter",
-   "right": "maedchen_baer",
-   "speaker": "ritter",
-   "text": "Dann suchen wir ihn. Erst im Hafen: Gerüchte, Kapitäne, Schmuggler. Irgendjemand hat etwas gesehen."
+   "left": "hund",
+   "right": "lotte",
+   "speaker": "hund",
+   "text": "Lotte? Du bist ja völlig durchnässt! Was ist passiert?"
   },
   {
-   "left": "ritter",
-   "right": "elisabeth",
-   "speaker": "elisabeth",
-   "text": "Ich kenne jede Kaschemme an diesem Kai. Und jede Rechnung, die ich dort noch offen habe.",
-   "right_expr": "lachend"
+   "left": "hund",
+   "right": "lotte",
+   "speaker": "lotte",
+   "text": "Die anderen Kinder... Pip, Mia, alle. Fremde Männer kamen im Dunkeln und haben sie mitgenommen. Nur ich konnte mich verstecken."
   },
   {
-   "left": "maedchen_baer",
-   "right": "elisabeth",
-   "speaker": "maedchen_baer",
-   "text": "Dann fangen wir mit den Kaschemmen an."
+   "left": "hund",
+   "right": "lotte",
+   "speaker": "hund",
+   "text": "Hat jemand gesehen, wohin?",
+   "left_expr": "wuetend"
+  },
+  {
+   "left": "hund",
+   "right": "lotte",
+   "speaker": "lotte",
+   "text": "Zum Hafen. Dann ein Schiff mit schwarzen Segeln. Bitte, du musst sie finden!"
+  },
+  {
+   "left": "hund",
+   "right": "lotte",
+   "speaker": "hund",
+   "text": "Ich finde sie. Das schwöre ich bei meinem Knochen.",
+   "left_expr": "wuetend"
   }
  ],
  "outro": []

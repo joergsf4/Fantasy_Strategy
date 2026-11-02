@@ -1,0 +1,94 @@
+{
+ "rows": [
+  "GGGGGGGGGGGG",
+  "GFGGGGGGGGFG",
+  "GGGGGGGGGGGG",
+  "GGGGGGGGGGGG",
+  "GGGGGGGGGGGG",
+  "GGGGGGGGGGGG",
+  "GGGFGGGGGGGG",
+  "GGGGGGGGGGGG",
+  "GGGGGGGGGGGG",
+  "GFGGGGGGGGFG"
+ ],
+ "players": [
+  {
+   "id": "bienenmaedchen",
+   "pos": [
+    4,
+    5
+   ],
+   "hp": 42
+  },
+  {
+   "id": "bienenkrieger",
+   "pos": [
+    3,
+    4
+   ]
+  },
+  {
+   "id": "bienenkrieger",
+   "pos": [
+    5,
+    4
+   ]
+  }
+ ],
+ "enemies": [],
+ "objects": [
+  {
+   "id": "korb1",
+   "type": "hive_p",
+   "pos": [
+    2,
+    6
+   ],
+   "perm": true
+  },
+  {
+   "id": "korb2",
+   "type": "hive_p",
+   "pos": [
+    6,
+    6
+   ],
+   "perm": true
+  },
+  {
+   "id": "korb3",
+   "type": "hive_p",
+   "pos": [
+    3,
+    2
+   ],
+   "perm": true
+  },
+  {
+   "id": "korb4",
+   "type": "hive_p",
+   "pos": [
+    7,
+    3
+   ],
+   "perm": true
+  }
+ ],
+ "decor": [],
+ "drone_cap": 4,
+ "rewards": {
+  "gold": 100
+ },
+ "objectives": [
+  {
+   "id": "durchgehalten",
+   "text": "8 Runden ausgehalten",
+   "turns": 8,
+   "reward": {
+    "items": {
+     "heilhonig": 2
+    }
+   }
+  }
+ ]
+}

@@ -290,6 +290,12 @@ jobs.push({ name: 'bg_reise_schiff', refs: [path.join(OUT, 'fx_schiff.jpg'), ref
 // Seekranker Hundsfreund (Ueberfahrt Mission 6 > 7): gleiche Figur, gruenliches Gesicht.
 jobs.push({ name: 'hund_seekrank', refs: [ref('btb16a')], prompt: 'Create a dialogue portrait of exactly this same character (the blue heeler dog adventurer with the leather vest, bandages on the arm and the big bone, same face, fur colors, markings and pixel-art style), but now terribly seasick: his face and snout tinted a sickly green, cheeks puffed out, eyes half-closed and watery, ears drooping, a few sweat drops on the forehead, one paw pressed on his stomach, swaying slightly, the bone hanging limp in the other paw. Funny rather than gross, no vomit. Same framing and composition as the attached image: character on the left side of the image, upper body, facing right, nothing on the right half. Output exactly ONE character. Solid bright green background (clearly different from the sickly green skin tint), no text, no border.' });
 
+// Lotte, die aelteste der Waisenkinder, einzeln (wartet in Kapitel 10 am Hafen auf die Gruppe): neutral (bedrueckt, Traenen), lachend, wuetend.
+const LOTTE = 'Lotte, a single orphan girl of about ten with two brown braids, a patched green dress with a worn shawl and big expressive brown eyes, thin and poor but brave';
+const LOTTE_EMO = { '': 'standing in the rain, soaking wet hair, tears running down her cheeks, trembling lip, hands clasped in front, pleading and worried', lachend: 'smiling bravely through tears of relief, a small hopeful smile, wet hair', wuetend: 'angry and defiant, fists clenched, furious tearful glare, wet hair' };
+for (const [emo, d] of Object.entries(LOTTE_EMO))
+  jobs.push({ name: emo ? `lotte_${emo}` : 'lotte', refs: [ref(STYLE_REF)], prompt: `Create a dialogue portrait of ${LOTTE}, ${d}.` + PORTRAIT_TAIL });
+
 // Kapitel 9: Warts Frischlinge (drei kleine Wildschweine als EINE Figur), der weinerliche Regent, die bedrohliche Festung.
 const FRISCH = 'Warts Frischlinge: a gang of exactly THREE small mean wild-boar piglets standing close together as one group character: tiny tusks, bristly dark mohawks, small mean red-brown eyes and evil grins, wearing scraps of patched leather armor; the left one swings a spiked club (a wooden club studded with iron nails), the middle one holds a rusty hand axe, the right one a second spiked club; small but nasty';
 const FRISCH_EMO = { '': 'cackling nastily, ready to attack', wuetend: 'squealing furiously with bared tusks, weapons raised high' };

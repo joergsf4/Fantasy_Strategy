@@ -41,7 +41,11 @@ static func dialogue_ids(id: String) -> Array:
 			add_lines.call(step.get("dialogue", []))
 	for lines: Array in (m.get("flee", {}) as Dictionary).values():
 		add_lines.call(lines)
+	if m.get("fixed_squad", false):      # Kapitel mit festem Trupp (z. B. Stachelia und ihre Bienen): kein Austausch
+		for pe: Dictionary in m["players"]:
+			ids[pe["id"]] = true
 	ids.erase("$hero")
+	ids.erase("")
 	return ids.keys()
 
 

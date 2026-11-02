@@ -527,7 +527,7 @@ def check_lines(lines, where: str, speakers: set) -> None:
         if not isinstance(l.get("text", l.get("text_by")), (str, dict)) or ("text" not in l and "text_by" not in l):
             raise ValueError(f"{w}: Text fehlt")
         for k in ("left", "right", "speaker"):
-            if k in l and l[k] not in speakers:
+            if k in l and l[k] not in speakers and not (k != "speaker" and l[k] == ""):   # leer = niemand auf dieser Seite
                 raise ValueError(f"{w}: unbekannte Figur '{l[k]}' in '{k}'")
         if l.get("speaker") not in (l.get("left"), l.get("right")):
             raise ValueError(f"{w}: Sprecher muss links oder rechts stehen")
