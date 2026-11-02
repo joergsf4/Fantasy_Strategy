@@ -1,0 +1,43 @@
+{
+ "intro": [
+  {
+   "left": "elisabeth",
+   "right": "robo",
+   "speaker": "elisabeth",
+   "text": "Die Rostige Möwe liegt noch genauso schief am Steg, wie wir sie verlassen haben. Willkommen zurück in Möwenbucht!",
+   "left_expr": "lachend"
+  },
+  {
+   "left": "elisabeth",
+   "right": "robo",
+   "speaker": "robo",
+   "text": "Der Regent ein Strohmann. Wenn das stimmt, haben wir bisher gegen eine Marionette gekämpft."
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "robo",
+   "speaker": "maedchen_baer",
+   "text": "Und wer zieht an den Fäden? Der Regent sagte, es ist jemand, der viel größer ist."
+  },
+  {
+   "left": "ritter",
+   "right": "maedchen_baer",
+   "speaker": "ritter",
+   "text": "Dann suchen wir ihn. Erst im Hafen: Gerüchte, Kapitäne, Schmuggler. Irgendjemand hat etwas gesehen."
+  },
+  {
+   "left": "ritter",
+   "right": "elisabeth",
+   "speaker": "elisabeth",
+   "text": "Ich kenne jede Kaschemme an diesem Kai. Und jede Rechnung, die ich dort noch offen habe.",
+   "right_expr": "lachend"
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "elisabeth",
+   "speaker": "maedchen_baer",
+   "text": "Dann fangen wir mit den Kaschemmen an."
+  }
+ ],
+ "outro": []
+}

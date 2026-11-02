@@ -1,0 +1,19 @@
+{
+ "id": "ch10",
+ "title": "Kapitel 2: Die Suche nach der wahren Gefahr",
+ "map": "res://data/map_ch10.json",
+ "stub": true,
+ "interlude": {
+  "image": "res://assets/ui/reise_schiff.jpg",
+  "kicker": "Kapitel 2",
+  "title": "Die Suche nach der wahren Gefahr",
+  "duration": 8.0
+ },
+ "briefing": "Noch keine Kampfmission: Reise zurück nach Möwenbucht und Gespräch im Hafen.",
+ "goals": [
+  {
+   "type": "rout"
+  }
+ ],
+ "triggers": []
+}

@@ -5,7 +5,7 @@ const TITLE_MUSIC := "res://assets/audio/title_theme.mp3"
 const BATTLE_MUSIC := "res://assets/audio/battle_theme.mp3"
 const WIN_MUSIC := "res://assets/audio/sieg_statistik.mp3"
 const DEFEAT_MUSIC := "res://assets/audio/niederlage_statistik.mp3"
-const CHAPTERS := ["ch1", "ch2", "ch3", "ch4", "ch5", "ch6", "ch7", "ch8", "ch9"]
+const CHAPTERS := ["ch1", "ch2", "ch3", "ch4", "ch5", "ch6", "ch7", "ch8", "ch9", "ch10"]
 const MUSIC_DB := -6.0
 
 var units: Dictionary
@@ -181,6 +181,9 @@ func _mission_with_squad(cid: String) -> Dictionary:
 
 
 func _chapter(cid: String, skip_intro := false, next_cid := "") -> void:
+	if Mission.load_mission(cid).get("stub", false):      # Zwischenspiel ohne Kampf: Reisebild, dann das Gespraech im Hafen
+		await _interlude_chapter(cid)
+		return
 	var m := _mission_with_squad(cid)
 	var story_c := _load_json("res://data/story_%s.json" % cid)
 	if stage.map_data.get("id", "") != cid:
@@ -211,6 +214,9 @@ func _chapter(cid: String, skip_intro := false, next_cid := "") -> void:
 	party.save()
 	_toast("Spielstand automatisch gespeichert")
 	await _dialogue(story_c["outro"])
+	if next_cid != "" and Mission.load_mission(next_cid).get("stub", false):
+		party.save()
+		return                                           # naechstes Kapitel hat keinen Kampf: kein Lager
 	await _camp(Mission.load_mission(next_cid) if next_cid != "" else m)   # Lager: Gruppe der naechsten Mission waehlen
 	party.save()
 
@@ -306,6 +312,28 @@ func _secret_scene(sec: Dictionary) -> void:
 	layer.queue_free()
 
 
+## Kapitel ohne Kampf (Mission-Feld "stub"): Reisebild mit Titelkarte (Feld "interlude"), danach die Einleitung vor der Karte.
+func _interlude_chapter(cid: String) -> void:
+	var m := Mission.load_mission(cid)
+	var story_c := _load_json("res://data/story_%s.json" % cid)
+	var layer := CanvasLayer.new()
+	layer.layer = 8
+	add_child(layer)
+	var it := Interlude.new()
+	it.setup(m.get("interlude", {}))
+	layer.add_child(it)
+	if stage.map_data.get("id", "") != cid:
+		stage.map_data = m
+		stage.new_battle()
+	stage.set_mode("dialog")
+	await it.finished
+	layer.queue_free()
+	await _dialogue(story_c["intro"])
+	if not (story_c["outro"] as Array).is_empty():
+		await _dialogue(story_c["outro"])
+	party.save()
+
+
 func _dialogue(lines: Array) -> void:
 	var layer := CanvasLayer.new()
 	layer.layer = 2
@@ -377,6 +405,16 @@ func _screenshot_mode() -> void:
 		var ss := SecretScene.new()
 		ss.setup_secret(Secrets.by_id(OS.get_environment("SHOT_SECRET") if OS.get_environment("SHOT_SECRET") != "" else "betrunkener_meister"), _names())
 		sl.add_child(ss)
+		await get_tree().create_timer(float(OS.get_environment("SHOT_DELAY")) if OS.get_environment("SHOT_DELAY") != "" else 4.0).timeout
+		get_viewport().get_texture().get_image().save_png(OS.get_environment("SHOT_OUT"))
+		get_tree().quit()
+		return
+	if mode == "interlude":   # Reisebild von ch10: SHOT_DELAY = Sekunden bis zum Bild
+		var il := Interlude.new()
+		il.setup(Mission.load_mission("ch10").get("interlude", {}))
+		var ll := CanvasLayer.new()
+		add_child(ll)
+		ll.add_child(il)
 		await get_tree().create_timer(float(OS.get_environment("SHOT_DELAY")) if OS.get_environment("SHOT_DELAY") != "" else 4.0).timeout
 		get_viewport().get_texture().get_image().save_png(OS.get_environment("SHOT_OUT"))
 		get_tree().quit()

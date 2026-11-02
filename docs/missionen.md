@@ -254,3 +254,10 @@ Benannte Gegner (`"flees": true` in `units.json`: Wart, Oskar, Maja) sterben nic
 - **Hinweis:** Die Datei heißt `ch9`, weil Kapitel 8 die Oase ist; im Gespräch „Mission 8“.
 - **Simulator:** noch nicht abgebildet (Ziel `defeat` und Frischlinge-Werte ungeprüft, Balancing offen).
 - **Test:** `tests/test_festung.gd`.
+
+## Kapitel 2: Zwischenspiel „Die Suche nach der wahren Gefahr“ (`ch10`, ohne Kampf)
+- **Zählung:** Die Titelkarte „Kapitel 2“ beginnt den zweiten Abschnitt; die Missionen 1–9 gelten rückwirkend als Kapitel 1, intern zählen die Dateien weiter (`ch10`, `ch11` …).
+- **Ablauf:** Nach Mission 9 folgt ohne Lager das Reisebild: Die „Rostige Möwe“ auf dem Meer (`assets/ui/reise_schiff.jpg`, Gemini) mit langsamem Zoom und Schwenk (**Ken Burns**, 8 s), Schwarzblende, Titelkarte „Kapitel 2 / Die Suche nach der wahren Gefahr“. Klick oder Taste überspringt. Danach das **Hafen-Gespräch** (`story_ch10.json`, Einleitung) vor der Möwenbucht-Karte (`map_ch10.json`, Kopie von Mission 6 ohne Elisabeths Breitseite-Grant).
+- **Bausteine:** `Interlude` (`scripts/interlude.gd`), Missionsfeld `stub: true` (Kapitel ohne Kampf, wird in `Main._interlude_chapter` abgespielt) und `interlude: {image, kicker, title, duration, zoom, pan}`. Das Reisebild lässt sich für spätere Überfahrten mit anderem Bild wiederverwenden. Screenshot: `SHOT=interlude SHOT_DELAY=4.5`.
+- **Offen:** die Kampfmission in Möwenbucht (Ort: `map_ch10.json`, Mission `ch10` wird dann zur echten Mission).
+- **Test:** `tests/test_interlude.gd`.
