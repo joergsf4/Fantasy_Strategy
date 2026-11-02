@@ -1,6 +1,6 @@
 extends SceneTree
 ## godot --headless --path game --script tests/test_interlude.gd
-## Kapitel 2 (ch10): Zwischenspiel ohne Kampf mit Reisebild (Ken Burns, Titelkarte) und Hafen-Gespraech.
+## Kapitel 2 (ch10): Zwischenspiel ohne Kampf mit Reisebild (3D-Meer, Titelkarte) und Hafen-Gespraech.
 
 var fails := 0
 

@@ -11,7 +11,12 @@ var title := ""
 var duration := 8.0
 var zoom_to := 1.16
 var pan := Vector2(-40, -14)       # Verschiebung in Pixeln waehrend des Zooms
+var scene3d := ""                  # "sea": Schiff faehrt in 3D ueber das Wasser (statt Standbild mit Ken Burns)
 var _pic: TextureRect
+var _cam: Camera3D
+var _ship: MeshInstance3D
+var _foam: Array = []
+var _t := 0.0
 var _black: ColorRect
 var _done := false
 var _age := 0.0
@@ -21,6 +26,7 @@ func setup(data: Dictionary) -> void:
 	image_path = data.get("image", image_path)
 	kicker = data.get("kicker", "")
 	title = data.get("title", "")
+	scene3d = data.get("scene", "")
 	duration = float(data.get("duration", duration))
 	zoom_to = float(data.get("zoom", zoom_to))
 	if data.has("pan"):
@@ -35,14 +41,17 @@ func _ready() -> void:
 	bg.color = Color.BLACK
 	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(bg)
-	_pic = TextureRect.new()
-	_pic.texture = load(image_path)
-	_pic.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	_pic.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-	_pic.position = Vector2.ZERO
-	_pic.size = Vector2(1280, 720)
-	_pic.pivot_offset = Vector2(640, 360)
-	add_child(_pic)
+	if scene3d == "sea":
+		_build_sea()
+	else:
+		_pic = TextureRect.new()
+		_pic.texture = load(image_path)
+		_pic.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		_pic.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+		_pic.position = Vector2.ZERO
+		_pic.size = Vector2(1280, 720)
+		_pic.pivot_offset = Vector2(640, 360)
+		add_child(_pic)
 	var box := VBoxContainer.new()
 	box.position = Vector2(0, 560)
 	box.size = Vector2(1280, 130)
@@ -58,9 +67,10 @@ func _ready() -> void:
 	add_child(_black)
 	var tw := create_tween()
 	tw.tween_property(_black, "modulate:a", 0.0, 1.2).from(1.0)
-	var kb := create_tween().set_parallel(true)
-	kb.tween_property(_pic, "scale", Vector2(zoom_to, zoom_to), duration).from(Vector2.ONE).set_trans(Tween.TRANS_SINE)
-	kb.tween_property(_pic, "position", pan, duration).from(Vector2.ZERO).set_trans(Tween.TRANS_SINE)
+	if _pic != null:
+		var kb := create_tween().set_parallel(true)
+		kb.tween_property(_pic, "scale", Vector2(zoom_to, zoom_to), duration).from(Vector2.ONE).set_trans(Tween.TRANS_SINE)
+		kb.tween_property(_pic, "position", pan, duration).from(Vector2.ZERO).set_trans(Tween.TRANS_SINE)
 	var tt := create_tween()
 	tt.tween_interval(2.0)
 	tt.tween_property(box, "modulate:a", 1.0, 1.0)
@@ -74,6 +84,9 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	_age += delta
+	if _cam != null:
+		_t += delta
+		_sail()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -82,6 +95,119 @@ func _unhandled_input(event: InputEvent) -> void:
 	if (event is InputEventMouseButton and event.pressed) or (event is InputEventKey and event.pressed and not event.echo):
 		get_viewport().set_input_as_handled()
 		_finish()
+
+
+## Offenes Meer in 3D: Wasser-Shader der Karten, das Schiff (Sprite mit Wasserlinie) faehrt nach rechts, die Kamera
+## gleitet in einem weiten Bogen mit, tief ueber dem Wasser, dahinter die tiefe Abendsonne.
+func _build_sea() -> void:
+	var holder := SubViewportContainer.new()
+	holder.stretch = true
+	holder.position = Vector2.ZERO
+	holder.size = Vector2(1280, 720)
+	add_child(holder)
+	var vp := SubViewport.new()
+	vp.size = Vector2i(1280, 720)
+	vp.own_world_3d = true
+	vp.msaa_3d = Viewport.MSAA_4X
+	holder.add_child(vp)
+	var sky_mat := ProceduralSkyMaterial.new()
+	sky_mat.sky_top_color = Color(0.32, 0.45, 0.72)
+	sky_mat.sky_horizon_color = Color(1.0, 0.76, 0.5)
+	sky_mat.ground_horizon_color = Color(0.95, 0.7, 0.48)
+	sky_mat.ground_bottom_color = Color(0.2, 0.34, 0.45)
+	sky_mat.sun_angle_max = 40.0
+	sky_mat.sky_curve = 0.12
+	var sky := Sky.new()
+	sky.sky_material = sky_mat
+	var env := Environment.new()
+	env.background_mode = Environment.BG_SKY
+	env.sky = sky
+	env.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
+	env.ambient_light_energy = 0.7
+	env.fog_enabled = true
+	env.fog_light_color = Color(0.96, 0.72, 0.5)
+	env.fog_density = 0.006
+	env.fog_sky_affect = 0.0
+	env.glow_enabled = true
+	env.glow_intensity = 0.35
+	env.glow_hdr_threshold = 1.0
+	var we := WorldEnvironment.new()
+	we.environment = env
+	vp.add_child(we)
+	var sun := DirectionalLight3D.new()
+	sun.rotation_degrees = Vector3(-7, 20, 0)
+	sun.light_color = Color(1.0, 0.8, 0.55)
+	sun.light_energy = 1.4
+	vp.add_child(sun)
+	var water := MeshInstance3D.new()
+	var plane := PlaneMesh.new()
+	plane.size = Vector2(400, 400)
+	water.mesh = plane
+	var wm := ShaderMaterial.new()
+	wm.shader = load("res://shaders/water.gdshader")
+	water.material_override = wm
+	vp.add_child(water)
+	var ship_tex: Texture2D = load("res://assets/fx/fx_schiff.png")
+	_ship = MeshInstance3D.new()
+	var quad := QuadMesh.new()
+	quad.size = Vector2.ONE
+	_ship.mesh = quad
+	var ts := ship_tex.get_size()
+	_ship.scale = Vector3(ts.x / maxf(ts.x, ts.y) * 5.2, ts.y / maxf(ts.x, ts.y) * 5.2, 1.0)
+	var sm := ShaderMaterial.new()
+	sm.shader = load("res://shaders/ship_sprite.gdshader")
+	sm.set_shader_parameter("tex", ship_tex)
+	sm.render_priority = 2
+	_ship.material_override = sm
+	_ship.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	vp.add_child(_ship)
+	var grad := Gradient.new()
+	grad.set_color(0, Color(1, 1, 1, 0.0))
+	grad.set_color(1, Color(1, 1, 1, 0.0))
+	grad.add_point(0.78, Color(1, 1, 1, 0.5))
+	var gt := GradientTexture2D.new()
+	gt.gradient = grad
+	gt.fill = GradientTexture2D.FILL_RADIAL
+	gt.fill_from = Vector2(0.5, 0.5)
+	gt.fill_to = Vector2(1.0, 0.5)
+	gt.width = 128
+	gt.height = 128
+	for k in 3:       # Bugwelle und Kielwasser als weiche Schaumringe
+		var f := MeshInstance3D.new()
+		var fq := QuadMesh.new()
+		fq.size = Vector2(4.0 + k * 1.6, 4.0 + k * 1.6)
+		f.mesh = fq
+		f.rotation_degrees = Vector3(-90, 0, 0)
+		var fm := StandardMaterial3D.new()
+		fm.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+		fm.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+		fm.render_priority = 1
+		fm.albedo_texture = gt
+		fm.albedo_color = Color(1, 1, 1, 0.7 - k * 0.2)
+		f.material_override = fm
+		f.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		vp.add_child(f)
+		_foam.append(f)
+	_cam = Camera3D.new()
+	_cam.fov = 36
+	_cam.far = 400.0
+	vp.add_child(_cam)
+	_sail()
+
+
+func _sail() -> void:
+	var k := clampf(_t / duration, 0.0, 1.0)
+	var x := -5.0 + _t * 0.9
+	var bob := sin(_t * 1.5) * 0.07 + sin(_t * 0.9 + 1.0) * 0.05
+	_ship.position = Vector3(x, 1.95 + bob, 0.0)
+	for i in _foam.size():
+		var f: MeshInstance3D = _foam[i]
+		f.position = Vector3(x - 0.5 * i, 0.02, 0.1)
+		f.scale = Vector3(1.0 + 0.05 * sin(_t * 1.5 + i), 0.42, 1.0)
+	var a := lerpf(0.55, -0.25, smoothstep(0.0, 1.0, k))          # Bogen: erst von vorn rechts, dann hinter dem Schiff vorbei
+	var focus := Vector3(x + 0.6, 1.9, 0.0)
+	_cam.position = focus + Vector3(sin(a) * 8.5, 0.5 + k * 0.7 + sin(_t * 0.7) * 0.06, cos(a) * 8.5)
+	_cam.look_at(focus)
 
 
 func _finish() -> void:
