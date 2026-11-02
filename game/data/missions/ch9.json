@@ -13,6 +13,47 @@
    "text": "Ziel: Besiegt Wart (er flieht nicht mehr)",
    "then": [
     {
+     "do": [
+      {
+       "dialogue": [
+        {
+         "left": "ritter",
+         "right": "wart",
+         "speaker": "wart",
+         "text": "Ahh... es ist vorbei... Ich spüre das Licht... es riecht nach Trüffeln...",
+         "right_expr": "sterbend"
+        },
+        {
+         "left": "ritter",
+         "right": "wart",
+         "speaker": "ritter",
+         "text": "Wart. Du hast tapfer gekämpft."
+        },
+        {
+         "left": "ritter",
+         "right": "wart",
+         "speaker": "wart",
+         "text": "Sagt meiner Rakete... dass ich sie geliebt habe. Und meinen Jungs... sie sollen... nie wieder... Ferkel genannt werden...",
+         "right_expr": "sterbend"
+        },
+        {
+         "left": "maedchen_baer",
+         "right": "wart",
+         "speaker": "maedchen_baer",
+         "text": "Er stirbt wirklich theatralisch."
+        },
+        {
+         "left": "maedchen_baer",
+         "right": "wart",
+         "speaker": "wart",
+         "text": "Lebt wohl, grausame Welt! ...Autsch. Das Gelenk. ...Lebt wohl!",
+         "right_expr": "sterbend"
+        }
+       ]
+      }
+     ]
+    },
+    {
      "if": {
       "present": [
        "frischlinge"
@@ -25,14 +66,22 @@
          "left": "ritter",
          "right": "frischlinge",
          "speaker": "frischlinge",
-         "text": "Der Boss is' hinüber! Hilfe! Mama!",
+         "text": "BOSS!! Ihr habt unseren Boss umgehauen! Dafür zahlt ihr!",
          "right_expr": "wuetend"
         },
         {
          "left": "ritter",
          "right": "frischlinge",
          "speaker": "frischlinge",
-         "text": "Wir wollten eh Feierabend machen!"
+         "text": "Wir schwören Rache! Mit Keulen, mit Äxten, mit allem, was spitz ist!",
+         "right_expr": "wuetend"
+        },
+        {
+         "left": "ritter",
+         "right": "frischlinge",
+         "speaker": "frischlinge",
+         "text": "Merkt euch unsere Gesichter! ...Wir kommen wieder! WARTET NUR!",
+         "right_expr": "wuetend"
         }
        ]
       },
@@ -142,14 +191,14 @@
        "left": "ritter",
        "right": "frischlinge",
        "speaker": "frischlinge",
-       "text": "Chef, dürfen wir sie hauen? Dürfen wir? Bitte!",
+       "text": "Papa, dürfen wir sie hauen? Dürfen wir? Bitte!",
        "right_expr": "wuetend"
       },
       {
        "left": "ritter",
        "right": "wart",
        "speaker": "ritter",
-       "text": "Der Mann mit dem Raketenwerfer. Und drei Ferkel mit Keulen.",
+       "text": "Du hast deine kleinen Ferkel in eine Schlacht mitgebracht?",
        "left_expr": "wuetend"
       },
       {
@@ -175,13 +224,14 @@
        "left": "$hero",
        "right": "maedchen_baer",
        "speaker": "maedchen_baer",
-       "text": "Die Festung sieht aus, als hätte sie schlechte Laune."
+       "text": "Wir kommen der Festung immer näher. Haltet durch Freunde."
       },
       {
        "left": "$hero",
        "right": "maedchen_baer",
        "speaker": "$hero",
-       "text": "Brumm sträubt das Fell. Er mag keine Türme."
+       "text": "Brumm sträubt das Fell. Das ist kein gutes Zeichen!",
+       "right_expr": "wuetend"
       }
      ]
     }

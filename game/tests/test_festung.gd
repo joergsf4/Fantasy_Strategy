@@ -19,7 +19,7 @@ func _initialize() -> void:
 	check(m["goals"][0]["type"] == "defeat" and (m["no_flee"] as Array).has("wart"), "Kapitel 9: Wart muss besiegt werden und flieht nicht")
 	for id: String in Mission.dialogue_ids("ch9"):
 		check(defs.has(id), "Sprecher %s existiert" % id)
-	for e in ["fuerst_weinerlich", "frischlinge", "frischlinge_lachend", "frischlinge_wuetend"]:
+	for e in ["fuerst_weinerlich", "frischlinge", "frischlinge_lachend", "frischlinge_wuetend", "wart_sterbend"]:
 		check(ResourceLoader.exists("res://assets/portraits/%s.png" % e), "Portrait %s" % e)
 	var b := Battle.new()
 	b.setup(m, defs)
@@ -40,5 +40,6 @@ func _initialize() -> void:
 	check(b._find("frischlinge").is_empty() and b.retreated.has("frischlinge"), "Frischlinge sind weggelaufen")
 	check(b.retreated.has("fuerst"), "Regent ist aufgetreten und abgezogen")
 	check(said.has("fuerst:weinerlich"), "weinerliches Portrait in der Szene")
+	check(said.has("wart:sterbend") and said.has("frischlinge:wuetend"), "Todesszene und wuetender Racheschwur: %s" % [said])
 	print("festung: ", "OK" if fails == 0 else "%d Fehler" % fails)
 	quit(fails)
