@@ -182,7 +182,7 @@ func _mission_with_squad(cid: String) -> Dictionary:
 
 func _chapter(cid: String, skip_intro := false, next_cid := "") -> void:
 	if Mission.load_mission(cid).get("stub", false):      # Zwischenspiel ohne Kampf: Reisebild, dann das Gespraech im Hafen
-		await _interlude_chapter(cid)
+		await _interlude_chapter(cid, next_cid)
 		return
 	var m := _mission_with_squad(cid)
 	var story_c := _load_json("res://data/story_%s.json" % cid)
@@ -318,7 +318,7 @@ func _secret_scene(sec: Dictionary) -> void:
 
 
 ## Kapitel ohne Kampf (Mission-Feld "stub"): Reisebild mit Titelkarte (Feld "interlude"), danach die Einleitung vor der Karte.
-func _interlude_chapter(cid: String) -> void:
+func _interlude_chapter(cid: String, next_cid := "") -> void:
 	var m := Mission.load_mission(cid)
 	var story_c := _load_json("res://data/story_%s.json" % cid)
 	if stage.map_data.get("id", "") != cid:
@@ -330,6 +330,50 @@ func _interlude_chapter(cid: String) -> void:
 	if not (story_c["outro"] as Array).is_empty():
 		await _dialogue(story_c["outro"])
 	party.save()
+	if m.has("card_after"):                      # Schwarzblende mit Texteinblendung, dann der naechste Schauplatz
+		await _scene_card(str(m["card_after"]), next_cid)
+
+
+## Schwarzblende, Textkarte ("An einem anderen Ort ..."), waehrenddessen laeuft der Wechsel zur Karte des naechsten Kapitels, dann Aufblende.
+func _scene_card(text: String, next_cid := "") -> void:
+	var layer := CanvasLayer.new()
+	layer.layer = 30
+	add_child(layer)
+	var black := ColorRect.new()
+	black.color = Color.BLACK
+	black.set_anchors_preset(Control.PRESET_FULL_RECT)
+	black.mouse_filter = Control.MOUSE_FILTER_STOP
+	black.modulate.a = 0.0
+	layer.add_child(black)
+	var l := Label.new()
+	l.theme = UiTheme.get_theme()
+	l.text = text
+	l.add_theme_font_override("font", UiTheme.font(UiTheme.F_TITLE))
+	l.add_theme_font_size_override("font_size", 44)
+	l.add_theme_color_override("font_color", Color(0.95, 0.9, 0.78))
+	l.add_theme_constant_override("outline_size", 8)
+	l.add_theme_color_override("font_outline_color", Color(0.08, 0.04, 0.02))
+	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	l.set_anchors_preset(Control.PRESET_FULL_RECT)
+	l.modulate.a = 0.0
+	layer.add_child(l)
+	var tw := create_tween()
+	tw.tween_property(black, "modulate:a", 1.0, 1.0)
+	tw.tween_property(l, "modulate:a", 1.0, 0.9)
+	await tw.finished
+	if next_cid != "":
+		var nm := Mission.load_mission(next_cid)
+		if stage.map_data.get("id", "") != next_cid:
+			stage.map_data = nm
+			stage.new_battle()
+		stage.set_mode("dialog")
+	await get_tree().create_timer(2.0).timeout
+	var tw2 := create_tween().set_parallel(true)
+	tw2.tween_property(l, "modulate:a", 0.0, 0.6)
+	tw2.tween_property(black, "modulate:a", 0.0, 1.0).set_delay(0.5)
+	await tw2.finished
+	layer.queue_free()
 
 
 ## Reisebild ueber allem abspielen (Daten wie Mission-Feld "interlude").
@@ -444,6 +488,15 @@ func _screenshot_mode() -> void:
 		ss.setup_secret(Secrets.by_id(OS.get_environment("SHOT_SECRET") if OS.get_environment("SHOT_SECRET") != "" else "betrunkener_meister"), _names())
 		sl.add_child(ss)
 		await get_tree().create_timer(float(OS.get_environment("SHOT_DELAY")) if OS.get_environment("SHOT_DELAY") != "" else 4.0).timeout
+		get_viewport().get_texture().get_image().save_png(OS.get_environment("SHOT_OUT"))
+		get_tree().quit()
+		return
+	if mode == "card":   # Textkarte nach Kapitel 10: SHOT_DELAY = Sekunden bis zum Bild
+		stage = Stage.new()
+		stage.setup(map, units)
+		add_child(stage)
+		_scene_card(str(Mission.load_mission("ch10")["card_after"]), "ch11")
+		await get_tree().create_timer(float(OS.get_environment("SHOT_DELAY")) if OS.get_environment("SHOT_DELAY") != "" else 2.2).timeout
 		get_viewport().get_texture().get_image().save_png(OS.get_environment("SHOT_OUT"))
 		get_tree().quit()
 		return
