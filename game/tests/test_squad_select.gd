@@ -16,7 +16,7 @@ func _initialize() -> void:
 	var party := Party.new_game()
 	var m1 := Mission.load_mission("ch1")
 	var m5 := Mission.load_mission("ch5")
-	check(SquadSelect.has_choice(party, defs, m1), "Kapitel 1: elf Helden, sechs Plaetze: es gibt eine Wahl")
+	check(not SquadSelect.has_choice(party, defs, m1), "Kapitel 1: nur die sechs Startfiguren sind bekannt, alle sind schon dabei: keine Wahl")
 	check(not SquadSelect.has_choice(party, defs, {"id": "ch1", "players": m1["players"].slice(0, 0)}), "ohne Plaetze keine Wahl")
 	check(SquadSelect.has_choice(party, defs, m5), "Kapitel 5: freie Plaetze und Ersatz vorhanden")
 	var s := SquadSelect.new()

@@ -95,11 +95,26 @@ func save(path := SAVE_PATH) -> void:
 	f.close()
 
 
-## Helden, die man in Mission cid (Nummer ab 1) in die Gruppe holen kann: alle mit "hero": true und "from" <= Missionsnummer.
-static func roster(defs: Dictionary, mission_no: int) -> Array:
+## Ab dieser Mission kennt der Spieler den Helden und darf ihn waehlen: "from" (wenn gesetzt, z. B. wenn er erst nach seinem ersten
+## Auftritt beitritt), sonst "intro" (erstes Auftreten in der Geschichte). Ohne beides ist er noch nie aufgetreten: nicht waehlbar.
+static func join_mission(def: Dictionary) -> int:
+	if def.has("from"):
+		return int(def["from"])
+	if def.has("intro"):
+		return int(def["intro"])
+	return 9999
+
+
+## Helden, die man in Mission mission_no (ab 1) in die Gruppe holen kann: nur wer schon kennengelernt ist ("hero": true und join_mission <= Nummer).
+## after_intro = false (Lager vor der Mission): nur Helden, die schon in frueheren Missionen aufgetreten sind (join_mission < Nummer);
+## true (Gruppenwahl nach der Einleitung der Mission): auch wer in der Einleitung dieser Mission auftritt.
+static func roster(defs: Dictionary, mission_no: int, after_intro := true) -> Array:
 	var out: Array = []
 	for id: String in defs:
-		if defs[id].get("hero", false) and int(defs[id].get("from", 1)) <= mission_no:
+		if not defs[id].get("hero", false):
+			continue
+		var j := join_mission(defs[id])
+		if j < mission_no or (after_intro and j == mission_no):
 			out.append(id)
 	return out
 

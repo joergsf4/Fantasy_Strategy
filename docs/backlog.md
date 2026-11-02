@@ -130,3 +130,6 @@ Fünfter Auslöser-Typ `hit_near_ally`: Lumis Sternschnuppe trifft einen Gegner,
 
 ## Entscheidung: Geheimnisse nicht balancen (2026-11-02)
 Der frühere Punkt „Simulator kennt Geheimnisse nicht“ ist **gestrichen**: Geheimnisse gehören absichtlich nicht ins Balancing (Spieler müssen sie nicht entdecken). Ungleiche Stärke (Laser-Reflektor sehr stark, Shuriken Regen schwach) ist vorerst okay. Siehe `docs/geheimnisse.md`.
+
+## Erledigt: Nur kennengelernte Helden wählbar (2026-11-02)
+In Gruppenwahl und Lager-Aufstellung sind nur Helden wählbar, die man schon kennengelernt hat (`Party.join_mission`): zählt `from` (wenn gesetzt), sonst `intro` (erstes Auftreten in der Geschichte). Gruppenwahl (nach der Einleitung) zählt auch Helden, die in der Einleitung dieser Mission auftreten; das Lager vor der Mission nur frühere Auftritte. Kapitel 1: nur die sechs Startfiguren, also keine Wahl; Takeda ab 3, Kage-Schwestern ab 4. **Claude (Flaschengeist)** ist in der Geschichte noch nie aufgetreten und deshalb nicht mehr wählbar, bis er eingeführt ist (`intro` oder `from` in `units.json` setzen).

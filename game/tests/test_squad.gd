@@ -29,6 +29,12 @@ func _initialize() -> void:
 	party.equipment[old] = ["eisenschwert"]
 	var roster := Party.roster(defs, 5)
 	check(roster.has("ritter") and not roster.has("hund") and Party.roster(defs, 6).has("hund"), "Hundsfreund ist erst ab Kapitel 6 waehlbar")
+	# nur kennengelernte Helden
+	var r1 := Party.roster(defs, 1)
+	check(r1.size() == 6 and r1.has("maedchen_baer") and r1.has("ritter") and r1.has("kungfu") and r1.has("elisabeth") and r1.has("wendy") and r1.has("braumeisterin"), "Kapitel 1: nur die sechs Startfiguren: %s" % [r1])
+	check(not Party.roster(defs, 2).has("samurai") and Party.roster(defs, 3).has("samurai") and Party.roster(defs, 4).has("ninjas") and not Party.roster(defs, 3).has("ninjas"), "Takeda ab Kapitel 3, Kage-Schwestern ab Kapitel 4")
+	check(Party.roster(defs, 2).has("robo") and not Party.roster(defs, 2, false).has("robo") and Party.roster(defs, 3, false).has("robo"), "im Lager vor Kapitel 2 ist Robo noch unbekannt, nach der Einleitung bekannt")
+	check(not Party.roster(defs, 9).has("claude"), "Claude ist in der Geschichte noch nie aufgetreten: nicht waehlbar")
 	var cand: String = ""
 	for id: String in roster:
 		if not base.has(id):
