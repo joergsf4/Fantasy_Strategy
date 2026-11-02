@@ -386,6 +386,11 @@ func _screenshot_mode() -> void:
 		sclip.setup(map, units)
 		add_child(sclip)
 		return
+	if mode == "short":   # YouTube Short (ca. 30 Sekunden): tools/make_short.sh
+		var sc := ShortClip.new()
+		sc.setup(map, units)
+		add_child(sc)
+		return
 	if mode == "trailer4":   # Trailer 4 (ca. 80 Sekunden): tools/make_trailer.sh trailer4
 		var tr4 := Trailer4.new()
 		tr4.setup(map, units)
