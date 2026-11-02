@@ -136,3 +136,23 @@ In Gruppenwahl und Lager-Aufstellung sind nur Helden wählbar, die man schon ken
 
 ## Mission 9 (Festung im Gebirge)
 Gebaut (`ch9`): Wart ohne Flucht, Frischlinge als eine Figur, Regent als Strohmann in weinerlicher Grafik. Offen: Balancing im Simulator (Ziel `defeat`), Gruppenwahl und Sprecher-Sperre prüfen, Anschluss-Mission zur größeren Bedrohung.
+
+## Für morgen (Stand 2026-11-02)
+
+### A. Neuer Gegenspieler: Professor Kugelblitz (Mission 12, die übernächste Mission)
+- Er hat die **Kinder aus dem Waisenhaus** (Lotte hat berichtet) in seiner Gewalt. Mit seiner **futuristischen Maschine** und dem **magischen Honig als Katalysator** will er den Kindern die Energie entziehen und sie **dem Meister zuführen**. Das gibt dem Honig-Raub aus Mission 11 (Stachelia, Zwillinge) seinen Sinn.
+- Nötig: Porträt (neutral, lachend, wütend), Chibi, Einheit in `units.json`, Maschine als Karten-Objekt (Sprite) mit Mission-Mechanik (z. B. Energieanzeige, die steigt, solange die Kinder angeschlossen sind; Ziel: Maschine zerstören oder abschalten und die Kinder befreien). Reihenfolge: Mission 11 → Mission 12 (Fluss, siehe B) → Mission 13 Kugelblitz.
+
+### B. Mission 12: Fluss mit gesprengter Brücke (Frischlinge)
+- Karte vom **Fluss geteilt**, die **Frischlinge** haben die **Brücke gesprengt**; die Helden kommen nicht einfach hinüber. **Mechanik-Ideen gesucht.** Vorschläge zum Auswählen:
+  - **Brücke reparieren:** Material oder Aktion (Held steht mehrere Runden an der Bruchstelle, mit Balken aus Holzfeldern), Frischlinge stören dabei; Fortschritt wie bei „capture“.
+  - **Furt und Boote:** eine flache Stelle (Bewegung 2) flussaufwärts, ein Boot am Ufer (Objekt, trägt 2 Figuren), Fähigkeiten wie Wurf (Muskelaugust) und Schiffs-Breitseite als Alternativen.
+  - **Fernkampf-Duell über den Fluss:** Bogen, Kanone, Laser, Robo reflektiert; nur Reichweite und Flug kommen hinüber, der Rest sucht den Weg.
+  - **Hebel-Rätsel:** Ein Hebel auf der anderen Seite senkt eine Zugbrücke; erst ein Trupp übersetzen (Flieger, Wurf), dann öffnen.
+  - **Strömung:** Fluss mit Strömung schiebt Figuren (Wasserfeld, schnell), Gegner stürzen von Stegen.
+- Die Frischlinge (eine Figur aus drei Schweinen, Wart ist tot) fliehen wie üblich, Rachefaden aus Mission 9.
+
+### C. Upgradesystem verbessern (Sack, Ausrüstung)
+- **Problem:** Sack verkauft immer dieselben Waffen und Rüstungen. Die Menge ist schon begrenzt (gut), aber die Truppe ist schnell komplett ausgerüstet.
+- **Ziel:** Mit der Zeit gibt es **immer bessere Ausrüstung** (Stufen, die mit den Kapiteln im Sortiment erscheinen). Es ist **in Ordnung, wenn man mal nicht genug Geld** für die neue Waffe oder Rüstung hat; das Geld darf knapp sein.
+- **Ideen:** Sortiment je Kapitel (Stufe 1 bis 4, `items.json` mit `from`), Aufwertung statt Neukauf (Schmiede-Stufen gegen Material), Preise steigen, alte Ausrüstung lässt sich verkaufen (Teilbetrag), seltene Angebote nur einmal, Beute- und Geheimnis-Belohnungen als Ausrüstung. Balancing mit dem Simulator prüfen (Gold-Einnahmen je Mission aus `docs/balance.md`).
