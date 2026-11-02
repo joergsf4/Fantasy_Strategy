@@ -180,6 +180,38 @@ func _mission_with_squad(cid: String) -> Dictionary:
 	return m
 
 
+## Schwarzblende zwischen den Kapiteln (ohne Text, nur so lang wie noetig): zu am Ende eines Kapitels, auf nach dem Aufbau des naechsten.
+var _cover: ColorRect
+
+
+func _cover_in(t := 0.4) -> void:
+	if _cover == null or not is_instance_valid(_cover):
+		var layer := CanvasLayer.new()
+		layer.layer = 29
+		add_child(layer)
+		_cover = ColorRect.new()
+		_cover.color = Color.BLACK
+		_cover.set_anchors_preset(Control.PRESET_FULL_RECT)
+		_cover.mouse_filter = Control.MOUSE_FILTER_STOP
+		_cover.modulate.a = 0.0
+		layer.add_child(_cover)
+	var tw := create_tween()
+	tw.tween_property(_cover, "modulate:a", 1.0, t)
+	await tw.finished
+
+
+func _cover_out(t := 0.5) -> void:
+	if _cover == null or not is_instance_valid(_cover):
+		return
+	var cv := _cover
+	_cover = null
+	if t > 0.0:
+		var tw := create_tween()
+		tw.tween_property(cv, "modulate:a", 0.0, t)
+		await tw.finished
+	cv.get_parent().queue_free()
+
+
 func _chapter(cid: String, skip_intro := false, next_cid := "") -> void:
 	if Mission.load_mission(cid).get("stub", false):      # Zwischenspiel ohne Kampf: Reisebild, dann das Gespraech im Hafen
 		await _interlude_chapter(cid, next_cid)
@@ -192,6 +224,7 @@ func _chapter(cid: String, skip_intro := false, next_cid := "") -> void:
 		stage.map_data = m
 		stage.new_battle()
 	stage.set_mode("dialog")
+	_cover_out(0.5)
 	if not skip_intro:
 		await _dialogue(story_c["intro"])
 	if SquadSelect.has_choice(party, units, m):         # Gruppenwahl vor der Runde (Story-Figuren sind gesperrt)
@@ -221,9 +254,12 @@ func _chapter(cid: String, skip_intro := false, next_cid := "") -> void:
 		await _dialogue(story_c["outro"])
 	if next_cid != "" and Mission.load_mission(next_cid).get("stub", false):
 		party.save()
+		await _cover_in(0.4)
 		return                                           # naechstes Kapitel hat keinen Kampf: kein Lager
 	await _camp(Mission.load_mission(next_cid) if next_cid != "" else m)   # Lager: Gruppe der naechsten Mission waehlen
 	party.save()
+	if next_cid != "":
+		await _cover_in(0.4)
 
 
 ## Kurze Meldung unten in der Mitte (blendet von selbst aus).
@@ -325,6 +361,7 @@ func _interlude_chapter(cid: String, next_cid := "") -> void:
 		stage.map_data = m
 		stage.new_battle()
 	stage.set_mode("dialog")
+	_cover_out(0.0)
 	await _play_interlude(m.get("interlude", {}))
 	await _dialogue(story_c["intro"])
 	if not (story_c["outro"] as Array).is_empty():
