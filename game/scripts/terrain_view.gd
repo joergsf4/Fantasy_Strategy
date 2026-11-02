@@ -17,6 +17,7 @@ const WT := {
 }
 
 var grid: Grid
+var wall_sides: Array = []    # Kartenfeld "walls": ["n","e","w","s"]: dort steigt das Gelaende hinter der Karte zur Felswand an (Sackgasse)
 var biome := "wiese"          # "wueste": Sand statt Gras, keine Baeume und Blumen (Karten-Feld "biome")
 var _noise := FastNoiseLite.new()
 var _noise_hills := FastNoiseLite.new()
@@ -112,6 +113,16 @@ func height_at(x: float, z: float) -> float:
 		var n01 := _noise_hills.get_noise_2d(x, z) * 0.5 + 0.5
 		h += smoothstep(0.4, 6.0, d) * (0.25 + 1.2 * n01)
 		h += _noise.get_noise_2d(x + 40.0, z) * 0.05 * smoothstep(0.0, 2.0, d)
+		var wd := 0.0
+		if wall_sides.has("n"):
+			wd = maxf(wd, -z)
+		if wall_sides.has("s"):
+			wd = maxf(wd, z - (grid.height - 1))
+		if wall_sides.has("w"):
+			wd = maxf(wd, -x)
+		if wall_sides.has("e"):
+			wd = maxf(wd, x - (grid.width - 1))
+		h += smoothstep(0.2, 2.6, wd) * (3.4 + _noise.get_noise_2d(x * 1.5, z * 1.5) * 1.2)
 	return h
 
 

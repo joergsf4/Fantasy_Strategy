@@ -120,6 +120,7 @@ func _ready() -> void:
 	grid.blocked = world.blocked()
 	terrain = TerrainView.new()
 	terrain.biome = map_data.get("biome", "wiese")
+	terrain.wall_sides = map_data.get("walls", [])
 	terrain.setup(grid)
 	add_child(terrain)
 	_build_environment()
@@ -188,6 +189,28 @@ func _apply_desert_light(env: Environment, sun: DirectionalLight3D) -> void:
 	mat.shader = load("res://shaders/grade_mexiko.gdshader")
 	rect.material = mat
 	layer.add_child(rect)
+	if map_data.get("mood", "") == "duester":   # Kartenfeld "mood": drohende Abendstimmung unter der heissen Sonne (Mission 9)
+		sun.rotation_degrees = Vector3(-22, -50, 0)
+		sun.light_color = Color(1.0, 0.66, 0.46)
+		sun.light_energy = 0.85
+		sun.shadow_opacity = 0.9
+		env.ambient_light_color = Color(0.66, 0.5, 0.5)
+		env.ambient_light_energy = 0.45
+		env.fog_enabled = true
+		env.fog_light_color = Color(0.4, 0.26, 0.22)
+		env.fog_density = 0.008
+		env.tonemap_exposure = 0.85
+		var sk := (env.sky.sky_material as ProceduralSkyMaterial)
+		sk.sky_top_color = Color(0.16, 0.1, 0.16)
+		sk.sky_horizon_color = Color(0.55, 0.26, 0.16)
+		sk.ground_horizon_color = Color(0.4, 0.2, 0.14)
+		sk.ground_bottom_color = Color(0.2, 0.1, 0.08)
+		mat.set_shader_parameter("tint", Vector3(1.0, 0.88, 0.76))
+		mat.set_shader_parameter("shadow_tint", Vector3(0.05, 0.0, 0.03))
+		mat.set_shader_parameter("saturation", 0.7)
+		mat.set_shader_parameter("contrast", 1.22)
+		mat.set_shader_parameter("haze", 0.03)
+		mat.set_shader_parameter("vignette", 0.55)
 
 
 func _mat(c: Color, transparent := false, unshaded := false) -> StandardMaterial3D:
