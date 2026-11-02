@@ -135,7 +135,7 @@ func _talk(ch: String, lines: Array) -> void:
 	layer.add_child(d)
 	await _fade_to(0.0, 0.15)
 	for i in lines.size():
-		await _wait(0.45 + String(lines[i]["text"]).length() * 0.025 + 0.6)
+		await _wait(0.8 + String(lines[i]["text"]).length() * 0.06 + 0.7)
 		d._advance()
 	await _fade_to(1.0, 0.12)
 	layer.queue_free()
@@ -180,7 +180,7 @@ func _throw_scene() -> void:
 
 
 ## Kurze Fassung der Geheimnis-Szene: Banner, Fass, erste Zeile.
-func _secret_short() -> void:
+func _secret_short(secret_id := "betrunkener_meister") -> void:
 	var names := {}
 	for id: String in unit_defs:
 		names[id] = unit_defs[id]["name"]
@@ -193,7 +193,7 @@ func _secret_short() -> void:
 	layer.add_child(dim)
 	var d := SecretScene.new()
 	d.quick = true
-	d.setup_secret(Secrets.by_id("betrunkener_meister"), names)
+	d.setup_secret(Secrets.by_id(secret_id), names)
 	layer.add_child(d)
 	await _fade_to(0.0, 0.15)
 	await _wait(2.4 + 1.2)

@@ -2,6 +2,7 @@
 # Nimmt einen Trailer direkt aus dem Spiel auf (feste 30 Bilder/s, mit Musik) und wandelt ihn nach MP4.
 # Benutzung: tools/make_trailer.sh            -> Teaser (ca. 40 s)  out/trailer/trailer.mp4
 #            tools/make_trailer.sh trailer2   -> Trailer 2 (ca. 2 min)  out/trailer/trailer2.mp4
+#            tools/make_trailer.sh trailer4   -> Trailer 4 (ca. 80 s)  out/trailer/trailer4.mp4
 set -e
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 NAME="${1:-trailer}"

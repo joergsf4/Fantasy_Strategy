@@ -386,6 +386,11 @@ func _screenshot_mode() -> void:
 		sclip.setup(map, units)
 		add_child(sclip)
 		return
+	if mode == "trailer4":   # Trailer 4 (ca. 80 Sekunden): tools/make_trailer.sh trailer4
+		var tr4 := Trailer4.new()
+		tr4.setup(map, units)
+		add_child(tr4)
+		return
 	if mode == "trailer3":   # Trailer 3 (ca. 30 Sekunden): tools/make_trailer.sh trailer3
 		var tr3 := Trailer3.new()
 		tr3.setup(map, units)
