@@ -76,7 +76,7 @@ Manche Fähigkeiten wirken auf Verbündete anders, als man denkt. Wer es herausf
 ### Fertige Testversion
 Unter [Releases](https://github.com/joergsf4/Fantasy_Strategy/releases) liegen ZIPs für macOS (`FuzaketaTactics-macOS.zip`) und Windows (`FuzaketaTactics-Windows.zip`). Aktuell: **Testversion 0.6.1** mit acht spielbaren Missionen.
 - **macOS:** ZIP entpacken, Rechtsklick auf die App, „Öffnen“ (nicht notarisiert). Falls macOS sie sperrt: `xattr -cr "Fuzaketa Tactics.app"`.
-- **Windows:** ZIP entpacken, `game.exe` starten. SmartScreen warnt eventuell („Weitere Informationen“, „Trotzdem ausführen“). Die Windows-Version wurde noch nicht getestet.
+- **Windows:** ZIP entpacken, `game.exe` starten. SmartScreen warnt eventuell („Weitere Informationen“, „Trotzdem ausführen“).
 
 ### Aus dem Quelltext
 ```
