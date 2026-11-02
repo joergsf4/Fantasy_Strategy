@@ -304,6 +304,7 @@ func _camp(m: Dictionary) -> void:
 	var c := Camp.new()
 	c.setup(party, units, party.squad_for(m), m)
 	layer.add_child(c)
+	_cover_out(0.6)
 	await c.closed
 	layer.queue_free()
 
@@ -363,6 +364,7 @@ func _interlude_chapter(cid: String, next_cid := "") -> void:
 	stage.set_mode("dialog")
 	_cover_out(0.0)
 	await _play_interlude(m.get("interlude", {}))
+	_cover_out(0.7)
 	await _dialogue(story_c["intro"])
 	if not (story_c["outro"] as Array).is_empty():
 		await _dialogue(story_c["outro"])
@@ -427,6 +429,7 @@ func _play_interlude(data: Dictionary) -> void:
 
 ## Dialog ueber der laufenden Meer-Szene (Daten wie "interlude", Szene bleibt bis zum Dialogende).
 func _dialogue_at_sea(lines: Array, data: Dictionary) -> void:
+	await _cover_in(0.5)
 	var layer := CanvasLayer.new()
 	layer.layer = 8
 	add_child(layer)
@@ -436,10 +439,12 @@ func _dialogue_at_sea(lines: Array, data: Dictionary) -> void:
 	d0["duration"] = 600.0
 	it.setup(d0)
 	layer.add_child(it)
+	_cover_out(0.0)               # die Meer-Szene blendet selbst aus Schwarz auf
 	await get_tree().create_timer(1.6).timeout
 	await _dialogue(lines, 9)
 	it.end()
 	await it.finished
+	await _cover_in(0.0)          # schwarz halten, das Lager blendet auf
 	layer.queue_free()
 
 
