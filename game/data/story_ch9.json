@@ -20,9 +20,10 @@
   },
   {
    "left": "maedchen_baer",
-   "right": "maedchen_baer",
    "speaker": "maedchen_baer",
-   "text": "Wart! Und er ist nicht allein."
+   "text": "Wart! Und er ist nicht allein.",
+   "right": "elisabeth",
+   "left_expr": "wuetend"
   },
   {
    "left": "ritter",

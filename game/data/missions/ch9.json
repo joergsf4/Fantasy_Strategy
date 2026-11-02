@@ -10,156 +10,7 @@
   {
    "type": "defeat",
    "unit": "wart",
-   "text": "Ziel: Besiegt Wart (er flieht nicht mehr)",
-   "then": [
-    {
-     "do": [
-      {
-       "dialogue": [
-        {
-         "left": "ritter",
-         "right": "wart",
-         "speaker": "wart",
-         "text": "Ahh... es ist vorbei... Ich spüre das Licht... es riecht nach Trüffeln...",
-         "right_expr": "sterbend"
-        },
-        {
-         "left": "ritter",
-         "right": "wart",
-         "speaker": "ritter",
-         "text": "Wart. Du hast tapfer gekämpft."
-        },
-        {
-         "left": "ritter",
-         "right": "wart",
-         "speaker": "wart",
-         "text": "Sagt meiner Rakete... dass ich sie geliebt habe. Und meinen Jungs... sie sollen... nie wieder... Ferkel genannt werden...",
-         "right_expr": "sterbend"
-        },
-        {
-         "left": "maedchen_baer",
-         "right": "wart",
-         "speaker": "maedchen_baer",
-         "text": "Er stirbt wirklich theatralisch."
-        },
-        {
-         "left": "maedchen_baer",
-         "right": "wart",
-         "speaker": "wart",
-         "text": "Lebt wohl, grausame Welt! ...Autsch. Das Gelenk. ...Lebt wohl!",
-         "right_expr": "sterbend"
-        }
-       ]
-      }
-     ]
-    },
-    {
-     "if": {
-      "present": [
-       "frischlinge"
-      ]
-     },
-     "do": [
-      {
-       "dialogue": [
-        {
-         "left": "ritter",
-         "right": "frischlinge",
-         "speaker": "frischlinge",
-         "text": "BOSS!! Ihr habt unseren Boss umgehauen! Dafür zahlt ihr!",
-         "right_expr": "wuetend"
-        },
-        {
-         "left": "ritter",
-         "right": "frischlinge",
-         "speaker": "frischlinge",
-         "text": "Wir schwören Rache! Mit Keulen, mit Äxten, mit allem, was spitz ist!",
-         "right_expr": "wuetend"
-        },
-        {
-         "left": "ritter",
-         "right": "frischlinge",
-         "speaker": "frischlinge",
-         "text": "Merkt euch unsere Gesichter! ...Wir kommen wieder! WARTET NUR!",
-         "right_expr": "wuetend"
-        }
-       ]
-      },
-      {
-       "retreat": "frischlinge"
-      }
-     ]
-    },
-    {
-     "do": [
-      {
-       "spawn": [
-        {
-         "id": "fuerst",
-         "pos": [
-          9,
-          3
-         ],
-         "label": "Der Regent tritt aus der Festung"
-        }
-       ]
-      },
-      {
-       "dialogue": [
-        {
-         "left": "ritter",
-         "right": "fuerst",
-         "speaker": "fuerst",
-         "text": "Genug, genug! Hört auf, bitte! Ich ergebe mich!",
-         "right_expr": "weinerlich"
-        },
-        {
-         "left": "maedchen_baer",
-         "right": "fuerst",
-         "speaker": "maedchen_baer",
-         "text": "Du bist der Regent? Du siehst aus wie ein nasser Teppich."
-        },
-        {
-         "left": "maedchen_baer",
-         "right": "fuerst",
-         "speaker": "fuerst",
-         "text": "Ich wollte das alles nie! Die Festung, die Armee, die Insel... Ich bin doch nur ein Strohmann!",
-         "right_expr": "weinerlich"
-        },
-        {
-         "left": "robo",
-         "right": "fuerst",
-         "speaker": "robo",
-         "text": "Ein Strohmann? Wessen?"
-        },
-        {
-         "left": "robo",
-         "right": "fuerst",
-         "speaker": "fuerst",
-         "text": "Das weiß ich nicht! Ich kenne nur die Briefe. Sie sind immer im Schatten gesiegelt. Und wer nicht gehorcht... *schnief*",
-         "right_expr": "weinerlich"
-        },
-        {
-         "left": "elisabeth",
-         "right": "fuerst",
-         "speaker": "elisabeth",
-         "text": "Also gibt es noch jemanden, der größer ist als er?"
-        },
-        {
-         "left": "elisabeth",
-         "right": "fuerst",
-         "speaker": "fuerst",
-         "text": "Viel größer. Er ist bald hier. Bitte lasst mich gehen, ich will heim zu meiner Mama!",
-         "right_expr": "weinerlich"
-        }
-       ]
-      },
-      {
-       "retreat": "fuerst"
-      }
-     ]
-    }
-   ]
+   "text": "Ziel: Besiegt Wart (er flieht nicht mehr)"
   }
  ],
  "triggers": [
@@ -263,6 +114,165 @@
      ]
     }
    ]
+  },
+  {
+   "when": {
+    "victory": true
+   },
+   "note": "Warts Todesszene",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "ritter",
+       "right": "wart",
+       "speaker": "wart",
+       "text": "Ahh... es ist vorbei... Ich spüre das Licht... es riecht nach Trüffeln...",
+       "right_expr": "sterbend"
+      },
+      {
+       "left": "ritter",
+       "right": "wart",
+       "speaker": "ritter",
+       "text": "Wart. Du hast tapfer gekämpft."
+      },
+      {
+       "left": "ritter",
+       "right": "wart",
+       "speaker": "wart",
+       "text": "Sagt meiner Rakete... dass ich sie geliebt habe. Und meinen Jungs... sie sollen... nie wieder... Ferkel genannt werden...",
+       "right_expr": "sterbend"
+      },
+      {
+       "left": "maedchen_baer",
+       "right": "wart",
+       "speaker": "maedchen_baer",
+       "text": "Er stirbt wirklich theatralisch."
+      },
+      {
+       "left": "maedchen_baer",
+       "right": "wart",
+       "speaker": "wart",
+       "text": "Lebt wohl, grausame Welt! ...Autsch. Das Gelenk. ...Lebt wohl!",
+       "right_expr": "sterbend"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "victory": true
+   },
+   "note": "Frischlinge schwören Rache",
+   "if": {
+    "present": [
+     "frischlinge"
+    ]
+   },
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "ritter",
+       "right": "frischlinge",
+       "speaker": "frischlinge",
+       "text": "BOSS!! Ihr habt unseren Boss umgehauen! Dafür zahlt ihr!",
+       "right_expr": "wuetend"
+      },
+      {
+       "left": "ritter",
+       "right": "frischlinge",
+       "speaker": "frischlinge",
+       "text": "Wir schwören Rache! Mit Keulen, mit Äxten, mit allem, was spitz ist!",
+       "right_expr": "wuetend"
+      },
+      {
+       "left": "ritter",
+       "right": "frischlinge",
+       "speaker": "frischlinge",
+       "text": "Merkt euch unsere Gesichter! ...Wir kommen wieder! WARTET NUR!",
+       "right_expr": "wuetend"
+      }
+     ]
+    },
+    {
+     "retreat": "frischlinge"
+    }
+   ]
+  },
+  {
+   "when": {
+    "victory": true
+   },
+   "note": "Der Regent gesteht",
+   "do": [
+    {
+     "spawn": [
+      {
+       "id": "fuerst",
+       "pos": [
+        9,
+        3
+       ],
+       "label": "Der Regent tritt aus der Festung"
+      }
+     ]
+    },
+    {
+     "dialogue": [
+      {
+       "left": "ritter",
+       "right": "fuerst",
+       "speaker": "fuerst",
+       "text": "Genug, genug! Hört auf, bitte! Ich ergebe mich!",
+       "right_expr": "weinerlich"
+      },
+      {
+       "left": "maedchen_baer",
+       "right": "fuerst",
+       "speaker": "maedchen_baer",
+       "text": "Du bist der Regent? Du siehst aus wie ein nasser Teppich."
+      },
+      {
+       "left": "maedchen_baer",
+       "right": "fuerst",
+       "speaker": "fuerst",
+       "text": "Ich wollte das alles nie! Die Festung, die Armee, die Insel... Ich bin doch nur ein Strohmann!",
+       "right_expr": "weinerlich"
+      },
+      {
+       "left": "robo",
+       "right": "fuerst",
+       "speaker": "robo",
+       "text": "Ein Strohmann? Wessen?"
+      },
+      {
+       "left": "robo",
+       "right": "fuerst",
+       "speaker": "fuerst",
+       "text": "Das weiß ich nicht! Ich kenne nur die Briefe. Sie sind immer im Schatten gesiegelt. Und wer nicht gehorcht... *schnief*",
+       "right_expr": "weinerlich"
+      },
+      {
+       "left": "elisabeth",
+       "right": "fuerst",
+       "speaker": "elisabeth",
+       "text": "Also gibt es noch jemanden, der größer ist als er?"
+      },
+      {
+       "left": "elisabeth",
+       "right": "fuerst",
+       "speaker": "fuerst",
+       "text": "Viel größer. Er ist bald hier. Bitte lasst mich gehen, ich will heim zu meiner Mama!",
+       "right_expr": "weinerlich"
+      }
+     ]
+    },
+    {
+     "retreat": "fuerst"
+    }
+   ]
   }
  ],
  "flee": {
@@ -271,14 +281,14 @@
     "left": "$hero",
     "right": "frischlinge",
     "speaker": "frischlinge",
-    "text": "Nich' hauen! Wir sagen's dem Boss! Der kommt gleich!",
+    "text": "Nich' hauen! Wir sagen's Papa! Der kommt gleich!",
     "right_expr": "wuetend"
    },
    {
     "left": "$hero",
     "right": "frischlinge",
     "speaker": "frischlinge",
-    "text": "Wir kommen wieder! Mit größeren Keulen!",
+    "text": "Wir kommen wieder! Drauf könnt ihr euch verlasen ihr alten Fossile!",
     "right_expr": "wuetend"
    }
   ]

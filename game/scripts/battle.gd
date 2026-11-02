@@ -2392,12 +2392,12 @@ func _check_end() -> void:
 		_show_tiles({})
 		_close_menu()
 		_hint.text = ""
-		if won and not goal_then_done:   # Abschlussszene des Ziels (Mission-Ziel "then": Ausloeser mit if/do)
+		if won and not goal_then_done:   # Abschlussszenen: Ausloeser mit "when": {"victory": true} laufen in Reihenfolge vor dem Sieg
 			goal_then_done = true
-			for t: Dictionary in (goal.get("then", []) as Array):
-				if _cond_ok(t.get("if", {})):
+			for t: Dictionary in triggers:
+				if (t["when"] as Dictionary).has("victory") and not t.get("fired", false) and _cond_ok(t.get("if", {})):
+					t["fired"] = true
 					await _fire(t, {})
-		_status.text = "Sieg!" if won else "Niederlage"
 		Sfx.event("victory" if won else "defeat")
 		await get_tree().create_timer(1.2).timeout
 		finished.emit(won)

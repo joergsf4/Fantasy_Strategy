@@ -60,7 +60,8 @@ class EditorTest(unittest.TestCase):
         self.assertEqual(by["magical_girl"]["first"]["chapter"], 7)
         self.assertEqual(by["quacksalber"]["first"]["chapter"], 3)      # stößt in Mühlbach zur Gruppe
         self.assertEqual(by["quacksalber"]["intro"], 3)
-        for uid in ("claude", "fuerst", "dummy"):
+        self.assertEqual(by["fuerst"]["first"]["chapter"], 9)       # der Regent tritt erstmals in Mission 9 auf
+        for uid in ("claude", "dummy"):
             self.assertIsNone(by[uid]["first"], uid)       # noch in keiner Mission
         self.assertEqual(by["wart"]["abilities"][0]["name"], "Raketenwerfer")
         eli = {a["id"]: a["source"] for a in by["elisabeth"]["abilities"]}
