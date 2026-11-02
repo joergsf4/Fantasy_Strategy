@@ -15,7 +15,7 @@ def line(d: ImageDraw.ImageDraw, text: str, y: int, size: int, fill: tuple) -> N
 
 img = Image.new("RGBA", (1080, 1920), (0, 0, 0, 0))
 d = ImageDraw.Draw(img)
-line(d, "Rundenstrategie", 250, 70, (242, 193, 78, 255))
-line(d, "mit Humor", 340, 70, (242, 193, 78, 255))
+line(d, "Rundentaktik, die", 250, 66, (242, 193, 78, 255))
+line(d, "Spaß macht", 340, 66, (242, 193, 78, 255))
 line(d, "Demnächst", 1500, 60, (255, 255, 255, 255))
 img.save(sys.argv[1])
