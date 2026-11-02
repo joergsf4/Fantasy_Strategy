@@ -215,7 +215,10 @@ func _chapter(cid: String, skip_intro := false, next_cid := "") -> void:
 	party.absorb(res)
 	party.save()
 	_toast("Spielstand automatisch gespeichert")
-	await _dialogue(story_c["outro"])
+	if m.has("outro_at_sea"):                            # Abschlussgespraech waehrend der Ueberfahrt, vor dem Meer
+		await _dialogue_at_sea(story_c["outro"], m["outro_at_sea"])
+	else:
+		await _dialogue(story_c["outro"])
 	if next_cid != "" and Mission.load_mission(next_cid).get("stub", false):
 		party.save()
 		return                                           # naechstes Kapitel hat keinen Kampf: kein Lager
@@ -341,9 +344,27 @@ func _play_interlude(data: Dictionary) -> void:
 	layer.queue_free()
 
 
-func _dialogue(lines: Array) -> void:
+## Dialog ueber der laufenden Meer-Szene (Daten wie "interlude", Szene bleibt bis zum Dialogende).
+func _dialogue_at_sea(lines: Array, data: Dictionary) -> void:
 	var layer := CanvasLayer.new()
-	layer.layer = 2
+	layer.layer = 8
+	add_child(layer)
+	var it := Interlude.new()
+	var d0 := data.duplicate()
+	d0["hold"] = true
+	d0["duration"] = 600.0
+	it.setup(d0)
+	layer.add_child(it)
+	await get_tree().create_timer(1.6).timeout
+	await _dialogue(lines, 9)
+	it.end()
+	await it.finished
+	layer.queue_free()
+
+
+func _dialogue(lines: Array, layer_no := 2) -> void:
+	var layer := CanvasLayer.new()
+	layer.layer = layer_no
 	add_child(layer)
 	var d := Dialogue.new()
 	d.setup(lines, _names())
@@ -418,10 +439,17 @@ func _screenshot_mode() -> void:
 		return
 	if mode == "interlude":   # Reisebild von ch10: SHOT_DELAY = Sekunden bis zum Bild
 		var il := Interlude.new()
-		il.setup(Mission.load_mission(OS.get_environment("SHOT_CH") if OS.get_environment("SHOT_CH") != "" else "ch10").get("interlude_before" if OS.get_environment("SHOT_CH") != "" else "interlude", {}))
+		il.setup(Mission.load_mission("ch6").get("outro_at_sea", {}) if OS.get_environment("SHOT_CH") == "ch6" else Mission.load_mission("ch10").get("interlude", {}))
 		var ll := CanvasLayer.new()
 		add_child(ll)
 		ll.add_child(il)
+		if OS.get_environment("SHOT_CH") == "ch6":     # Dialog ueber dem Meer (Abschluss von Mission 6)
+			var sd := Dialogue.new()
+			sd.setup(_load_json("res://data/story_ch6.json")["outro"].slice(int(OS.get_environment("SHOT_LINE"))), _names())
+			var dl := CanvasLayer.new()
+			dl.layer = 9
+			add_child(dl)
+			dl.add_child(sd)
 		await get_tree().create_timer(float(OS.get_environment("SHOT_DELAY")) if OS.get_environment("SHOT_DELAY") != "" else 4.0).timeout
 		get_viewport().get_texture().get_image().save_png(OS.get_environment("SHOT_OUT"))
 		get_tree().quit()

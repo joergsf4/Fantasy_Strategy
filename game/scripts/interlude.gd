@@ -11,6 +11,9 @@ var title := ""
 var duration := 8.0
 var zoom_to := 1.16
 var pan := Vector2(-40, -14)       # Verschiebung in Pixeln waehrend des Zooms
+var speed := 1.8                    # Fahrt des Schiffs in Feldern pro Sekunde
+var arc := 12.0                     # Dauer des Kamerabogens in Sekunden (bei langen Szenen unabhaengig von duration)
+var hold := false                   # Szene laeuft, bis end() gerufen wird (Dialog darueber), kein Ueberspringen
 var heading := -1.0                # Fahrtrichtung im 3D-Meer: -1 nach links, 1 nach rechts (Sprite wird gespiegelt)
 var scene3d := ""                  # "sea": Schiff faehrt in 3D ueber das Wasser (statt Standbild mit Ken Burns)
 var _pic: TextureRect
@@ -19,6 +22,7 @@ var _ship: MeshInstance3D
 var _foam: Array = []
 var _t := 0.0
 var _sea_mat: ShaderMaterial
+var _water: MeshInstance3D
 var _black: ColorRect
 var _done := false
 var _age := 0.0
@@ -29,6 +33,9 @@ func setup(data: Dictionary) -> void:
 	kicker = data.get("kicker", "")
 	title = data.get("title", "")
 	scene3d = data.get("scene", "")
+	speed = float(data.get("speed", speed))
+	arc = float(data.get("arc", minf(float(data.get("duration", duration)), arc)))
+	hold = data.get("hold", false)
 	heading = 1.0 if data.get("dir", "left") == "right" else -1.0
 	duration = float(data.get("duration", duration))
 	zoom_to = float(data.get("zoom", zoom_to))
@@ -80,10 +87,11 @@ func _ready() -> void:
 	tt.tween_property(box, "modulate:a", 1.0, 1.0)
 	tt.tween_interval(duration - 5.8)
 	tt.tween_property(box, "modulate:a", 0.0, 0.8)
-	var out := create_tween()
-	out.tween_interval(duration - 1.2)
-	out.tween_property(_black, "modulate:a", 1.0, 1.2)
-	out.tween_callback(_finish)
+	if not hold:
+		var out := create_tween()
+		out.tween_interval(duration - 1.2)
+		out.tween_property(_black, "modulate:a", 1.0, 1.2)
+		out.tween_callback(_finish)
 
 
 func _process(delta: float) -> void:
@@ -94,7 +102,7 @@ func _process(delta: float) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if _age < 0.6:
+	if _age < 0.6 or hold:
 		return
 	if (event is InputEventMouseButton and event.pressed) or (event is InputEventKey and event.pressed and not event.echo):
 		get_viewport().set_input_as_handled()
@@ -153,6 +161,7 @@ func _build_sea() -> void:
 	wm.shader = load("res://shaders/sea.gdshader")
 	_sea_mat = wm
 	water.material_override = wm
+	_water = water
 	vp.add_child(water)
 	var ship_tex: Texture2D = load("res://assets/fx/fx_schiff.png")
 	_ship = MeshInstance3D.new()
@@ -209,11 +218,12 @@ func sea_height(p: Vector2, t: float) -> float:
 
 
 func _sail() -> void:
-	var k := clampf(_t / duration, 0.0, 1.0)
+	var k := clampf(_t / arc, 0.0, 1.0)
 	_sea_mat.set_shader_parameter("t_sea", _t)
-	var x := -heading * 5.0 + heading * _t * 0.9                                       # der Bug zeigt nach links: das Schiff faehrt nach links
+	var x := -heading * 5.0 + heading * _t * speed                                       # der Bug zeigt nach links: das Schiff faehrt nach links
 	var h := sea_height(Vector2(x, 0.0), _t)
 	_ship.position = Vector3(x, 1.9 + h * 0.9, 0.0)
+	_water.position.x = x
 	for i in _foam.size():
 		var f: MeshInstance3D = _foam[i]
 		f.position = Vector3(x - heading * 0.5 * i, 0.04 + h * 0.9, 0.1)
@@ -223,6 +233,13 @@ func _sail() -> void:
 	_cam.position = focus + Vector3(heading * sin(a) * 8.5, 0.5 + k * 0.7, cos(a) * 8.5)
 	_cam.position.y += sea_height(Vector2(_cam.position.x, _cam.position.z), _t) * 0.6
 	_cam.look_at(focus)
+
+
+## Szene mit hold: ausblenden und beenden.
+func end() -> void:
+	var out := create_tween()
+	out.tween_property(_black, "modulate:a", 1.0, 1.0)
+	out.tween_callback(_finish)
 
 
 func _finish() -> void:

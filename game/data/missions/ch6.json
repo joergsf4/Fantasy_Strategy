@@ -239,5 +239,10 @@
     "right_expr": "wuetend"
    }
   ]
+ },
+ "outro_at_sea": {
+  "scene": "sea",
+  "dir": "right",
+  "speed": 1.8
  }
 }

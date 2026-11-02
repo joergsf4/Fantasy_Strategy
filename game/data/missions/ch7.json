@@ -220,10 +220,5 @@
     }
    ]
   }
- ],
- "interlude_before": {
-  "scene": "sea",
-  "dir": "right",
-  "duration": 7.0
- }
+ ]
 }

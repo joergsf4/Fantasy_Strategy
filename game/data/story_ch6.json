@@ -48,6 +48,39 @@
    "right_expr": "lachend"
   },
   {
+   "left": "hund",
+   "right": "elisabeth",
+   "speaker": "hund",
+   "text": "Mir ist schlecht. Hab ich erwähnt, dass mir schlecht ist? Mir ist sehr schlecht."
+  },
+  {
+   "left": "hund",
+   "right": "elisabeth",
+   "speaker": "elisabeth",
+   "text": "Etwa alle zwei Minuten, Landratte. Schau zum Horizont, nicht auf die Wellen.",
+   "right_expr": "lachend"
+  },
+  {
+   "left": "hund",
+   "right": "elisabeth",
+   "speaker": "hund",
+   "text": "Der Horizont schwankt auch! Alles schwankt! Sogar mein Frühstück schwankt!"
+  },
+  {
+   "left": "hund",
+   "right": "elisabeth",
+   "speaker": "elisabeth",
+   "text": "Dann bitte nur über die Reling, und auf der windabgewandten Seite. Und der Eimer steht dort, der ist am Ende immer ruhig.",
+   "right_expr": "lachend"
+  },
+  {
+   "left": "hund",
+   "right": "elisabeth",
+   "speaker": "hund",
+   "text": "Ich bin Hund. Ich gehöre an Land. Ich gehöre unter einen Baum.",
+   "left_expr": "wuetend"
+  },
+  {
    "left": "robo",
    "right": "elisabeth",
    "speaker": "robo",
