@@ -119,6 +119,9 @@ func _stats_screen() -> void:
 
 
 ## Dialog vor einer Kapitelkarte (Zeilen automatisch weiterschalten).
+var talk_compact := false      # Dialoge im Hochformat-Ausschnitt (Short)
+
+
 func _talk(ch: String, lines: Array) -> void:
 	await _fade_to(1.0, 0.12)
 	stage.map_data = Mission.load_mission(ch)
@@ -131,6 +134,7 @@ func _talk(ch: String, lines: Array) -> void:
 	layer.layer = 4
 	add_child(layer)
 	var d := Dialogue.new()
+	d.compact = talk_compact
 	d.setup(lines, names)
 	layer.add_child(d)
 	await _fade_to(0.0, 0.15)

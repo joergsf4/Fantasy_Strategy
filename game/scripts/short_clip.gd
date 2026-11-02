@@ -7,15 +7,16 @@ const SHORT_INTRO := [
 	{"left": "samurai", "right": "wart", "speaker": "samurai", "left_expr": "wuetend", "text": "Halt, Schurke! Dein Treiben endet hier!"},
 	{"left": "samurai", "right": "wart", "speaker": "wart", "right_expr": "lachend", "text": "Ha! Versuch's doch, Held! Raketen frei!"},
 ]
-const SHORT_BATTLE_1 := {"map": "ch3", "fire": true, "cam": [0.0, 6.2, 6.4], "fov": 38, "max_heroes": 3, "max_foes": 2, "speed": 2.2,
-	"p": [["ritter", "p", [3, 6]], ["samurai", "p", [3, 7]], ["kungfu", "p", [4, 5]], ["elisabeth", "p", [2, 8]]],
-	"e": [["soldat_infanterie", "e", [6, 6]], ["soldat_infanterie", "e", [6, 7]], ["soldat_beritten", "e", [8, 5]], ["soldat_bogenschuetze", "e", [8, 8]]]}
-const SHORT_BATTLE_2 := {"map": "ch7", "fire": false, "cam": [0.0, 6.0, 6.2], "fov": 38, "max_heroes": 3, "max_foes": 2, "speed": 2.2,
-	"p": [["robo", "p", [3, 6]], ["hund", "p", [3, 7]], ["ninjas", "p", [2, 7]]],
-	"e": [["soldat_infanterie", "e", [6, 7]], ["soldat_beritten", "e", [7, 6]], ["soldat_infanterie", "e", [7, 7]], ["soldat_bogenschuetze", "e", [8, 7]]]}
+const SHORT_BATTLE_1 := {"map": "ch3", "fire": true, "cam": [0.0, 4.2, 4.4], "fov": 38, "max_heroes": 3, "max_foes": 3, "speed": 2.2,
+	"p": [["ritter", "p", [4, 6]], ["samurai", "p", [4, 7]], ["kungfu", "p", [3, 6]]],
+	"e": [["soldat_infanterie", "e", [6, 6]], ["soldat_infanterie", "e", [6, 7]], ["soldat_beritten", "e", [7, 6]]]}
+const SHORT_BATTLE_2 := {"map": "ch7", "fire": false, "cam": [0.0, 4.2, 4.4], "fov": 38, "max_heroes": 3, "max_foes": 3, "speed": 2.2,
+	"p": [["robo", "p", [4, 6]], ["hund", "p", [4, 7]], ["ninjas", "p", [3, 6]]],
+	"e": [["soldat_infanterie", "e", [6, 7]], ["soldat_beritten", "e", [7, 6]], ["soldat_infanterie", "e", [6, 6]]]}
 
 
 func _run() -> void:
+	talk_compact = true
 	# --- Titelbild
 	_play_music(TITLE_MUSIC, -4.0)
 	stage.set_mode("title")

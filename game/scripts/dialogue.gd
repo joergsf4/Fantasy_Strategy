@@ -19,6 +19,7 @@ var _plate: PanelContainer
 var _text: RichTextLabel
 var _more: Control
 var _tween: Tween
+var compact := false            # Hochformat-Ausschnitt (YouTube Short): nur der Sprecher gross in der Mitte, schmales Textfeld
 var voices: Dictionary = {}     # Sprecher -> Figur, deren Brabbel-Laut klingt (Standard: der Sprecher selbst)
 var _speaker := ""
 var _typed_n := 0
@@ -35,16 +36,24 @@ func _ready() -> void:
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	_left = _make_slot(Rect2(-30, 10, 640, 700), false)
 	_right = _make_slot(Rect2(670, 10, 640, 700), true)
+	if compact:
+		_left.position = Vector2(304, 0)
+		_left.size = Vector2(672, 570)
+		_right.position = _left.position
+		_right.size = _left.size
 
 	var box := PanelContainer.new()
 	box.position = Vector2(60, 548)
 	box.size = Vector2(1160, 148)
+	if compact:
+		box.position = Vector2(352, 566)
+		box.size = Vector2(576, 140)
 	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	box.add_theme_stylebox_override("panel", UiTheme.box("panel_dark_s.png", 24, Vector4(26, 18, 26, 14), 0.86))
 	add_child(box)
 	_text = RichTextLabel.new()
 	_text.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	_text.add_theme_font_size_override("normal_font_size", 26)
+	_text.add_theme_font_size_override("normal_font_size", 22 if compact else 26)
 	_text.scroll_active = false
 	_text.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	box.add_child(_text)
@@ -61,7 +70,7 @@ func _ready() -> void:
 	_plate.add_child(_name_label)
 
 	_more = Control.new()
-	_more.position = Vector2(1184, 668)
+	_more.position = Vector2(892, 676) if compact else Vector2(1184, 668)
 	_more.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_more.draw.connect(func() -> void:
 		var c := UiTheme.GOLD
@@ -119,10 +128,14 @@ func _advance() -> void:
 	var on_left: bool = speaker == l.get("left", "")
 	_left.modulate = Color.WHITE if on_left else DIM
 	_right.modulate = DIM if on_left else Color.WHITE
+	if compact:      # nur der Sprecher ist zu sehen
+		(_right if on_left else _left).texture = null
 	_name_label.text = names.get(speaker, speaker)
 	_plate.reset_size()
 	_plate.size = _plate.get_combined_minimum_size()
 	_plate.position = Vector2(84.0 if on_left else 1280.0 - 84.0 - _plate.size.x, 524.0)
+	if compact:
+		_plate.position = Vector2(640.0 - _plate.size.x * 0.5, 542.0)
 	_text.text = l["text"]
 	_text.visible_ratio = 0.0
 	_more.visible = false
