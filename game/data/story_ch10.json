@@ -4,19 +4,19 @@
    "left": "elisabeth",
    "right": "robo",
    "speaker": "elisabeth",
-   "text": "Möwenbucht, mitten in der Nacht. Seltsam: Die Barrikaden am Kai sind weg, und in den Häusern brennt Licht."
+   "text": "Die Barrikaden am Kai sind weg, und in den Häusern brennt Licht. Alles wirkt so normal."
   },
   {
    "left": "elisabeth",
    "right": "robo",
    "speaker": "robo",
-   "text": "Regen, Dunkelheit, eine Stadt ohne Wachen. Meine Sensoren mögen das nicht."
+   "text": "Regen bekommt meinen Servos gar nicht."
   },
   {
    "left": "hund",
    "right": "lotte",
    "speaker": "lotte",
-   "text": "Blauer Hundsfreund! Ich habe auf euch gewartet. Die ganze Nacht, im Regen.",
+   "text": "Blauer Hundsfreund! Endlich seid ihr da! Ich habe auf euch gewartet.",
    "right_expr": ""
   },
   {
@@ -29,7 +29,7 @@
    "left": "hund",
    "right": "lotte",
    "speaker": "lotte",
-   "text": "Die anderen Kinder... Pip, Mia, alle. Fremde Männer kamen im Dunkeln und haben sie mitgenommen. Nur ich konnte mich verstecken."
+   "text": "Die anderen Kinder... Pip, Mia, alle. Fremde kamen im Dunkeln und haben sie mitgenommen. Nur ich konnte mich verstecken."
   },
   {
    "left": "hund",
@@ -42,14 +42,20 @@
    "left": "hund",
    "right": "lotte",
    "speaker": "lotte",
-   "text": "Zum Hafen. Dann ein Schiff mit schwarzen Segeln. Bitte, du musst sie finden!"
+   "text": "Sie sind nach Westen in den Wald verschwunden. Mehr weiß ich leider nicht."
   },
   {
    "left": "hund",
    "right": "lotte",
    "speaker": "hund",
-   "text": "Ich finde sie. Das schwöre ich bei meinem Knochen.",
+   "text": "Ich werde die Kinder finden! Das schwöre ich bei meinem Knochen.",
    "left_expr": "wuetend"
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "hund",
+   "speaker": "maedchen_baer",
+   "text": "Wir kommen mit! Ich habe so das Gefühl, dass uns das auf die Fährte des wahren Bösen bringt."
   }
  ],
  "outro": []
