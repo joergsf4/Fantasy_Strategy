@@ -51,6 +51,13 @@ func open() -> void:
 			quit_cb.call()
 		else:
 			get_tree().quit())
+	_menu.menu_requested.connect(func() -> void:       # zurueck zum Hauptmenue: Stand sichern, Spiel anhalten beenden, Szene neu laden
+		if save_cb.is_valid() and _menu.can_save:
+			save_cb.call()
+		get_tree().paused = false
+		var tree := get_tree()
+		queue_free()
+		tree.reload_current_scene())
 	_menu.fullscreen_toggled.connect(toggle_fullscreen)
 	_menu.closed.connect(func() -> void:
 		if is_instance_valid(_layer):

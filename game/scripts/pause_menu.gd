@@ -6,6 +6,7 @@ extends Control
 signal closed
 signal save_requested
 signal quit_requested
+signal menu_requested
 signal fullscreen_toggled
 
 var can_save := true            # im Hauptmenue gibt es noch nichts zu speichern
@@ -79,6 +80,8 @@ func _show_main() -> void:
 		fullscreen_toggled.emit()
 		_fs_button.text = _fullscreen_text())
 	_col.add_child(_fs_button)
+	if can_save:      # im Hauptmenue selbst gibt es keinen Weg dorthin zurueck
+		_col.add_child(_button("Zum Hauptmenü", _confirm_menu))
 	_col.add_child(_button("Beenden", _confirm_quit))
 	_msg = _label("", UiTheme.F_BODY, 17, Color(0.7, 1.0, 0.7), 340)
 	_col.add_child(_msg)
@@ -102,6 +105,16 @@ func _confirm_quit() -> void:
 	_col.add_child(_label(txt, UiTheme.F_BODY, 19, UiTheme.CREAM, 340))
 	var yes := _button("Ja, beenden", func() -> void: quit_requested.emit())
 	_col.add_child(yes)
+	var back := _button("Zurück", _show_main)
+	_col.add_child(back)
+	back.grab_focus.call_deferred()
+
+
+func _confirm_menu() -> void:
+	_clear()
+	_col.add_child(_label("Zum Hauptmenü?", UiTheme.F_TITLE, 32, UiTheme.GOLD))
+	_col.add_child(_label("Gespeichert ist der Stand nach der letzten geschafften Mission. Die laufende Mission beginnt beim Fortfahren von vorn.", UiTheme.F_BODY, 19, UiTheme.CREAM, 340))
+	_col.add_child(_button("Ja, zum Hauptmenü", func() -> void: menu_requested.emit()))
 	var back := _button("Zurück", _show_main)
 	_col.add_child(back)
 	back.grab_focus.call_deferred()
