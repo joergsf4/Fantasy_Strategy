@@ -428,6 +428,61 @@ def e13_river():
     save("e13", {"cells": res, "mults": mults, "turns": turns})
 
 
+HEROES_ALL = ["maedchen_baer", "ritter", "samurai", "kungfu", "ninjas", "elisabeth", "museklaugust", "robo", "hund", "wendy",
+              "claude", "braumeisterin", "magical_girl", "quacksalber", "panzer", "bienenmaedchen"]
+BOSSES_ALL = ["wart", "xiulan", "oskar", "maja", "fuerst", "bienenmaedchen", "frischlinge", "kugelblitz", "cyborg_wart"]
+
+
+def e14_matrix():
+    """Matrix: jeder Held gegen jeden benannten Gegner (Boss), 1:1, auf jeder Seite dazu zwei Buettel (Gruppenkampf).
+    Zahl = Siegquote der Heldenseite. Zeitueberschreitungen (z. B. reine Heiler) zaehlen als nicht gewonnen und stehen extra in docs/balance_matrix.md."""
+    print("E14: Helden gegen Bosse, 1:1 mit je zwei Buettel")
+    cells = []
+    for h in HEROES_ALL:
+        for b in BOSSES_ALL:
+            cells.append({"name": f"{h}|{b}", "n": 60, "seed": 1400000, "map": "open",
+                          "party": {"fixed": [h, "soldat_infanterie", "soldat_infanterie"]},
+                          "enemy": {"fixed": [b, "soldat_infanterie", "soldat_infanterie"]}, "e_ai": {}})
+    res = run_cells(cells)
+    save("e14", {"cells": res, "heroes": HEROES_ALL, "bosses": BOSSES_ALL})
+    write_matrix(res)
+
+
+def write_matrix(res):
+    names = json.loads((GAME / "data" / "units.json").read_text())
+    nm = lambda i: names[i]["name"]
+    L = ["# Balancing-Matrix: Helden gegen Bosse", "",
+         "Berechnung ohne Grafik (`python3 tools/balance.py e14`, Simulator `game/sim`). Jede Zelle: **Siegquote der Heldenseite** in Prozent bei 1 gegen 1 (Held gegen benannten Gegner), dazu auf jeder Seite zwei Büttel (Gruppenkampf), zufällige offene Karte, 60 Kämpfe je Zelle (Fehler etwa ±6 Prozentpunkte). In Klammern: Zeitüberschreitung in Prozent (der Kampf wurde in 40 Runden nicht entschieden, z. B. reine Heiler). Ziel für den Vergleich: etwa 50 % sind ausgewogen; deutlich darüber ist der Held zu stark gegen diesen Gegner, deutlich darunter zu schwach.", ""]
+    head = "| Held \\ Boss | " + " | ".join(nm(b) for b in BOSSES_ALL) + " | Ø Held |"
+    L += [head, "|---|" + "--:|" * (len(BOSSES_ALL) + 1)]
+    rows = {}
+    for h in HEROES_ALL:
+        vals = []
+        cells = []
+        for b in BOSSES_ALL:
+            a = res[f"{h}|{b}"]
+            w = wr(a)
+            to = a["timeouts"] / max(1, a["n"])
+            vals.append(w)
+            cells.append(f"{w:.0%}" + (f" ({to:.0%})" if to >= 0.1 else ""))
+        rows[h] = sum(vals) / len(vals)
+        L.append(f"| {nm(h)} | " + " | ".join(cells) + f" | **{rows[h]:.0%}** |")
+    col = []
+    for b in BOSSES_ALL:
+        col.append(sum(wr(res[f"{h}|{b}"]) for h in HEROES_ALL) / len(HEROES_ALL))
+    L.append("| **Ø Boss (Heldensieg)** | " + " | ".join(f"**{c:.0%}**" for c in col) + " | |")
+    L += ["", "## Auffälligkeiten", ""]
+    strong = sorted(rows.items(), key=lambda kv: -kv[1])
+    L.append("- **Stärkste Helden (Ø Siegquote):** " + ", ".join(f"{nm(h)} {v:.0%}" for h, v in strong[:4]))
+    L.append("- **Schwächste Helden:** " + ", ".join(f"{nm(h)} {v:.0%}" for h, v in strong[-4:]))
+    bc = sorted(zip(BOSSES_ALL, col), key=lambda kv: kv[1])
+    L.append("- **Stärkste Bosse (Helden gewinnen am seltensten):** " + ", ".join(f"{nm(b)} {1 - c:.0%} Bosssieg" for b, c in bc[:3]))
+    L.append("- **Schwächste Bosse:** " + ", ".join(f"{nm(b)} {1 - c:.0%} Bosssieg" for b, c in bc[-3:]))
+    L.append("")
+    (ROOT / "docs" / "balance_matrix.md").write_text("\n".join(L) + "\n")
+    print("docs/balance_matrix.md geschrieben")
+
+
 def e7_fire():
     """Mission 3 (Feuer): Siegquote und gerettete Haeuser mit/ohne Loeschen, mit/ohne Brunhilde, bei steigender Gegnerstaerke."""
     print("E7: Mission 3, Feuer und Loeschen")
@@ -931,7 +986,7 @@ def report():
 
 
 STEPS = {"calib": calib, "e0": e0_ratings, "e1": e1_contribution, "e2": e2_ablation, "e3": e3_difficulty,
-         "e3base": lambda: e3_difficulty(False), "e4": e4_power_ratio, "e5": e5_items, "e6": e6_defend, "e7": e7_fire, "e8": e8_bees, "e9": e9_harbor, "e10": e10_wait, "e11": e11_desert, "e12": e12_oasis, "e13": e13_river, "report": report}
+         "e3base": lambda: e3_difficulty(False), "e4": e4_power_ratio, "e5": e5_items, "e6": e6_defend, "e7": e7_fire, "e8": e8_bees, "e9": e9_harbor, "e10": e10_wait, "e11": e11_desert, "e12": e12_oasis, "e13": e13_river, "e14": e14_matrix, "report": report}
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
