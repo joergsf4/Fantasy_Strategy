@@ -181,7 +181,8 @@ func before_hit(id: String, u: Dictionary, v: Dictionary, _i: int) -> void:
 			battle._turn_towards(u, v["pos"])
 			var side: float = [-1.0, 1.0, -1.0][_i % 3]
 			var n: Node3D = u["node"]
-			var base := n.position
+			var base := battle.to_world(u["pos"])     # immer vom eigenen Feld aus (nicht von der letzten Taumelposition)
+			n.position = base if _i == 0 else n.position
 			var off := (base - _pos(v)).normalized().rotated(Vector3.UP, side * 0.9) * 0.55   # taumelt von der Seite heran
 			var tw := fx.create_tween()
 			tw.tween_property(n, "position", _pos(v) + off, 0.14).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
@@ -234,7 +235,10 @@ func on_hit(id: String, u: Dictionary, v: Dictionary, _i: int) -> void:
 			fx.particles("fx_star", p2, 4, 2.5, 0.2, 0.4, 2.0, Color(1.0, 0.85, 0.4), true, 160.0)
 			fx.flash_unit(v, Color(2, 1.7, 1.2), 0.1)
 			fx.knockback(v, _pos(u), 0.18, 0.18)
-			if _i == 2:       # letzter Hieb: Wucht
+			if _i == 2:       # letzter Hieb: Wucht, danach steht Lin wieder genau auf seinem Feld
+				var home := battle.to_world(u["pos"])
+				var back := fx.create_tween()
+				back.tween_property(u["node"], "position", home, 0.22).set_delay(0.12).set_trans(Tween.TRANS_QUAD)
 				var k2 := fx.make_sprite("fx_krack", p2 + Vector3(0, 0.5, 0), 1.2, false, Color.WHITE, 4)
 				fx.pop(k2, 1.5, 0.7, 0.0, 0.3, 0.5)
 				fx.shake(0.16, 0.3)
