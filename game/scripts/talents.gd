@@ -1,6 +1,6 @@
 class_name Talents
 extends RefCounted
-## Talentpunkte: Jeder Held bekommt mit jeder geschafften Mission einen Punkt (auch wartende Helden, kein Grinden) und verteilt sie selbst
+## Talentpunkte: Die Gruppe steigt je Mission eine Stufe auf, alle drei Stufen gibt es einen Punkt (nur fuer Helden der Gruppe); jeder verteilt ihn selbst
 ## auf vier Felder: Leben (hp), Angriff (atk), Faehigkeit 1 (a1) und Faehigkeit 2 (a2), je Rang 1 bis 3. Reine Regeln ohne Szene
 ## (Battle, Camp, Party und der Simulator nutzen sie). Werte stehen in data/progression.json unter "talents".
 
@@ -38,28 +38,27 @@ static func ability_of(unit_def: Dictionary, key: String) -> String:
 	return str(list[i]) if i < list.size() else ""
 
 
-## Faehigkeit auf Rang r bringen (Kopie): Rang 1 Abklingzeit -1; Rang 2 Wirkung +25 % (sonst noch eine Runde Abklingzeit weniger);
-## Rang 3 Reichweite oder Flaeche +1 (sonst noch einmal +15 % Wirkung).
+## Faehigkeit auf Rang r bringen (Kopie), ohne die Abklingzeit anzutasten: Rang 1 Wirkung +20 % (Schaden, Heilung; ohne beides +1 Runde Statusdauer);
+## Rang 2 Reichweite +1 oder Umkreis +1 (sonst +1 Runde Statusdauer, sonst +10 % Wirkung); Rang 3 nochmals Wirkung +20 %.
 static func ranked(ab: Dictionary, rank: int) -> Dictionary:
 	var a := ab.duplicate(true)
-	if rank >= 1 and int(a.get("cd", 0)) > 1:
-		a["cd"] = int(a["cd"]) - 1
-	if rank >= 2 and not _boost(a, float(cfg()["ability_boost"])):
-		if int(a.get("cd", 0)) > 1:
-			a["cd"] = int(a["cd"]) - 1
-	if rank >= 3:
+	if rank >= 1:
+		_boost(a, float(cfg()["ability_boost"]), true)
+	if rank >= 2:
 		var r: Array = a.get("range", [])
 		if r.size() == 2 and int(r[1]) >= 2:
 			a["range"] = [int(r[0]), int(r[1]) + 1]
 		elif a.has("area") and int((a["area"] as Dictionary).get("r", 0)) >= 1:
 			(a["area"] as Dictionary)["r"] = int(a["area"]["r"]) + 1
-		else:
-			_boost(a, 1.15)
+		elif not _more_status(a):
+			_boost(a, float(cfg()["ability_boost_rank2"]), false)
+	if rank >= 3:
+		_boost(a, float(cfg()["ability_boost"]), true)
 	return a
 
 
-## Schaden, Heilung und Statusdauer um den Faktor erhoehen. true = es hat sich etwas geaendert.
-static func _boost(a: Dictionary, f: float) -> bool:
+## Schaden und Heilung um den Faktor erhoehen; wenn die Faehigkeit weder Schaden noch Heilung macht und status_fallback gesetzt ist, dauert der Status 1 Runde laenger.
+static func _boost(a: Dictionary, f: float, status_fallback: bool) -> bool:
 	var changed := false
 	for ef: Dictionary in a.get("effects", []):
 		match ef.get("type", ""):
@@ -69,10 +68,18 @@ static func _boost(a: Dictionary, f: float) -> bool:
 			"heal":
 				ef["amount"] = ceili(float(ef.get("amount", 0)) * f)
 				changed = true
-			"status":
-				if int(ef.get("turns", 0)) >= 1 and int(ef["turns"]) < 6:
-					ef["turns"] = int(ef["turns"]) + 1
-					changed = true
+	if not changed and status_fallback:
+		changed = _more_status(a)
+	return changed
+
+
+## Alle Status der Faehigkeit dauern eine Runde laenger (hoechstens 6). true = es gab einen Status.
+static func _more_status(a: Dictionary) -> bool:
+	var changed := false
+	for ef: Dictionary in a.get("effects", []):
+		if ef.get("type", "") == "status" and int(ef.get("turns", 0)) >= 1 and int(ef["turns"]) < 6:
+			ef["turns"] = int(ef["turns"]) + 1
+			changed = true
 	return changed
 
 
@@ -87,15 +94,13 @@ static func apply_to_abilities(table: Dictionary, hero_talents: Dictionary, unit
 			table[id]["id"] = keep_id
 
 
-## Was der naechste Rang bringt, als Text ("Abklingzeit 3 → 2", "Schaden ×1,6 → ×2,0", "Reichweite 2–4 → 2–5").
+## Was der naechste Rang bringt, als Text ("Schaden ×1,6 → ×2,0", "Reichweite 2–4 → 2–5").
 static func next_rank_text(ab: Dictionary, rank: int) -> String:
 	if rank >= max_rank():
 		return "Höchster Rang"
 	var cur := ranked(ab, rank)
 	var nxt := ranked(ab, rank + 1)
 	var parts: PackedStringArray = []
-	if int(cur.get("cd", 0)) != int(nxt.get("cd", 0)):
-		parts.append("Abklingzeit %d → %d" % [int(cur["cd"]), int(nxt["cd"])])
 	var ce: Array = cur.get("effects", [])
 	var ne: Array = nxt.get("effects", [])
 	for i in mini(ce.size(), ne.size()):

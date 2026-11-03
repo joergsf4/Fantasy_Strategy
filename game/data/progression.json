@@ -1,5 +1,5 @@
 {
- "_info": "Fortschrittskurve. talents: Talentpunkte (alle levels_per_point Stufen ein Punkt, nur fuer Helden, die in der Gruppe sind; Rang bis max_rank, Leben +hp_per_rank, Angriff +atk_per_rank je Rang, Faehigkeits-Rang 2 verstaerkt die Wirkung um ability_boost). missions: erwartete Talentpunkte je Held (points = geschaffte Kampfmissionen / levels_per_point) und Ausruestungsstufe (gear_tier, Durchschnitt) zu Beginn der Mission, Zielsiegquote (target_win) und Gegnerfaktoren enemy_hp/enemy_atk (werden auf die Werte der Karte angewendet; 1.0 = unveraendert). Die Faktoren sind bewusst vorsichtig gewaehlt: erst im Spiel pruefen, dann schrittweise anheben.",
+ "_info": "Fortschrittskurve. talents: Talentpunkte (alle levels_per_point Stufen ein Punkt, nur fuer Helden, die in der Gruppe sind; Rang bis max_rank, Leben +hp_per_rank, Angriff +atk_per_rank je Rang, Faehigkeits-Rang 1 und 3 verstaerken die Wirkung um ability_boost, Rang 2 gibt Reichweite oder Umkreis +1 (Rueckfall: Statusdauer, sonst ability_boost_rank2); die Abklingzeit bleibt unveraendert). missions: erwartete Talentpunkte je Held (points = geschaffte Kampfmissionen / levels_per_point) und Ausruestungsstufe (gear_tier, Durchschnitt) zu Beginn der Mission, Zielsiegquote (target_win) und Gegnerfaktoren enemy_hp/enemy_atk (werden auf die Werte der Karte angewendet; 1.0 = unveraendert). Die Faktoren sind bewusst vorsichtig gewaehlt: erst im Spiel pruefen, dann schrittweise anheben.",
  "missions": {
   "ch1": {
    "gear_tier": 1.0,
@@ -46,8 +46,8 @@
   "ch7": {
    "gear_tier": 2.0,
    "target_win": 0.92,
-   "enemy_hp": 1.5,
-   "enemy_atk": 1.5,
+   "enemy_hp": 1.7,
+   "enemy_atk": 1.7,
    "points": 2
   },
   "ch8": {
@@ -60,8 +60,8 @@
   "ch9": {
    "gear_tier": 2.5,
    "target_win": 0.9,
-   "enemy_hp": 1.4,
-   "enemy_atk": 1.4,
+   "enemy_hp": 1.5,
+   "enemy_atk": 1.5,
    "points": 2
   },
   "ch10": {
@@ -82,15 +82,15 @@
   "ch12": {
    "gear_tier": 3.0,
    "target_win": 0.85,
-   "enemy_hp": 1.8,
-   "enemy_atk": 1.8,
+   "enemy_hp": 2.0,
+   "enemy_atk": 2.0,
    "points": 3
   },
   "ch13": {
    "gear_tier": 3.0,
    "target_win": 0.85,
-   "enemy_hp": 1.6,
-   "enemy_atk": 1.6,
+   "enemy_hp": 1.7,
+   "enemy_atk": 1.7,
    "points": 3
   }
  },
@@ -98,7 +98,8 @@
   "max_rank": 3,
   "hp_per_rank": 4,
   "atk_per_rank": 1,
-  "ability_boost": 1.25,
-  "levels_per_point": 3
+  "ability_boost": 1.2,
+  "levels_per_point": 3,
+  "ability_boost_rank2": 1.1
  }
 }
