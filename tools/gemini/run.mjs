@@ -304,6 +304,9 @@ for (const [emo, d] of Object.entries(PROF_EMO))
 jobs.push({ name: 'kugelblitz_chibi', refs: [path.join(OUT, 'ritter_chibi.jpg')], prompt: `Create ${PROF}.` + CHIBI_TAIL });
 jobs.push({ name: 'fx_maschine', refs: [path.join(OUT, 'fx_fireball.jpg')], prompt: 'Create a futuristic energy-extraction machine: a big brass-and-steel contraption with a central glass sphere full of swirling glowing cyan and golden-honey energy, copper coils and tesla rods around it, gauges, cables running along the ground, glowing amber honey pipes, small cages with sockets at the base, sparks of electricity. Game sprite, seen from the front slightly from above.' + FX_STYLE });
 
+// Wachturm der Frischlinge (Mission 12): steht am Hebel der Zugbruecke.
+jobs.push({ name: 'fx_wachturm', refs: [path.join(OUT, 'fx_fireball.jpg')], prompt: 'Create a crude wooden watchtower on tall stilts built by wild boars: rough logs and planks, a small lookout platform with a thatched roof, rope ladder, a ragged red-black banner with a white boar skull, spiked wooden palisade at the platform, a hanging lantern, bits of scrap metal nailed on. Game sprite, seen from the front slightly from above.' + FX_STYLE });
+
 // Kapitel 9: Warts Frischlinge (drei kleine Wildschweine als EINE Figur), der weinerliche Regent, die bedrohliche Festung.
 const FRISCH = 'Warts Frischlinge: a gang of exactly THREE small mean wild-boar piglets standing close together as one group character: tiny tusks, bristly dark mohawks, small mean red-brown eyes and evil grins, wearing scraps of patched leather armor; the left one swings a spiked club (a wooden club studded with iron nails), the middle one holds a rusty hand axe, the right one a second spiked club; small but nasty';
 const FRISCH_EMO = { '': 'cackling nastily, ready to attack', wuetend: 'squealing furiously with bared tusks, weapons raised high' };

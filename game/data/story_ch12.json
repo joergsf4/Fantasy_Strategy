@@ -18,6 +18,27 @@
    "right": "elisabeth",
    "speaker": "elisabeth",
    "text": "Die Zugbrücke ist hochgezogen. Und drüben stehen Schweine, die sehr zufrieden aussehen."
+  },
+  {
+   "left": "ritter",
+   "right": "frischlinge",
+   "speaker": "frischlinge",
+   "text": "Hehehe! Wir haben die Zugbrücke hochgezogen! Ihr kommt nicht rüber!",
+   "right_expr": "lachend"
+  },
+  {
+   "left": "ritter",
+   "right": "frischlinge",
+   "speaker": "ritter",
+   "text": "Ihr kleinen Plagegeister. Zieht die Brücke sofort wieder herunter!",
+   "left_expr": "wuetend"
+  },
+  {
+   "left": "hund",
+   "right": "frischlinge",
+   "speaker": "frischlinge",
+   "text": "Das ist für unseren Boss! Ihr habt Wart umgehauen, jetzt zahlt ihr! Wir sind jetzt die Chefs!",
+   "right_expr": "wuetend"
   }
  ],
  "outro": [

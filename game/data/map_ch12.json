@@ -15,43 +15,43 @@
   {
    "id": "ritter",
    "pos": [
-    2,
+    1,
     4
    ]
   },
   {
    "id": "robo",
    "pos": [
-    2,
+    0,
     5
    ]
   },
   {
    "id": "hund",
    "pos": [
-    3,
+    1,
     5
    ]
   },
   {
    "id": "elisabeth",
    "pos": [
-    1,
-    5
+    0,
+    4
    ]
   },
   {
    "id": "samurai",
    "pos": [
-    3,
+    1,
     6
    ]
   },
   {
    "id": "wendy",
    "pos": [
-    1,
-    4
+    0,
+    6
    ]
   }
  ],
@@ -59,36 +59,31 @@
   {
    "id": "frischlinge",
    "pos": [
-    8,
+    9,
+    3
+   ],
+   "hp": 55,
+   "atk_mult": 1.15
+  },
+  {
+   "id": "soldat_bogenschuetze",
+   "pos": [
+    7,
     3
    ]
   },
   {
-   "id": "frischlinge",
+   "id": "soldat_bogenschuetze",
    "pos": [
-    8,
+    7,
     7
-   ]
-  },
-  {
-   "id": "soldat_bogenschuetze",
-   "pos": [
-    7,
-    4
-   ]
-  },
-  {
-   "id": "soldat_bogenschuetze",
-   "pos": [
-    7,
-    6
    ]
   },
   {
    "id": "soldat_infanterie",
    "pos": [
     8,
-    5
+    6
    ]
   },
   {
@@ -119,7 +114,7 @@
    "id": "hebel",
    "type": "switch",
    "pos": [
-    6,
+    7,
     5
    ],
    "link": [
@@ -127,7 +122,16 @@
    ]
   }
  ],
- "decor": [],
+ "decor": [
+  {
+   "sprite": "fx_wachturm",
+   "pos": [
+    8,
+    5
+   ],
+   "size": 2.3
+  }
+ ],
  "rewards": {
   "gold": 220
  },
