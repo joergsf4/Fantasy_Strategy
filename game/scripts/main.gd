@@ -65,7 +65,8 @@ func _run() -> void:
 	stage.super_music = _duck_music
 	add_child(stage)
 	_play_music(TITLE_MUSIC)
-	var choice: Dictionary = await _title(mini(party.chapter, CHAPTERS.size()) if resumed else 0)
+	var start_ch := OS.get_environment("START_CH")      # START_CH=ch14 (und START_SKIP=1 ohne Einleitung): Titel und Menue ueberspringen, direkt in diese Mission
+	var choice: Dictionary = {"action": "continue", "cheat": true} if start_ch != "" and CHAPTERS.has(start_ch) else await _title(mini(party.chapter, CHAPTERS.size()) if resumed else 0)
 	if choice["action"] == "new":              # Neues Spiel: alter Spielstand weg
 		Party.delete_save()
 		party = Party.new_game()
@@ -75,7 +76,7 @@ func _run() -> void:
 	var cheat: bool = choice["cheat"]
 	if cheat:
 		resumed = false          # Testmenue: die Kapitelwahl bestimmt, wo es weitergeht
-	var pick: Array = await _choose_level() if cheat else await _resume_pick(resumed)
+	var pick: Array = [CHAPTERS.find(start_ch), OS.get_environment("START_SKIP") == "1"] if start_ch != "" and CHAPTERS.has(start_ch) else (await _choose_level() if cheat else await _resume_pick(resumed))
 	for i in range(int(pick[0]), CHAPTERS.size()):
 		party.chapter = i + 1
 		var nxt: String = CHAPTERS[i + 1] if i + 1 < CHAPTERS.size() else ""
