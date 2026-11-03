@@ -304,3 +304,5 @@ Fällt die Gesundheit der Frischlinge nie unter 50 %, platzt der Glasbehälter t
 - **Stachelia:** In **Runde 4** greift sie ein (`spawn` mit `team: "p"`), will Rache für ihre Bienenkörbe und kämpft als **sechste Heldenfigur** unter deiner Steuerung, bleibt aber abweisend und garstig. Sie ist erst ab **Mission 15** wählbar (`from: 15`), im Abschluss schließt sie sich dem Team an („nur aus Berechnung“).
 - **Bonus:** „Kein Held fällt“ (100 Gold), „Das Waisenhaus brennt nicht ab“ (2 Heilhonig). Gegnerfaktor 1,4 (nicht gemessen, der Simulator kennt Mission 14 nicht).
 - **Test:** `tests/test_waisenhaus.gd`.
+
+- **Nachgestellt (2026-11-03, Spieltest mit üblicher Ausstattung):** Mit Talenten und Ausrüstung der Zielkurve war Mission 13 bei ×1,3 zu leicht: Gegnerfaktor wieder **×1,7** (der Maschinenschock bleibt bei 3), Mission 14 von ×1,4 auf **×1,6**.
