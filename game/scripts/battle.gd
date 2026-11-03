@@ -249,8 +249,55 @@ func _apply_night_rain(env: Environment, sun: DirectionalLight3D) -> void:
 	mat.set_shader_parameter("shimmer", 0.0)
 	rect.material = mat
 	layer.add_child(rect)
-	if map_data.get("mood", "") == "nacht_regen":
+	if map_data.get("mood", "") in ["nacht_regen", "gewitter"]:
 		_build_rain()
+	if map_data.get("mood", "") == "gewitter":
+		_storm_loop(sun)
+
+
+## Gewitter (Kartenfeld "mood": "gewitter"): in unregelmaessigen Abstaenden zuckt ein Blitz (Aufhellen des Bilds, gezackter Strahl, helles Sonnenlicht),
+## kurz darauf grollt der Donner.
+func _storm_loop(sun: DirectionalLight3D) -> void:
+	var layer := CanvasLayer.new()
+	layer.layer = 3
+	add_child(layer)
+	var flash := ColorRect.new()
+	flash.color = Color(0.8, 0.88, 1.0, 1.0)
+	flash.size = Vector2(1280, 720)
+	flash.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	flash.modulate.a = 0.0
+	layer.add_child(flash)
+	var bolt := Line2D.new()
+	bolt.width = 5.0
+	bolt.default_color = Color(0.95, 0.97, 1.0)
+	bolt.visible = false
+	layer.add_child(bolt)
+	var base_energy := sun.light_energy
+	var strike_rng := RandomNumberGenerator.new()
+	strike_rng.randomize()
+	while is_inside_tree():
+		await get_tree().create_timer(1.15 if OS.get_environment("SHOT_STORM") != "" else strike_rng.randf_range(4.5, 10.0)).timeout      # SHOT_STORM: sofort ein Blitz (Screenshots)
+		if not is_inside_tree() or state == State.OVER:
+			return
+		var x := strike_rng.randf_range(160.0, 1120.0)
+		var pts := PackedVector2Array()
+		var y := 0.0
+		while y < strike_rng.randf_range(260.0, 460.0):
+			pts.append(Vector2(x, y))
+			x += strike_rng.randf_range(-34.0, 34.0)
+			y += strike_rng.randf_range(34.0, 64.0)
+		bolt.points = pts
+		bolt.visible = true
+		var tw := create_tween()
+		tw.tween_property(flash, "modulate:a", 0.55, 0.04)
+		tw.parallel().tween_property(sun, "light_energy", 2.2, 0.04)
+		tw.tween_property(flash, "modulate:a", 0.12, 0.07)
+		tw.tween_property(flash, "modulate:a", 0.45, 0.04)
+		tw.tween_callback(func() -> void: bolt.visible = false)
+		tw.tween_property(flash, "modulate:a", 0.0, 0.5)
+		tw.parallel().tween_property(sun, "light_energy", base_energy, 0.5)
+		await get_tree().create_timer(strike_rng.randf_range(0.3, 1.4)).timeout
+		Sfx.event("thunder")
 
 
 ## Regen: dichte Streifen, die schraeg ueber der Karte fallen (CPUParticles3D, laeuft im Compatibility-Renderer sicher).
@@ -349,7 +396,7 @@ func _build_environment() -> void:
 	add_child(sun)
 	if map_data.get("biome", "") == "wueste" and map_data.get("grade", "mexiko") != "none":
 		_apply_desert_light(env, sun)
-	if map_data.get("mood", "") in ["nacht_regen", "nacht"]:
+	if map_data.get("mood", "") in ["nacht_regen", "nacht", "gewitter"]:
 		_apply_night_rain(env, sun)
 	var center := Vector3((grid.width - 1) / 2.0, 0, (grid.height - 1) / 2.0)
 	cam = Camera3D.new()

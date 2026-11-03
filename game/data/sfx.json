@@ -336,7 +336,8 @@
   "bell": "bell",
   "buzz": "buzz",
   "secret": "secret_sting",
-  "barrel_splash": "splash"
+  "barrel_splash": "splash",
+  "thunder": "thunder"
  },
  "voices": {
   "default": {

@@ -283,7 +283,7 @@ Benannte Gegner (`"flees": true` in `units.json`: Wart, Oskar, Maja) sterben nic
 - **Maschine (neu, Objekt `maschine`, Sprite `fx_maschine`, 30 Leben):** leuchtet cyan (Punktlicht), **schockt jede Gegnerphase alle Helden direkt daneben** (Kartenfeld `zap`, Standard 5, `Battle._machine_phase`). Lässt sich zerstören (Bonusziel „Die Maschine ist zerstört“, Heilhonig ×2).
 - **Ziel `free_all`:** alle drei Kinder befreien (Geisel-Mechanik aus Mission 4: zwei Runden neben dem Kind, keine Wache daneben, Figuren `kind_lotte`, `kind_pip`, `kind_mia`). Danach Abschlussszenen (`when victory`): Wiedersehen mit den Kindern, der Professor flieht mit der Drohung des Meisters.
 - **Aufstellung:** Die Helden starten ganz im Südwesten (freie Wiesenecke unten links, vier bis acht Felder vom Feind), die Gegner stehen in der Mitte und im Osten um die Maschine.
-- **Stimmung:** neues Kartenfeld `mood: "nacht"` (wie „nacht_regen“, aber ohne Regen).
+- **Stimmung:** Kartenfeld `mood: "gewitter"`: Nachtwald wie „nacht_regen“ mit **Regen und Gewitter** (`Battle._storm_loop`): alle 4,5 bis 10 Sekunden zuckt ein gezackter Blitz mit Aufhellen des Bilds und hellem Mondlicht, kurz darauf grollt der **Donner** (`thunder`, drei Varianten aus `tools/make_sfx.py`). Das Feld `mood: "nacht"` gibt es weiter (Nacht ohne Regen).
 - **Offen:** Balancing beider Missionen im Simulator (kennt weder Zugbrücke noch Maschine), Dialoge zum Verfeinern im Texteditor, Kapitelwahl „Hebel, Brücke“ nur im Test sichtbar.
 - **Test:** `tests/test_labor.gd`.
 

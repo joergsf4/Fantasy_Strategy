@@ -230,6 +230,18 @@ def explosion(rng):
     return fade(mix((rumble * 1.4, 0, 1), (thump(95, 28, 1.0, 0.25), 0, 1.1), (crack, 0, 0.25)), 0.001, 0.08)
 
 
+def thunder(rng):
+    """Donner: kurzes Knacken, dann langes, rollendes Grollen mit Wellen."""
+    dur = 3.4
+    n = int(SR * dur)
+    t = t_(dur)
+    crack = filt(noise(rng, int(SR * 0.25)), "band", [900, 4000]) * dec(0.25, 0.04)
+    roll = filt(noise(rng, n), "low", 220, 3)
+    swell = (0.55 + 0.45 * np.sin(2 * np.pi * (0.9 + 0.3 * rng.random()) * t + rng.random() * 6.0)) * np.minimum(t / 0.25, 1.0) * np.exp(-t / 1.5)
+    deep = filt(noise(rng, n), "low", 70, 4) * np.exp(-t / 1.9) * 1.6
+    return fade(mix((crack, 0, 0.5), (roll * swell * 2.2, 0.05, 1.0), (deep, 0.1, 1.0)), 0.001, 0.4)
+
+
 def chomp(rng):
     def clack():
         return modal(rng, [900, 1500, 2300], [0.03, 0.02, 0.012], [1, 0.8, 0.4], 0.1) + 0.6 * click(rng, 0.008, 3500)
@@ -597,7 +609,7 @@ SOUNDS = {
     "t_armor": (t_armor, 3, -6), "t_wood": (t_wood, 3, -6), "t_flesh": (t_flesh, 3, -5), "t_face": (t_face, 3, -5), "t_stone": (t_stone, 2, -6),
     "crit": (crit, 2, -5), "block": (block, 2, -6), "whoosh_s": (whoosh_s, 3, -10), "whoosh_l": (whoosh_l, 3, -10),
     "bow_shot": (bow_shot, 2, -8), "arrow_hit": (arrow_hit, 3, -7), "shuriken_throw": (shuriken_throw, 2, -10), "shuriken_hit": (shuriken_hit, 2, -8),
-    "zap": (zap, 2, -9), "cannon": (cannon, 2, -4), "rocket_launch": (rocket_launch, 2, -6), "explosion": (explosion, 2, -3), "chomp": (chomp, 2, -6),
+    "zap": (zap, 2, -9), "cannon": (cannon, 2, -4), "rocket_launch": (rocket_launch, 2, -6), "explosion": (explosion, 2, -3), "thunder": (thunder, 3, -4), "chomp": (chomp, 2, -6),
     "heal": (heal, 1, -9), "buff": (buff, 1, -10), "debuff": (debuff, 1, -10), "taunt": (taunt, 1, -8), "scared": (scared, 1, -10),
     "laser_charge": (laser_charge, 1, -10), "laser_fire": (laser_fire, 1, -7), "fire_whoosh": (fire_whoosh, 2, -8), "splash": (splash, 2, -8),
     "poof": (poof, 2, -7), "boing": (boing, 1, -9), "quack": (quack, 2, -8), "ribbit": (ribbit, 2, -8), "flee_zip": (flee_zip, 1, -9),
