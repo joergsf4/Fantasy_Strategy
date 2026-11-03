@@ -1,8 +1,8 @@
 {
  "id": "ch12",
- "title": "Der gesprengte Steg",
+ "title": "Die hochgezogene Brücke",
  "map": "res://data/map_ch12.json",
- "briefing": "Ein Fluss teilt die Karte, und die Frischlinge haben die Brücke gesprengt. Das Fußvolk kommt nicht hinüber. Am anderen Ufer liegt der Hebel, der die Notbrücke herunterlässt: Trefft ihn aus der Ferne (Kanone, Knochenwurf, Kyujutsu, Breitseite, Sternschnuppe) oder bringt jemanden hinüber (Wurf, Flieger). Besiegt alle Gegner. Die Frischlinge sinnen auf Rache für ihren Boss Wart.",
+ "briefing": "Ein Fluss teilt die Karte, und die Frischlinge haben die Zugbrücke an ihrem Ufer hochgezogen. Das Fußvolk kommt nicht hinüber. Am anderen Ufer liegt der Hebel, der die Brücke herunterlässt: Trefft ihn aus der Ferne (Kanone, Knochenwurf, Kyujutsu, Breitseite, Sternschnuppe) oder bringt jemanden hinüber (Wurf, Flieger). Besiegt alle Gegner. Die Frischlinge sinnen auf Rache für ihren Boss Wart.",
  "goals": [
   {
    "type": "rout"
@@ -13,7 +13,7 @@
    "when": {
     "turn": 1
    },
-   "note": "Die Frischlinge haben die Brücke gesprengt",
+   "note": "Die Frischlinge haben die Brücke hochgezogen",
    "do": [
     {
      "dialogue": [
@@ -21,14 +21,14 @@
        "left": "ritter",
        "right": "frischlinge",
        "speaker": "frischlinge",
-       "text": "Hehehe! Wir haben die Brücke gesprengt! Ihr kommt nicht rüber!",
+       "text": "Hehehe! Wir haben die Zugbrücke hochgezogen! Ihr kommt nicht rüber!",
        "right_expr": "lachend"
       },
       {
        "left": "ritter",
        "right": "frischlinge",
        "speaker": "ritter",
-       "text": "Ihr kleinen Plagegeister. Das Holz hätte ich auch noch gebraucht.",
+       "text": "Ihr kleinen Plagegeister. Zieht die Brücke sofort wieder herunter!",
        "left_expr": "wuetend"
       },
       {
@@ -54,7 +54,7 @@
        "left": "elisabeth",
        "right": "robo",
        "speaker": "robo",
-       "text": "Scan: Dort drüben steht ein Hebel, direkt neben dem Brückenkopf. Er scheint die Notbrücke zu steuern."
+       "text": "Scan: Dort drüben steht ein Hebel, direkt neben dem Brückenkopf. Er scheint die Zugbrücke zu steuern."
       },
       {
        "left": "elisabeth",
@@ -74,7 +74,7 @@
      "state": "on"
     }
    },
-   "note": "Die Notbrücke senkt sich",
+   "note": "Die Zugbrücke senkt sich",
    "do": [
     {
      "dialogue": [
@@ -82,14 +82,14 @@
        "left": "hund",
        "right": "frischlinge",
        "speaker": "hund",
-       "text": "Die Notbrücke senkt sich! Jetzt kommen wir!",
+       "text": "Die Zugbrücke senkt sich! Jetzt kommen wir!",
        "left_expr": "wuetend"
       },
       {
        "left": "hund",
        "right": "frischlinge",
        "speaker": "frischlinge",
-       "text": "Oh nein! Wer hat den Hebel getroffen?! Das war unser Geheimtrick!",
+       "text": "Oh nein! Wer hat den Hebel getroffen?! Der sollte doch niemand erreichen!",
        "right_expr": "wuetend"
       }
      ]

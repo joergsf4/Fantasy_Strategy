@@ -127,24 +127,7 @@
    ]
   }
  ],
- "decor": [
-  {
-   "sprite": "fx_ruine1",
-   "pos": [
-    4,
-    5
-   ],
-   "size": 1.0
-  },
-  {
-   "sprite": "fx_ruine2",
-   "pos": [
-    6,
-    6
-   ],
-   "size": 0.9
-  }
- ],
+ "decor": [],
  "rewards": {
   "gold": 220
  },

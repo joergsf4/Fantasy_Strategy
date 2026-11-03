@@ -143,8 +143,8 @@ Gebaut (`ch9`): Wart ohne Flucht, Frischlinge als eine Figur, Regent als Strohma
 - Er hat die **Kinder aus dem Waisenhaus** (Lotte hat berichtet) in seiner Gewalt. Mit seiner **futuristischen Maschine** und dem **magischen Honig als Katalysator** will er den Kindern die Energie entziehen und sie **dem Meister zuführen**. Das gibt dem Honig-Raub aus Mission 11 (Stachelia, Zwillinge) seinen Sinn.
 - Nötig: Porträt (neutral, lachend, wütend), Chibi, Einheit in `units.json`, Maschine als Karten-Objekt (Sprite) mit Mission-Mechanik (z. B. Energieanzeige, die steigt, solange die Kinder angeschlossen sind; Ziel: Maschine zerstören oder abschalten und die Kinder befreien). Reihenfolge: Mission 11 → Mission 12 (Fluss, siehe B) → Mission 13 Kugelblitz.
 
-### B. Mission 12: Fluss mit gesprengter Brücke (Frischlinge)
-- Karte vom **Fluss geteilt**, die **Frischlinge** haben die **Brücke gesprengt**; die Helden kommen nicht einfach hinüber. **Mechanik-Ideen gesucht.** Vorschläge zum Auswählen:
+### B. Mission 12: Fluss mit hochgezogener Zugbrücke (Frischlinge) — umgesetzt
+- Karte vom **Fluss geteilt**, die **Frischlinge** haben die **Zugbrücke hochgezogen** (zunächst als „gesprengt“ geplant); die Helden kommen nicht einfach hinüber. **Mechanik-Ideen gesucht.** Vorschläge zum Auswählen:
   - **Brücke reparieren:** Material oder Aktion (Held steht mehrere Runden an der Bruchstelle, mit Balken aus Holzfeldern), Frischlinge stören dabei; Fortschritt wie bei „capture“.
   - **Furt und Boote:** eine flache Stelle (Bewegung 2) flussaufwärts, ein Boot am Ufer (Objekt, trägt 2 Figuren), Fähigkeiten wie Wurf (Muskelaugust) und Schiffs-Breitseite als Alternativen.
   - **Fernkampf-Duell über den Fluss:** Bogen, Kanone, Laser, Robo reflektiert; nur Reichweite und Flug kommen hinüber, der Rest sucht den Weg.

@@ -1569,9 +1569,9 @@ func _refresh_object(o: Dictionary, animate: bool) -> void:
 	var p: Dictionary = _obj_nodes[o["id"]]
 	var st: String = o["state"]
 	match o["type"]:
-		"bridge":     # Notbruecke: hochgeklappt (senkrecht am Westufer) oder heruntergelassen
+		"bridge":     # Zugbruecke: am Ostufer hochgezogen (senkrecht) oder heruntergelassen
 			var piv := p["lever"] as Node3D
-			var ang := 0.0 if st == "open" else -90.0
+			var ang := 0.0 if st == "open" else -90.0      # Planken liegen westlich des Drehpunkts: -90 Grad stellt sie nach oben
 			if animate and st == "open":
 				Sfx.event("gate_open")
 				piv.create_tween().tween_property(piv, "rotation_degrees:z", ang, 0.8).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_OUT)
@@ -1643,24 +1643,24 @@ func _refresh_object(o: Dictionary, animate: bool) -> void:
 		(p["rubble"] as Node3D).visible = false
 
 
-## Notbruecke ueber einen Fluss (Weltobjekt "bridge"): Holzplanken mit Gelaender, um die westliche Kante drehbar. Hochgeklappt sperrt sie,
+## Zugbruecke ueber einen Fluss (Weltobjekt "bridge"): Holzplanken mit Gelaender, um die oestliche Kante drehbar. Hochgezogen sperrt sie,
 ## heruntergelassen (Hebel) verbindet sie beide Ufer. Reine Mesh-Optik, keine Grafikdatei noetig.
 func _make_bridge(o: Dictionary) -> void:
 	var root := Node3D.new()
 	root.position = to_world(o["pos"]) + Vector3(0, WATER_Y, 0)
 	add_child(root)
 	var pivot := Node3D.new()
-	pivot.position = Vector3(-0.5, 0, 0)
+	pivot.position = Vector3(0.5, 0, 0)      # Drehpunkt am Ostufer (Seite der Frischlinge): dort ist die Bruecke hochgezogen
 	root.add_child(pivot)
 	var kit := MeshKit.new()
 	var wood := Color(0.5, 0.33, 0.17)
 	var dark := Color(0.34, 0.21, 0.1)
 	for i in 5:         # Planken quer zur Laufrichtung
-		kit.box(Vector3(0.1 + i * 0.2, 0.0, 0.0), Vector3(0.17, 0.07, 0.92), wood if i % 2 == 0 else wood.darkened(0.12))
+		kit.box(Vector3(-0.1 - i * 0.2, 0.0, 0.0), Vector3(0.17, 0.07, 0.92), wood if i % 2 == 0 else wood.darkened(0.12))
 	for z in [-0.42, 0.42]:         # Holme und Gelaender
-		kit.box(Vector3(0.5, 0.0, z), Vector3(1.0, 0.1, 0.07), dark)
-		kit.box(Vector3(0.5, 0.2, z), Vector3(1.0, 0.05, 0.05), dark)
-		for x in [0.05, 0.5, 0.95]:
+		kit.box(Vector3(-0.5, 0.0, z), Vector3(1.0, 0.1, 0.07), dark)
+		kit.box(Vector3(-0.5, 0.2, z), Vector3(1.0, 0.05, 0.05), dark)
+		for x in [-0.05, -0.5, -0.95]:
 			kit.box(Vector3(x, 0.1, z), Vector3(0.05, 0.22, 0.05), dark)
 	var mat := StandardMaterial3D.new()
 	mat.vertex_color_use_as_albedo = true

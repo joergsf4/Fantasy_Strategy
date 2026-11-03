@@ -1,6 +1,6 @@
 extends SceneTree
 ## godot --headless --path game --script tests/test_fluss.gd
-## Kapitel 12 "Der gesprengte Steg": Notbruecke sperrt den Fluss, der Hebel (Fernkampf oder daneben stehen) laesst sie herunter.
+## Kapitel 12 "Die hochgezogene Bruecke": Zugbruecke sperrt den Fluss, der Hebel (Fernkampf oder daneben stehen) laesst sie herunter.
 
 var fails := 0
 
@@ -23,7 +23,7 @@ func _initialize() -> void:
 	root.add_child(b)
 	await process_frame
 	var br := b.world.by_id("bruecke")
-	check(br["state"] == "up" and b.world.is_blocking(br), "Notbruecke ist hochgeklappt und sperrt")
+	check(br["state"] == "up" and b.world.is_blocking(br), "Zugbruecke ist hochgeklappt und sperrt")
 	check(b.grid.cost(Vector2i(5, 5), false) == -1 and b.grid.cost(Vector2i(5, 4), false) == -1, "Fluss ist fuer Fussvolk unpassierbar")
 	check(b.grid.cost(Vector2i(5, 4), true) == 1, "Flieger kommen hinueber")
 	check(not b.grid.reachable(Vector2i(4, 5), 20).has(Vector2i(7, 5)), "Kein Weg ueber den Fluss ohne Bruecke")
@@ -35,7 +35,7 @@ func _initialize() -> void:
 	var sol := b.world.solution(sw, ["ranged_hit"])
 	check(sol.get("effect", "") == "toggle", "Fernkampf legt den Hebel um")
 	await b._after_world_change(b.world.apply(sw, "toggle"))
-	check(br["state"] == "open" and not b.world.is_blocking(br), "Notbruecke ist heruntergelassen")
+	check(br["state"] == "open" and not b.world.is_blocking(br), "Zugbruecke ist heruntergelassen")
 	check(b.grid.cost(Vector2i(5, 5), false) == 1, "Brueckenfeld ist begehbar")
 	check(b.grid.reachable(Vector2i(4, 5), 20).has(Vector2i(7, 5)), "Weg ueber die Bruecke")
 	print("fluss: ", "OK" if fails == 0 else "%d Fehler" % fails)

@@ -272,16 +272,16 @@ Benannte Gegner (`"flees": true` in `units.json`: Wart, Oskar, Maja) sterben nic
 - **Offen:** Balancing (der Simulator kennt Mission 11 nicht), Rückkehr der Kinder, Stachelias weiterer Weg.
 - **Tests:** `tests/test_stachelia.gd`, `tests/test_interlude.gd`.
 
-## Mission 12: Der gesprengte Steg (`ch12`, Fluss mit Notbrücke)
-- **Lage:** Ein Fluss teilt die Karte, die **Frischlinge** (Rache für Wart) haben die Brücke gesprengt. Auf der anderen Seite stehen zwei Frischlinge-Gruppen, zwei Bogenschützen, zwei Büttel und ein Priester.
-- **Mechanik (neu): Notbrücke.** Weltobjekt `bridge` (Zustand `up` sperrt das Wasserfeld, `open` macht es begehbar: `Grid.bridges`, `World.open_bridges`, `Battle._make_bridge`, reine Mesh-Optik, klappt animiert herunter). Ein **Hebel** (`switch`, `link: ["bruecke"]`) auf der Feindseite lässt sie herab. Den Hebel legt man um, wenn man **daneben steht oder ihn mit einer Fernkampf-Fähigkeit trifft** (Marke `ranged_hit`: Elisabeths Kanone, Knochenwurf des Hundes, Takedas Kyujutsu, Robinas Breitseite, Lumis Sternschnuppe). Alternativ kommen Flieger und der Wurf hinüber. Gegner nutzen die Brücke nach dem Herablassen ebenso.
+## Mission 12: Die hochgezogene Brücke (`ch12`, Fluss mit Zugbrücke)
+- **Lage:** Ein Fluss teilt die Karte, die **Frischlinge** (Rache für Wart) haben die Zugbrücke an ihrem Ufer **hochgezogen** (keine Sprengung mehr, Entscheidung des Nutzers). Auf der anderen Seite stehen zwei Frischlinge-Gruppen, zwei Bogenschützen, zwei Büttel und ein Priester.
+- **Mechanik (neu): Zugbrücke.** Weltobjekt `bridge` (Zustand `up` sperrt das Wasserfeld, `open` macht es begehbar: `Grid.bridges`, `World.open_bridges`, `Battle._make_bridge`, reine Mesh-Optik, klappt animiert herunter). Ein **Hebel** (`switch`, `link: ["bruecke"]`) auf der Feindseite lässt sie herab. Den Hebel legt man um, wenn man **daneben steht oder ihn mit einer Fernkampf-Fähigkeit trifft** (Marke `ranged_hit`: Elisabeths Kanone, Knochenwurf des Hundes, Takedas Kyujutsu, Robinas Breitseite, Lumis Sternschnuppe). Alternativ kommen Flieger und der Wurf hinüber. Gegner nutzen die Brücke nach dem Herablassen ebenso.
 - **Ziel:** alle Gegner besiegen. Belohnung 220 Gold, Bonus „Kein Held fällt“ und „In 12 Runden“ (Heilhonig).
-- **Test:** `tests/test_fluss.gd`. Karte hat eigene Nur-Sprite-Ruinen als Brückenreste (`fx_ruine1/2`).
+- **Test:** `tests/test_fluss.gd`. Die hochgezogene Brücke steht senkrecht am Ostufer (Drehpunkt dort).
 
 ## Mission 13: Das Labor im Wald (`ch13`, Professor Kugelblitz)
 - **Neuer Gegenspieler Professor Kugelblitz** (`kugelblitz`: Porträts neutral/lachend/wütend, Chibi, 55 Leben, roter Laser, flieht): verrückter Erfinder mit Tesla-Stab. Er hat die Kinder (Lotte, Pip, Mia) in seiner Gewalt und will ihnen mit der **Energiemaschine** und dem magischen Honig als Katalysator die Energie für den Meister entziehen.
 - **Maschine (neu, Objekt `maschine`, Sprite `fx_maschine`, 30 Leben):** leuchtet cyan (Punktlicht), **schockt jede Gegnerphase alle Helden direkt daneben** (Kartenfeld `zap`, Standard 5, `Battle._machine_phase`). Lässt sich zerstören (Bonusziel „Die Maschine ist zerstört“, Heilhonig ×2).
 - **Ziel `free_all`:** alle drei Kinder befreien (Geisel-Mechanik aus Mission 4: zwei Runden neben dem Kind, keine Wache daneben, Figuren `kind_lotte`, `kind_pip`, `kind_mia`). Danach Abschlussszenen (`when victory`): Wiedersehen mit den Kindern, der Professor flieht mit der Drohung des Meisters.
 - **Stimmung:** neues Kartenfeld `mood: "nacht"` (wie „nacht_regen“, aber ohne Regen).
-- **Offen:** Balancing beider Missionen im Simulator (kennt weder Notbrücke noch Maschine), Dialoge zum Verfeinern im Texteditor, Kapitelwahl „Hebel, Brücke“ nur im Test sichtbar.
+- **Offen:** Balancing beider Missionen im Simulator (kennt weder Zugbrücke noch Maschine), Dialoge zum Verfeinern im Texteditor, Kapitelwahl „Hebel, Brücke“ nur im Test sichtbar.
 - **Test:** `tests/test_labor.gd`.
