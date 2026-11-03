@@ -1,0 +1,197 @@
+{
+ "id": "ch14",
+ "title": "Das brennende Waisenhaus",
+ "map": "res://data/map_ch14.json",
+ "briefing": "Es ist wieder Tag, und die Gruppe ist zurück beim Waisenhaus. Die Zwillinge Oskar und Maja kommen mit Soldaten, um es anzuzünden. Brennt es, habt ihr zwei Runden Zeit zum Löschen: Stellt euch neben das Feuer und löscht es, oder löscht es mit dem Fasswurf. Brennt das Waisenhaus ab, ist die Mission verloren. In Runde 4 greift eine unerwartete Verbündete ein.",
+ "goals": [
+  {
+   "type": "rout"
+  }
+ ],
+ "triggers": [
+  {
+   "when": {
+    "turn": 2
+   },
+   "note": "Die Zwillinge zünden das Waisenhaus an",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "maedchen_baer",
+       "right": "oskar",
+       "speaker": "oskar",
+       "text": "Genug geredet. Fackeln her, Schwesterherz!",
+       "right_expr": "lachend"
+      },
+      {
+       "left": "maedchen_baer",
+       "right": "maja",
+       "speaker": "maja",
+       "text": "Brennt es nieder. Der Meister mag keine losen Enden.",
+       "right_expr": "lachend"
+      }
+     ]
+    },
+    {
+     "world": {
+      "id": "waisenhaus",
+      "effect": "ignite"
+     }
+    },
+    {
+     "dialogue": [
+      {
+       "left": "maedchen_baer",
+       "right": "hund",
+       "speaker": "hund",
+       "text": "Das Waisenhaus brennt! Wir haben zwei Runden, dann ist es weg!",
+       "left_expr": "wuetend"
+      },
+      {
+       "left": "maedchen_baer",
+       "right": "hund",
+       "speaker": "maedchen_baer",
+       "text": "Löscht es! Stellt euch neben das Feuer, oder nutzt den Fasswurf!"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 4
+   },
+   "if": {
+    "present": [
+     "oskar"
+    ]
+   },
+   "note": "Stachelia greift ein",
+   "do": [
+    {
+     "spawn": [
+      {
+       "id": "bienenmaedchen",
+       "pos": [
+        11,
+        3
+       ],
+       "team": "p",
+       "label": "Stachelia greift ein"
+      }
+     ]
+    },
+    {
+     "dialogue": [
+      {
+       "left": "bienenmaedchen",
+       "right": "oskar",
+       "speaker": "bienenmaedchen",
+       "text": "ZWILLINGE! Das ist für meine Bienenkörbe! Ihr habt alles verbrannt, was ich hatte!",
+       "left_expr": "wuetend"
+      },
+      {
+       "left": "bienenmaedchen",
+       "right": "oskar",
+       "speaker": "oskar",
+       "text": "Die Bienenkönigin! Du lebst noch? Wie lästig.",
+       "right_expr": "lachend"
+      },
+      {
+       "left": "maedchen_baer",
+       "right": "bienenmaedchen",
+       "speaker": "maedchen_baer",
+       "text": "Stachelia?! Du hilfst uns?"
+      },
+      {
+       "left": "maedchen_baer",
+       "right": "bienenmaedchen",
+       "speaker": "bienenmaedchen",
+       "text": "Glaubt bloß nicht, ich tue das für euch. Ich will nur diese beiden. Geht mir aus dem Weg.",
+       "right_expr": "wuetend"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "kill": {
+     "id": "oskar"
+    }
+   },
+   "if": {
+    "present": [
+     "maja"
+    ]
+   },
+   "note": "Maja sieht ihren Bruder fallen",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "hund",
+       "right": "maja",
+       "speaker": "maja",
+       "text": "OSKAR! Das büßt ihr alle!",
+       "right_expr": "wuetend"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "victory": true
+   },
+   "note": "Das Waisenhaus ist gerettet",
+   "if": {
+    "object": {
+     "id": "waisenhaus",
+     "state": "intact"
+    }
+   },
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "maedchen_baer",
+       "right": "waisenkinder",
+       "speaker": "waisenkinder",
+       "text": "Das Haus steht noch! Ihr habt es gerettet!",
+       "right_expr": "lachend"
+      },
+      {
+       "left": "maedchen_baer",
+       "right": "waisenkinder",
+       "speaker": "maedchen_baer",
+       "text": "Ihr seid in Sicherheit. Das war ein Team!",
+       "left_expr": "lachend"
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "flee": {
+  "oskar": [
+   {
+    "left": "$hero",
+    "right": "oskar",
+    "speaker": "oskar",
+    "text": "Das war nur der Anfang. Der Meister vergisst nicht!",
+    "right_expr": "wuetend"
+   }
+  ],
+  "maja": [
+   {
+    "left": "$hero",
+    "right": "maja",
+    "speaker": "maja",
+    "text": "Ihr habt noch nichts gesehen. Der Meister kommt!",
+    "right_expr": "wuetend"
+   }
+  ]
+ }
+}

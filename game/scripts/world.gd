@@ -21,7 +21,7 @@ func _init(list: Array = []) -> void:
 		objects.append({
 			"id": e.get("id", "%s_%d_%d" % [e["type"], pos.x, pos.y]), "type": e["type"], "pos": pos,
 			"state": e.get("state", d["start"]), "hp": int(d.get("hp", 0)), "maxhp": int(d.get("hp", 0)), "age": 0,
-			"link": e.get("link", []), "dir": e.get("dir", "v"), "look": e.get("look", ""), "perm": e.get("perm", false), "figure": e.get("figure", ""),
+			"link": e.get("link", []), "dir": e.get("dir", "v"), "look": e.get("look", ""), "perm": e.get("perm", false), "figure": e.get("figure", ""), "burn": int(e.get("burn", BURN_TURNS)),
 		})
 
 
@@ -99,6 +99,10 @@ func apply(o: Dictionary, effect: String) -> Array[Dictionary]:
 			changed.append(o)
 		"free":
 			o["state"] = "free"
+			changed.append(o)
+		"ignite":
+			o["age"] = 0
+			o["state"] = "burning"
 			changed.append(o)
 		"extinguish":
 			o["age"] = 0
@@ -181,7 +185,7 @@ func tick_fire(flammable: Dictionary) -> Array[Dictionary]:
 		if not is_burning(o):
 			continue
 		o["age"] = int(o["age"]) + 1
-		if o["age"] >= BURN_TURNS:
+		if o["age"] >= int(o.get("burn", BURN_TURNS)):      # Objektfeld "burn": so viele Gegnerphasen brennt dieses Objekt (Standard BURN_TURNS)
 			o["state"] = "out" if o["type"] == "fire" else "ruin"
 			changed.append(o)
 	for p: Vector2i in targets:

@@ -294,3 +294,13 @@ Benannte Gegner (`"flees": true` in `units.json`: Wart, Oskar, Maja) sterben nic
 - **Offen:** Balancing (der Simulator kennt Mission 13 nicht; Cyborg-Wart macht sie deutlich schwerer), Stufenwerte nach Spielgefühl anpassen.
 
 - **Entschärft (2026-11-03, nach Spieltest „sehr hart“):** Gegnerfaktor von 1,7 auf 1,3, Maschinenschock von 5 auf 3. Weitere Optionen im Backlog: Cyborg-Wart schwächer oder später, Stachelia-Verstärkung in Runde 4.
+
+## Mission 13, Nachtrag: Cyborg-Wart bricht am Ende immer aus
+Fällt die Gesundheit der Frischlinge nie unter 50 %, platzt der Glasbehälter trotzdem in der **Abschlussszene** (Auslöser `victory` mit Bedingung „Behälter heil“): Der Hund und die Kinder hören das Knacken, Cyborg-Wart tritt heraus (er steht danach auf der Karte) und droht mit „Wir sehen uns wieder“. So sieht der Spieler auch ohne Eingreifen, dass Wart zurück ist.
+
+## Mission 14: Das brennende Waisenhaus (`ch14`)
+- **Lage:** Es ist wieder Tag, Karte mit dem Waisenhaus (großes Haus-Sprite `fx_waisenhaus`, in den Daten ein brennbares `house` mit `look` und `burn: 2`). **Fünf Helden** starten (Mira, Hundsfreund, Brunhilde, Albrecht, Wendy). Gegner: Oskar und Maja mit drei Bütteln, zwei Bogenschützen und einem Priester.
+- **Feuer:** In Runde 2 zünden die Zwillinge das Waisenhaus an (neuer Effekt `ignite` für Weltobjekte). Es brennt **zwei Gegnerphasen lang** (Objektfeld `burn`, Standard sonst 3). Die Helden haben **zwei Runden zum Löschen**: neben das Feuer stellen und löschen, oder mit **Brunhildes Fasswurf** wie in Mission 3. Brennt es ab, ist die Mission **verloren** (Kartenfeld `lose_if_ruin`).
+- **Stachelia:** In **Runde 4** greift sie ein (`spawn` mit `team: "p"`), will Rache für ihre Bienenkörbe und kämpft als **sechste Heldenfigur** unter deiner Steuerung, bleibt aber abweisend und garstig. Sie ist erst ab **Mission 15** wählbar (`from: 15`), im Abschluss schließt sie sich dem Team an („nur aus Berechnung“).
+- **Bonus:** „Kein Held fällt“ (100 Gold), „Das Waisenhaus brennt nicht ab“ (2 Heilhonig). Gegnerfaktor 1,4 (nicht gemessen, der Simulator kennt Mission 14 nicht).
+- **Test:** `tests/test_waisenhaus.gd`.

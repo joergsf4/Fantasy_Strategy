@@ -1,6 +1,6 @@
 extends SceneTree
 ## godot --headless --path game --script tests/test_dampframme.gd
-## Robinas Dampframme: vier Felder geradeaus, Feinde im Weg bekommen Schaden und werden zur Seite gestossen. Stachelia ist ab Mission 14 Heldin.
+## Robinas Dampframme: vier Felder geradeaus, Feinde im Weg bekommen Schaden und werden zur Seite gestossen. Stachelia ist ab Mission 15 Heldin.
 
 var fails := 0
 
@@ -15,8 +15,8 @@ func _initialize() -> void:
 	Engine.time_scale = 10.0
 	var defs: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/units.json"))
 	check((defs["panzer"]["abilities"] as Array) == ["breitseite", "dampframme"], "Robina: Breitseite und Dampframme")
-	check(defs["bienenmaedchen"].get("hero", false) and int(defs["bienenmaedchen"]["from"]) == 14 and (defs["bienenmaedchen"]["abilities"] as Array).size() == 2, "Stachelia: Heldin ab Mission 14 mit zwei Faehigkeiten")
-	check(Party.roster(defs, 14, true).has("bienenmaedchen") and not Party.roster(defs, 13, true).has("bienenmaedchen"), "Stachelia wird erst in Mission 14 waehlbar")
+	check(defs["bienenmaedchen"].get("hero", false) and int(defs["bienenmaedchen"]["from"]) == 15 and (defs["bienenmaedchen"]["abilities"] as Array).size() == 2, "Stachelia: Heldin ab Mission 15 mit zwei Faehigkeiten")
+	check(Party.roster(defs, 15, true).has("bienenmaedchen") and not Party.roster(defs, 14, true).has("bienenmaedchen"), "Stachelia wird erst in Mission 15 waehlbar")
 	var m := Mission.load_mission("ch1")
 	m["enemies"] = []
 	var b := Battle.new()

@@ -204,6 +204,84 @@
    "when": {
     "victory": true
    },
+   "if": {
+    "object": {
+     "id": "zylinder",
+     "state": "intact"
+    },
+    "absent": [
+     "cyborg_wart"
+    ]
+   },
+   "note": "Cyborg-Wart bricht trotzdem aus",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "hund",
+       "right": "waisenkinder",
+       "speaker": "hund",
+       "text": "Ein Ruck, ein Knacken... Was war das?",
+       "left_expr": "wuetend"
+      },
+      {
+       "left": "hund",
+       "right": "waisenkinder",
+       "speaker": "waisenkinder",
+       "text": "Der grüne Behälter da hinten! Er blubbert!",
+       "right_expr": ""
+      }
+     ]
+    },
+    {
+     "world": {
+      "id": "zylinder",
+      "effect": "break"
+     }
+    },
+    {
+     "spawn": [
+      {
+       "id": "cyborg_wart",
+       "pos": [
+        10,
+        2
+       ],
+       "label": "Cyborg-Wart bricht aus"
+      }
+     ]
+    },
+    {
+     "dialogue": [
+      {
+       "left": "hund",
+       "right": "cyborg_wart",
+       "speaker": "cyborg_wart",
+       "text": "...Ich... bin... zurück.",
+       "right_expr": "wuetend"
+      },
+      {
+       "left": "hund",
+       "right": "cyborg_wart",
+       "speaker": "hund",
+       "text": "Wart?! Das ist unmöglich!",
+       "left_expr": "wuetend"
+      },
+      {
+       "left": "hund",
+       "right": "cyborg_wart",
+       "speaker": "cyborg_wart",
+       "text": "Wir sehen uns wieder. Ich bin noch nicht fertig mit euch.",
+       "right_expr": "wuetend"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "victory": true
+   },
    "note": "Kugelblitz flieht",
    "if": {
     "present": [

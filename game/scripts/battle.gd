@@ -1902,7 +1902,7 @@ func _make_burnable(o: Dictionary) -> void:
 			name = o["look"]
 		root.remove_child(parts["body"])
 		(parts["body"] as Node).queue_free()
-		parts["body"] = _object_sprite(name, 1.15, root)
+		parts["body"] = _object_sprite(name, 1.9 if name == "fx_waisenhaus" else 1.15, root)
 		root.remove_child(parts["rubble"])
 		(parts["rubble"] as Node).queue_free()
 		parts["rubble"] = _object_sprite("fx_ruine%d" % (1 + h % 2), 1.1, root)
@@ -2662,6 +2662,9 @@ func _check_end() -> void:
 	if state == State.OVER:
 		return
 	var lost := _count_team("p") == 0
+	var guard_id := str(map_data.get("lose_if_ruin", ""))      # Kartenfeld "lose_if_ruin": brennt dieses Haus ab, ist die Mission verloren
+	if guard_id != "" and world.by_id(guard_id).get("state", "") == "ruin":
+		lost = true
 	var won := not lost and goal_met()
 	if story_lost:
 		won = true

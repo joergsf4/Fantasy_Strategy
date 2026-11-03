@@ -1,0 +1,60 @@
+{
+ "intro": [
+  {
+   "left": "maedchen_baer",
+   "right": "waisenkinder",
+   "speaker": "maedchen_baer",
+   "text": "Die Kinder sind in Sicherheit, und zum ersten Mal seit Tagen scheint wieder die Sonne."
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "waisenkinder",
+   "speaker": "waisenkinder",
+   "text": "Danke, dass ihr uns gerettet habt! Kommt, wir zeigen euch unser Haus!",
+   "right_expr": "lachend"
+  },
+  {
+   "left": "hund",
+   "right": "waisenkinder",
+   "speaker": "hund",
+   "text": "Ihr bleibt drinnen. Heute passiert euch nichts mehr.",
+   "left_expr": "wuetend"
+  },
+  {
+   "left": "hund",
+   "right": "maja",
+   "speaker": "maja",
+   "text": "Wie rührend. Aber der Meister mag keine Zeugen, und Waisenhäuser brennen so schön.",
+   "right_expr": "lachend"
+  },
+  {
+   "left": "hund",
+   "right": "maja",
+   "speaker": "hund",
+   "text": "Die Zwillinge! Macht euch bereit, sie wollen das Haus anzünden!",
+   "left_expr": "wuetend"
+  }
+ ],
+ "outro": [
+  {
+   "left": "bienenmaedchen",
+   "right": "maedchen_baer",
+   "speaker": "bienenmaedchen",
+   "text": "Es ist vorbei für heute. Ich schließe mich euch an, aber nur aus Berechnung. Der Meister hat meine Stöcke verbrannt.",
+   "left_expr": "wuetend"
+  },
+  {
+   "left": "bienenmaedchen",
+   "right": "hund",
+   "speaker": "hund",
+   "text": "Garstig wie immer."
+  },
+  {
+   "left": "bienenmaedchen",
+   "right": "hund",
+   "speaker": "bienenmaedchen",
+   "text": "Ich höre alles. Und ich vergesse nichts.",
+   "left_expr": "wuetend"
+  }
+ ]
+}
