@@ -1,0 +1,108 @@
+{
+ "_info": "Fortschrittskurve. levels: Erfahrung (xp) ab der jede Stufe gilt, xp_squad je Mission fuer jeden Helden der Gruppe, xp_bench fuer wartende Helden. missions: erwartete Heldenstufe (level) und Ausruestungsstufe (gear_tier, Durchschnitt) zu Beginn der Mission, Zielsiegquote (target_win) und Gegnerfaktoren enemy_hp/enemy_atk (werden auf die Werte der Karte angewendet; 1.0 = unveraendert). Die Gegnerfaktoren sind bewusst vorsichtig gewaehlt (Messung in docs/balance_kurve.md liegt bei Mission 3 bis 8 hoeher): erst im Spiel pruefen, dann schrittweise anheben.",
+ "levels": {
+  "xp": [
+   0,
+   20,
+   50,
+   90,
+   140
+  ],
+  "xp_squad": 12,
+  "xp_bench": 6
+ },
+ "missions": {
+  "ch1": {
+   "level": 1,
+   "gear_tier": 1.0,
+   "target_win": 0.97,
+   "enemy_hp": 1.0,
+   "enemy_atk": 1.0
+  },
+  "ch2": {
+   "level": 1,
+   "gear_tier": 1.0,
+   "target_win": 0.97,
+   "enemy_hp": 1.0,
+   "enemy_atk": 1.0
+  },
+  "ch3": {
+   "level": 2,
+   "gear_tier": 1.0,
+   "target_win": 0.95,
+   "enemy_hp": 1.2,
+   "enemy_atk": 1.2
+  },
+  "ch4": {
+   "level": 2,
+   "gear_tier": 1.0,
+   "target_win": 0.95,
+   "enemy_hp": 1.3,
+   "enemy_atk": 1.3
+  },
+  "ch5": {
+   "level": 2,
+   "gear_tier": 1.5,
+   "target_win": 0.92,
+   "enemy_hp": 1.4,
+   "enemy_atk": 1.4
+  },
+  "ch6": {
+   "level": 3,
+   "gear_tier": 1.5,
+   "target_win": 0.92,
+   "enemy_hp": 1.5,
+   "enemy_atk": 1.5
+  },
+  "ch7": {
+   "level": 3,
+   "gear_tier": 2.0,
+   "target_win": 0.92,
+   "enemy_hp": 1.5,
+   "enemy_atk": 1.5
+  },
+  "ch8": {
+   "level": 3,
+   "gear_tier": 2.0,
+   "target_win": 0.9,
+   "enemy_hp": 1.3,
+   "enemy_atk": 1.3
+  },
+  "ch9": {
+   "level": 4,
+   "gear_tier": 2.5,
+   "target_win": 0.9,
+   "enemy_hp": 1.4,
+   "enemy_atk": 1.4
+  },
+  "ch10": {
+   "level": 4,
+   "gear_tier": 2.5,
+   "target_win": 0.9,
+   "enemy_hp": 1.0,
+   "enemy_atk": 1.0,
+   "note": "Zwischenspiel ohne Kampf"
+  },
+  "ch11": {
+   "level": 4,
+   "gear_tier": 2.5,
+   "target_win": 0.85,
+   "enemy_hp": 1.0,
+   "enemy_atk": 1.0
+  },
+  "ch12": {
+   "level": 4,
+   "gear_tier": 3.0,
+   "target_win": 0.85,
+   "enemy_hp": 1.8,
+   "enemy_atk": 1.8
+  },
+  "ch13": {
+   "level": 4,
+   "gear_tier": 3.0,
+   "target_win": 0.85,
+   "enemy_hp": 1.6,
+   "enemy_atk": 1.6
+  }
+ }
+}

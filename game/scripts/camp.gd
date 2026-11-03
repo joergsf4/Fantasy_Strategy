@@ -172,6 +172,15 @@ func _build_shop() -> void:
 	right.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.add_child(right)
 	right.add_child(_text("„%s“" % _quip, 20, Color(0.9, 0.95, 0.8), 640))
+	var sc := ScrollContainer.new()      # das Sortiment waechst mit den Kapiteln: scrollbar statt endloser Seite
+	sc.custom_minimum_size = Vector2(0, 360)
+	sc.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	sc.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	right.add_child(sc)
+	var list := VBoxContainer.new()
+	list.add_theme_constant_override("separation", 5)
+	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	sc.add_child(list)
 	for w: Dictionary in party.stock():
 		var id: String = w["id"]
 		var line := HBoxContainer.new()
@@ -190,7 +199,25 @@ func _build_shop() -> void:
 			_refresh(), Vector2(190, 30))
 		buy.disabled = not party.can_buy(id)
 		line.add_child(buy)
-		right.add_child(line)
+		list.add_child(line)
+	var kinds := {}          # Lagerbestand verkaufen (halber Preis): ein Knopf je Sorte
+	for pid: String in party.pool:
+		kinds[pid] = int(kinds.get(pid, 0)) + 1
+	if not kinds.is_empty():
+		list.add_child(_text("Aus dem Lager verkaufen (halber Preis):", 18, Color(0.8, 0.85, 0.75), 640))
+		for pid: String in kinds:
+			var sline := HBoxContainer.new()
+			sline.add_theme_constant_override("separation", 12)
+			var sinfo := _text("%s ×%d" % [Items.equipment()[pid]["name"], kinds[pid]], 18, UiTheme.CREAM, 420)
+			sinfo.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			sline.add_child(sinfo)
+			var sp := _text("%d Gold" % Party.sell_price(pid), 18, GOLD_COL)
+			sp.custom_minimum_size = Vector2(80, 0)
+			sline.add_child(sp)
+			sline.add_child(_button("Verkaufen", func() -> void:
+				party.sell(pid)
+				_refresh(), Vector2(190, 28)))
+			list.add_child(sline)
 
 
 # ------------------------------------------------------------------ Brauen
@@ -234,8 +261,9 @@ func _effective(hero: String) -> String:
 	var d: Dictionary = unit_defs[hero]
 	var u := {"atk": d["atk"], "def": d["def"], "res": d.get("res", 0), "hp": d["hp"], "maxhp": d["hp"], "move": d["move"],
 		"range": d["range"], "dmg_type": d.get("dmg_type", "body")}
+	Progression.apply_level(u, party.level_of(hero), d)
 	Items.apply_equipment(u, party.equipment.get(hero, []))
-	return "Leben %d   Angriff %d   Vert %d   Res %d   Bew %d   Reichweite %d" % [u["maxhp"], u["atk"], u["def"], u["res"], u["move"], u["range"]]
+	return "Stufe %d   Leben %d   Angriff %d   Vert %d   Res %d   Bew %d   Reichweite %d" % [party.level_of(hero), u["maxhp"], u["atk"], u["def"], u["res"], u["move"], u["range"]]
 
 
 func _build_gear() -> void:

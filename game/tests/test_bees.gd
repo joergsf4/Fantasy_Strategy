@@ -75,7 +75,8 @@ func run_tests(defs: Dictionary) -> void:
 	check(b._count_team("p") == before + 1 and not b._find("hund").is_empty() and b._find("hund")["team"] == "p", "Hundsfreund kaempft als Held mit")
 	# Stachelia: Wendung bei 50 %, Rueckzug zaehlt als ueberzeugt
 	var stachelia: Dictionary = b._find("bienenmaedchen")
-	check(stachelia["maxhp"] == 50 and stachelia["atk"] == 7, "Stachelia ist als Boss gestaerkt (50 Leben, Angriff 7)")
+	var sc5 := Progression.enemy_scale("ch5")
+	check(stachelia["maxhp"] == roundi(50.0 * float(sc5["hp"])) and stachelia["atk"] == roundi(7.0 * float(sc5["atk"])), "Stachelia ist als Boss gestaerkt (50 Leben, Angriff 7, mal Gegnerfaktor)")
 	stachelia["hp"] = 10
 	await b._flush_events()
 	check(b._find("bienenmaedchen").is_empty() and b.retreated.has("bienenmaedchen"), "Stachelia zieht sich bei unter 50 % zurueck")

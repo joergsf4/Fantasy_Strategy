@@ -93,6 +93,8 @@ func run_cell(cell: Dictionary) -> Dictionary:
 			emods = {"hp": mult, "atk": mult}
 		var lo: Dictionary = cell.get("loadout", {})
 		var p_units := _units(p_ids, cell.get("p_mods", {}))
+		for pu: Dictionary in p_units:
+			pu["level"] = int(cell.get("level", 1))      # Heldenstufe fuer alle (Progression, Balancing der Kurve)
 		var emap: Dictionary = lo.get("equip_map", {})
 		for k in p_units.size():
 			p_units[k]["equip"] = (emap.get(p_ids[k], []) as Array).duplicate()

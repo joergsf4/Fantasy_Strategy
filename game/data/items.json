@@ -6,7 +6,9 @@
    "mods": {
     "atk": 2
    },
-   "text": "+2 Angriff"
+   "text": "+2 Angriff",
+   "price": 70,
+   "tier": 1
   },
   "schwere_axt": {
    "name": "Schwere Axt",
@@ -15,7 +17,9 @@
     "atk": 4,
     "move": -1
    },
-   "text": "+4 Angriff, −1 Bewegung"
+   "text": "+4 Angriff, −1 Bewegung",
+   "price": 150,
+   "tier": 2
   },
   "kristallstab": {
    "name": "Kristallstab",
@@ -24,7 +28,9 @@
     "atk": 3
    },
    "text": "+3 Angriff",
-   "req": "magic"
+   "req": "magic",
+   "price": 90,
+   "tier": 1
   },
   "lederwams": {
    "name": "Lederwams",
@@ -33,7 +39,9 @@
     "def": 1,
     "hp": 4
    },
-   "text": "+1 Verteidigung, +4 Leben"
+   "text": "+1 Verteidigung, +4 Leben",
+   "price": 40,
+   "tier": 1
   },
   "kettenhemd": {
    "name": "Kettenhemd",
@@ -41,7 +49,9 @@
    "mods": {
     "def": 2
    },
-   "text": "+2 Verteidigung"
+   "text": "+2 Verteidigung",
+   "price": 55,
+   "tier": 1
   },
   "plattenpanzer": {
    "name": "Plattenpanzer",
@@ -50,7 +60,9 @@
     "def": 4,
     "move": -1
    },
-   "text": "+4 Verteidigung, −1 Bewegung"
+   "text": "+4 Verteidigung, −1 Bewegung",
+   "price": 160,
+   "tier": 2
   },
   "magierrobe": {
    "name": "Magierrobe",
@@ -58,7 +70,9 @@
    "mods": {
     "res": 3
    },
-   "text": "+3 Magieresistenz"
+   "text": "+3 Magieresistenz",
+   "price": 90,
+   "tier": 1
   },
   "windstiefel": {
    "name": "Windstiefel",
@@ -66,7 +80,9 @@
    "mods": {
     "move": 1
    },
-   "text": "+1 Bewegung"
+   "text": "+1 Bewegung",
+   "price": 25,
+   "tier": 1
   },
   "heilkraut": {
    "name": "Heilkraut-Amulett",
@@ -74,7 +90,9 @@
    "mods": {
     "hp": 8
    },
-   "text": "+8 Leben"
+   "text": "+8 Leben",
+   "price": 60,
+   "tier": 1
   },
   "fernrohr": {
    "name": "Fernrohr",
@@ -83,7 +101,9 @@
     "range": 1
    },
    "text": "+1 Reichweite",
-   "req": "ranged"
+   "req": "ranged",
+   "price": 70,
+   "tier": 1
   },
   "zauberlampe": {
    "name": "Zauberlampe",
@@ -91,7 +111,9 @@
    "mods": {
     "cd_bonus": 1
    },
-   "text": "Fähigkeiten laden 1 Runde schneller"
+   "text": "Fähigkeiten laden 1 Runde schneller",
+   "price": 150,
+   "tier": 2
   },
   "rubinring": {
    "name": "Rubinring",
@@ -100,7 +122,143 @@
     "atk": 1,
     "def": 1
    },
-   "text": "+1 Angriff, +1 Verteidigung"
+   "text": "+1 Angriff, +1 Verteidigung",
+   "price": 130,
+   "tier": 2
+  },
+  "stahlklinge": {
+   "name": "Stahlklinge",
+   "slot": "waffe",
+   "mods": {
+    "atk": 3,
+    "hp": 2
+   },
+   "text": "+3 Angriff, +2 Leben",
+   "price": 120,
+   "tier": 2
+  },
+  "meisterklinge": {
+   "name": "Meisterklinge",
+   "slot": "waffe",
+   "mods": {
+    "atk": 4,
+    "move": 1
+   },
+   "text": "+4 Angriff, +1 Bewegung",
+   "price": 260,
+   "tier": 3
+  },
+  "runenschwert": {
+   "name": "Runenschwert",
+   "slot": "waffe",
+   "mods": {
+    "atk": 5,
+    "hp": 4
+   },
+   "text": "+5 Angriff, +4 Leben",
+   "price": 420,
+   "tier": 4
+  },
+  "arkanstab": {
+   "name": "Arkanstab",
+   "slot": "waffe",
+   "mods": {
+    "atk": 4,
+    "res": 1
+   },
+   "text": "+4 Angriff, +1 Magieresistenz",
+   "price": 190,
+   "tier": 2,
+   "req": "magic"
+  },
+  "sternenstab": {
+   "name": "Sternenstab",
+   "slot": "waffe",
+   "mods": {
+    "atk": 5,
+    "res": 2
+   },
+   "text": "+5 Angriff, +2 Magieresistenz",
+   "price": 380,
+   "tier": 4,
+   "req": "magic"
+  },
+  "schuppenpanzer": {
+   "name": "Schuppenpanzer",
+   "slot": "ruestung",
+   "mods": {
+    "def": 3,
+    "hp": 4
+   },
+   "text": "+3 Verteidigung, +4 Leben",
+   "price": 210,
+   "tier": 3
+  },
+  "mithrilhemd": {
+   "name": "Mithrilhemd",
+   "slot": "ruestung",
+   "mods": {
+    "def": 4,
+    "hp": 6
+   },
+   "text": "+4 Verteidigung, +6 Leben",
+   "price": 400,
+   "tier": 4
+  },
+  "seidenrobe": {
+   "name": "Seidenrobe",
+   "slot": "ruestung",
+   "mods": {
+    "res": 4,
+    "hp": 6
+   },
+   "text": "+4 Magieresistenz, +6 Leben",
+   "price": 220,
+   "tier": 3
+  },
+  "runenrobe": {
+   "name": "Runenrobe",
+   "slot": "ruestung",
+   "mods": {
+    "res": 5,
+    "hp": 8
+   },
+   "text": "+5 Magieresistenz, +8 Leben",
+   "price": 380,
+   "tier": 4
+  },
+  "sturmstiefel": {
+   "name": "Sturmstiefel",
+   "slot": "talisman",
+   "mods": {
+    "move": 1,
+    "def": 1
+   },
+   "text": "+1 Bewegung, +1 Verteidigung",
+   "price": 200,
+   "tier": 3
+  },
+  "smaragdring": {
+   "name": "Smaragdring",
+   "slot": "talisman",
+   "mods": {
+    "atk": 2,
+    "def": 1
+   },
+   "text": "+2 Angriff, +1 Verteidigung",
+   "price": 230,
+   "tier": 3
+  },
+  "drachenzahn": {
+   "name": "Drachenzahn",
+   "slot": "talisman",
+   "mods": {
+    "atk": 2,
+    "def": 2
+   },
+   "text": "+2 Angriff, +2 Verteidigung",
+   "price": 360,
+   "tier": 4
   }
  },
  "consumables": {

@@ -152,7 +152,7 @@ Gebaut (`ch9`): Wart ohne Flucht, Frischlinge als eine Figur, Regent als Strohma
   - **Strömung:** Fluss mit Strömung schiebt Figuren (Wasserfeld, schnell), Gegner stürzen von Stegen.
 - Die Frischlinge (eine Figur aus drei Schweinen, Wart ist tot) fliehen wie üblich, Rachefaden aus Mission 9.
 
-### C. Upgradesystem verbessern (Sack, Ausrüstung)
+### C. Upgradesystem verbessern (Sack, Ausrüstung) — umgesetzt, siehe `docs/fortschritt.md` (Stufen 1 bis 4, Sortiment je Kapitel, Verkauf, Heldenstufen, Zielkurve)
 - **Problem:** Sack verkauft immer dieselben Waffen und Rüstungen. Die Menge ist schon begrenzt (gut), aber die Truppe ist schnell komplett ausgerüstet.
 - **Ziel:** Mit der Zeit gibt es **immer bessere Ausrüstung** (Stufen, die mit den Kapiteln im Sortiment erscheinen). Es ist **in Ordnung, wenn man mal nicht genug Geld** für die neue Waffe oder Rüstung hat; das Geld darf knapp sein.
 - **Ideen:** Sortiment je Kapitel (Stufe 1 bis 4, `items.json` mit `from`), Aufwertung statt Neukauf (Schmiede-Stufen gegen Material), Preise steigen, alte Ausrüstung lässt sich verkaufen (Teilbetrag), seltene Angebote nur einmal, Beute- und Geheimnis-Belohnungen als Ausrüstung. Balancing mit dem Simulator prüfen (Gold-Einnahmen je Mission aus `docs/balance.md`).

@@ -1,50 +1,197 @@
 {
- "_info": "Preise aus dem Balancing-Lauf E5 (docs/balance.md, Abschnitt 6): rund 55 Gold je Punkt Siegquote-Gewinn (Infanteristen-Aequivalent), Mindestpreise fuer Gegenstaende mit kaum messbarem Wert. Bei neuen Messungen neu ableiten.",
+ "_info": "Sortiment des Haendlers: jede Ware hat from (ab diesem Kapitel) und optional until (bis einschliesslich diesem Kapitel), n = Stueckzahl je Lager. Ausruestung nach Stufen (items.json tier 1 bis 4); Preise steigen mit der Stufe, gekauft wird mit dem Gold der Missionen. Verkauf: halber Preis (Party.sell).",
  "merchant": {
   "name": "Sack",
   "portrait": "haendler"
  },
- "chapter1": [
-  {
-   "id": "heiltrank",
-   "price": 35,
-   "n": 3
-  },
-  {
-   "id": "gegengift",
-   "price": 20,
-   "n": 2
-  },
-  {
-   "id": "aether",
-   "price": 30,
-   "n": 1
-  },
-  {
-   "id": "rauchbombe",
-   "price": 25,
-   "n": 1
-  },
-  {
-   "id": "eisenschwert",
-   "price": 70,
-   "n": 1
-  },
-  {
-   "id": "kettenhemd",
-   "price": 55,
-   "n": 1
-  },
-  {
-   "id": "windstiefel",
-   "price": 25,
-   "n": 1
-  }
- ],
  "quips": [
   "Frische Ware, frisch aus dem Sack! Nur heute – wie jeden Tag.",
   "Mein Sack hat für alles ein Fach. Nur nicht für Rückgaben.",
   "Gold in den Sack, Ware raus – und zugebunden!",
   "Ich hab nichts gegen Helden. Besonders nichts gegen ihr Gold."
+ ],
+ "stock": [
+  {
+   "id": "heiltrank",
+   "price": 35,
+   "n": 3,
+   "from": 1
+  },
+  {
+   "id": "gegengift",
+   "price": 20,
+   "n": 2,
+   "from": 1
+  },
+  {
+   "id": "aether",
+   "price": 30,
+   "n": 1,
+   "from": 1
+  },
+  {
+   "id": "rauchbombe",
+   "price": 25,
+   "n": 1,
+   "from": 1
+  },
+  {
+   "id": "eisenschwert",
+   "price": 70,
+   "n": 1,
+   "from": 1,
+   "until": 6
+  },
+  {
+   "id": "kettenhemd",
+   "price": 55,
+   "n": 1,
+   "from": 1,
+   "until": 7
+  },
+  {
+   "id": "windstiefel",
+   "price": 25,
+   "n": 1,
+   "from": 1,
+   "until": 8
+  },
+  {
+   "id": "lederwams",
+   "price": 40,
+   "n": 1,
+   "from": 1,
+   "until": 5
+  },
+  {
+   "id": "kristallstab",
+   "price": 90,
+   "n": 1,
+   "from": 2,
+   "until": 7
+  },
+  {
+   "id": "heilkraut",
+   "price": 60,
+   "n": 1,
+   "from": 2,
+   "until": 8
+  },
+  {
+   "id": "magierrobe",
+   "price": 90,
+   "n": 1,
+   "from": 3,
+   "until": 8
+  },
+  {
+   "id": "fernrohr",
+   "price": 70,
+   "n": 1,
+   "from": 3,
+   "until": 9
+  },
+  {
+   "id": "stahlklinge",
+   "price": 120,
+   "n": 1,
+   "from": 4,
+   "until": 10
+  },
+  {
+   "id": "plattenpanzer",
+   "price": 160,
+   "n": 1,
+   "from": 4,
+   "until": 10
+  },
+  {
+   "id": "rubinring",
+   "price": 130,
+   "n": 1,
+   "from": 4,
+   "until": 10
+  },
+  {
+   "id": "arkanstab",
+   "price": 190,
+   "n": 1,
+   "from": 5,
+   "until": 10
+  },
+  {
+   "id": "zauberlampe",
+   "price": 150,
+   "n": 1,
+   "from": 5,
+   "until": 12
+  },
+  {
+   "id": "schwere_axt",
+   "price": 150,
+   "n": 1,
+   "from": 6,
+   "until": 12
+  },
+  {
+   "id": "meisterklinge",
+   "price": 260,
+   "n": 1,
+   "from": 7
+  },
+  {
+   "id": "schuppenpanzer",
+   "price": 210,
+   "n": 1,
+   "from": 7
+  },
+  {
+   "id": "seidenrobe",
+   "price": 220,
+   "n": 1,
+   "from": 7
+  },
+  {
+   "id": "sturmstiefel",
+   "price": 200,
+   "n": 1,
+   "from": 8
+  },
+  {
+   "id": "smaragdring",
+   "price": 230,
+   "n": 1,
+   "from": 8
+  },
+  {
+   "id": "runenschwert",
+   "price": 420,
+   "n": 1,
+   "from": 10
+  },
+  {
+   "id": "mithrilhemd",
+   "price": 400,
+   "n": 1,
+   "from": 10
+  },
+  {
+   "id": "sternenstab",
+   "price": 380,
+   "n": 1,
+   "from": 10
+  },
+  {
+   "id": "runenrobe",
+   "price": 380,
+   "n": 1,
+   "from": 11
+  },
+  {
+   "id": "drachenzahn",
+   "price": 360,
+   "n": 1,
+   "from": 11
+  }
  ]
 }

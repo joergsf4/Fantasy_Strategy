@@ -245,6 +245,10 @@ func _chapter(cid: String, skip_intro := false, next_cid := "") -> void:
 	_fade_music(3.0)
 	stage.backdrop_again()
 	var res := stage.battle.results()
+	res["xp"] = party.xp_gain(res, Party.roster(units, party.chapter, true))      # Erfahrung: Gruppe voll, wartende Helden halb
+	res["xp_names"] = {}
+	for xid: String in res["xp"]:
+		res["xp_names"][xid] = units[xid]["name"]
 	await _reward(res)
 	party.absorb(res)
 	party.save()

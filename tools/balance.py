@@ -536,6 +536,73 @@ def write_matrix(res):
     print("docs/balance_matrix.md geschrieben")
 
 
+def gear_for(unit, tier):
+    """Ausruestung fuer einen Helden bei durchschnittlicher Stufe `tier` (z. B. 2,5): Waffe eine Stufe aufgerundet, Ruestung und Talisman abgerundet;
+    je Platz das beste Stueck bis zu dieser Stufe, das er tragen darf."""
+    import math
+    caps = {"waffe": math.ceil(tier), "ruestung": max(1, math.floor(tier)), "talisman": max(1, math.floor(tier))}
+    items = json.loads((GAME / "data" / "items.json").read_text())["equipment"]
+    magic = unit.get("dmg_type", "body") == "magic"
+    ranged = unit["range"] > 1
+    best = {}
+    for iid, it in items.items():
+        if it["tier"] > caps[it["slot"]]:
+            continue
+        req = it.get("req", "")
+        if (req == "magic" and not magic) or (req == "ranged" and not ranged):
+            continue
+        if magic and it["slot"] == "ruestung" and "res" not in it["mods"]:
+            continue
+        if not magic and it["slot"] == "ruestung" and "res" in it["mods"]:
+            continue
+        score = (it["tier"], sum(abs(v) for v in it["mods"].values()))
+        if it["slot"] not in best or score > best[it["slot"]][0]:
+            best[it["slot"]] = (score, iid)
+    return [v[1] for v in best.values()]
+
+
+def e16_curve():
+    """Fortschrittskurve: Siegquote je Mission mit der in data/progression.json erwarteten Heldenstufe und Ausruestungsstufe bei Gegnerfaktoren
+    1,0 bis 2,0. Daraus laesst sich ablesen, bei welchem Faktor die Zielquote erreicht waere."""
+    print("E16: Fortschrittskurve")
+    prog = json.loads((GAME / "data" / "progression.json").read_text())["missions"]
+    units = json.loads((GAME / "data" / "units.json").read_text())
+    missions = [1, 3, 5, 6, 7, 8, 12]      # Mission 2 (Mauer) kennt die Simulations-KI nicht
+    mults = [1.0, 1.25, 1.5, 1.75, 2.0, 2.5]
+    cells = []
+    for c in missions:
+        mp = json.loads((GAME / "data" / f"map_ch{c}.json").read_text())
+        party = [p["id"] for p in mp["players"]]
+        foes = [e["id"] for e in mp["enemies"]]
+        pr = prog[f"ch{c}"]
+        tier = pr["gear_tier"]
+        equip = {h: gear_for(units[h], tier) for h in party if h in units} if c > 1 else {}
+        for m in mults:
+            cells.append({"name": f"ch{c}|{m}", "n": 200, "seed": 1600000 + c, "map": f"ch{c}", "party": {"fixed": party}, "enemy": {"fixed": foes},
+                          "e_mods": {"hp": m * pr["enemy_hp"], "atk": m * pr["enemy_atk"]}, "level": pr["level"], "bridge_turn": 4 if c == 12 else -1,
+                          "loadout": {"equip_map": equip, "inventory": {"heiltrank": 2, "gegengift": 1, "aether": 1}}})
+    res = run_cells(cells)
+    rows = []
+    for c in missions:
+        pr = prog[f"ch{c}"]
+        vals = [wr(res[f"ch{c}|{m}"]) for m in mults]
+        rows.append((c, pr, vals))
+        print("  ch%d  Stufe %d  Ausruestung %s  " % (c, pr["level"], pr["gear_tier"]), [round(v, 2) for v in vals])
+    save("e16", {"cells": res, "mults": mults, "missions": missions})
+    L = ["", "## 15. Fortschrittskurve (Heldenstufe und Ausrüstungsstufe je Mission)\n",
+         "`python3 tools/balance.py e16`. Die Gruppe der Karte tritt mit der in `data/progression.json` erwarteten **Heldenstufe** und **Ausrüstungsstufe** an (je Platz das beste Stück bis zu dieser Stufe) gegen die Gegner der Karte, multipliziert mit dem Faktor in der Kopfzeile. Zahl = Siegquote. Zielquote steht in der Tabelle; der **Faktor, bei dem die Zielquote erreicht ist**, zeigt, wie viel Luft die Mission nach oben hat.\n",
+         "| Mission | Stufe | Ausr. | Ziel | " + " | ".join(f"×{m}" for m in mults) + " | Faktor für Ziel |", "|---|--:|--:|--:|" + "--:|" * len(mults) + "--:|"]
+    for c, pr, vals in rows:
+        f = "&gt; 2,0"
+        for m, v in zip(mults, vals):
+            if v < pr["target_win"]:
+                f = f"≈ {m}" if m == mults[0] else f"≈ {mults[mults.index(m) - 1]}–{m}"
+                break
+        L.append(f"| Mission {c} | {pr['level']} | {pr['gear_tier']} | {pr['target_win']:.0%} | " + " | ".join(f"{v:.0%}" for v in vals) + f" | {f} |")
+    (ROOT / "docs" / "balance_kurve.md").write_text("\n".join(L) + "\n")
+    print("docs/balance_kurve.md geschrieben")
+
+
 def e7_fire():
     """Mission 3 (Feuer): Siegquote und gerettete Haeuser mit/ohne Loeschen, mit/ohne Brunhilde, bei steigender Gegnerstaerke."""
     print("E7: Mission 3, Feuer und Loeschen")
@@ -1039,7 +1106,7 @@ def report():
 
 
 STEPS = {"calib": calib, "e0": e0_ratings, "e1": e1_contribution, "e2": e2_ablation, "e3": e3_difficulty,
-         "e3base": lambda: e3_difficulty(False), "e4": e4_power_ratio, "e5": e5_items, "e6": e6_defend, "e7": e7_fire, "e8": e8_bees, "e9": e9_harbor, "e10": e10_wait, "e11": e11_desert, "e12": e12_oasis, "e13": e13_river, "e14": e14_matrix, "e15": e15_group, "report": report}
+         "e3base": lambda: e3_difficulty(False), "e4": e4_power_ratio, "e5": e5_items, "e6": e6_defend, "e7": e7_fire, "e8": e8_bees, "e9": e9_harbor, "e10": e10_wait, "e11": e11_desert, "e12": e12_oasis, "e13": e13_river, "e14": e14_matrix, "e16": e16_curve, "e15": e15_group, "report": report}
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()

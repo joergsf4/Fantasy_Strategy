@@ -14,6 +14,7 @@ var pool: Array = []               # besitzt, aber nicht getragen
 var squads: Dictionary = {}              # {Mission: [Helden]}: vom Spieler geaenderte Aufstellung vor der Mission
 var nemesis: Array = []            # entkommene Gegner, tauchen in spaeteren Missionen wieder auf
 var secrets_seen: Array = []     # gesehene Geheimnis-Szenen (Szene laeuft nur beim ersten Mal)
+var xp: Dictionary = {}            # Erfahrung je Held {id: Punkte}, daraus ergibt sich die Stufe (Progression)
 var bought: Dictionary = {}        # im aktuellen Lager gekauft {id: Anzahl} (Haendler hat nur festen Vorrat)
 
 
@@ -27,7 +28,29 @@ static func new_game() -> Party:
 
 ## Was ein Kampf zu Beginn bekommt.
 func loadout() -> Dictionary:
-	return {"inventory": inventory.duplicate(), "equipment": equipment.duplicate(true), "nemesis": nemesis.duplicate(), "secrets_seen": secrets_seen.duplicate()}
+	var levels := {}
+	for id: String in xp:
+		levels[id] = Progression.level_for_xp(int(xp[id]))
+	return {"inventory": inventory.duplicate(), "equipment": equipment.duplicate(true), "nemesis": nemesis.duplicate(), "secrets_seen": secrets_seen.duplicate(), "levels": levels}
+
+
+func level_of(id: String) -> int:
+	return Progression.level_for_xp(int(xp.get(id, 0)))
+
+
+## Erfahrung dieser Mission je Held (vor dem Verbuchen): Gruppe voll, wartende Helden (bench) halb. {id: {gain, old, new}}
+func xp_gain(results: Dictionary, bench: Array) -> Dictionary:
+	var out := {}
+	for r: Dictionary in (results.get("stats", {}) as Dictionary).get("rows", []):
+		var id: String = r["id"]
+		var g := Progression.xp_squad()
+		out[id] = {"gain": g, "old": level_of(id), "new": Progression.level_for_xp(int(xp.get(id, 0)) + g)}
+	for id: String in bench:
+		if out.has(id):
+			continue
+		var g2 := Progression.xp_bench()
+		out[id] = {"gain": g2, "old": level_of(id), "new": Progression.level_for_xp(int(xp.get(id, 0)) + g2)}
+	return out
 
 
 static func _add(into: Dictionary, from: Dictionary) -> void:
@@ -47,6 +70,8 @@ func absorb(results: Dictionary) -> void:
 	for id: String in results.get("secrets_seen", []):
 		if not secrets_seen.has(id):
 			secrets_seen.append(id)
+	for id: String in (results.get("xp", {}) as Dictionary):
+		xp[id] = int(xp.get(id, 0)) + int(results["xp"][id]["gain"])
 	chapter += 1
 	bought = {}
 
@@ -64,12 +89,13 @@ func spend(price: int) -> bool:
 
 
 func to_dict() -> Dictionary:
-	return {"chapter": chapter, "gold": gold, "inventory": inventory, "materials": materials, "equipment": equipment, "pool": pool, "bought": bought, "nemesis": nemesis, "squads": squads, "secrets_seen": secrets_seen}
+	return {"chapter": chapter, "gold": gold, "inventory": inventory, "materials": materials, "equipment": equipment, "pool": pool, "bought": bought, "nemesis": nemesis, "squads": squads, "secrets_seen": secrets_seen, "xp": xp}
 
 
 static func from_dict(d: Dictionary) -> Party:
 	var p := Party.new()
 	p.chapter = int(d.get("chapter", 1))
+	p.xp = _ints(d.get("xp", {}))
 	p.gold = int(d.get("gold", 0))
 	p.inventory = _ints(d.get("inventory", {}))
 	p.materials = _ints(d.get("materials", {}))
@@ -187,7 +213,9 @@ static func recipes() -> Dictionary:
 ## Waren des Haendlers fuer das aktuelle Kapitel: [{id, price, n, left}]
 func stock() -> Array:
 	var out: Array = []
-	for w: Dictionary in shop_data().get("chapter%d" % chapter, shop_data().get("chapter1", [])):
+	for w: Dictionary in shop_data().get("stock", []):
+		if int(w.get("from", 1)) > chapter or (w.has("until") and int(w["until"]) < chapter):
+			continue      # noch nicht oder nicht mehr im Sortiment (Ausruestung nach Stufen, siehe shop.json)
 		var left := int(w["n"]) - int(bought.get(w["id"], 0))
 		out.append({"id": w["id"], "price": int(w["price"]), "n": int(w["n"]), "left": left})
 	return out
@@ -212,6 +240,21 @@ func buy(id: String) -> bool:
 		inventory[id] = int(inventory.get(id, 0)) + 1
 	else:
 		pool.append(id)
+	return true
+
+
+## Verkaufspreis eines Lagerstuecks: die Haelfte des Listenpreises (items.json "price").
+static func sell_price(id: String) -> int:
+	return int(Items.equipment()[id].get("price", 0)) / 2
+
+
+## Ausruestung aus dem Lager verkaufen. false = nicht im Lager.
+func sell(id: String) -> bool:
+	var i := pool.find(id)
+	if i < 0:
+		return false
+	pool.remove_at(i)
+	gold += Party.sell_price(id)
 	return true
 
 

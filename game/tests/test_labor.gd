@@ -70,7 +70,7 @@ func _initialize() -> void:
 	check(b3._find("cyborg_wart").is_empty() and b3.world.by_id("zylinder")["state"] == "intact", "Anfangs ist der Behaelter heil, kein Cyborg")
 	said.clear()
 	var fr := b3._find("frischlinge")
-	check(not fr.is_empty() and fr["maxhp"] == 55, "Frischlinge stehen auf der Karte")
+	check(not fr.is_empty() and fr["maxhp"] == roundi(55.0 * float(Progression.enemy_scale("ch13")["hp"])), "Frischlinge stehen auf der Karte")
 	fr["hp"] = int(fr["maxhp"] * 0.4)
 	await b3._flush_events()
 	check(b3.world.by_id("zylinder")["state"] == "broken", "Behaelter geborsten")

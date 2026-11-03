@@ -29,7 +29,8 @@ func _initialize() -> void:
 	check(b.terrain.biome == "wueste", "Gelaende kennt das Biom")
 	# Zwillinge sterben wirklich statt zu fliehen
 	var oskar: Dictionary = b._find("oskar")
-	check(oskar["maxhp"] == 34 and b._find("maja")["maxhp"] == 30, "Zwillinge haben ihre Grundwerte (34 und 30 Leben, Balancing in docs/balance.md)")
+	var sc7 := float(Progression.enemy_scale("ch7")["hp"])
+	check(oskar["maxhp"] == roundi(34.0 * sc7) and b._find("maja")["maxhp"] == roundi(30.0 * sc7), "Zwillinge haben ihre Grundwerte mal Gegnerfaktor der Mission (34 und 30 Leben, siehe data/progression.json)")
 	check(Mission.load_mission("ch7")["triggers"].filter(func(t: Dictionary) -> bool: return t["when"].has("turn") and t["do"].any(func(s: Dictionary) -> bool: return s.has("spawn"))).is_empty(), "keine Verstaerkung in Mission 7")
 	var hero: Dictionary = b._find("hund")
 	b._actor = hero

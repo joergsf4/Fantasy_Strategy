@@ -12,7 +12,7 @@ func check(cond: bool, msg: String) -> void:
 
 
 func price(id: String) -> int:
-	for w: Dictionary in Party.shop_data()["chapter1"]:
+	for w: Dictionary in Party.shop_data()["stock"]:
 		if w["id"] == id:
 			return int(w["price"])
 	return 0

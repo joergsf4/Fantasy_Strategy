@@ -403,7 +403,15 @@ func _spawn(id: String, team: String, pos: Vector2i, extra := {}) -> void:
 	u["carry"] = extra.get("carry", {})
 	u["guard"] = extra.get("guard", false)    # Wache: bleibt auf dem Posten, bis ein Held nahe kommt
 	if team == "p":
+		Progression.apply_level(u, int((loadout.get("levels", {}) as Dictionary).get(id, 1)), d)
 		Items.apply_equipment(u, (loadout.get("equipment", {}) as Dictionary).get(id, []))
+	else:     # Gegnerstaerke der Mission (data/progression.json): ab spaeteren Kapiteln wachsen Leben und Angriff mit
+		var sc := Progression.enemy_scale(str(map_data.get("id", "")))
+		if sc["hp"] != 1.0:
+			u["maxhp"] = maxi(1, roundi(float(u["maxhp"]) * float(sc["hp"])))
+			u["hp"] = u["maxhp"]
+		if sc["atk"] != 1.0:
+			u["atk"] = maxi(1, roundi(float(u["atk"]) * float(sc["atk"])))
 	var node := Node3D.new()
 	node.position = to_world(pos)
 	add_child(node)
