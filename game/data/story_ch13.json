@@ -1,0 +1,32 @@
+{
+ "intro": [
+  {
+   "left": "hund",
+   "right": "robo",
+   "speaker": "hund",
+   "text": "Die Spuren führen hierher. Metallspuren, Brandflecken und ein seltsames Summen."
+  },
+  {
+   "left": "hund",
+   "right": "robo",
+   "speaker": "robo",
+   "text": "Meine Sensoren messen eine große Energiequelle im Zentrum. Und kleine Lebenszeichen, ganz nah daran.",
+   "left_expr": "wuetend"
+  },
+  {
+   "left": "elisabeth",
+   "right": "robo",
+   "speaker": "elisabeth",
+   "text": "Dann sind die Kinder dort. Los, ehe die Maschine sie aufbraucht!"
+  }
+ ],
+ "outro": [
+  {
+   "left": "hund",
+   "right": "waisenkinder",
+   "speaker": "hund",
+   "text": "Zurück in die Stadt. Und danach finden wir den, den sie den Meister nennen.",
+   "left_expr": "wuetend"
+  }
+ ]
+}

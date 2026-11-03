@@ -1,0 +1,159 @@
+{
+ "id": "ch13",
+ "title": "Das Labor im Wald",
+ "map": "res://data/map_ch13.json",
+ "briefing": "Mitten im Wald steht das Labor von Professor Kugelblitz. Seine Energiemaschine hängt an den entführten Waisenkindern und am magischen Honig. Befreit alle drei Kinder: Wer neben einem Kind steht, löst in zwei Runden die Fesseln, aber nur wenn kein Gegner daneben steht. Die Maschine verpasst jedem Helden neben ihr jede Runde einen Stromschlag. Zerstört sie (Bonus), oder haltet euch fern. Der Professor flieht, wenn es ihm zu bunt wird.",
+ "goals": [
+  {
+   "type": "free_all",
+   "text": "Ziel: Befreit die drei Waisenkinder"
+  }
+ ],
+ "triggers": [
+  {
+   "when": {
+    "near": {
+     "a": "hund",
+     "b": "kugelblitz",
+     "dist": 7
+    }
+   },
+   "if": {
+    "present": [
+     "kugelblitz"
+    ]
+   },
+   "note": "Der Professor stellt sich vor",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "hund",
+       "right": "kugelblitz",
+       "speaker": "kugelblitz",
+       "text": "Faszinierend! Besuch! Welch wundervolle Versuchskaninchen!",
+       "right_expr": "lachend"
+      },
+      {
+       "left": "hund",
+       "right": "kugelblitz",
+       "speaker": "hund",
+       "text": "Gebt uns die Kinder zurück!",
+       "left_expr": "wuetend"
+      },
+      {
+       "left": "hund",
+       "right": "kugelblitz",
+       "speaker": "kugelblitz",
+       "text": "Zurückgeben? Ich zapfe sie nur ein wenig an. Mit dem Honig als Katalysator fließt ihre Lebensenergie direkt zum Meister!",
+       "right_expr": "lachend"
+      },
+      {
+       "left": "hund",
+       "right": "kugelblitz",
+       "speaker": "kugelblitz",
+       "text": "Prof. Kugelblitz, zu Ihren Diensten. Sie werden gleich verstehen, wie sehr man elektrisiert sein kann!",
+       "right_expr": "wuetend"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "hp_below": {
+     "id": "kugelblitz",
+     "ratio": 0.5
+    }
+   },
+   "if": {
+    "present": [
+     "kugelblitz"
+    ]
+   },
+   "note": "Kugelblitz wird nervös",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "robo",
+       "right": "kugelblitz",
+       "speaker": "kugelblitz",
+       "text": "Meine Frisur! Meine Maschine! Das ist nicht im Versuchsplan!",
+       "right_expr": "wuetend"
+      },
+      {
+       "left": "robo",
+       "right": "kugelblitz",
+       "speaker": "robo",
+       "text": "Interessante Beobachtung: Das Ziel verliert die Kontrolle."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "victory": true
+   },
+   "note": "Die Kinder sind frei",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "hund",
+       "right": "waisenkinder",
+       "speaker": "hund",
+       "text": "Lotte, Pip, Mia! Seid ihr in Ordnung?"
+      },
+      {
+       "left": "hund",
+       "right": "waisenkinder",
+       "speaker": "waisenkinder",
+       "text": "Hundsfreund! Du hast uns gefunden! Wir hatten solche Angst!",
+       "right_expr": "lachend"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "victory": true
+   },
+   "note": "Kugelblitz flieht",
+   "if": {
+    "present": [
+     "kugelblitz"
+    ]
+   },
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "hund",
+       "right": "kugelblitz",
+       "speaker": "kugelblitz",
+       "text": "Ein Rückschlag! Ein vorübergehender Rückschlag! Der Meister wird sehr, sehr unzufrieden sein. Aber ich komme wieder, mit einer größeren Maschine!",
+       "right_expr": "wuetend"
+      }
+     ]
+    },
+    {
+     "retreat": "kugelblitz"
+    }
+   ]
+  }
+ ],
+ "flee": {
+  "kugelblitz": [
+   {
+    "left": "$hero",
+    "right": "kugelblitz",
+    "speaker": "kugelblitz",
+    "text": "Das ist nur ein Experiment! Ein misslungenes Experiment! Ich komme wieder, mit besseren Daten!",
+    "right_expr": "wuetend"
+   }
+  ]
+ }
+}

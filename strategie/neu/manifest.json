@@ -183,5 +183,10 @@
  "hund_seekrank": true,
  "lotte": true,
  "lotte_lachend": true,
- "lotte_wuetend": true
+ "lotte_wuetend": true,
+ "kugelblitz": true,
+ "kugelblitz_lachend": true,
+ "kugelblitz_wuetend": true,
+ "kugelblitz_chibi": true,
+ "fx_maschine": true
 }

@@ -64,6 +64,15 @@ func blocked() -> Dictionary:
 	return out
 
 
+## Felder mit offener Bruecke (Wasser, das dadurch begehbar wird).
+func open_bridges() -> Dictionary:
+	var out := {}
+	for o in objects:
+		if o["type"] == "bridge" and o["state"] == "open":
+			out[o["pos"]] = true
+	return out
+
+
 ## Welche Marke aus caps loest das Objekt? {"cap", "effect"} oder {} (nur im aktiven Zustand).
 func solution(o: Dictionary, caps: Array) -> Dictionary:
 	var d: Dictionary = defs()[o["type"]]
@@ -100,7 +109,7 @@ func apply(o: Dictionary, effect: String) -> Array[Dictionary]:
 			changed.append(o)
 			for gid: String in o["link"]:
 				var g := by_id(gid)
-				if not g.is_empty() and g["state"] == "closed":
+				if not g.is_empty() and (g["state"] == "closed" or g["state"] == "up"):
 					g["state"] = "open"
 					changed.append(g)
 	return changed

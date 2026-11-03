@@ -296,6 +296,14 @@ const LOTTE_EMO = { '': 'standing in the rain, soaking wet hair, tears running d
 for (const [emo, d] of Object.entries(LOTTE_EMO))
   jobs.push({ name: emo ? `lotte_${emo}` : 'lotte', refs: [ref(STYLE_REF)], prompt: `Create a dialogue portrait of ${LOTTE}, ${d}.` + PORTRAIT_TAIL });
 
+// Professor Kugelblitz (Mission 13): verrueckter Erfinder mit futuristischer Maschine. Portraits neutral/lachend/wuetend, Chibi, Maschine als Karten-Objekt.
+const PROF = 'Professor Kugelblitz: an eccentric mad-scientist inventor, thin and wiry, wild white frizzy hair standing on end with static electricity, big round brass goggles pushed up on his forehead, thick round glasses, a pointed grey goatee, a long white lab coat with scorch marks over a dark steampunk-futuristic vest, rubber gloves and glowing cyan energy cells on his belt, holding a crackling tesla-coil staff with a glowing blue ball of lightning on top';
+const PROF_EMO = { '': 'a smug, excited maniacal grin, one eyebrow raised, sparks crackling around him', lachend: 'cackling with wild mad laughter, head thrown back, eyes wide behind the glasses, lightning arcs dancing in his hair', wuetend: 'furious and indignant, hair sticking out even more, shouting with a clenched fist, lightning bursting from the staff' };
+for (const [emo, d] of Object.entries(PROF_EMO))
+  jobs.push({ name: emo ? `kugelblitz_${emo}` : 'kugelblitz', refs: [ref(STYLE_REF)], prompt: `Create a dialogue portrait of ${PROF}, ${d}.` + PORTRAIT_TAIL });
+jobs.push({ name: 'kugelblitz_chibi', refs: [path.join(OUT, 'ritter_chibi.jpg')], prompt: `Create ${PROF}.` + CHIBI_TAIL });
+jobs.push({ name: 'fx_maschine', refs: [path.join(OUT, 'fx_fireball.jpg')], prompt: 'Create a futuristic energy-extraction machine: a big brass-and-steel contraption with a central glass sphere full of swirling glowing cyan and golden-honey energy, copper coils and tesla rods around it, gauges, cables running along the ground, glowing amber honey pipes, small cages with sockets at the base, sparks of electricity. Game sprite, seen from the front slightly from above.' + FX_STYLE });
+
 // Kapitel 9: Warts Frischlinge (drei kleine Wildschweine als EINE Figur), der weinerliche Regent, die bedrohliche Festung.
 const FRISCH = 'Warts Frischlinge: a gang of exactly THREE small mean wild-boar piglets standing close together as one group character: tiny tusks, bristly dark mohawks, small mean red-brown eyes and evil grins, wearing scraps of patched leather armor; the left one swings a spiked club (a wooden club studded with iron nails), the middle one holds a rusty hand axe, the right one a second spiked club; small but nasty';
 const FRISCH_EMO = { '': 'cackling nastily, ready to attack', wuetend: 'squealing furiously with bared tusks, weapons raised high' };

@@ -155,5 +155,28 @@
   "hp": 0,
   "def": 0,
   "solutions": {}
+ },
+ "bridge": {
+  "name": "Notbrücke",
+  "start": "up",
+  "active": "",
+  "blocks": [
+   "up"
+  ],
+  "hp": 0,
+  "solutions": {}
+ },
+ "maschine": {
+  "name": "Energiemaschine",
+  "start": "intact",
+  "active": "intact",
+  "blocks": [
+   "intact"
+  ],
+  "hp": 30,
+  "def": 2,
+  "solutions": {
+   "blast": "break"
+  }
  }
 }

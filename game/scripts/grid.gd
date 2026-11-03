@@ -17,6 +17,7 @@ const DIRS := [Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0, -1)]
 var width := 0
 var height := 0
 var rows: Array = []
+var bridges: Dictionary = {}   # Wasserfelder mit offener Bruecke (Weltobjekt "bridge"): fuer Fussvolk begehbar
 var blocked: Dictionary = {}   # Felder, die Weltobjekte (Mauer, geschlossenes Tor) fuer Fussvolk sperren; Flieger kommen ueber alles
 
 
@@ -45,6 +46,8 @@ func cost(p: Vector2i, flying := false) -> int:
 		return 1
 	if blocked.has(p):
 		return -1
+	if c < 0 and bridges.has(p):
+		return 1
 	return c
 
 

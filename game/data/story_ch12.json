@@ -1,0 +1,38 @@
+{
+ "intro": [
+  {
+   "left": "ritter",
+   "right": "hund",
+   "speaker": "ritter",
+   "text": "Der Weg nach Westen führt über diesen Fluss. Lotte sagte, die Kinder seien in den Wald gebracht worden."
+  },
+  {
+   "left": "hund",
+   "right": "ritter",
+   "speaker": "hund",
+   "text": "Dann los! Jede Stunde zählt.",
+   "left_expr": "wuetend"
+  },
+  {
+   "left": "hund",
+   "right": "elisabeth",
+   "speaker": "elisabeth",
+   "text": "Die Brücke... ist weg. Nur Splitter und ein Loch. Das war kein Unfall."
+  }
+ ],
+ "outro": [
+  {
+   "left": "hund",
+   "right": "robo",
+   "speaker": "hund",
+   "text": "Der Weg ist frei. Weiter in den Wald, zu den Kindern!",
+   "left_expr": "wuetend"
+  },
+  {
+   "left": "hund",
+   "right": "robo",
+   "speaker": "robo",
+   "text": "Die Frischlinge sind geflohen. Auf ihrer Spur sehe ich frische Reifenspuren. Metallisch."
+  }
+ ]
+}

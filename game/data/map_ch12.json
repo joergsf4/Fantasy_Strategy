@@ -1,0 +1,170 @@
+{
+ "rows": [
+  "GGGGGWGGGGGG",
+  "GFGGGWGGGFGG",
+  "GGGGGWGGGGGG",
+  "GGGGGWGGGGFG",
+  "GGGFGWGGGGGG",
+  "GGGGGWGGGGGG",
+  "GGGGGWGGFGGG",
+  "GGGFGWGGGGGG",
+  "GGGGGWGGGGGG",
+  "GGFGGWGGGGGG"
+ ],
+ "players": [
+  {
+   "id": "ritter",
+   "pos": [
+    2,
+    4
+   ]
+  },
+  {
+   "id": "robo",
+   "pos": [
+    2,
+    5
+   ]
+  },
+  {
+   "id": "hund",
+   "pos": [
+    3,
+    5
+   ]
+  },
+  {
+   "id": "elisabeth",
+   "pos": [
+    1,
+    5
+   ]
+  },
+  {
+   "id": "samurai",
+   "pos": [
+    3,
+    6
+   ]
+  },
+  {
+   "id": "wendy",
+   "pos": [
+    1,
+    4
+   ]
+  }
+ ],
+ "enemies": [
+  {
+   "id": "frischlinge",
+   "pos": [
+    8,
+    3
+   ]
+  },
+  {
+   "id": "frischlinge",
+   "pos": [
+    8,
+    7
+   ]
+  },
+  {
+   "id": "soldat_bogenschuetze",
+   "pos": [
+    7,
+    4
+   ]
+  },
+  {
+   "id": "soldat_bogenschuetze",
+   "pos": [
+    7,
+    6
+   ]
+  },
+  {
+   "id": "soldat_infanterie",
+   "pos": [
+    8,
+    5
+   ]
+  },
+  {
+   "id": "soldat_infanterie",
+   "pos": [
+    9,
+    4
+   ]
+  },
+  {
+   "id": "soldat_priester",
+   "pos": [
+    10,
+    5
+   ]
+  }
+ ],
+ "objects": [
+  {
+   "id": "bruecke",
+   "type": "bridge",
+   "pos": [
+    5,
+    5
+   ]
+  },
+  {
+   "id": "hebel",
+   "type": "switch",
+   "pos": [
+    6,
+    5
+   ],
+   "link": [
+    "bruecke"
+   ]
+  }
+ ],
+ "decor": [
+  {
+   "sprite": "fx_ruine1",
+   "pos": [
+    4,
+    5
+   ],
+   "size": 1.0
+  },
+  {
+   "sprite": "fx_ruine2",
+   "pos": [
+    6,
+    6
+   ],
+   "size": 0.9
+  }
+ ],
+ "rewards": {
+  "gold": 220
+ },
+ "objectives": [
+  {
+   "id": "alle_leben",
+   "text": "Kein Held fällt",
+   "reward": {
+    "gold": 90
+   }
+  },
+  {
+   "id": "schnell",
+   "text": "In 12 Runden gewonnen",
+   "turns": 12,
+   "reward": {
+    "items": {
+     "heilhonig": 1
+    }
+   }
+  }
+ ]
+}

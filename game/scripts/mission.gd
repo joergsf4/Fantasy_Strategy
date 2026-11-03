@@ -56,6 +56,8 @@ static func goal_text(goal: Dictionary, enemies_left: int, turn: int, extra := {
 			if not extra.get("present", false):
 				return str(goal.get("wait_text", "Ziel: Sichert die Oase (bald rollt etwas heran)"))
 			return "Ziel: Bleibt %d Runden neben %s (%d/%d)" % [int(goal.get("turns", 3)), extra.get("name", "dem Panzer"), int(extra.get("progress", 0)), int(goal.get("turns", 3))]
+		"free_all":
+			return str(goal.get("text", "Ziel: Befreit alle Gefangenen"))
 		"defeat":
 			return str(goal.get("text", "Ziel: Besiegt den Anführer"))
 		"survive":

@@ -1,0 +1,140 @@
+{
+ "id": "ch12",
+ "title": "Der gesprengte Steg",
+ "map": "res://data/map_ch12.json",
+ "briefing": "Ein Fluss teilt die Karte, und die Frischlinge haben die Brücke gesprengt. Das Fußvolk kommt nicht hinüber. Am anderen Ufer liegt der Hebel, der die Notbrücke herunterlässt: Trefft ihn aus der Ferne (Kanone, Knochenwurf, Kyujutsu, Breitseite, Sternschnuppe) oder bringt jemanden hinüber (Wurf, Flieger). Besiegt alle Gegner. Die Frischlinge sinnen auf Rache für ihren Boss Wart.",
+ "goals": [
+  {
+   "type": "rout"
+  }
+ ],
+ "triggers": [
+  {
+   "when": {
+    "turn": 1
+   },
+   "note": "Die Frischlinge haben die Brücke gesprengt",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "ritter",
+       "right": "frischlinge",
+       "speaker": "frischlinge",
+       "text": "Hehehe! Wir haben die Brücke gesprengt! Ihr kommt nicht rüber!",
+       "right_expr": "lachend"
+      },
+      {
+       "left": "ritter",
+       "right": "frischlinge",
+       "speaker": "ritter",
+       "text": "Ihr kleinen Plagegeister. Das Holz hätte ich auch noch gebraucht.",
+       "left_expr": "wuetend"
+      },
+      {
+       "left": "hund",
+       "right": "frischlinge",
+       "speaker": "frischlinge",
+       "text": "Das ist für unseren Boss! Ihr habt Wart umgehauen, jetzt zahlt ihr!",
+       "right_expr": "wuetend"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 2
+   },
+   "note": "Hinweis auf den Hebel",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "elisabeth",
+       "right": "robo",
+       "speaker": "robo",
+       "text": "Scan: Dort drüben steht ein Hebel, direkt neben dem Brückenkopf. Er scheint die Notbrücke zu steuern."
+      },
+      {
+       "left": "elisabeth",
+       "right": "robo",
+       "speaker": "elisabeth",
+       "text": "Dann treffen wir ihn von hier aus. Ein Kanonenschuss löst jedes Problem!",
+       "right_expr": ""
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "object": {
+     "id": "hebel",
+     "state": "on"
+    }
+   },
+   "note": "Die Notbrücke senkt sich",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "hund",
+       "right": "frischlinge",
+       "speaker": "hund",
+       "text": "Die Notbrücke senkt sich! Jetzt kommen wir!",
+       "left_expr": "wuetend"
+      },
+      {
+       "left": "hund",
+       "right": "frischlinge",
+       "speaker": "frischlinge",
+       "text": "Oh nein! Wer hat den Hebel getroffen?! Das war unser Geheimtrick!",
+       "right_expr": "wuetend"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "kill": {
+     "id": "frischlinge",
+     "count": 1
+    }
+   },
+   "note": "Der erste Frischling fällt",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "ritter",
+       "right": "frischlinge",
+       "speaker": "frischlinge",
+       "text": "Aua! Aua! Das sagen wir dem Boss! ...Oh. Der ist ja tot. Das merken wir uns!",
+       "right_expr": "wuetend"
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "flee": {
+  "frischlinge": [
+   {
+    "left": "$hero",
+    "right": "frischlinge",
+    "speaker": "frischlinge",
+    "text": "Wir kommen wieder! Mit noch mehr Stacheln! Und mit Verstärkung!",
+    "right_expr": "wuetend"
+   },
+   {
+    "left": "$hero",
+    "right": "frischlinge",
+    "speaker": "frischlinge",
+    "text": "Wart wird gerächt! ...Wartet, wo ist eigentlich unser nächster Chef?",
+    "right_expr": "wuetend"
+   }
+  ]
+ }
+}

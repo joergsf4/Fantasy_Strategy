@@ -1,0 +1,171 @@
+{
+ "rows": [
+  "FFFFGGGGFFFF",
+  "FFGGGGGGGGFF",
+  "FGGGFGGGGGGF",
+  "FGGGGGGGGFGF",
+  "GGGGGGGGGGGG",
+  "GGFGGGGGGGGG",
+  "FGGGGGGFGGGF",
+  "FFGGGGGGGGFF",
+  "FFFGGGGGGFFF",
+  "FFFFGGGGFFFF"
+ ],
+ "mood": "nacht",
+ "players": [
+  {
+   "id": "hund",
+   "pos": [
+    1,
+    5
+   ]
+  },
+  {
+   "id": "robo",
+   "pos": [
+    2,
+    4
+   ]
+  },
+  {
+   "id": "samurai",
+   "pos": [
+    2,
+    6
+   ]
+  },
+  {
+   "id": "elisabeth",
+   "pos": [
+    1,
+    4
+   ]
+  },
+  {
+   "id": "ritter",
+   "pos": [
+    1,
+    6
+   ]
+  },
+  {
+   "id": "wendy",
+   "pos": [
+    0,
+    5
+   ]
+  }
+ ],
+ "enemies": [
+  {
+   "id": "kugelblitz",
+   "pos": [
+    9,
+    3
+   ],
+   "hp": 55
+  },
+  {
+   "id": "soldat_infanterie",
+   "pos": [
+    6,
+    3
+   ]
+  },
+  {
+   "id": "soldat_infanterie",
+   "pos": [
+    6,
+    6
+   ]
+  },
+  {
+   "id": "soldat_bogenschuetze",
+   "pos": [
+    7,
+    2
+   ]
+  },
+  {
+   "id": "soldat_bogenschuetze",
+   "pos": [
+    7,
+    7
+   ]
+  },
+  {
+   "id": "soldat_priester",
+   "pos": [
+    9,
+    5
+   ]
+  },
+  {
+   "id": "soldat_beritten",
+   "pos": [
+    5,
+    5
+   ]
+  }
+ ],
+ "objects": [
+  {
+   "id": "maschine",
+   "type": "maschine",
+   "pos": [
+    8,
+    5
+   ]
+  },
+  {
+   "id": "kind1",
+   "type": "hostage",
+   "pos": [
+    7,
+    4
+   ],
+   "figure": "kind_lotte"
+  },
+  {
+   "id": "kind2",
+   "type": "hostage",
+   "pos": [
+    9,
+    4
+   ],
+   "figure": "kind_pip"
+  },
+  {
+   "id": "kind3",
+   "type": "hostage",
+   "pos": [
+    8,
+    6
+   ],
+   "figure": "kind_mia"
+  }
+ ],
+ "decor": [],
+ "zap": 5,
+ "rewards": {
+  "gold": 260
+ },
+ "objectives": [
+  {
+   "id": "alle_leben",
+   "text": "Kein Held fällt",
+   "reward": {
+    "gold": 100
+   }
+  },
+  {
+   "id": "maschine_zerstoert",
+   "text": "Die Maschine ist zerstört",
+   "reward": {
+    "items": {
+     "heilhonig": 2
+    }
+   }
+  }
+ ]
+}

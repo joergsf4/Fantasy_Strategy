@@ -118,7 +118,7 @@ func _ready() -> void:
 		abilities[k]["id"] = k
 	grid = Grid.new(map_data["rows"])
 	world = World.new(map_data.get("objects", []))
-	grid.blocked = world.blocked()
+	_sync_grid()
 	terrain = TerrainView.new()
 	terrain.biome = map_data.get("biome", "wiese")
 	terrain.wall_sides = map_data.get("walls", [])
@@ -249,7 +249,8 @@ func _apply_night_rain(env: Environment, sun: DirectionalLight3D) -> void:
 	mat.set_shader_parameter("shimmer", 0.0)
 	rect.material = mat
 	layer.add_child(rect)
-	_build_rain()
+	if map_data.get("mood", "") == "nacht_regen":
+		_build_rain()
 
 
 ## Regen: dichte Streifen, die schraeg ueber der Karte fallen (CPUParticles3D, laeuft im Compatibility-Renderer sicher).
@@ -348,7 +349,7 @@ func _build_environment() -> void:
 	add_child(sun)
 	if map_data.get("biome", "") == "wueste" and map_data.get("grade", "mexiko") != "none":
 		_apply_desert_light(env, sun)
-	if map_data.get("mood", "") == "nacht_regen":
+	if map_data.get("mood", "") in ["nacht_regen", "nacht"]:
 		_apply_night_rain(env, sun)
 	var center := Vector3((grid.width - 1) / 2.0, 0, (grid.height - 1) / 2.0)
 	cam = Camera3D.new()
@@ -1397,6 +1398,8 @@ func results() -> Dictionary:
 				ok = _count_team("e") == 0
 			"ueberzeugt":
 				ok = retreated.has(o["unit"])
+			"maschine_zerstoert":
+				ok = world.by_id("maschine")["state"] == "broken"
 			"durchgehalten":
 				ok = turn > int(o["turns"])     # so viele Runden ausgehalten, bevor die Szene den Kampf beendet
 		done.append({"id": o["id"], "text": o["text"], "done": ok, "reward": o.get("reward", {})})
@@ -1481,6 +1484,12 @@ func _window_glow(root: Node3D) -> void:
 	root.add_child(l)
 
 
+## Gesperrte Felder und begehbare Bruecken aus der Welt in das Gitter uebernehmen.
+func _sync_grid() -> void:
+	grid.blocked = world.blocked()
+	grid.bridges = world.open_bridges()
+
+
 func _build_objects() -> void:
 	for o in world.objects:
 		_make_object(o)
@@ -1494,7 +1503,10 @@ func _make_object(o: Dictionary) -> void:
 	if o["type"] == "hostage":
 		_make_hostage(o)
 		return
-	if o["type"] in ["hive", "hive_p", "bell", "orphanage", "ship", "crate", "teahouse", "tent", "switch"]:
+	if o["type"] == "bridge":
+		_make_bridge(o)
+		return
+	if o["type"] in ["maschine", "hive", "hive_p", "bell", "orphanage", "ship", "crate", "teahouse", "tent", "switch"]:
 		_make_ch5_object(o)
 		return
 	var stone := Color(0.52, 0.5, 0.54)
@@ -1557,6 +1569,16 @@ func _refresh_object(o: Dictionary, animate: bool) -> void:
 	var p: Dictionary = _obj_nodes[o["id"]]
 	var st: String = o["state"]
 	match o["type"]:
+		"bridge":     # Notbruecke: hochgeklappt (senkrecht am Westufer) oder heruntergelassen
+			var piv := p["lever"] as Node3D
+			var ang := 0.0 if st == "open" else -90.0
+			if animate and st == "open":
+				Sfx.event("gate_open")
+				piv.create_tween().tween_property(piv, "rotation_degrees:z", ang, 0.8).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_OUT)
+				fx.shake(0.06, 0.4)
+				fx.particles("fx_foam", to_world(o["pos"]) + Vector3(0, 0.1, 0), 14, 3.0, 0.3, 0.8, 5.0, Color.WHITE, false, 120.0)
+			else:
+				piv.rotation_degrees.z = ang
 		"wall":
 			p["body"].visible = st == "intact"
 			p["rubble"].visible = st == "broken"
@@ -1609,13 +1631,54 @@ func _refresh_object(o: Dictionary, animate: bool) -> void:
 				fx.particles("fx_smoke", to_world(o["pos"]) + Vector3(0, 0.3, 0), 10, 1.5, 0.7, 1.0, -0.3, Color(0.3, 0.3, 0.3), false, 70.0)
 	if o["type"] == "hive_p":
 		(p["body"] as Node3D).visible = st == "active"
+	if o["type"] == "maschine":
+		(p["body"] as Node3D).visible = st == "intact"
+		(p["glow"] as Node3D).visible = st == "intact"
+		(p["light"] as Node3D).visible = st == "intact"
+		if animate and st == "broken":
+			Sfx.event("explosion")
+			fx._explosion(to_world(o["pos"]) + Vector3(0, 0.6, 0), 1.6)
+			fx.shake(0.12, 0.5)
 	if not ["gate", "wall", "house"].has(o["type"]) and p["rubble"] != null:
 		(p["rubble"] as Node3D).visible = false
 
 
+## Notbruecke ueber einen Fluss (Weltobjekt "bridge"): Holzplanken mit Gelaender, um die westliche Kante drehbar. Hochgeklappt sperrt sie,
+## heruntergelassen (Hebel) verbindet sie beide Ufer. Reine Mesh-Optik, keine Grafikdatei noetig.
+func _make_bridge(o: Dictionary) -> void:
+	var root := Node3D.new()
+	root.position = to_world(o["pos"]) + Vector3(0, WATER_Y, 0)
+	add_child(root)
+	var pivot := Node3D.new()
+	pivot.position = Vector3(-0.5, 0, 0)
+	root.add_child(pivot)
+	var kit := MeshKit.new()
+	var wood := Color(0.5, 0.33, 0.17)
+	var dark := Color(0.34, 0.21, 0.1)
+	for i in 5:         # Planken quer zur Laufrichtung
+		kit.box(Vector3(0.1 + i * 0.2, 0.0, 0.0), Vector3(0.17, 0.07, 0.92), wood if i % 2 == 0 else wood.darkened(0.12))
+	for z in [-0.42, 0.42]:         # Holme und Gelaender
+		kit.box(Vector3(0.5, 0.0, z), Vector3(1.0, 0.1, 0.07), dark)
+		kit.box(Vector3(0.5, 0.2, z), Vector3(1.0, 0.05, 0.05), dark)
+		for x in [0.05, 0.5, 0.95]:
+			kit.box(Vector3(x, 0.1, z), Vector3(0.05, 0.22, 0.05), dark)
+	var mat := StandardMaterial3D.new()
+	mat.vertex_color_use_as_albedo = true
+	mat.roughness = 1.0
+	var mi := MeshInstance3D.new()
+	mi.mesh = kit.build()
+	mi.material_override = mat
+	pivot.add_child(mi)
+	_obj_nodes[o["id"]] = {"root": root, "body": mi, "rubble": null, "doors": [], "lever": pivot}
+
+
+## Notbruecke und die Obergrenze fuer Brueckenhoehe: knapp ueber der Wasseroberflaeche.
+const WATER_Y := 0.02
+
+
 ## Karten-Objekte als Pixel-Sprites (Gemini, freigestellt): Bienenstock, Glocke, Waisenhaus, Teehaus, Schiff, Hafen-Hindernisse.
 ## Die Spiellogik (Sperren, Zustaende) steckt in World, hier nur die Optik.
-const OBJ_SPRITE := {"hive": ["fx_bienenstock", 1.0], "hive_p": ["fx_bienenstock", 0.9], "bell": ["fx_glocke", 1.6], "orphanage": ["fx_waisenhaus", 1.9], "teahouse": ["fx_teehaus", 1.7], "tent": ["fx_zelt", 1.25], "switch": ["fx_hebel", 0.7]}
+const OBJ_SPRITE := {"hive": ["fx_bienenstock", 1.0], "hive_p": ["fx_bienenstock", 0.9], "bell": ["fx_glocke", 1.6], "orphanage": ["fx_waisenhaus", 1.9], "teahouse": ["fx_teehaus", 1.7], "tent": ["fx_zelt", 1.25], "switch": ["fx_hebel", 0.7], "maschine": ["fx_maschine", 2.3]}
 const CRATE_SPRITES := [["fx_kiste", 1.0], ["fx_fass", 1.05], ["fx_saecke", 1.0]]
 
 
@@ -1669,6 +1732,19 @@ func _make_ch5_object(o: Dictionary) -> void:
 		_:
 			var def: Array = OBJ_SPRITE[o["type"]]
 			parts["body"] = _object_sprite(def[0], def[1], root)
+	if o["type"] == "maschine":     # cyanfarbener Schein, der pulsiert, und ein Punktlicht
+		var mglow := fx.make_sprite("soft", Vector3(0, 1.0, 0.1), 3.2, true, Color(0.3, 0.8, 1.0, 0.55), 0, root)
+		var mlight := OmniLight3D.new()
+		mlight.light_color = Color(0.4, 0.85, 1.0)
+		mlight.light_energy = 1.6
+		mlight.omni_range = 4.5
+		mlight.position = Vector3(0, 1.2, 0.5)
+		root.add_child(mlight)
+		var mp := mlight.create_tween().set_loops()
+		mp.tween_property(mlight, "light_energy", 2.4, 0.8).set_trans(Tween.TRANS_SINE)
+		mp.tween_property(mlight, "light_energy", 1.2, 1.0).set_trans(Tween.TRANS_SINE)
+		parts["glow"] = mglow
+		parts["light"] = mlight
 	if o["type"] == "orphanage":
 		var offs := [Vector3(-0.42, 0, 0.62), Vector3(0.0, 0, 0.7), Vector3(0.42, 0, 0.62)]
 		for j in 3:
@@ -1741,7 +1817,7 @@ func _make_burnable(o: Dictionary) -> void:
 
 ## Welt hat sich veraendert: Sperren neu setzen, Darstellung anpassen, Ausloeser pruefen.
 func _after_world_change(changed: Array[Dictionary], quiet := false) -> void:
-	grid.blocked = world.blocked()
+	_sync_grid()
 	for c in changed:
 		if not _obj_nodes.has(c["id"]):
 			_make_object(c)
@@ -2457,6 +2533,11 @@ func goal_met() -> bool:
 			return turn > int(goal["turns"])
 		"free":
 			return world.by_id(goal["id"])["state"] == "free"
+		"free_all":     # alle Gefangenen (Weltobjekte "hostage") befreit
+			for fo in world.objects:
+				if fo["type"] == "hostage" and fo["state"] != "free":
+					return false
+			return true
 		"capture":
 			var cu := _find(str(goal["unit"]))
 			return not cu.is_empty() and cu["team"] == "p"
@@ -2669,7 +2750,7 @@ func _fire(t: Dictionary, who := {}) -> void:
 					fx.light_flash(bp, Color(1.0, 0.55, 0.2), 3.0, 4.0, 0.9)
 					bo["state"] = "gone"
 					_refresh_object(bo, true)
-			grid.blocked = world.blocked()
+			_sync_grid()
 			Sfx.event("fire")
 			await get_tree().create_timer(1.1).timeout
 		if step.has("spawn"):
@@ -3301,7 +3382,7 @@ func _apply_effect(u: Dictionary, ab: Dictionary, target: Dictionary, ef: Dictio
 				await _strike(u, v, ef["mult"], 0.0, false)
 		"summon_hive":
 			var hive := world.add_object("hive_p", target["pos"], {"owner": u["uid"]})
-			grid.blocked = world.blocked()
+			_sync_grid()
 			_make_object(hive)
 			_refresh_object(hive, true)
 			await fx.hive_appear(u, to_world(target["pos"]))
@@ -3511,6 +3592,9 @@ func _end_player_turn() -> void:
 	if state == State.OVER:
 		return
 	await _hive_phase()
+	await _machine_phase()
+	if state == State.OVER:
+		return
 	for e in units.filter(func(u: Dictionary) -> bool: return u["team"] == "e"):
 		if not units.has(e) or e["done"]:
 			continue
@@ -3561,6 +3645,28 @@ func _run_scheduled() -> void:
 const HIVE_CAP := 6      # so viele Bienenkrieger gleichzeitig, hoechstens (Messung: docs/balance.md, Mission 5)
 
 ## Bienenstoecke: alle 2 Gegnerphasen schluepft ein Bienenkrieger (hoechstens HIVE_CAP gleichzeitig).
+## Energiemaschine (Kapitel 13): jede Gegnerphase entlaedt sie sich in alle Helden direkt neben ihr (Schaden aus dem Objektfeld "zap", Standard 5).
+func _machine_phase() -> void:
+	for o in world.objects:
+		if o["type"] != "maschine" or o["state"] != "intact":
+			continue
+		var zap := int(map_data.get("zap", 5))
+		var hit := false
+		for u in units.duplicate():
+			if u["team"] == "p" and Grid.dist(u["pos"], o["pos"]) <= 1 and units.has(u):
+				hit = true
+				var at := to_world(u["pos"]) + Vector3(0, 0.6, 0)
+				await fx.beam(to_world(o["pos"]) + Vector3(0, 1.0, 0), at, Color(0.4, 0.85, 1.0), 0.2, 0.35)
+				_actor = {}
+				await _deal(u, zap, "Zap!")
+		if hit:
+			Sfx.event("zap")
+			fx.shake(0.05, 0.2)
+		_check_end()
+		if state == State.OVER:
+			return
+
+
 func _hive_phase() -> void:
 	for o in world.objects:
 		if o["type"] != "hive" or o["state"] != "active":
@@ -3681,7 +3787,7 @@ func _player_hive_phase() -> void:
 		o["age"] = int(o["age"]) + 1
 		if int(o["age"]) >= HIVE_P_LIFE and not o.get("perm", false):
 			o["state"] = "gone"
-			grid.blocked = world.blocked()
+			_sync_grid()
 			_refresh_object(o, true)
 			fx.particles("fx_smoke", to_world(o["pos"]) + Vector3(0, 0.4, 0), 10, 1.5, 0.6, 0.9, -0.3, Color(0.8, 0.7, 0.4), false, 70.0)
 			continue

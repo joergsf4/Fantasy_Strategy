@@ -595,5 +595,27 @@
   "abilities": [],
   "weapon": "fist",
   "body": "flesh"
+ },
+ "kugelblitz": {
+  "name": "Professor Kugelblitz",
+  "hp": 55,
+  "atk": 9,
+  "def": 4,
+  "res": 5,
+  "move": 3,
+  "range_min": 1,
+  "range": 2,
+  "role": "damage",
+  "dmg_type": "body",
+  "tags": [
+   "boss"
+  ],
+  "abilities": [
+   "roter_laser"
+  ],
+  "weapon": "metal",
+  "body": "flesh",
+  "flees": true,
+  "size": 1.45
  }
 }
