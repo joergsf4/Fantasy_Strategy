@@ -159,3 +159,6 @@ Gebaut (`ch9`): Wart ohne Flucht, Frischlinge als eine Figur, Regent als Strohma
 
 ## Grafikoptionen (umgesetzt, Compatibility-Renderer bleibt)
 Esc-Menü, Reiter „Grafik“ (`PauseMenu._show_graphics`, `Settings` in `scripts/settings.gd`, gespeichert in `user://settings.cfg`): Voreinstellung (Niedrig/Mittel/Hoch), Anzeige (Fenster/Vollbild), V-Sync, Bildrate (30/60/120/unbegrenzt), Renderauflösung (50/75/100 %), Kantenglättung (Aus/FXAA/MSAA 2x/4x), Schatten (Aus bis Hoch), Leuchteffekt, Tiefenunschärfe (Tilt-Shift), Partikel und Regen. Entscheidung des Nutzers: **kein Wechsel auf Forward+**, kein Raytracing. Test: `tests/test_settings.gd`. Offen: Helligkeit/Kontrast-Regler, Lautstärkeregler im selben Menü.
+
+### Aufgehoben: Wachturm der Frischlinge
+Das Sprite `fx_wachturm` (Holzturm auf Stelzen mit Eberschädel-Banner) ist fertig, passte aber nicht in Mission 12. Für eine spätere Schweine-Mission oder ein Lager der Frischlinge nutzen (als `decor` mit `sprite: "fx_wachturm"`).

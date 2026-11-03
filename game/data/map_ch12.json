@@ -122,16 +122,7 @@
    ]
   }
  ],
- "decor": [
-  {
-   "sprite": "fx_wachturm",
-   "pos": [
-    8,
-    5
-   ],
-   "size": 2.3
-  }
- ],
+ "decor": [],
  "rewards": {
   "gold": 220
  },
