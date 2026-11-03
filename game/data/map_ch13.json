@@ -7,9 +7,9 @@
   "GGGGGGGGGGGG",
   "GGFGGGGGGGGG",
   "FGGGGGGFGGGF",
-  "FFGGGGGGGGFF",
-  "FFFGGGGGGFFF",
-  "FFFFGGGGFFFF"
+  "GGGGGGGGGGFF",
+  "GGGGGGGGGFFF",
+  "GGGGGGGGFFFF"
  ],
  "mood": "nacht",
  "players": [
@@ -17,42 +17,42 @@
    "id": "hund",
    "pos": [
     1,
-    5
+    8
    ]
   },
   {
    "id": "robo",
    "pos": [
-    0,
-    4
+    1,
+    7
    ]
   },
   {
    "id": "samurai",
    "pos": [
-    1,
-    6
+    0,
+    8
    ]
   },
   {
    "id": "elisabeth",
    "pos": [
-    1,
-    4
+    0,
+    7
    ]
   },
   {
    "id": "ritter",
    "pos": [
-    0,
-    6
+    1,
+    9
    ]
   },
   {
    "id": "wendy",
    "pos": [
     0,
-    5
+    9
    ]
   }
  ],
@@ -76,7 +76,7 @@
    "id": "soldat_infanterie",
    "pos": [
     6,
-    7
+    4
    ]
   },
   {
@@ -90,7 +90,7 @@
    "id": "soldat_bogenschuetze",
    "pos": [
     7,
-    8
+    7
    ]
   },
   {
