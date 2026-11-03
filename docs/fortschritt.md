@@ -28,3 +28,6 @@ Feste Stufen mit wachsenden Zahlen brachten keinen Spielspaß, deshalb gibt es T
 
 ## Messung (Stand mit Wirkung statt Abklingzeit)
 `docs/balance_kurve.md`: Mit den erwarteten Punkten (0 bis 3) und Ausrüstungen erreicht die Zielquote bei Mission 3 etwa ×1,45, Mission 5 ×1,6, Mission 6 ×1,45, Mission 7 ×1,7, Mission 8 ×1,35 und Mission 12 über ×2,5 (Brücke ab Runde 4). Eingestellt sind 1,2 / 1,5 / 1,5 / 1,7 / 1,3 / 2,0 für Mission 3, 5, 6, 7, 8, 12, dazu 1,5 für Mission 9 und 1,7 für Mission 13 (vom Simulator nicht gemessen). Das liegt etwas unter der Zielquote, damit es nicht zu hart wird. Erst im Spiel prüfen, dann nachstellen.
+
+## Teststart mit üblicher Ausstattung
+`START_CH=ch14 godot --path game` (optional `START_SKIP=1`) startet direkt in einer Mission und gibt allen Helden das, was dort üblich wäre (`Party.for_chapter`): Talentpunkte nach der Standardverteilung (Leben, Fähigkeit 1, Angriff, Fähigkeit 2), Ausrüstung nach der Zielkurve (`gear_tier` der Mission, `Progression.gear_for`), 400 Gold und Vorräte (4 Heiltränke, 2 Gegengift, 2 Äther, 1 Rauchbombe). Der Teststart wird nie gespeichert (`Party.test_run`), der echte Spielstand bleibt unberührt.

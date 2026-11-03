@@ -14,10 +14,30 @@ var pool: Array = []               # besitzt, aber nicht getragen
 var squads: Dictionary = {}              # {Mission: [Helden]}: vom Spieler geaenderte Aufstellung vor der Mission
 var nemesis: Array = []            # entkommene Gegner, tauchen in spaeteren Missionen wieder auf
 var secrets_seen: Array = []     # gesehene Geheimnis-Szenen (Szene laeuft nur beim ersten Mal)
+var test_run := false              # Teststart (START_CH, Testlabor): wird nie gespeichert
 var earned := 0                    # geschaffte Kampfmissionen; daraus ergeben sich Gruppenstufe und Talentpunkte (alle levels_per_point Stufen einer)
 var prompted: Dictionary = {}      # {Held: Stufe}, ab der der Aufstiegsbildschirm fuer ihn schon gezeigt wurde
 var talents: Dictionary = {}       # verteilte Punkte je Held {id: {hp, atk, a1, a2}} (Talents)
 var bought: Dictionary = {}        # im aktuellen Lager gekauft {id: Anzahl} (Haendler hat nur festen Vorrat)
+
+
+## Gruppe mit dem, was zu Beginn von Kapitel n ueblich waere: Talentpunkte (Standardverteilung) fuer alle Helden, Ausruestung nach der Zielkurve,
+## Gold und Vorraete. Wird nie gespeichert (test_run).
+static func for_chapter(defs: Dictionary, n: int) -> Party:
+	var p := Party.new_game()
+	p.test_run = true
+	p.chapter = n
+	p.earned = Progression.missions_done_before(n)
+	p.gold = 400
+	p.inventory = {"heiltrank": 4, "gegengift": 2, "aether": 2, "rauchbombe": 1}
+	var tier: float = float(((Progression.data()["missions"] as Dictionary).get("ch%d" % n, {}) as Dictionary).get("gear_tier", 1.0))
+	for id: String in defs:
+		if not defs[id].get("hero", false):
+			continue
+		p.talents[id] = Talents.default_allocation(points_for(p.earned))
+		if n > 1:
+			p.equipment[id] = Progression.gear_for(defs[id], tier)
+	return p
 
 
 static func new_game() -> Party:
@@ -146,6 +166,8 @@ static func _ints(d: Dictionary) -> Dictionary:
 
 
 func save(path := SAVE_PATH) -> void:
+	if test_run:
+		return
 	var f := FileAccess.open(path, FileAccess.WRITE)
 	f.store_string(JSON.stringify(to_dict(), "\t"))
 	f.close()

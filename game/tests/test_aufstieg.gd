@@ -122,5 +122,16 @@ func _initialize() -> void:
 		check(hu["maxhp"] == int(defs["hund"]["hp"]) + 8 and hu["atk"] == int(defs["hund"]["atk"]) + 1, "Kampf: Leben +8, Angriff +1 (%d, %d)" % [hu["maxhp"], hu["atk"]])
 		var kb_orig: float = float(JSON.parse_string(FileAccess.get_file_as_string("res://data/abilities.json"))["knochenwurf"]["effects"][0]["mult"])
 		check(float(b2.abilities["knochenwurf"]["effects"][0]["mult"]) > kb_orig and int(b2.abilities["knochenwurf"]["cd"]) == 2, "Kampf: Faehigkeit 1 hat Rang 1 (mehr Schaden, gleiche Abklingzeit)")
+	# Teststart eines Kapitels mit ueblicher Ausruestung und Talenten (START_CH)
+	var tp := Party.for_chapter(defs, 14)
+	check(tp.test_run and tp.chapter == 14 and tp.earned == 12 and tp.points("robo") == 0, "Teststart Kapitel 14: 12 Missionen, alle Punkte verteilt")
+	check(Talents.spent(tp.talents["robo"]) == 4 and not (tp.equipment["robo"] as Array).is_empty(), "Teststart: Robo hat 4 Punkte verteilt und Ausruestung (%s)" % [tp.equipment["robo"]])
+	var tier_ok := true
+	for it: String in tp.equipment["samurai"]:
+		if int(Items.equipment()[it]["tier"]) > 4:
+			tier_ok = false
+	check(tier_ok and tp.equipment.has("wendy") and tp.gold == 400, "Teststart: Ausruestung fuer alle Helden")
+	tp.save("user://test_party_nosave.json")
+	check(not FileAccess.file_exists("user://test_party_nosave.json"), "Teststart wird nie gespeichert")
 	print("aufstieg: ", "OK" if fails == 0 else "%d Fehler" % fails)
 	quit(fails)

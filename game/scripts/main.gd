@@ -66,6 +66,9 @@ func _run() -> void:
 	add_child(stage)
 	_play_music(TITLE_MUSIC)
 	var start_ch := OS.get_environment("START_CH")      # START_CH=ch14 (und START_SKIP=1 ohne Einleitung): Titel und Menue ueberspringen, direkt in diese Mission
+	if start_ch != "" and CHAPTERS.has(start_ch):         # mit ueblichen Talenten, Ausruestung und Vorraeten dieser Mission, ohne den Spielstand anzufassen
+		party = Party.for_chapter(units, int(start_ch.substr(2)))
+		stage.party = party
 	var choice: Dictionary = {"action": "continue", "cheat": true} if start_ch != "" and CHAPTERS.has(start_ch) else await _title(mini(party.chapter, CHAPTERS.size()) if resumed else 0)
 	if choice["action"] == "new":              # Neues Spiel: alter Spielstand weg
 		Party.delete_save()
