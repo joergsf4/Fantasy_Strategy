@@ -98,7 +98,7 @@ func _initialize() -> void:
 	check(Talents.default_allocation(5) == {"hp": 2, "atk": 1, "a1": 1, "a2": 1}, "Standardverteilung: %s" % [Talents.default_allocation(5)])
 	check(Talents.default_allocation(99) == {"hp": 3, "atk": 3, "a1": 3, "a2": 3}, "Standardverteilung hoechstens Rang 3")
 	# Gegnerstaerke je Mission
-	check(Progression.enemy_scale("ch1") == {"hp": 1.0, "atk": 1.0} and Progression.enemy_scale("ch13")["hp"] > Progression.enemy_scale("ch5")["hp"] and Progression.enemy_scale("unbekannt")["hp"] == 1.0, "Gegnerfaktoren je Mission")
+	check(Progression.enemy_scale("ch1") == {"hp": 1.0, "atk": 1.0} and Progression.enemy_scale("ch13")["hp"] > Progression.enemy_scale("ch1")["hp"] and Progression.enemy_scale("unbekannt")["hp"] == 1.0, "Gegnerfaktoren je Mission")
 	var defs: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/units.json"))
 	var b := Battle.new()
 	var m13 := Mission.load_mission("ch13")
