@@ -5,6 +5,10 @@ extends Control
 signal chosen(index: int, skip_story: bool)
 signal new_game_requested
 
+var lab_runner := Callable()      # Main: func(kind, hero, foe, maxed) -> Coroutine (Testlabor)
+var lab_heroes: Array = []
+var lab_foes: Array = []
+
 var chapters: Array = []     # [{id, title}]
 var save_info := ""
 var _info: Label
@@ -48,12 +52,23 @@ func _ready() -> void:
 	row.add_child(_button("Direkt in den Kampf", func() -> void: pick(dd.selected, true)))
 	col.add_child(row)
 	col.add_child(_button("Soundlabor", _open_lab))
+	col.add_child(_button("Testlabor (Arena, Bildschirme, Lager)", _open_test_lab))
 	col.add_child(_button("Spielstand zurücksetzen", func() -> void: new_game_requested.emit()))
 
 
 func refresh_info() -> void:
 	if _info != null:
 		_info.text = save_info
+
+
+func _open_test_lab() -> void:
+	var tl := TestLab.new()
+	tl.setup(lab_heroes, lab_foes)
+	tl.run.connect(func(kind: String, hero: String, foe: String, maxed: bool) -> void:
+		visible = false
+		await lab_runner.call(kind, hero, foe, maxed)
+		visible = true)
+	add_child(tl)
 
 
 func _open_lab() -> void:

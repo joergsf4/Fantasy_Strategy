@@ -171,3 +171,6 @@ Die festen Stufen wurden entfernt; die Gruppe steigt je Mission eine Stufe, alle
 
 ### Stachelia wird Heldin (ab Mission 14)
 `bienenmaedchen` ist jetzt `hero: true` mit `from: 14`: wählbar ab der nächsten Mission nach dem Labor. Sie hat schon zwei Fähigkeiten (Giftstachel und Bienenkorb), also zwei Talentfelder. Offen: Mission 14 selbst, Dialog zum Beitritt (sie steht den Helden weiter ablehnend gegenüber), Heilhonig als dritte Idee nur falls gewünscht.
+
+### Testlabor (umgesetzt, 2026-11-03)
+Im Kapitelmenü (Hauptmenü, „brumm“ tippen) gibt es **„Testlabor“** (`TestLab`, `Main._lab_run`): **Arena** (gewählter Held gegen Gegner und zwei Büttel, auf Wunsch mit vollen Talenten und Ausrüstung Stufe 3), **Aufstiegsbildschirm**, **Lager** (Kapitel 8, 999 Gold), **Belohnungs- und Statistikbildschirm** und **Reisebild**. So lässt sich jede neue Fähigkeit oder jeder Bildschirm direkt ansehen, ohne Missionen zu spielen. Screenshot-Variante: `SHOT=lab SHOT_PART=arena|aufstieg|lager|belohnung|reise`.

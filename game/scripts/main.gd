@@ -159,6 +159,14 @@ func _choose_level() -> Array:
 	var ls := LevelSelect.new()
 	ls.setup(list)
 	ls.save_info = party.summary()
+	ls.lab_runner = _lab_run
+	for hid: String in units:
+		if units[hid].get("hero", false):
+			ls.lab_heroes.append({"id": hid, "name": units[hid]["name"]})
+	ls.lab_foes = [{"id": "soldat_infanterie", "name": "3 Büttel"}]
+	for fid in ["wart", "cyborg_wart", "kugelblitz", "fuerst", "oskar", "maja", "xiulan", "frischlinge", "bienenmaedchen", "panzer"]:
+		if units.has(fid):
+			ls.lab_foes.append({"id": fid, "name": units[fid]["name"] + " + 2 Büttel"})
 	ls.new_game_requested.connect(func() -> void:
 		Party.delete_save()
 		party = Party.new_game()
@@ -169,6 +177,78 @@ func _choose_level() -> Array:
 	var res: Array = await ls.chosen
 	layer.queue_free()
 	return res
+
+
+## Testlabor: springt direkt zu einer Stelle (Arena mit gewaehltem Helden und Gegner, Aufstiegs-, Lager-, Belohnungs- oder Reisebild).
+func _lab_run(kind: String, hero: String, foe: String, maxed: bool) -> void:
+	var lab_party := Party.new_game()
+	lab_party.earned = 21 if maxed else 3                 # Stufe 22 (7 Punkte) bzw. Stufe 4
+	lab_party.gold = 999
+	if maxed:
+		for k in ["hp", "atk", "a1", "a2"]:
+			lab_party.spend_point(hero, k)
+		lab_party.talents[hero] = {"hp": 3, "atk": 3, "a1": 3, "a2": 3}
+		var gear: Array = []
+		for slot in ["waffe", "ruestung", "talisman"]:
+			var best := ""
+			for iid: String in Items.equipment():
+				var it: Dictionary = Items.equipment()[iid]
+				if it["slot"] == slot and int(it["tier"]) <= 3 and Items.can_equip({"dmg_type": units[hero].get("dmg_type", "body"), "range": int(units[hero]["range"])}, iid):
+					if best == "" or int(it["tier"]) >= int(Items.equipment()[best]["tier"]):
+						best = iid
+			if best != "":
+				gear.append(best)
+		lab_party.equipment[hero] = gear
+	match kind:
+		"arena":
+			var m := Mission.load_mission("ch1")
+			m["players"] = [{"id": hero, "pos": [2, 7]}]
+			var enemies: Array = []
+			if foe != "soldat_infanterie":
+				enemies.append({"id": foe, "pos": [8, 7]})
+			enemies.append({"id": "soldat_infanterie", "pos": [7, 6]})
+			enemies.append({"id": "soldat_infanterie", "pos": [7, 8]})
+			if foe == "soldat_infanterie":
+				enemies.append({"id": "soldat_infanterie", "pos": [8, 7]})
+			m["enemies"] = enemies
+			m["triggers"] = []
+			m["goals"] = [{"type": "rout"}]
+			m["no_flee"] = [foe]
+			stage.map_data = m
+			stage.party = lab_party
+			stage.new_battle()
+			_play_music(BATTLE_MUSIC, 1.0)
+			await stage.start_battle()
+			await stage.battle.finished
+			_fade_music(1.0)
+			stage.party = party
+			stage.map_data = Mission.load_mission("ch1")
+			stage.new_battle()
+			stage.set_mode("dialog")
+		"aufstieg":
+			stage.set_mode("dialog")
+			await _talent_screen_with(lab_party, [hero])
+		"lager":
+			stage.set_mode("dialog")
+			var cm := Mission.load_mission("ch8")
+			lab_party.chapter = 8
+			var sq: Array = lab_party.squad_for(cm)
+			var cl := CanvasLayer.new()
+			cl.layer = 6
+			add_child(cl)
+			var cp := Camp.new()
+			cp.setup(lab_party, units, sq, cm)
+			cl.add_child(cp)
+			await cp.closed
+			cl.queue_free()
+		"belohnung":
+			stage.set_mode("dialog")
+			await _reward({"gold": 205, "items": {"heiltrank": 1}, "materials": {"kraut": 3}, "equipment": [], "level_to": 4, "point_gain": true,
+				"objectives": [{"id": "a", "text": "Kein Held fällt", "done": true, "reward": {"gold": 60}}], "turns": 7,
+				"stats": {"rows": [{"id": hero, "name": units[hero]["name"], "alive": true, "hp": 20, "maxhp": 32, "dealt": 41, "taken": 12, "healed": 0, "kills": 3, "abs": 2, "bonus": 1}], "awards": []}})
+		"reise":
+			await _play_interlude(Mission.load_mission("ch10").get("interlude", {}))
+			await _cover_out(0.4)
 
 
 ## Mission laden und die vom Spieler gewaehlte Gruppe einsetzen (Plaetze der Karte bleiben, nur die Helden wechseln).
@@ -339,6 +419,17 @@ func _reward(res: Dictionary, fade := true) -> void:
 
 
 ## Aufstiegs-Bildschirm fuer diese Helden (Talentpunkte verteilen); nichts zu tun, wenn niemand einen freien Punkt hat.
+func _talent_screen_with(p: Party, hero_ids: Array) -> void:
+	var layer := CanvasLayer.new()
+	layer.layer = 6
+	add_child(layer)
+	var ts := TalentScreen.new()
+	ts.setup(p, units, hero_ids)
+	layer.add_child(ts)
+	await ts.closed
+	layer.queue_free()
+
+
 func _talent_screen(hero_ids: Array) -> void:
 	if hero_ids.is_empty():
 		return
@@ -734,6 +825,18 @@ func _screenshot_mode() -> void:
 		rl.add_child(rs)
 		for i in 40:
 			await get_tree().process_frame
+		get_viewport().get_texture().get_image().save_png(OS.get_environment("SHOT_OUT"))
+		get_tree().quit()
+		return
+	if mode == "lab":   # Testlabor-Sprung: SHOT_PART=arena|aufstieg|lager|belohnung|reise, SHOT_CH=Held, SHOT_PICK=Gegner, SHOT_GOLD=1 fuer volle Talente
+		stage = Stage.new()
+		stage.setup(map, units)
+		add_child(stage)
+		party = Party.new_game()
+		stage.party = party
+		_lab_run(OS.get_environment("SHOT_PART"), OS.get_environment("SHOT_CH") if OS.get_environment("SHOT_CH") != "" else "robo",
+			OS.get_environment("SHOT_PICK") if OS.get_environment("SHOT_PICK") != "" else "soldat_infanterie", OS.get_environment("SHOT_GOLD") == "1")
+		await get_tree().create_timer(float(OS.get_environment("SHOT_DELAY")) if OS.get_environment("SHOT_DELAY") != "" else 3.0).timeout
 		get_viewport().get_texture().get_image().save_png(OS.get_environment("SHOT_OUT"))
 		get_tree().quit()
 		return
