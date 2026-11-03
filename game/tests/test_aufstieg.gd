@@ -46,20 +46,26 @@ func _initialize() -> void:
 	for w: Dictionary in p.stock():
 		all += int(w["price"]) * int(w["n"])
 	check(all > 1000, "Sortiment kostet deutlich mehr als eine Mission einbringt (%d Gold)" % all)
-	# Talentpunkte
+	# Gruppenstufe und Talentpunkte (alle 3 Stufen einer, nur fuer Helden in der Gruppe)
 	var q := Party.new_game()
-	check(q.points("ritter") == 0, "Am Anfang keine Punkte")
+	check(q.level() == 1 and q.points("ritter") == 0, "Stufe 1, keine Punkte")
+	for i in 2:
+		q.absorb({"inventory": {}, "materials": {}, "gold": 0, "equipment": []})
+	check(q.level() == 3 and q.points("ritter") == 0, "Nach zwei Missionen Stufe 3, noch kein Punkt")
 	q.absorb({"inventory": {}, "materials": {}, "gold": 0, "equipment": []})
-	q.absorb({"inventory": {}, "materials": {}, "gold": 0, "equipment": []})
-	check(q.points("ritter") == 2 and q.points("wendy") == 2 and q.points("hund") == 2, "Jeder Held bekommt je Mission einen Punkt, egal ob dabei")
-	check(q.spend_point("ritter", "hp") and q.spend_point("ritter", "a1") and not q.spend_point("ritter", "atk"), "zwei Punkte ausgeben, dritter fehlt")
-	check(q.points("ritter") == 0 and q.points("hund") == 2, "Punkte gehoerem dem einzelnen Helden")
-	check(q.refund_point("ritter", "hp") and q.points("ritter") == 1 and not q.refund_point("ritter", "atk"), "Punkt zurueckholen, leeres Feld geht nicht")
-	for i in 5:
+	check(q.level() == 4 and q.points("ritter") == 1 and q.points("wendy") == 1, "Stufe 4: ein Punkt fuer jeden Helden (gleich)")
+	check(Party.points_for(12) == 4 and Party.points_for(13) == 4 and Party.points_for(2) == 0, "Punkte alle drei Missionen")
+	check(q.needs_prompt("ritter") and q.needs_prompt("hund"), "Aufstiegsbildschirm faellig")
+	q.mark_prompted("ritter")
+	check(not q.needs_prompt("ritter") and q.needs_prompt("hund"), "Nur wer noch nicht gefragt wurde")
+	check(q.spend_point("ritter", "a1") and q.points("ritter") == 0 and not q.spend_point("ritter", "hp"), "Punkt ausgeben, keiner mehr frei")
+	check(q.points("hund") == 1, "Punkte gehoeren dem einzelnen Helden")
+	check(q.refund_point("ritter", "a1") and q.points("ritter") == 1 and not q.refund_point("ritter", "atk"), "Punkt zurueckholen, leeres Feld geht nicht")
+	for i in 14:
 		q.earned += 1
 		q.spend_point("hund", "atk")
 	check(q.ranks("hund")["atk"] == 3, "hoechstens Rang 3")
-	check(Party.from_dict(q.to_dict()).ranks("hund")["atk"] == 3 and Party.from_dict(q.to_dict()).earned == q.earned, "Talente werden gespeichert")
+	check(Party.from_dict(q.to_dict()).ranks("hund")["atk"] == 3 and Party.from_dict(q.to_dict()).earned == q.earned and Party.from_dict(q.to_dict()).prompted.has("ritter"), "Talente und Aufstiegsstand werden gespeichert")
 	check((q.loadout()["talents"] as Dictionary).has("ritter"), "Kampf bekommt die Talente")
 	# Bonus und Faehigkeits-Raenge
 	var tl := {"hp": 2, "atk": 3, "a1": 0, "a2": 0}

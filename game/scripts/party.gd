@@ -14,7 +14,8 @@ var pool: Array = []               # besitzt, aber nicht getragen
 var squads: Dictionary = {}              # {Mission: [Helden]}: vom Spieler geaenderte Aufstellung vor der Mission
 var nemesis: Array = []            # entkommene Gegner, tauchen in spaeteren Missionen wieder auf
 var secrets_seen: Array = []     # gesehene Geheimnis-Szenen (Szene laeuft nur beim ersten Mal)
-var earned := 0                    # Talentpunkte, die jeder Held bisher verdient hat (1 je geschaffter Mission, fuer alle gleich)
+var earned := 0                    # geschaffte Kampfmissionen; daraus ergeben sich Gruppenstufe und Talentpunkte (alle levels_per_point Stufen einer)
+var prompted: Dictionary = {}      # {Held: Stufe}, ab der der Aufstiegsbildschirm fuer ihn schon gezeigt wurde
 var talents: Dictionary = {}       # verteilte Punkte je Held {id: {hp, atk, a1, a2}} (Talents)
 var bought: Dictionary = {}        # im aktuellen Lager gekauft {id: Anzahl} (Haendler hat nur festen Vorrat)
 
@@ -32,9 +33,28 @@ func loadout() -> Dictionary:
 	return {"inventory": inventory.duplicate(), "equipment": equipment.duplicate(true), "nemesis": nemesis.duplicate(), "secrets_seen": secrets_seen.duplicate(), "talents": talents.duplicate(true)}
 
 
-## Freie Talentpunkte dieses Helden: verdiente (fuer alle gleich) minus verteilte.
+## Gruppenstufe: 1 am Anfang, +1 je geschaffter Kampfmission.
+func level() -> int:
+	return earned + 1
+
+
+## Talentpunkte, die ein Held auf dieser Stufe insgesamt verdient hat (alle levels_per_point Stufen einer, fuer alle gleich).
+static func points_for(missions_done: int) -> int:
+	return missions_done / int(Talents.cfg()["levels_per_point"])
+
+
+## Freie Talentpunkte dieses Helden: verdiente minus verteilte.
 func points(id: String) -> int:
-	return earned - Talents.spent(talents.get(id, {}))
+	return points_for(earned) - Talents.spent(talents.get(id, {}))
+
+
+## Soll der Aufstiegsbildschirm fuer diesen Helden gezeigt werden? Punkt frei und auf dieser Stufe noch nicht gezeigt.
+func needs_prompt(id: String) -> bool:
+	return points(id) > 0 and int(prompted.get(id, 0)) < level()
+
+
+func mark_prompted(id: String) -> void:
+	prompted[id] = level()
 
 
 func ranks(id: String) -> Dictionary:
@@ -79,7 +99,7 @@ func absorb(results: Dictionary) -> void:
 	for id: String in results.get("secrets_seen", []):
 		if not secrets_seen.has(id):
 			secrets_seen.append(id)
-	earned += int(Progression.data()["talents"]["per_mission"])      # ein Talentpunkt fuer jeden Helden, ob dabei oder nicht
+	earned += 1      # eine Stufe mehr; Talentpunkte gibt es alle levels_per_point Stufen (fuer alle gleich, verteilt wird nur fuer Helden in der Gruppe)
 	chapter += 1
 	bought = {}
 
@@ -97,13 +117,14 @@ func spend(price: int) -> bool:
 
 
 func to_dict() -> Dictionary:
-	return {"chapter": chapter, "gold": gold, "inventory": inventory, "materials": materials, "equipment": equipment, "pool": pool, "bought": bought, "nemesis": nemesis, "squads": squads, "secrets_seen": secrets_seen, "earned": earned, "talents": talents}
+	return {"chapter": chapter, "gold": gold, "inventory": inventory, "materials": materials, "equipment": equipment, "pool": pool, "bought": bought, "nemesis": nemesis, "squads": squads, "secrets_seen": secrets_seen, "earned": earned, "talents": talents, "prompted": prompted}
 
 
 static func from_dict(d: Dictionary) -> Party:
 	var p := Party.new()
 	p.chapter = int(d.get("chapter", 1))
 	p.earned = int(d.get("earned", 0))
+	p.prompted = _ints(d.get("prompted", {}))
 	p.talents = (d.get("talents", {}) as Dictionary).duplicate(true)
 	p.gold = int(d.get("gold", 0))
 	p.inventory = _ints(d.get("inventory", {}))

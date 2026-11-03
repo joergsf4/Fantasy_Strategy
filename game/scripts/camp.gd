@@ -224,77 +224,13 @@ func _build_shop() -> void:
 
 # ------------------------------------------------------------------ Talente
 
-var _thero := ""
-
-## Talentpunkte verteilen: je Held vier Felder (Leben, Angriff, Faehigkeit 1 und 2) mit Rang 0 bis 3. Alle Helden bekommen gleich viele Punkte,
-## auch wenn sie nicht mitkaempfen; Punkte lassen sich jederzeit zurueckholen und neu verteilen.
+## Talentpunkte verteilen (nur fuer Helden der naechsten Mission; wer nicht dabei ist, wird erst aufgelevelt, wenn er in der Gruppe ist).
 func _build_talents() -> void:
-	var roster: Array = Party.roster(unit_defs, int(String(mission.get("id", "ch1")).substr(2)), false)
-	for sid: String in squad:
-		if not roster.has(sid):
-			roster.append(sid)
-	if _thero == "" or not roster.has(_thero):
-		_thero = roster[0] if not roster.is_empty() else ""
-	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation", 18)
-	_body.add_child(row)
-	var heroes := VBoxContainer.new()
-	heroes.add_theme_constant_override("separation", 3)
-	var hs := ScrollContainer.new()
-	hs.custom_minimum_size = Vector2(210, 430)
-	hs.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	hs.add_child(heroes)
-	for id: String in roster:
-		var b := _button("%s (%d)" % [unit_defs[id]["name"], party.points(id)], func() -> void:
-			_thero = id
-			_refresh(), Vector2(200, 30))
-		b.disabled = id == _thero
-		heroes.add_child(b)
-	row.add_child(hs)
-	if _thero == "":
-		return
-	row.add_child(_portrait(_thero, Vector2(170, 230)))
-	var right := VBoxContainer.new()
-	right.add_theme_constant_override("separation", 7)
-	right.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	row.add_child(right)
-	var d: Dictionary = unit_defs[_thero]
-	right.add_child(_label("%s   –   freie Talentpunkte: %d" % [d["name"], party.points(_thero)], UiTheme.F_HEAD, 22, GOLD_COL))
-	right.add_child(_text("Jeder Held bekommt mit jeder geschafften Mission einen Punkt, auch wenn er nicht dabei war. Punkte lassen sich zurückholen und neu verteilen.", 16, Color(0.8, 0.85, 0.75), 520))
-	var abilities: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/abilities.json"))
-	var rk := party.ranks(_thero)
-	var rows := [["hp", "Leben", "+%d Leben je Rang" % int(Talents.cfg()["hp_per_rank"])], ["atk", "Angriff", "+%d Angriff je Rang" % int(Talents.cfg()["atk_per_rank"])]]
-	for key in ["a1", "a2"]:
-		var aid := Talents.ability_of(d, key)
-		if aid != "" and abilities.has(aid):
-			rows.append([key, "Fähigkeit: " + str(abilities[aid]["name"]), Talents.next_rank_text(abilities[aid], int(rk[key]))])
-	for r: Array in rows:
-		var key: String = r[0]
-		var line := HBoxContainer.new()
-		line.add_theme_constant_override("separation", 10)
-		var nm := _text(str(r[1]), 19, UiTheme.CREAM, 250)
-		nm.custom_minimum_size = Vector2(250, 0)
-		line.add_child(nm)
-		var pips := ""
-		for i in Talents.max_rank():
-			pips += "● " if i < int(rk[key]) else "○ "
-		var pl := _text(pips, 22, GOLD_COL)
-		pl.custom_minimum_size = Vector2(90, 0)
-		line.add_child(pl)
-		var minus := _button("−", func() -> void:
-			party.refund_point(_thero, key)
-			_refresh(), Vector2(40, 30))
-		minus.disabled = int(rk[key]) <= 0
-		line.add_child(minus)
-		var plus := _button("+", func() -> void:
-			party.spend_point(_thero, key)
-			_refresh(), Vector2(40, 30))
-		plus.disabled = party.points(_thero) <= 0 or int(rk[key]) >= Talents.max_rank()
-		line.add_child(plus)
-		right.add_child(line)
-		var eff := _text(("Nächster Rang: " + str(r[2])) if key in ["a1", "a2"] and int(rk[key]) < Talents.max_rank() else str(r[2]) if key in ["hp", "atk"] else "Höchster Rang", 16, Color(0.75, 0.85, 0.95), 700)
-		right.add_child(eff)
-	right.add_child(_text(_effective(_thero), 17, Color(0.85, 0.9, 0.75), 700))
+	var tp := TalentPanel.new()
+	tp.setup(party, unit_defs, squad)
+	tp.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_body.add_child(tp)
+	tp.changed.connect(func() -> void: pass)
 
 
 # ------------------------------------------------------------------ Brauen

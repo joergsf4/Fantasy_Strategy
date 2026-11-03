@@ -233,6 +233,12 @@ func _chapter(cid: String, skip_intro := false, next_cid := "") -> void:
 		m = _mission_with_squad(cid)
 		stage.map_data = m
 		stage.new_battle()
+	var joining: Array = []                                                      # Helden der Gruppe mit freiem Punkt, noch nicht aufgelevelt (z. B. neu dabei)
+	for hid: String in party.squad_for(m):
+		if units.has(hid) and units[hid].get("hero", false) and party.needs_prompt(hid):
+			joining.append(hid)
+	if not joining.is_empty():
+		await _talent_screen(joining)
 	_play_music(BATTLE_MUSIC, 2.5)
 	while true:
 		await stage.start_battle()
@@ -245,9 +251,17 @@ func _chapter(cid: String, skip_intro := false, next_cid := "") -> void:
 	_fade_music(3.0)
 	stage.backdrop_again()
 	var res := stage.battle.results()
-	await _reward(res)
+	res["level_to"] = party.level() + 1                                              # Gruppenstufe nach dieser Mission
+	res["point_gain"] = Party.points_for(party.earned + 1) > Party.points_for(party.earned)
+	await _reward(res, false)
 	party.absorb(res)
 	party.save()
+	var present: Array = []                                                          # Aufstieg nur fuer Helden, die dabei waren
+	for row: Dictionary in (res.get("stats", {}) as Dictionary).get("rows", []):
+		if units.has(row["id"]) and units[row["id"]].get("hero", false) and party.needs_prompt(row["id"]):
+			present.append(row["id"])
+	await _talent_screen(present)                                                    # fuehrt die froehliche Musik weiter
+	_fade_music(1.2)
 	_toast("Spielstand automatisch gespeichert")
 	if m.has("outro_at_sea"):                            # Abschlussgespraech waehrend der Ueberfahrt, vor dem Meer
 		await _dialogue_at_sea(story_c["outro"], m["outro_at_sea"])
@@ -310,7 +324,7 @@ func _camp(m: Dictionary) -> void:
 	layer.queue_free()
 
 
-func _reward(res: Dictionary) -> void:
+func _reward(res: Dictionary, fade := true) -> void:
 	_play_music(DEFEAT_MUSIC if res.get("defeat", false) else WIN_MUSIC, 1.0)      # froehlich nach dem Sieg, traurig nach der Niederlage
 	var layer := CanvasLayer.new()
 	layer.layer = 6
@@ -320,7 +334,22 @@ func _reward(res: Dictionary) -> void:
 	layer.add_child(r)
 	await r.closed
 	layer.queue_free()
-	_fade_music(1.2)
+	if fade:
+		_fade_music(1.2)
+
+
+## Aufstiegs-Bildschirm fuer diese Helden (Talentpunkte verteilen); nichts zu tun, wenn niemand einen freien Punkt hat.
+func _talent_screen(hero_ids: Array) -> void:
+	if hero_ids.is_empty():
+		return
+	var layer := CanvasLayer.new()
+	layer.layer = 6
+	add_child(layer)
+	var ts := TalentScreen.new()
+	ts.setup(party, units, hero_ids)
+	layer.add_child(ts)
+	await ts.closed
+	layer.queue_free()
 
 
 ## Dialog mitten im Kampf: ueber der abgedunkelten Karte, ohne die Buehne zu wechseln.

@@ -49,8 +49,9 @@ func _ready() -> void:
 			var rew := _reward_text(o["reward"])
 			var txt := "%s: %s%s" % [("erfüllt" if o["done"] else "verpasst"), o["text"], ("  (" + rew + ")") if o["done"] and rew != "" else ""]
 			col.add_child(_label(txt, UiTheme.F_BODY, 22, Color(0.65, 1.0, 0.65) if o["done"] else Color(0.75, 0.6, 0.6)))
-	if not defeat:
-		col.add_child(_label("Talentpunkt: +%d für jeden Helden (im Lager verteilen)" % int(Progression.data()["talents"]["per_mission"]), UiTheme.F_HEAD, 21, Color(0.7, 0.95, 1.0)))
+	if not defeat and results.has("level_to"):
+		var gain: bool = results.get("point_gain", false)
+		col.add_child(_label("Stufe %d erreicht" % int(results["level_to"]) + ("  –  Talentpunkt für alle in der Gruppe!" if gain else ""), UiTheme.F_HEAD, 21, Color(0.7, 0.95, 1.0)))
 	var b := Button.new()
 	b.text = "Noch einmal versuchen" if defeat else "Weiter"
 	b.custom_minimum_size = Vector2(260 if defeat else 180, 38)
