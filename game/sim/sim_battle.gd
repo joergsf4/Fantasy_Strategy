@@ -200,7 +200,7 @@ func extinguish_ability(u: Dictionary, id: String, o: Dictionary) -> void:
 			s["status"] += 1
 
 
-func spawn(id: String, team: String, pos: Vector2i, hp_mult := 1.0, atk_mult := 1.0, equip: Array = [], level := 1) -> Dictionary:
+func spawn(id: String, team: String, pos: Vector2i, hp_mult := 1.0, atk_mult := 1.0, equip: Array = [], talents := {}) -> Dictionary:
 	var d: Dictionary = defs()[id]
 	var hp := maxi(1, roundi(float(d["hp"]) * hp_mult))
 	var u := {
@@ -217,8 +217,11 @@ func spawn(id: String, team: String, pos: Vector2i, hp_mult := 1.0, atk_mult := 
 		"st": {"dealt": 0, "taken": 0, "healed": 0, "kills": 0, "ab": {}},
 	}
 	_uid += 1
-	if level > 1:
-		Progression.apply_level(u, level, d)
+	if not talents.is_empty():
+		var thp := Talents.hp_bonus(talents)
+		u["maxhp"] += thp
+		u["hp"] += thp
+		u["atk"] += Talents.atk_bonus(talents)
 	if not equip.is_empty():
 		Items.apply_equipment(u, equip)
 	units.append(u)

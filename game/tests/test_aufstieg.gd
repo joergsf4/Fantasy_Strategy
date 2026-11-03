@@ -46,40 +46,66 @@ func _initialize() -> void:
 	for w: Dictionary in p.stock():
 		all += int(w["price"]) * int(w["n"])
 	check(all > 1000, "Sortiment kostet deutlich mehr als eine Mission einbringt (%d Gold)" % all)
-	# Stufen: Erfahrung, Boni, Speichern
-	check(Progression.level_for_xp(0) == 1 and Progression.level_for_xp(19) == 1 and Progression.level_for_xp(20) == 2 and Progression.level_for_xp(140) == 5, "Stufen nach Erfahrung")
-	check(Progression.xp_for_next(0) == 20 and Progression.xp_for_next(140) == -1, "naechste Stufe / hoechste Stufe")
-	var tank := {"dmg_type": "body"}
-	check(Progression.bonus(5, tank) == {"hp": 9, "atk": 2, "def": 1, "res": 0, "heal": 0}, "Stufe 5: +9 Leben, +2 Angriff, +1 Verteidigung")
-	var heal := {"dmg_type": "magic", "heal": 6}
-	check(Progression.bonus(5, heal) == {"hp": 9, "atk": 2, "def": 0, "res": 1, "heal": 2}, "Heiler: Magieresistenz und Heilung")
-	var u := {"hp": 20, "maxhp": 20, "atk": 8, "def": 3, "res": 1, "heal": 0}
-	Progression.apply_level(u, 3, tank)
-	check(u["maxhp"] == 23 and u["atk"] == 9 and u["def"] == 3, "Stufe 3 angewendet")
+	# Talentpunkte
 	var q := Party.new_game()
-	q.chapter = 3
-	var res := {"stats": {"rows": [{"id": "ritter"}, {"id": "hund"}]}}
-	var gain := q.xp_gain(res, ["ritter", "wendy"])
-	check(int(gain["ritter"]["gain"]) == 12 and int(gain["wendy"]["gain"]) == 6 and gain["hund"]["gain"] == 12, "Gruppe voll, Wartende halb")
-	q.xp["ritter"] = 19
-	var up := q.xp_gain(res, [])
-	check(int(up["ritter"]["old"]) == 1 and int(up["ritter"]["new"]) == 2, "Stufenaufstieg wird gemeldet")
-	q.absorb({"inventory": {}, "materials": {}, "gold": 0, "equipment": [], "xp": up})
-	check(q.level_of("ritter") == 2 and q.level_of("hund") == 1, "Erfahrung verbucht")
-	var back := Party.from_dict(q.to_dict())
-	check(back.level_of("ritter") == 2, "Erfahrung wird gespeichert")
-	check(q.loadout()["levels"]["ritter"] == 2, "Kampf bekommt die Stufen")
+	check(q.points("ritter") == 0, "Am Anfang keine Punkte")
+	q.absorb({"inventory": {}, "materials": {}, "gold": 0, "equipment": []})
+	q.absorb({"inventory": {}, "materials": {}, "gold": 0, "equipment": []})
+	check(q.points("ritter") == 2 and q.points("wendy") == 2 and q.points("hund") == 2, "Jeder Held bekommt je Mission einen Punkt, egal ob dabei")
+	check(q.spend_point("ritter", "hp") and q.spend_point("ritter", "a1") and not q.spend_point("ritter", "atk"), "zwei Punkte ausgeben, dritter fehlt")
+	check(q.points("ritter") == 0 and q.points("hund") == 2, "Punkte gehoerem dem einzelnen Helden")
+	check(q.refund_point("ritter", "hp") and q.points("ritter") == 1 and not q.refund_point("ritter", "atk"), "Punkt zurueckholen, leeres Feld geht nicht")
+	for i in 5:
+		q.earned += 1
+		q.spend_point("hund", "atk")
+	check(q.ranks("hund")["atk"] == 3, "hoechstens Rang 3")
+	check(Party.from_dict(q.to_dict()).ranks("hund")["atk"] == 3 and Party.from_dict(q.to_dict()).earned == q.earned, "Talente werden gespeichert")
+	check((q.loadout()["talents"] as Dictionary).has("ritter"), "Kampf bekommt die Talente")
+	# Bonus und Faehigkeits-Raenge
+	var tl := {"hp": 2, "atk": 3, "a1": 0, "a2": 0}
+	check(Talents.hp_bonus(tl) == 8 and Talents.atk_bonus(tl) == 3 and Talents.spent(tl) == 5, "Leben +4, Angriff +1 je Rang")
+	var ab := {"name": "Test", "cd": 3, "range": [2, 4], "effects": [{"type": "damage", "mult": 1.6}]}
+	var r1 := Talents.ranked(ab, 1)
+	var r2 := Talents.ranked(ab, 2)
+	var r3 := Talents.ranked(ab, 3)
+	check(r1["cd"] == 2 and r1["effects"][0]["mult"] == 1.6, "Rang 1: Abklingzeit -1")
+	check(r2["cd"] == 2 and is_equal_approx(r2["effects"][0]["mult"], 2.0), "Rang 2: Wirkung +25 %")
+	check(r3["range"] == [2, 5], "Rang 3: Reichweite +1")
+	check(ab["cd"] == 3 and ab["effects"][0]["mult"] == 1.6, "Original bleibt unveraendert")
+	var heal := {"name": "Heil", "cd": 2, "target": "ally", "range": [1, 2], "effects": [{"type": "heal", "amount": 8}]}
+	check(Talents.ranked(heal, 2)["effects"][0]["amount"] == 10, "Heilung steigt")
+	check(Talents.next_rank_text(ab, 0).begins_with("Abklingzeit 3"), "Text fuer den naechsten Rang: %s" % Talents.next_rank_text(ab, 0))
+	check(Talents.next_rank_text(ab, 3) == "Höchster Rang", "Rang 3 ist das Maximum")
+	var table := {"kanone": {"id": "kanone", "cd": 3, "range": [2, 3], "effects": [{"type": "damage", "mult": 1.4}]}, "x": {"id": "x", "cd": 3, "effects": []}}
+	Talents.apply_to_abilities(table, {"a1": 1, "a2": 0}, {"abilities": ["kanone", "x"]}, [])
+	check(table["kanone"]["cd"] == 2 and table["x"]["cd"] == 3, "Rang wirkt nur auf das gewaehlte Feld")
+	Talents.apply_to_abilities(table, {"a1": 2}, {"abilities": ["kanone"]}, ["kanone"])
+	check(table["kanone"]["cd"] == 2, "ausgeschlossene Faehigkeit (auch von Gegnern genutzt) bleibt")
+	check(Talents.default_allocation(5) == {"hp": 2, "atk": 1, "a1": 1, "a2": 1}, "Standardverteilung: %s" % [Talents.default_allocation(5)])
+	check(Talents.default_allocation(99) == {"hp": 3, "atk": 3, "a1": 3, "a2": 3}, "Standardverteilung hoechstens Rang 3")
 	# Gegnerstaerke je Mission
 	check(Progression.enemy_scale("ch1") == {"hp": 1.0, "atk": 1.0} and Progression.enemy_scale("ch13")["hp"] > Progression.enemy_scale("ch5")["hp"] and Progression.enemy_scale("unbekannt")["hp"] == 1.0, "Gegnerfaktoren je Mission")
 	var defs: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/units.json"))
 	var b := Battle.new()
 	var m13 := Mission.load_mission("ch13")
 	b.setup(m13, defs)
-	b.loadout = {"levels": {"hund": 3}}
+	b.loadout = {"talents": {"hund": {"hp": 2, "atk": 1, "a1": 1, "a2": 0}}}
 	root.add_child(b)
 	await process_frame
 	var cw := b._find("kugelblitz")
 	var sc13 := Progression.enemy_scale("ch13")
 	check(cw["maxhp"] == roundi(55.0 * float(sc13["hp"])) and cw["atk"] == roundi(9.0 * float(sc13["atk"])), "Mission 13: Gegner skaliert (%d Leben, %d Angriff)" % [cw["maxhp"], cw["atk"]])
+	# Kampf: Held mit Talenten
+	var b2 := Battle.new()
+	var m1 := Mission.load_mission("ch12")
+	b2.setup(m1, defs)
+	b2.loadout = {"talents": {"hund": {"hp": 2, "atk": 1, "a1": 1, "a2": 0}}}
+	root.add_child(b2)
+	await process_frame
+	var hu := b2._find("hund")
+	check(not hu.is_empty(), "Hund ist in Mission 12 dabei")
+	if not hu.is_empty():
+		check(hu["maxhp"] == int(defs["hund"]["hp"]) + 8 and hu["atk"] == int(defs["hund"]["atk"]) + 1, "Kampf: Leben +8, Angriff +1 (%d, %d)" % [hu["maxhp"], hu["atk"]])
+		check(b2.abilities["knochenwurf"]["cd"] < JSON.parse_string(FileAccess.get_file_as_string("res://data/abilities.json"))["knochenwurf"]["cd"], "Kampf: Faehigkeit 1 hat Rang 1 (Abklingzeit kuerzer)")
 	print("aufstieg: ", "OK" if fails == 0 else "%d Fehler" % fails)
 	quit(fails)

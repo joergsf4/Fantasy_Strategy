@@ -579,7 +579,7 @@ def e16_curve():
         equip = {h: gear_for(units[h], tier) for h in party if h in units} if c > 1 else {}
         for m in mults:
             cells.append({"name": f"ch{c}|{m}", "n": 200, "seed": 1600000 + c, "map": f"ch{c}", "party": {"fixed": party}, "enemy": {"fixed": foes},
-                          "e_mods": {"hp": m * pr["enemy_hp"], "atk": m * pr["enemy_atk"]}, "level": pr["level"], "bridge_turn": 4 if c == 12 else -1,
+                          "e_mods": {"hp": m * pr["enemy_hp"], "atk": m * pr["enemy_atk"]}, "points": pr["points"], "bridge_turn": 4 if c == 12 else -1,
                           "loadout": {"equip_map": equip, "inventory": {"heiltrank": 2, "gegengift": 1, "aether": 1}}})
     res = run_cells(cells)
     rows = []
@@ -587,18 +587,18 @@ def e16_curve():
         pr = prog[f"ch{c}"]
         vals = [wr(res[f"ch{c}|{m}"]) for m in mults]
         rows.append((c, pr, vals))
-        print("  ch%d  Stufe %d  Ausruestung %s  " % (c, pr["level"], pr["gear_tier"]), [round(v, 2) for v in vals])
+        print("  ch%d  Punkte %d  Ausruestung %s  " % (c, pr["points"], pr["gear_tier"]), [round(v, 2) for v in vals])
     save("e16", {"cells": res, "mults": mults, "missions": missions})
-    L = ["", "## 15. Fortschrittskurve (Heldenstufe und Ausrüstungsstufe je Mission)\n",
-         "`python3 tools/balance.py e16`. Die Gruppe der Karte tritt mit der in `data/progression.json` erwarteten **Heldenstufe** und **Ausrüstungsstufe** an (je Platz das beste Stück bis zu dieser Stufe) gegen die Gegner der Karte, multipliziert mit dem Faktor in der Kopfzeile. Zahl = Siegquote. Zielquote steht in der Tabelle; der **Faktor, bei dem die Zielquote erreicht ist**, zeigt, wie viel Luft die Mission nach oben hat.\n",
-         "| Mission | Stufe | Ausr. | Ziel | " + " | ".join(f"×{m}" for m in mults) + " | Faktor für Ziel |", "|---|--:|--:|--:|" + "--:|" * len(mults) + "--:|"]
+    L = ["", "## 15. Fortschrittskurve (Talentpunkte und Ausrüstungsstufe je Mission)\n",
+         "`python3 tools/balance.py e16`. Die Gruppe der Karte tritt mit den in `data/progression.json` erwarteten **Talentpunkten** (Standardverteilung: Leben, Fähigkeit 1, Angriff, Fähigkeit 2 der Reihe nach) und der erwarteten **Ausrüstungsstufe** an (je Platz das beste Stück bis zu dieser Stufe) gegen die Gegner der Karte, multipliziert mit dem Faktor in der Kopfzeile. Zahl = Siegquote. Zielquote steht in der Tabelle; der **Faktor, bei dem die Zielquote erreicht ist**, zeigt, wie viel Luft die Mission nach oben hat.\n",
+         "| Mission | Punkte | Ausr. | Ziel | " + " | ".join(f"×{m}" for m in mults) + " | Faktor für Ziel |", "|---|--:|--:|--:|" + "--:|" * len(mults) + "--:|"]
     for c, pr, vals in rows:
         f = "&gt; 2,0"
         for m, v in zip(mults, vals):
             if v < pr["target_win"]:
                 f = f"≈ {m}" if m == mults[0] else f"≈ {mults[mults.index(m) - 1]}–{m}"
                 break
-        L.append(f"| Mission {c} | {pr['level']} | {pr['gear_tier']} | {pr['target_win']:.0%} | " + " | ".join(f"{v:.0%}" for v in vals) + f" | {f} |")
+        L.append(f"| Mission {c} | {pr['points']} | {pr['gear_tier']} | {pr['target_win']:.0%} | " + " | ".join(f"{v:.0%}" for v in vals) + f" | {f} |")
     (ROOT / "docs" / "balance_kurve.md").write_text("\n".join(L) + "\n")
     print("docs/balance_kurve.md geschrieben")
 

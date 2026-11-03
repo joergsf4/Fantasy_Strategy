@@ -119,7 +119,7 @@ static func build(spec: Dictionary, seed_: int) -> SimBattle:
 		var pi := 0
 		for e: Dictionary in m["players"]:
 			var d: Dictionary = players[pi] if pi < players.size() else {}
-			var hero := b.spawn(d.get("id", e["id"]), "p", Vector2i(e["pos"][0], e["pos"][1]), d.get("hp", 1.0), d.get("atk", 1.0), d.get("equip", []), int(d.get("level", 1)))
+			var hero := b.spawn(d.get("id", e["id"]), "p", Vector2i(e["pos"][0], e["pos"][1]), d.get("hp", 1.0), d.get("atk", 1.0), d.get("equip", []), d.get("talents", {}))
 			for ab_id: String in (m.get("grants", {}) as Dictionary).get(hero["id"], []):
 				(hero["abilities"] as Array).append(ab_id)    # Faehigkeiten, die nur diese Mission gewaehrt (Breitseite)
 			pi += 1
@@ -141,7 +141,7 @@ static func build(spec: Dictionary, seed_: int) -> SimBattle:
 	var left := _start_tiles(b, 0, 2, rng)
 	var right := _start_tiles(b, b.grid.width - 3, b.grid.width - 1, rng)
 	for i in players.size():
-		b.spawn(players[i]["id"], "p", left[i], players[i].get("hp", 1.0), players[i].get("atk", 1.0), players[i].get("equip", []), int(players[i].get("level", 1)))
+		b.spawn(players[i]["id"], "p", left[i], players[i].get("hp", 1.0), players[i].get("atk", 1.0), players[i].get("equip", []), players[i].get("talents", {}))
 	for i in enemies.size():
 		b.spawn(enemies[i]["id"], "e", right[i], enemies[i].get("hp", 1.0), enemies[i].get("atk", 1.0))
 	return b

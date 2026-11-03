@@ -403,7 +403,7 @@ func _spawn(id: String, team: String, pos: Vector2i, extra := {}) -> void:
 	u["carry"] = extra.get("carry", {})
 	u["guard"] = extra.get("guard", false)    # Wache: bleibt auf dem Posten, bis ein Held nahe kommt
 	if team == "p":
-		Progression.apply_level(u, int((loadout.get("levels", {}) as Dictionary).get(id, 1)), d)
+		_apply_talents(u, id, d)
 		Items.apply_equipment(u, (loadout.get("equipment", {}) as Dictionary).get(id, []))
 	else:     # Gegnerstaerke der Mission (data/progression.json): ab spaeteren Kapiteln wachsen Leben und Angriff mit
 		var sc := Progression.enemy_scale(str(map_data.get("id", "")))
@@ -1490,6 +1490,41 @@ func _window_glow(root: Node3D) -> void:
 	l.omni_range = 3.0
 	l.position = Vector3(0, 0.8, 0.5)
 	root.add_child(l)
+
+
+## Talentpunkte des Helden (loadout.talents): Leben und Angriff direkt, Faehigkeits-Raenge in der Faehigkeitentabelle dieses Kampfes
+## (einmal je Held; Faehigkeiten, die auch Gegner dieser Mission nutzen, bleiben unveraendert).
+var _talents_applied: Array = []
+
+func _apply_talents(u: Dictionary, id: String, d: Dictionary) -> void:
+	var t: Dictionary = (loadout.get("talents", {}) as Dictionary).get(id, {})
+	if t.is_empty():
+		return
+	var hp := Talents.hp_bonus(t)
+	u["maxhp"] += hp
+	u["hp"] += hp
+	u["atk"] += Talents.atk_bonus(t)
+	if not _talents_applied.has(id):
+		_talents_applied.append(id)
+		Talents.apply_to_abilities(abilities, t, d, _enemy_ability_ids())
+
+
+## Faehigkeiten, die Gegner dieser Mission benutzen (Karte und Spawn-Schritte): die bekommen keine Talent-Raenge der Helden.
+func _enemy_ability_ids() -> Array:
+	var ids: Array = []
+	var enemy_ids: Array = []
+	for e: Dictionary in map_data.get("enemies", []):
+		enemy_ids.append(e["id"])
+	for t: Dictionary in map_data.get("triggers", []):
+		for step: Dictionary in t.get("do", []):
+			for sp: Dictionary in step.get("spawn", []):
+				if sp.get("team", "e") == "e":
+					enemy_ids.append(sp["id"])
+	for eid: String in enemy_ids:
+		for ab: String in unit_defs.get(eid, {}).get("abilities", []):
+			if not ids.has(ab):
+				ids.append(ab)
+	return ids
 
 
 ## Gesperrte Felder und begehbare Bruecken aus der Welt in das Gitter uebernehmen.

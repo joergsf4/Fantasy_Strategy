@@ -245,10 +245,6 @@ func _chapter(cid: String, skip_intro := false, next_cid := "") -> void:
 	_fade_music(3.0)
 	stage.backdrop_again()
 	var res := stage.battle.results()
-	res["xp"] = party.xp_gain(res, Party.roster(units, party.chapter, true))      # Erfahrung: Gruppe voll, wartende Helden halb
-	res["xp_names"] = {}
-	for xid: String in res["xp"]:
-		res["xp_names"][xid] = units[xid]["name"]
 	await _reward(res)
 	party.absorb(res)
 	party.save()
@@ -712,7 +708,7 @@ func _screenshot_mode() -> void:
 		get_viewport().get_texture().get_image().save_png(OS.get_environment("SHOT_OUT"))
 		get_tree().quit()
 		return
-	if mode == "camp":   # Lager: SHOT_TAB=0..3, SHOT_GOLD=n
+	if mode == "camp":   # Lager: SHOT_TAB=0..4, SHOT_GOLD=n
 		var bc := Battle.new()
 		bc.setup(map, units)
 		add_child(bc)
@@ -722,6 +718,8 @@ func _screenshot_mode() -> void:
 		pc.gold = int(OS.get_environment("SHOT_GOLD")) if OS.get_environment("SHOT_GOLD") != "" else 205
 		pc.materials = {"kraut": 3, "hopfen": 1, "kristall": 2}
 		pc.pool = ["eisenschwert", "schwere_axt", "plattenpanzer", "rubinring"]
+		pc.earned = 5
+		pc.talents = {"kungfu": {"hp": 1, "atk": 0, "a1": 2, "a2": 0}}
 		var cm := Mission.load_mission("ch5")
 		var sq: Array = pc.squad_for(cm)
 		var cl := CanvasLayer.new()

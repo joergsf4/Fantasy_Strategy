@@ -14,7 +14,8 @@ var pool: Array = []               # besitzt, aber nicht getragen
 var squads: Dictionary = {}              # {Mission: [Helden]}: vom Spieler geaenderte Aufstellung vor der Mission
 var nemesis: Array = []            # entkommene Gegner, tauchen in spaeteren Missionen wieder auf
 var secrets_seen: Array = []     # gesehene Geheimnis-Szenen (Szene laeuft nur beim ersten Mal)
-var xp: Dictionary = {}            # Erfahrung je Held {id: Punkte}, daraus ergibt sich die Stufe (Progression)
+var earned := 0                    # Talentpunkte, die jeder Held bisher verdient hat (1 je geschaffter Mission, fuer alle gleich)
+var talents: Dictionary = {}       # verteilte Punkte je Held {id: {hp, atk, a1, a2}} (Talents)
 var bought: Dictionary = {}        # im aktuellen Lager gekauft {id: Anzahl} (Haendler hat nur festen Vorrat)
 
 
@@ -28,29 +29,37 @@ static func new_game() -> Party:
 
 ## Was ein Kampf zu Beginn bekommt.
 func loadout() -> Dictionary:
-	var levels := {}
-	for id: String in xp:
-		levels[id] = Progression.level_for_xp(int(xp[id]))
-	return {"inventory": inventory.duplicate(), "equipment": equipment.duplicate(true), "nemesis": nemesis.duplicate(), "secrets_seen": secrets_seen.duplicate(), "levels": levels}
+	return {"inventory": inventory.duplicate(), "equipment": equipment.duplicate(true), "nemesis": nemesis.duplicate(), "secrets_seen": secrets_seen.duplicate(), "talents": talents.duplicate(true)}
 
 
-func level_of(id: String) -> int:
-	return Progression.level_for_xp(int(xp.get(id, 0)))
+## Freie Talentpunkte dieses Helden: verdiente (fuer alle gleich) minus verteilte.
+func points(id: String) -> int:
+	return earned - Talents.spent(talents.get(id, {}))
 
 
-## Erfahrung dieser Mission je Held (vor dem Verbuchen): Gruppe voll, wartende Helden (bench) halb. {id: {gain, old, new}}
-func xp_gain(results: Dictionary, bench: Array) -> Dictionary:
-	var out := {}
-	for r: Dictionary in (results.get("stats", {}) as Dictionary).get("rows", []):
-		var id: String = r["id"]
-		var g := Progression.xp_squad()
-		out[id] = {"gain": g, "old": level_of(id), "new": Progression.level_for_xp(int(xp.get(id, 0)) + g)}
-	for id: String in bench:
-		if out.has(id):
-			continue
-		var g2 := Progression.xp_bench()
-		out[id] = {"gain": g2, "old": level_of(id), "new": Progression.level_for_xp(int(xp.get(id, 0)) + g2)}
-	return out
+func ranks(id: String) -> Dictionary:
+	var t: Dictionary = talents.get(id, {})
+	return {"hp": int(t.get("hp", 0)), "atk": int(t.get("atk", 0)), "a1": int(t.get("a1", 0)), "a2": int(t.get("a2", 0))}
+
+
+## Einen Punkt in hp, atk, a1 oder a2 stecken. false = keine Punkte frei oder Rang schon am Maximum.
+func spend_point(id: String, key: String) -> bool:
+	var t := ranks(id)
+	if points(id) <= 0 or int(t[key]) >= Talents.max_rank():
+		return false
+	t[key] = int(t[key]) + 1
+	talents[id] = t
+	return true
+
+
+## Punkt zurueckholen (jederzeit im Lager, neu verteilen ist erlaubt).
+func refund_point(id: String, key: String) -> bool:
+	var t := ranks(id)
+	if int(t[key]) <= 0:
+		return false
+	t[key] = int(t[key]) - 1
+	talents[id] = t
+	return true
 
 
 static func _add(into: Dictionary, from: Dictionary) -> void:
@@ -70,8 +79,7 @@ func absorb(results: Dictionary) -> void:
 	for id: String in results.get("secrets_seen", []):
 		if not secrets_seen.has(id):
 			secrets_seen.append(id)
-	for id: String in (results.get("xp", {}) as Dictionary):
-		xp[id] = int(xp.get(id, 0)) + int(results["xp"][id]["gain"])
+	earned += int(Progression.data()["talents"]["per_mission"])      # ein Talentpunkt fuer jeden Helden, ob dabei oder nicht
 	chapter += 1
 	bought = {}
 
@@ -89,13 +97,14 @@ func spend(price: int) -> bool:
 
 
 func to_dict() -> Dictionary:
-	return {"chapter": chapter, "gold": gold, "inventory": inventory, "materials": materials, "equipment": equipment, "pool": pool, "bought": bought, "nemesis": nemesis, "squads": squads, "secrets_seen": secrets_seen, "xp": xp}
+	return {"chapter": chapter, "gold": gold, "inventory": inventory, "materials": materials, "equipment": equipment, "pool": pool, "bought": bought, "nemesis": nemesis, "squads": squads, "secrets_seen": secrets_seen, "earned": earned, "talents": talents}
 
 
 static func from_dict(d: Dictionary) -> Party:
 	var p := Party.new()
 	p.chapter = int(d.get("chapter", 1))
-	p.xp = _ints(d.get("xp", {}))
+	p.earned = int(d.get("earned", 0))
+	p.talents = (d.get("talents", {}) as Dictionary).duplicate(true)
 	p.gold = int(d.get("gold", 0))
 	p.inventory = _ints(d.get("inventory", {}))
 	p.materials = _ints(d.get("materials", {}))
