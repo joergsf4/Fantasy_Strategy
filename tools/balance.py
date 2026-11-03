@@ -448,6 +448,59 @@ def e14_matrix():
     write_matrix(res)
 
 
+def e15_group():
+    """Gruppen gegen Bosse: zufaellige Gruppen aus allen Helden (ohne Stachelia) gegen Boss plus zwei Buettel, Gruppengroesse 3 bis 6.
+    Ergebnis: Siegquote je Boss und Gruppengroesse sowie der Beitrag jedes Helden (Siegquote der Gruppen, in denen er mitkaempft)."""
+    print("E15: Gruppen gegen Bosse")
+    heroes = [h for h in HEROES_ALL if h != "bienenmaedchen"]
+    sizes = [3, 4, 5, 6]
+    cells = []
+    for b in BOSSES_ALL:
+        for sz in sizes:
+            cells.append({"name": f"{b}|{sz}", "n": 900 if sz == 4 else 300, "seed": 1500000, "map": "open",
+                          "party": {"pool": heroes, "size": sz},
+                          "enemy": {"fixed": [b, "soldat_infanterie", "soldat_infanterie"]}, "e_ai": {}})
+    res = run_cells(cells)
+    save("e15", {"cells": res, "heroes": heroes, "bosses": BOSSES_ALL, "sizes": sizes})
+    write_group_matrix(res, heroes, sizes)
+
+
+def write_group_matrix(res, heroes, sizes):
+    names = json.loads((GAME / "data" / "units.json").read_text())
+    nm = lambda i: names[i]["name"]
+    L = ["# Balancing: Gruppen gegen Bosse", "",
+         "Berechnung ohne Grafik (`python3 tools/balance.py e15`). Zufällige Gruppen aus den 15 Helden (ohne Stachelia) gegen **einen benannten Gegner plus zwei Büttel**, zufällige offene Karte. Siegquote der Heldengruppe.", "",
+         "## 1. Wie viele Helden braucht man gegen einen Boss?", "",
+         "| Boss | " + " | ".join(f"{sz} Helden" for sz in sizes) + " |", "|---|" + "--:|" * len(sizes)]
+    for b in BOSSES_ALL:
+        L.append(f"| {nm(b)} | " + " | ".join(f"{wr(res[f'{b}|{sz}']):.0%}" for sz in sizes) + " |")
+    L += ["", "## 2. Beitrag der Helden (Gruppen aus vier Helden)", "",
+          "Zelle: Siegquote aller Vierergruppen, in denen dieser Held mitkämpft, gegen diesen Boss (etwa 240 Kämpfe je Zelle, Fehler ±4 Punkte). Letzte Spalte: Abstand zum Durchschnitt aller Helden in Prozentpunkten (positiv = Gruppen mit diesem Helden gewinnen häufiger).", "",
+          "| Held \\ Boss | " + " | ".join(nm(b) for b in BOSSES_ALL) + " | Ø | Abstand |", "|---|" + "--:|" * (len(BOSSES_ALL) + 2)]
+    per = {}
+    for h in heroes:
+        vals = []
+        for b in BOSSES_ALL:
+            a = res[f"{b}|4"]["ids"].get(f"p:{h}", {"n": 0, "wins": 0})
+            vals.append(a["wins"] / max(1, a["n"]))
+        per[h] = vals
+    avg_all = sum(sum(v) / len(v) for v in per.values()) / len(per)
+    order = sorted(heroes, key=lambda h: -sum(per[h]))
+    for h in order:
+        mean = sum(per[h]) / len(per[h])
+        L.append(f"| {nm(h)} | " + " | ".join(f"{v:.0%}" for v in per[h]) + f" | **{mean:.0%}** | {100 * (mean - avg_all):+.0f} |")
+    L += ["", "## Auffälligkeiten", ""]
+    top = sorted(per.items(), key=lambda kv: -sum(kv[1]))
+    L.append("- **Größter Beitrag:** " + ", ".join(f"{nm(h)} ({100 * (sum(v) / len(v) - avg_all):+.0f})" for h, v in top[:4]))
+    L.append("- **Kleinster Beitrag:** " + ", ".join(f"{nm(h)} ({100 * (sum(v) / len(v) - avg_all):+.0f})" for h, v in top[-4:]))
+    hard = sorted(BOSSES_ALL, key=lambda b: wr(res[f"{b}|6"]))
+    L.append("- **Härteste Bosse selbst mit sechs Helden:** " + ", ".join(f"{nm(b)} {wr(res[f'{b}|6']):.0%}" for b in hard[:3]))
+    L.append("- **Leichteste Bosse mit vier Helden:** " + ", ".join(f"{nm(b)} {wr(res[f'{b}|4']):.0%}" for b in sorted(BOSSES_ALL, key=lambda b: -wr(res[f'{b}|4']))[:3]))
+    L.append("")
+    (ROOT / "docs" / "balance_gruppen.md").write_text("\n".join(L) + "\n")
+    print("docs/balance_gruppen.md geschrieben")
+
+
 def write_matrix(res):
     names = json.loads((GAME / "data" / "units.json").read_text())
     nm = lambda i: names[i]["name"]
@@ -986,7 +1039,7 @@ def report():
 
 
 STEPS = {"calib": calib, "e0": e0_ratings, "e1": e1_contribution, "e2": e2_ablation, "e3": e3_difficulty,
-         "e3base": lambda: e3_difficulty(False), "e4": e4_power_ratio, "e5": e5_items, "e6": e6_defend, "e7": e7_fire, "e8": e8_bees, "e9": e9_harbor, "e10": e10_wait, "e11": e11_desert, "e12": e12_oasis, "e13": e13_river, "e14": e14_matrix, "report": report}
+         "e3base": lambda: e3_difficulty(False), "e4": e4_power_ratio, "e5": e5_items, "e6": e6_defend, "e7": e7_fire, "e8": e8_bees, "e9": e9_harbor, "e10": e10_wait, "e11": e11_desert, "e12": e12_oasis, "e13": e13_river, "e14": e14_matrix, "e15": e15_group, "report": report}
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
