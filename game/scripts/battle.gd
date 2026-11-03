@@ -2888,6 +2888,8 @@ func _ab_tiles(u: Dictionary, id: String, pos: Vector2i) -> Array[Vector2i]:
 	var out: Array[Vector2i] = []
 	if ab["target"] != "tile":
 		return out
+	if not _first_effect(ab, "ram").is_empty():
+		return _ram_tiles(u, pos, int((ab["range"] as Array)[1]))
 	var r: Array = ab["range"]
 	for dy in range(-int(r[1]), int(r[1]) + 1):
 		for dx in range(-int(r[1]), int(r[1]) + 1):
@@ -2900,6 +2902,66 @@ func _ab_tiles(u: Dictionary, id: String, pos: Vector2i) -> Array[Vector2i]:
 			elif unit_at(p).is_empty() and world.at(p).is_empty() and grid.cost(p) >= 0:
 				out.append(p)
 	return out
+
+
+## Dampframme: Zielfelder in gerader Linie (bis rmax Felder). Der Weg muss frei begehbar sein; Feinde im Weg gehen nur, wenn sie zur Seite gestossen
+## werden koennen; Verbuendete und Hindernisse beenden die Linie.
+func _ram_tiles(u: Dictionary, pos: Vector2i, rmax: int) -> Array[Vector2i]:
+	var out: Array[Vector2i] = []
+	for d: Vector2i in Grid.DIRS:
+		for k in range(1, rmax + 1):
+			var p := pos + d * k
+			if not grid.inside(p) or grid.cost(p, u["flying"]) < 0 or not world.at(p).is_empty() and world.is_blocking(world.at(p)):
+				break
+			var o := unit_at(p)
+			if not o.is_empty() and (o["team"] == u["team"] or _push_tile(o, d, u).x < 0):
+				break
+			out.append(p)
+	return out
+
+
+## Feld, auf das ein Feind seitlich zur Fahrtrichtung d gestossen wird (frei und begehbar); (-1, -1), wenn keins frei ist.
+func _push_tile(v: Dictionary, d: Vector2i, rammer: Dictionary) -> Vector2i:
+	for side: Vector2i in [Vector2i(d.y, d.x), Vector2i(-d.y, -d.x)]:
+		var p: Vector2i = v["pos"] + side
+		if grid.inside(p) and grid.cost(p, v["flying"]) >= 0 and unit_at(p).is_empty() and p != rammer["pos"] and (world.at(p).is_empty() or not world.is_blocking(world.at(p))):
+			return p
+	return Vector2i(-1, -1)
+
+
+## Dampframme ausfuehren: Schritt fuer Schritt zum Zielfeld; Feinde im Weg bekommen Schaden und werden zur Seite gestossen.
+func _run_ram(u: Dictionary, target: Dictionary, ef: Dictionary) -> void:
+	var dest: Vector2i = target["pos"]
+	var d := Vector2i(signi(dest.x - u["pos"].x), signi(dest.y - u["pos"].y))
+	var n := Grid.dist(u["pos"], dest)
+	var node := u["node"] as Node3D
+	await fx.squash(u, 1.12, 0.88, 0.18)
+	Sfx.event("gate_open")
+	for k in n:
+		var p: Vector2i = u["pos"] + d
+		var v := unit_at(p)
+		var from := node.position
+		var to := to_world(p)
+		var tw := create_tween()
+		tw.tween_property(node, "position", to, 0.13)
+		await tw.finished
+		u["pos"] = p
+		fx.particles("fx_smoke", from + Vector3(0, 0.3, 0), 6, 1.4, 0.45, 0.55, -0.3, Color(0.88, 0.88, 0.88), false, 120.0)
+		fx.shake(0.04, 0.12)
+		if not v.is_empty() and v["team"] != u["team"] and units.has(v):
+			var side := _push_tile(v, d, u)
+			fx.particles("fx_star", to_world(p) + Vector3(0, 0.6, 0), 6, 2.0, 0.2, 0.5, 2.0, Color(1.0, 0.9, 0.6), true, 160.0)
+			await _strike(u, v, float(ef["mult"]), 0.0, false, true)
+			if units.has(v) and side.x >= 0:
+				var vn := v["node"] as Node3D
+				v["pos"] = side
+				var pt := create_tween()
+				pt.tween_property(vn, "position", to_world(side), 0.14).set_trans(Tween.TRANS_QUAD)
+				await pt.finished
+		if not units.has(u):
+			return
+	fx.shockwave(node.position, 1.2, Color(1, 1, 1, 0.55), 0.4)
+	_turn_towards(u, u["pos"] + d)
 
 
 # ------------------------------------------------------------------ Uebernahme (Ziel "capture")
@@ -3435,6 +3497,8 @@ func _apply_effect(u: Dictionary, ab: Dictionary, target: Dictionary, ef: Dictio
 			for v in near:
 				fx.on_splash(ab["id"], u, v)
 				await _strike(u, v, ef["mult"], 0.0, false)
+		"ram":
+			await _run_ram(u, target, ef)
 		"summon_hive":
 			var hive := world.add_object("hive_p", target["pos"], {"owner": u["uid"]})
 			_sync_grid()

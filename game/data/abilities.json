@@ -913,5 +913,22 @@
    }
   ],
   "ai_debuff": "analysiert"
+ },
+ "dampframme": {
+  "name": "Dampframme",
+  "text": "Fährt mit Volldampf bis zu 4 Felder geradeaus (Zielfeld wählen). Alle Feinde im Weg erhalten ×1,2 Schaden und werden zur Seite gestoßen.",
+  "cd": 4,
+  "target": "tile",
+  "range": [
+   1,
+   4
+  ],
+  "effects": [
+   {
+    "type": "ram",
+    "mult": 1.2
+   }
+  ],
+  "caps": []
  }
 }

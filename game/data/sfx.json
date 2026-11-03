@@ -300,6 +300,10 @@
   },
   "computer_analyse": {
    "cast": "zap"
+  },
+  "dampframme": {
+   "cast": "wall_break",
+   "hit": "explosion"
   }
  },
  "events": {

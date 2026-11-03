@@ -239,7 +239,9 @@
   "weapon": "metal",
   "body": "flesh",
   "flees": true,
-  "intro": 1
+  "intro": 1,
+  "hero": true,
+  "from": 14
  },
  "braumeisterin": {
   "name": "Brunhilde Bräu",
@@ -549,7 +551,8 @@
    "unantastbar"
   ],
   "abilities": [
-   "breitseite"
+   "breitseite",
+   "dampframme"
   ],
   "weapon": "metal",
   "body": "armor",

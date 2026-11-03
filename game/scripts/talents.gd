@@ -68,6 +68,9 @@ static func _boost(a: Dictionary, f: float, status_fallback: bool) -> bool:
 			"heal":
 				ef["amount"] = ceili(float(ef.get("amount", 0)) * f)
 				changed = true
+			"ram":
+				ef["mult"] = snappedf(float(ef["mult"]) * f, 0.01)
+				changed = true
 	if not changed and status_fallback:
 		changed = _more_status(a)
 	return changed
@@ -106,7 +109,7 @@ static func next_rank_text(ab: Dictionary, rank: int) -> String:
 	for i in mini(ce.size(), ne.size()):
 		var c: Dictionary = ce[i]
 		var n: Dictionary = ne[i]
-		if c.get("type", "") == "damage" and float(c["mult"]) != float(n["mult"]):
+		if c.get("type", "") in ["damage", "ram"] and float(c["mult"]) != float(n["mult"]):
 			parts.append("Schaden ×%s → ×%s" % [str(c["mult"]).replace(".", ","), str(n["mult"]).replace(".", ",")])
 		elif c.get("type", "") == "heal" and int(c.get("amount", 0)) != int(n.get("amount", 0)):
 			parts.append("Heilung %d → %d" % [int(c["amount"]), int(n["amount"])])

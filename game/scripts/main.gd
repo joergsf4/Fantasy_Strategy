@@ -1199,6 +1199,7 @@ const FX_SCENES := {
 	"baerengebruell": {"u": ["maedchen_baer", "p", [4, 7]], "t": ["soldat_infanterie", "e", [6, 7]], "more": []},
 	"stabwirbel": {"u": ["kungfu", "p", [5, 7]], "t": "self", "more": [["soldat_infanterie", "e", [6, 7]], ["soldat_infanterie", "e", [5, 6]], ["soldat_beritten", "e", [4, 8]]]},
 	"wutanfall": {"u": ["elisabeth", "p", [4, 7]], "t": "self", "more": [["soldat_infanterie", "e", [7, 7]]]},
+	"dampframme": {"u": ["panzer", "p", [2, 7]], "tile": [6, 7], "more": [["soldat_infanterie", "e", [4, 7]], ["soldat_beritten", "e", [5, 7]], ["soldat_infanterie", "e", [8, 7]]]},
 	"bienenkorb": {"u": ["bienenmaedchen", "p", [4, 7]], "tile": [6, 7], "more": [["soldat_infanterie", "e", [9, 7]]]},
 	"prost": {"u": ["braumeisterin", "p", [4, 7]], "t": ["ritter", "p", [5, 7], {"hp": 14}], "more": []},
 	"bearhug": {"u": ["museklaugust", "p", [4, 7]], "t": ["soldat_infanterie", "e", [5, 7]], "more": []},
