@@ -326,3 +326,5 @@ Das Waisenhaus ist endgültig gerettet, die Gruppe berät. **Stachelia** gibt z�
 - **Gegner:** Kugelblitz (55 Leben), Xiùlán (50), zwei Büttel, zwei Bogenschützen, ein Reiter, ein Priester. Gegnerfaktor ×1,8 (nicht gemessen).
 - **Bonus:** „Kein Held fällt“ (110 Gold), „Alle Gegner besiegt“ (2 Heilhonig).
 - **Test:** `tests/test_sumpf.gd`.
+
+- **Berge nur in Mission 16 (2026-11-03):** Die angedeutete Felswand im Norden (Bergfelder in den obersten Reihen, `walls: ["n"]`) gehört zur **zweiten** Sumpfmission (`ch16`), damit die Reise zu den Bergen nachvollziehbar wird; Mission 15 bleibt ohne Berge.

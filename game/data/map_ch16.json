@@ -1,7 +1,7 @@
 {
  "rows": [
-  "GGGGGGGGGGGG",
-  "GSSGGGGGGGSG",
+  "MMMMMMMMMMMM",
+  "MMSGGGGGGSMM",
   "GSSGGGGSSGGG",
   "GGGGGSSSSGGG",
   "GGSSGGGSSGGG",
@@ -185,5 +185,8 @@
     }
    }
   }
+ ],
+ "walls": [
+  "n"
  ]
 }
