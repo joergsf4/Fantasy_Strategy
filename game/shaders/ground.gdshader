@@ -6,6 +6,8 @@ render_mode specular_disabled;
 uniform float water_level = -0.08;
 uniform vec4 map_rect = vec4(-0.5, -0.5, 11.5, 9.5);
 uniform float grid_strength : hint_range(0.0, 1.0) = 0.2;
+uniform sampler2D swamp_mask : filter_linear, repeat_disable;   // Sumpf: eine Texel je Kachel (1 = Sumpf), weich gefiltert
+uniform float swamp_on : hint_range(0.0, 1.0) = 0.0;
 uniform float swamp : hint_range(0.0, 1.0) = 0.0;      // Biom Sumpf: Gras wird mooriges Olivgruen, Waldboden dunkler Schlamm
 uniform float desert : hint_range(0.0, 1.0) = 0.0;     // Biom Wueste: Gras und Waldboden werden zu Sand
 
@@ -75,6 +77,19 @@ void fragment() {
 
 	float snow = smoothstep(0.85, 1.1, wpos.y + (fbm(p * 2.0) - 0.5) * 0.25) * (1.0 - smoothstep(0.35, 0.55, slope)) * smoothstep(0.2, 0.5, wts.b);
 	col = mix(col, vec3(0.93, 0.95, 1.0), snow);
+
+	// Sumpffelder: weicher, ausgefranster Uebergang vom Gras zum Schlamm (Maske zwischen den Kacheln gefiltert, Raender durch Rauschen verformt)
+	if (swamp_on > 0.5) {
+		vec2 muv = (wpos.xz - map_rect.xy) / (map_rect.zw - map_rect.xy);
+		float m = texture(swamp_mask, clamp(muv, vec2(0.0), vec2(1.0))).r;
+		vec2 outside = max(max(-muv, muv - 1.0), vec2(0.0)) * (map_rect.zw - map_rect.xy);
+		m *= 1.0 - smoothstep(0.0, 1.2, length(outside));
+		float edge = m + (fbm(p * 2.4 + 5.0) - 0.5) * 0.55 + (mid - 0.5) * 0.25;
+		float mud_w = smoothstep(0.18, 0.5, edge);
+		vec3 mud = mix(vec3(0.06, 0.05, 0.02), vec3(0.14, 0.11, 0.05), mid) * (0.88 + 0.24 * fine);
+		mud = mix(mud, vec3(0.16, 0.22, 0.08), smoothstep(0.55, 0.8, fbm(p * 5.0 + 2.0)) * 0.6);      // Algen und Moos
+		col = mix(col, mud, mud_w);
+	}
 
 	// Ufer: Sand am Wasserrand, darunter dunkler Schlamm
 	float shore = smoothstep(water_level + 0.12, water_level + 0.005, wpos.y);

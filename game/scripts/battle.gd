@@ -130,7 +130,6 @@ func _ready() -> void:
 	fx.setup(self)
 	_build_loot()
 	if map_data.get("biome", "") == "sumpf":
-		_build_swamp_overlay()
 		_build_swamp_fog()
 	_build_objects()
 	_build_decor()

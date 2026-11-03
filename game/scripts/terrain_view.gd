@@ -13,7 +13,7 @@ const AMP := {"G": 0.035, "F": 0.05, "M": 0.3, "W": 0.04, "V": 0.0, "C": 0.0, "P
 # Bodengewichte: R Gras, G Waldboden, B Fels, A Pfad
 const WT := {
 	"G": Color(1, 0, 0, 0), "F": Color(0.35, 0.65, 0, 0), "M": Color(0.1, 0, 0.9, 0),
-	"W": Color(1, 0, 0, 0), "V": Color(0.7, 0, 0, 0.6), "C": Color(0, 0, 0.7, 0.3), "P": Color(1, 0, 0, 0), "D": Color(1, 0, 0, 0), "S": Color(0, 1.4, 0, 0),
+	"W": Color(1, 0, 0, 0), "V": Color(0.7, 0, 0, 0.6), "C": Color(0, 0, 0.7, 0.3), "P": Color(1, 0, 0, 0), "D": Color(1, 0, 0, 0), "S": Color(1, 0, 0, 0),
 }
 
 var grid: Grid
@@ -234,6 +234,13 @@ func _build_ground() -> void:
 	mat.set_shader_parameter("water_level", WATER_LEVEL)
 	mat.set_shader_parameter("desert", 1.0 if biome == "wueste" else 0.0)
 	mat.set_shader_parameter("swamp", 1.0 if biome == "sumpf" else 0.0)
+	if biome == "sumpf":
+		var mimg := Image.create(grid.width, grid.height, false, Image.FORMAT_R8)
+		for y in grid.height:
+			for x in grid.width:
+				mimg.set_pixel(x, y, Color(1, 0, 0) if grid.terrain(Vector2i(x, y)) == "S" else Color(0, 0, 0))
+		mat.set_shader_parameter("swamp_mask", ImageTexture.create_from_image(mimg))
+		mat.set_shader_parameter("swamp_on", 1.0)
 	mat.set_shader_parameter("map_rect", Vector4(-0.5, -0.5, grid.width - 0.5, grid.height - 0.5))
 	var mi := MeshInstance3D.new()
 	mi.mesh = m
