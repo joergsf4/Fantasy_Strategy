@@ -23,6 +23,7 @@ var inventory := {"p": {}, "e": {}}      # Rucksack je Team: {Gegenstand: Anzahl
 var _uid := 1
 var world := World.new([])                # Weltobjekte (Feuer, Haeuser ...); leer = keine
 var flammable: Dictionary = {}            # Waldfelder
+var bridge_turn := -1                      # Mission 12: Runde, ab der die Zugbruecke unten ist (-1: nie)
 var goal_tile := Vector2i(-1, -1)          # Ziel "reach": ein Held auf diesem Feld gewinnt
 var capture_id := ""                       # Ziel "capture" (Mission 8): wer N Runden in Folge neben dieser Figur steht, uebernimmt sie
 var capture_turns := 3
@@ -774,6 +775,12 @@ func act_phase(team: String) -> void:
 func play(max_turns := MAX_TURNS) -> String:
 	var first := true
 	while turn <= max_turns:
+		if bridge_turn >= 0 and turn >= bridge_turn:
+			for bo in world.objects:
+				if bo["type"] == "bridge" and bo["state"] != "open":
+					bo["state"] = "open"
+			grid.blocked = world.blocked()
+			grid.bridges = world.open_bridges()
 		if not first:
 			begin_phase("p")
 			if winner() != "":

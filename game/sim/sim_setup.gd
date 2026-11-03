@@ -77,7 +77,7 @@ static func build(spec: Dictionary, seed_: int) -> SimBattle:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = seed_ * 2654435761 + 17
 	var mname: String = spec.get("map", "open")
-	var use_ch1: bool = mname in ["ch1", "ch2", "ch3", "ch5", "ch6", "ch7", "ch8"]
+	var use_ch1: bool = mname in ["ch1", "ch2", "ch3", "ch5", "ch6", "ch7", "ch8", "ch12"]
 	var mdata: Dictionary = mission_map(mname) if use_ch1 else {}
 	var rows: Array = mdata["rows"] if use_ch1 else random_rows(rng)
 	var b := SimBattle.new(rows, seed_)
@@ -86,6 +86,7 @@ static func build(spec: Dictionary, seed_: int) -> SimBattle:
 		var g0: Dictionary = (mdata.get("goals", [{"type": "rout"}]) as Array)[0]
 		if g0.get("type", "rout") == "reach":
 			b.goal_tile = Vector2i(g0["tile"][0], g0["tile"][1])
+		b.bridge_turn = int(spec.get("bridge_turn", -1))          # Mission 12: ab dieser Runde ist die Zugbruecke unten (Hebel getroffen)
 		if g0.get("type", "rout") == "capture":
 			b.capture_id = str(g0["unit"])
 			b.capture_turns = int(g0.get("turns", 3))

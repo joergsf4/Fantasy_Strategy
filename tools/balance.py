@@ -409,6 +409,25 @@ def e12_oasis():
     save("e12", {"cells": res, "mults": mults, "squads": squads})
 
 
+def e13_river():
+    """Mission 12 (Zugbruecke): Siegquote, wenn die Bruecke ab Runde T unten ist (Hebel getroffen). Die Helden kaempfen bis dahin nur am Westufer."""
+    print("E13: Mission 12, Zugbruecke")
+    mission = json.loads((GAME / "data" / "map_ch12.json").read_text())
+    foes = [e["id"] for e in mission["enemies"]]
+    party = [p["id"] for p in mission["players"]]
+    mults = [1.0, 1.5, 1.75, 2.0]
+    turns = [3, 6, 99]
+    cells = []
+    for t in turns:
+        for m in mults:
+            cells.append({"name": f"t{t}|{m}", "n": 300, "seed": 1230000, "map": "ch12", "party": {"fixed": party},
+                          "enemy": {"fixed": foes}, "e_mods": {"hp": m, "atk": m}, "e_ai": {}, "bridge_turn": t})
+    res = run_cells(cells)
+    for t in turns:
+        print("  Bruecke ab Runde", t, [(m, round(wr(res[f't{t}|{m}']), 2), round(res[f't{t}|{m}']['turns'] / res[f't{t}|{m}']['n'], 1)) for m in mults])
+    save("e13", {"cells": res, "mults": mults, "turns": turns})
+
+
 def e7_fire():
     """Mission 3 (Feuer): Siegquote und gerettete Haeuser mit/ohne Loeschen, mit/ohne Brunhilde, bei steigender Gegnerstaerke."""
     print("E7: Mission 3, Feuer und Loeschen")
@@ -912,7 +931,7 @@ def report():
 
 
 STEPS = {"calib": calib, "e0": e0_ratings, "e1": e1_contribution, "e2": e2_ablation, "e3": e3_difficulty,
-         "e3base": lambda: e3_difficulty(False), "e4": e4_power_ratio, "e5": e5_items, "e6": e6_defend, "e7": e7_fire, "e8": e8_bees, "e9": e9_harbor, "e10": e10_wait, "e11": e11_desert, "e12": e12_oasis, "report": report}
+         "e3base": lambda: e3_difficulty(False), "e4": e4_power_ratio, "e5": e5_items, "e6": e6_defend, "e7": e7_fire, "e8": e8_bees, "e9": e9_harbor, "e10": e10_wait, "e11": e11_desert, "e12": e12_oasis, "e13": e13_river, "report": report}
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()

@@ -82,15 +82,8 @@
   {
    "id": "soldat_infanterie",
    "pos": [
-    8,
-    6
-   ]
-  },
-  {
-   "id": "soldat_infanterie",
-   "pos": [
     9,
-    4
+    5
    ]
   },
   {
@@ -98,6 +91,34 @@
    "pos": [
     10,
     5
+   ]
+  },
+  {
+   "id": "soldat_infanterie",
+   "pos": [
+    3,
+    4
+   ]
+  },
+  {
+   "id": "soldat_infanterie",
+   "pos": [
+    3,
+    6
+   ]
+  },
+  {
+   "id": "soldat_bogenschuetze",
+   "pos": [
+    4,
+    5
+   ]
+  },
+  {
+   "id": "soldat_beritten",
+   "pos": [
+    4,
+    3
    ]
   }
  ],

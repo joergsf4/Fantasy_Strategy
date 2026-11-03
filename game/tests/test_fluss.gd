@@ -33,7 +33,7 @@ func _initialize() -> void:
 	var eli := b._find("elisabeth")
 	eli["pos"] = Vector2i(4, 5)
 	check(Grid.dist(Vector2i(0, 5), sw["pos"]) > 5 and Grid.dist(b._find("hund")["pos"], sw["pos"]) > 5, "Helden starten weit weg vom Hebel")
-	check(b._count_team("e") == 6 and b.units.filter(func(u: Dictionary) -> bool: return u["id"] == "frischlinge").size() == 1, "Genau eine Frischlinge-Figur (Boss-Ersatz fuer Wart)")
+	check(b._count_team("e") == 9 and b.units.filter(func(u: Dictionary) -> bool: return u["id"] == "frischlinge").size() == 1, "Genau eine Frischlinge-Figur (Boss-Ersatz fuer Wart)")
 	var sol := b.world.solution(sw, ["ranged_hit"])
 	check(sol.get("effect", "") == "toggle", "Fernkampf legt den Hebel um")
 	await b._after_world_change(b.world.apply(sw, "toggle"))

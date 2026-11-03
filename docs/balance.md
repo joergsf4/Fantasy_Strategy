@@ -353,3 +353,14 @@ Aufstellung der Karte: Robo, Mira, Albrecht, Elisabeth, Wendy und Dr. Humbug geg
 - Beide Seiten nutzen dieselbe KI; Spott zwingt auch Spielerfiguren (im Spiel entscheidet der Spieler selbst).
 - Höhenunterschiede sind in der Simulation grob (Berg +1,0, Wasser −0,5); das Spiel nutzt ein stetiges Höhenfeld.
 - Zufallskarten (12×10, Startzonen links/rechts) statt handgebauter Karten.
+
+## 14. Mission 12: Die hochgezogene Brücke (Zugbrücke)
+Aufstellung der Karte: Robo, Albrecht, Hund, Elisabeth, Takeda und Wendy starten ganz links. **Am Westufer stehen schon vier Gegner** (zwei Büttel, ein Bogenschütze, ein Reiter), am Ostufer die Frischlinge (55 Leben, ×1,15 Angriff), zwei Bogenschützen, ein Büttel und ein Priester. Die Simulation (`tools/balance.py e13`, Option `bridge_turn`) lässt die Brücke ab Runde T herunter (Hebel getroffen); vorher kämpft die Gruppe nur am Westufer. Siegquote / durchschnittliche Runden:
+
+| Brücke ab Runde | ×1,0 | ×1,5 | ×1,75 | ×2,0 |
+|---|--:|--:|--:|--:|
+| 3 | 100 % / 7,6 | 99 % / 12,0 | 86 % / 15,0 | 22 % / 16,6 |
+| 6 | 100 % / 10,5 | 99 % / 13,2 | 94 % / 15,1 | 35 % / 17,9 |
+| nie | 0 % (Zeitüberschreitung) | | | |
+
+Ergebnis: Die Mission ist etwa so leicht wie Mission 8 (dort ×1,5: 75 %). Das Bonusziel „in 12 Runden“ ist bei ×1,0 nur zu schaffen, wenn die Brücke spätestens ab Runde 6 unten ist (10,5 Runden), ab Runde 8 nicht mehr (12,2). Ohne Hebeltreffer ist die Mission unlösbar, deshalb muss jemand mit Fernkampf (Kanone, Kyujutsu, Breitseite, Sternschnuppe) überleben.
