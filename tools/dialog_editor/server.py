@@ -596,7 +596,7 @@ SCHEMA = """Du hilfst beim Schreiben von Gespraechen fuer ein deutschsprachiges 
 Ein Gespraech besteht aus einem Ausloeser (when), optionaler Bedingung (if) und Zeilen (lines).
 when (genau EIN Schluessel): {"turn": N} | {"enter": [x, y]} | {"object": {"id": "...", "state": "..."}} | {"heal": {"by": "id", "targets": N}}
  | {"ability": {"id": "faehigkeit", "by": "id"}} | {"kill": {"id": "id", "count": N}} | {"first_kill": true} | {"fall": {"id": "id"}}
- | {"hp_below": {"id": "id", "ratio": 0.5}} | {"near": {"a": "id", "b": "id oder any_enemy", "dist": N}} | {"enemies_left": N} | {"victory": true} (Abschlussszene, laeuft vor dem Sieg)
+ | {"hp_below": {"id": "id", "ratio": 0.5}} | {"near": {"a": "id", "b": "id oder any_enemy", "dist": N}} | {"chests_open": N} | {"enemies_left": N} | {"victory": true} (Abschlussszene, laeuft vor dem Sieg)
 if (optional): {"present": ["id"], "absent": ["id"], "fled": ["id"], "object": {"id": "...", "state": "..."}}
 lines: Liste von {"left": "id", "right": "id", "speaker": "id (muss left oder right sein)", "text": "...", "left_expr": "lachend|wuetend (optional)", "right_expr": ...}.
 "$hero" ist der Platzhalter fuer die Figur, die das Ereignis ausloest.

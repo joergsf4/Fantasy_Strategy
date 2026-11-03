@@ -2841,6 +2841,15 @@ func _match_state(w: Dictionary) -> Dictionary:
 				var okb: bool = (c2["b"] == "any_enemy" and o["team"] != a["team"]) or o["id"] == c2["b"]
 				if okb and o != a and Grid.dist(a["pos"], o["pos"]) <= int(c2.get("dist", 3)):
 					return a
+	if w.has("chests_open"):     # so viele Truhen der Karte sind geoeffnet
+		var opened := 0
+		for c in chests:
+			if c["open"]:
+				opened += 1
+		if opened >= int(w["chests_open"]):
+			for u in units:
+				if u["team"] == "p":
+					return u
 	if w.has("enemies_left") and _count_team("e") <= int(w["enemies_left"]):
 		for u in units:
 			if u["team"] == "p":

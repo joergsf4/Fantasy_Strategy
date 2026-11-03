@@ -359,6 +359,7 @@ function describeWhen(w) {
   if (w.hp_below) return `${U(w.hp_below.id)} hat weniger als ${Math.round(w.hp_below.ratio * 100)} % Leben`;
   if (w.near) return `${U(w.near.a)} und ${U(w.near.b)} sind höchstens ${w.near.dist} Felder entfernt`;
   if (w.victory) return "Das Missionsziel ist erreicht (Abschlussszene vor dem Sieg)";
+  if ("chests_open" in w) return `Mindestens ${w.chests_open} Truhen geöffnet`;
   if ("enemies_left" in w) return `Höchstens ${w.enemies_left} Gegner übrig`;
   return JSON.stringify(w);
 }
@@ -386,6 +387,7 @@ const WHEN = {
   enter: { label: "Eine Figur betritt ein Feld", f: [{ p: ["enter", 0], l: "x", t: "int", d: 5 }, { p: ["enter", 1], l: "y", t: "int", d: 3 }] },
   manual: { label: "Von einem anderen Gespräch verzögert ausgelöst", f: [], make: () => ({ manual: true }) },
   victory: { label: "Abschlussszene: Ziel erreicht, vor dem Sieg", f: [], make: () => ({ victory: true }) },
+  chests_open: { label: "Truhen geöffnet", f: [{ p: ["chests_open"], l: "mindestens", t: "int", d: 2 }] },
   enemies_left: { label: "Nur noch wenige Gegner übrig", f: [{ p: ["enemies_left"], l: "höchstens", t: "int", d: 2 }] },
 };
 const whenType = w => Object.keys(WHEN).find(k => k in w) || "turn";

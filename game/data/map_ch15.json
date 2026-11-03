@@ -1,8 +1,8 @@
 {
  "rows": [
-  "MMMMMMMMMMMM",
-  "MMGGGGGGGGMM",
-  "GGGGGSSGGGGG",
+  "GGGGGGGGGGGG",
+  "GGSSGGGGGGSG",
+  "GGGSGGSSGGGG",
   "GGSSGGSSGGGG",
   "GGSSGGGGGSSG",
   "GGGGGGWWGSSG",
@@ -13,9 +13,6 @@
  ],
  "biome": "sumpf",
  "mood": "sumpf",
- "walls": [
-  "n"
- ],
  "sumpf_dmg": 2,
  "players": [
   {

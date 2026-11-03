@@ -2,7 +2,7 @@
  "id": "ch15",
  "title": "Der Sumpf vor den Bergen",
  "map": "res://data/map_ch15.json",
- "briefing": "Vor dem Gebirge im Norden liegt ein gefährlicher Sumpf (neues Biom). Morast kostet doppelte Bewegung, und wer zu Beginn seiner Phase im Morast steht, atmet Sumpfgas ein (3 Schaden). Flieger sind verschont. Trockener Boden (Gras) ist sicher. Cyborg-Wart und die Frischlinge stellen sich euch in den Weg; Stachelia ist jetzt Teil der Gruppe.",
+ "briefing": "Weit im Norden, vor dem Gebirge, beginnt ein gefährlicher Sumpf (neues Biom). Morast kostet doppelte Bewegung, und wer zu Beginn seiner Phase im Morast steht, atmet Sumpfgas ein (3 Schaden). Flieger sind verschont. Trockener Boden (Gras) ist sicher. Cyborg-Wart und die Frischlinge stellen sich euch in den Weg; Stachelia ist jetzt Teil der Gruppe.",
  "goals": [
   {
    "type": "rout"
@@ -89,7 +89,7 @@
    "when": {
     "victory": true
    },
-   "note": "Der Weg ist frei",
+   "note": "Der Sumpf geht weiter",
    "do": [
     {
      "dialogue": [
@@ -97,13 +97,13 @@
        "left": "maedchen_baer",
        "right": "hund",
        "speaker": "maedchen_baer",
-       "text": "Der Weg zu den Bergen ist frei. Der Meister kann sich nicht ewig verstecken."
+       "text": "Das war nur die erste Hürde. Der Sumpf zieht sich noch weiter nach Norden."
       },
       {
        "left": "bienenmaedchen",
        "right": "hund",
        "speaker": "bienenmaedchen",
-       "text": "Hoffentlich nicht. Los jetzt.",
+       "text": "Dann weiter. Ich bin noch nicht fertig.",
        "left_expr": "wuetend"
       }
      ]

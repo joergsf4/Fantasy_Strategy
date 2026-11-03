@@ -1,0 +1,287 @@
+{
+ "id": "ch16",
+ "title": "Streit um den Sold",
+ "map": "res://data/map_ch16.json",
+ "no_flee": [
+  "xiulan"
+ ],
+ "briefing": "Mitten im Sumpf streiten sich Professor Kugelblitz und die Söldnerin Xiùlán um die Bezahlung. Als die Gruppe auftaucht, beginnt ein Kampf, in dem Xiùlán immer wieder nach ihrem Geld fragt. Auf der Karte stehen zwei Truhen: Öffnet ihr beide, glaubt Xiùlán, ihr Lohn sei verloren, und zieht ab. Sumpffelder machen wie vorher 2 Schaden zu Beginn der eigenen Phase, Flieger sind verschont.",
+ "goals": [
+  {
+   "type": "rout"
+  }
+ ],
+ "triggers": [
+  {
+   "when": {
+    "near": {
+     "a": "hund",
+     "b": "kugelblitz",
+     "dist": 9
+    }
+   },
+   "if": {
+    "present": [
+     "kugelblitz",
+     "xiulan"
+    ]
+   },
+   "note": "Der Streit um das Geld",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "xiulan",
+       "right": "kugelblitz",
+       "speaker": "xiulan",
+       "text": "Zwei Wochen Arbeit, Professor! Wo ist mein Gold?",
+       "left_expr": "wuetend"
+      },
+      {
+       "left": "xiulan",
+       "right": "kugelblitz",
+       "speaker": "kugelblitz",
+       "text": "Meine Maschine wurde zerstört! Gold gibt es, wenn der Meister zahlt!",
+       "right_expr": "wuetend"
+      },
+      {
+       "left": "xiulan",
+       "right": "kugelblitz",
+       "speaker": "xiulan",
+       "text": "Kein Gold, keine Arbeit. So steht es im Vertrag, Sie Blitzableiter!",
+       "left_expr": "wuetend"
+      },
+      {
+       "left": "maedchen_baer",
+       "right": "kugelblitz",
+       "speaker": "kugelblitz",
+       "text": "Oh. Besuch. Die Helden. Welch... schlechtes Timing.",
+       "right_expr": "lachend"
+      },
+      {
+       "left": "maedchen_baer",
+       "right": "xiulan",
+       "speaker": "xiulan",
+       "text": "Ach, die Kinder. Na gut, eine Rechnung nach der anderen. Aber vorher: wer zahlt mir meinen Sold?",
+       "right_expr": "lachend"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 2
+   },
+   "if": {
+    "present": [
+     "xiulan"
+    ]
+   },
+   "note": "Xiùlán fragt nach dem Geld (1)",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "maedchen_baer",
+       "right": "xiulan",
+       "speaker": "xiulan",
+       "text": "Kinder! Hat einer von euch Gold dabei? Für die Rente!",
+       "right_expr": "lachend"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 4
+   },
+   "if": {
+    "present": [
+     "xiulan"
+    ]
+   },
+   "note": "Xiùlán fragt nach dem Geld (2)",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "ritter",
+       "right": "xiulan",
+       "speaker": "xiulan",
+       "text": "Und wo bleibt mein Lohn, Professor?! Ich kämpfe nicht für Luft!",
+       "right_expr": "wuetend"
+      },
+      {
+       "left": "ritter",
+       "right": "kugelblitz",
+       "speaker": "kugelblitz",
+       "text": "Später! Später! Der Meister zahlt am Monatsende!",
+       "right_expr": "wuetend"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 6
+   },
+   "if": {
+    "present": [
+     "xiulan"
+    ]
+   },
+   "note": "Xiùlán fragt nach dem Geld (3)",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "bienenmaedchen",
+       "right": "xiulan",
+       "speaker": "xiulan",
+       "text": "Mein Gebiss, mein Kreuz, mein Lohn! Alles verloren! Wer zahlt endlich?!",
+       "right_expr": "wuetend"
+      },
+      {
+       "left": "bienenmaedchen",
+       "right": "xiulan",
+       "speaker": "bienenmaedchen",
+       "text": "Geh doch zum Meister, Omi.",
+       "left_expr": "lachend"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "chests_open": 1
+   },
+   "if": {
+    "present": [
+     "xiulan"
+    ]
+   },
+   "note": "Eine Truhe ist offen",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "hund",
+       "right": "xiulan",
+       "speaker": "xiulan",
+       "text": "Moment! Eine Truhe?! Mit Gold?! Wehe, ihr fasst die andere auch an!",
+       "right_expr": "wuetend"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "chests_open": 2
+   },
+   "if": {
+    "present": [
+     "xiulan"
+    ]
+   },
+   "note": "Beide Truhen offen: Xiùlán zieht ab",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "hund",
+       "right": "xiulan",
+       "speaker": "xiulan",
+       "text": "BEIDE Truhen?! Leer! Weg! Mein Lohn ist verloren! Ich kündige, Professor!",
+       "right_expr": "wuetend"
+      },
+      {
+       "left": "hund",
+       "right": "kugelblitz",
+       "speaker": "kugelblitz",
+       "text": "Xiùlán! Warten Sie! Sie haben noch vier Monate Vertrag!",
+       "right_expr": "wuetend"
+      },
+      {
+       "left": "hund",
+       "right": "xiulan",
+       "speaker": "xiulan",
+       "text": "Ich sag's meinem Anwalt! Auf Nimmerwiedersehen!",
+       "right_expr": "wuetend"
+      }
+     ]
+    },
+    {
+     "retreat": "xiulan"
+    }
+   ]
+  },
+  {
+   "when": {
+    "hp_below": {
+     "id": "kugelblitz",
+     "ratio": 0.4
+    }
+   },
+   "if": {
+    "present": [
+     "kugelblitz"
+    ]
+   },
+   "note": "Kugelblitz wird nervös",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "robo",
+       "right": "kugelblitz",
+       "speaker": "kugelblitz",
+       "text": "Meine Frisur! Mein Vertrag! Mein Honig! Alles ruiniert!",
+       "right_expr": "wuetend"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "victory": true
+   },
+   "note": "Der Sumpf ist durchquert",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "maedchen_baer",
+       "right": "hund",
+       "speaker": "maedchen_baer",
+       "text": "Der Professor ist erledigt, Xiùlán weg. Hinter dem Sumpf liegen die Berge."
+      },
+      {
+       "left": "bienenmaedchen",
+       "right": "hund",
+       "speaker": "bienenmaedchen",
+       "text": "Endlich. Jetzt zum Meister.",
+       "left_expr": "wuetend"
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "flee": {
+  "kugelblitz": [
+   {
+    "left": "$hero",
+    "right": "kugelblitz",
+    "speaker": "kugelblitz",
+    "text": "Ich verlange eine Gehaltserhöhung! Und Urlaub! Ich komme wieder!",
+    "right_expr": "wuetend"
+   }
+  ]
+ }
+}

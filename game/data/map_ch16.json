@@ -1,0 +1,189 @@
+{
+ "rows": [
+  "GGGGGGGGGGGG",
+  "GSSGGGGGGGSG",
+  "GSSGGGGSSGGG",
+  "GGGGGSSSSGGG",
+  "GGSSGGGSSGGG",
+  "GGSSGGGGGGSS",
+  "GGGGGWWGGGSS",
+  "GSSGGWWGGGGG",
+  "GGGGGGGGGGGG",
+  "GGGGGGGGGGGG"
+ ],
+ "biome": "sumpf",
+ "mood": "sumpf",
+ "sumpf_dmg": 2,
+ "players": [
+  {
+   "id": "maedchen_baer",
+   "pos": [
+    5,
+    8
+   ]
+  },
+  {
+   "id": "hund",
+   "pos": [
+    4,
+    8
+   ]
+  },
+  {
+   "id": "ritter",
+   "pos": [
+    6,
+    8
+   ]
+  },
+  {
+   "id": "wendy",
+   "pos": [
+    3,
+    8
+   ]
+  },
+  {
+   "id": "bienenmaedchen",
+   "pos": [
+    7,
+    8
+   ]
+  },
+  {
+   "id": "robo",
+   "pos": [
+    2,
+    8
+   ]
+  }
+ ],
+ "enemies": [
+  {
+   "id": "kugelblitz",
+   "pos": [
+    7,
+    2
+   ],
+   "hp": 55
+  },
+  {
+   "id": "xiulan",
+   "pos": [
+    5,
+    2
+   ],
+   "hp": 50,
+   "carry": {
+    "gold": 60
+   }
+  },
+  {
+   "id": "soldat_infanterie",
+   "pos": [
+    4,
+    3
+   ]
+  },
+  {
+   "id": "soldat_infanterie",
+   "pos": [
+    8,
+    3
+   ]
+  },
+  {
+   "id": "soldat_bogenschuetze",
+   "pos": [
+    3,
+    2
+   ]
+  },
+  {
+   "id": "soldat_bogenschuetze",
+   "pos": [
+    9,
+    2
+   ]
+  },
+  {
+   "id": "soldat_beritten",
+   "pos": [
+    6,
+    4
+   ]
+  },
+  {
+   "id": "soldat_priester",
+   "pos": [
+    6,
+    2
+   ]
+  }
+ ],
+ "chests": [
+  {
+   "pos": [
+    1,
+    4
+   ],
+   "look": "chest",
+   "reward": {
+    "gold": 80
+   }
+  },
+  {
+   "pos": [
+    10,
+    3
+   ],
+   "look": "chest",
+   "reward": {
+    "gold": 80,
+    "items": {
+     "heiltrank": 1
+    }
+   }
+  }
+ ],
+ "objects": [],
+ "decor": [
+  {
+   "sprite": "fx_sumpfpilz",
+   "pos": [
+    3,
+    4
+   ],
+   "size": 0.9
+  },
+  {
+   "sprite": "fx_sumpfpilz",
+   "pos": [
+    9,
+    6
+   ],
+   "size": 0.9
+  }
+ ],
+ "rewards": {
+  "gold": 300
+ },
+ "objectives": [
+  {
+   "id": "alle_leben",
+   "text": "Kein Held fällt",
+   "reward": {
+    "gold": 110
+   }
+  },
+  {
+   "id": "alle_gegner",
+   "text": "Alle Gegner besiegt (ohne dass Xiùlán abzieht)",
+   "reward": {
+    "items": {
+     "heilhonig": 2
+    }
+   }
+  }
+ ]
+}

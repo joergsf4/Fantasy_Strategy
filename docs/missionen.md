@@ -318,3 +318,11 @@ Das Waisenhaus ist endgültig gerettet, die Gruppe berät. **Stachelia** gibt z�
 - **Test:** `tests/test_sumpf.gd`.
 
 - **Weniger Sumpf (2026-11-03, Spieltest „viel zu viel Sumpfgas“):** Statt eines Sumpffelds über fast die ganze Karte jetzt **17 von 120 Feldern** (einzelne Moorstreifen und -tümpel, viel festes Gelände dazwischen), Sumpfgas 2 statt 3 Schaden.
+
+## Korrektur Mission 15 und Mission 16: Streit um den Sold (`ch16`, Sumpf)
+- **Mission 15:** Die Berge im Norden sind **weg** (zu früh): keine Bergfelder, keine Felswand mehr (`walls` entfernt). Der Abschluss sagt jetzt, dass der Sumpf weitergeht und dahinten streitende Stimmen zu hören sind.
+- **Mission 16** (noch im Sumpf, Karte mit 17 Sumpffeldern, Sumpfgas 2): Die Gruppe trifft **Professor Kugelblitz**, der sich gerade mit der Söldnerin **Xiùlán** über die Bezahlung streitet. Als die Helden erscheinen, beginnt der Kampf. **Xiùlán fragt in Runde 2, 4 und 6 immer wieder nach dem Geld** (Dialoge mit Auslöser `turn`).
+- **Zwei Truhen auf der Karte** (je 80 Gold): Beim **ersten** Öffnen warnt Xiùlán („Wehe, ihr fasst die andere auch an!“), beim **zweiten** glaubt sie, ihr Lohn sei verloren, kündigt und **verschwindet** (`retreat`), Kugelblitz ruft ihr hinterher. Neuer Auslöser **`chests_open`** (so viele Truhen sind geöffnet; auch im Texteditor wählbar: „Truhen geöffnet“). Xiùlán flieht sonst nicht (`no_flee`), sie muss besiegt werden oder abziehen.
+- **Gegner:** Kugelblitz (55 Leben), Xiùlán (50), zwei Büttel, zwei Bogenschützen, ein Reiter, ein Priester. Gegnerfaktor ×1,8 (nicht gemessen).
+- **Bonus:** „Kein Held fällt“ (110 Gold), „Alle Gegner besiegt“ (2 Heilhonig).
+- **Test:** `tests/test_sumpf.gd`.

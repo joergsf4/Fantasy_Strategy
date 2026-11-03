@@ -31,14 +31,21 @@
    "left": "maedchen_baer",
    "right": "hund",
    "speaker": "maedchen_baer",
-   "text": "Der Sumpf liegt hinter uns. Ab jetzt geht es in die Berge."
+   "text": "Wart und die Frischlinge sind geschlagen, aber der Sumpf nimmt kein Ende."
   },
   {
    "left": "hund",
    "right": "bienenmaedchen",
    "speaker": "hund",
-   "text": "Dann auf zum Meister.",
+   "text": "Dahinten liegt eine Lichtung. Dort sind Stimmen zu hören. Streitende Stimmen.",
    "left_expr": "wuetend"
+  },
+  {
+   "left": "bienenmaedchen",
+   "right": "hund",
+   "speaker": "bienenmaedchen",
+   "text": "Hoffentlich Feinde. Dann muss ich nicht höflich sein.",
+   "left_expr": "lachend"
   }
  ]
 }

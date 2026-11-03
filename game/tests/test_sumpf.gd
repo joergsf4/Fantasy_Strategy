@@ -54,5 +54,28 @@ func _initialize() -> void:
 	var hp1: int = hero["hp"]
 	await b._begin_phase("p")
 	check(hero["hp"] == hp1 and wasp["hp"] == wasp_hp, "Festes Gelaende und Flieger (Stachelia) bleiben verschont")
+	# Mission 15: keine Berge im Norden mehr, Mission 16: Streit um den Sold, zwei Truhen schicken Xiulan weg
+	check(not (m["rows"] as Array).any(func(r: String) -> bool: return r.contains("M")) and not m.has("walls"), "Mission 15: keine Berge im Norden")
+	var m16 := Mission.load_mission("ch16")
+	for id: String in Mission.dialogue_ids("ch16"):
+		check(defs.has(id), "Sprecher %s existiert (Mission 16)" % id)
+	check((m16["chests"] as Array).size() == 2 and (m16["no_flee"] as Array).has("xiulan"), "Mission 16: zwei Truhen, Xiulan flieht nicht von selbst")
+	said.clear()
+	var b2 := Battle.new()
+	b2.setup(m16, defs)
+	b2.dialogue_runner = func(lines: Array) -> void:
+		for l: Dictionary in lines:
+			said.append(str(l["speaker"]))
+	root.add_child(b2)
+	await process_frame
+	check(not b2._find("xiulan").is_empty() and not b2._find("kugelblitz").is_empty(), "Kugelblitz und Xiulan auf der Karte")
+	b2.chests[0]["open"] = true
+	await b2._flush_events()
+	check(not b2._find("xiulan").is_empty(), "Eine Truhe offen: Xiulan bleibt")
+	b2.chests[1]["open"] = true
+	await b2._flush_events()
+	check(b2._find("xiulan").is_empty() and b2.retreated.has("xiulan"), "Beide Truhen offen: Xiulan zieht ab")
+	check(said.count("xiulan") >= 2, "Xiulan spricht zum Geld: %s" % [said])
+	b2.turn = 4
 	print("sumpf: ", "OK" if fails == 0 else "%d Fehler" % fails)
 	quit(fails)

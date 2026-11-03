@@ -1,0 +1,45 @@
+{
+ "intro": [
+  {
+   "left": "maedchen_baer",
+   "right": "hund",
+   "speaker": "maedchen_baer",
+   "text": "Seht ihr das? Da streiten zwei Gestalten auf einer Lichtung."
+  },
+  {
+   "left": "hund",
+   "right": "bienenmaedchen",
+   "speaker": "hund",
+   "text": "Der mit den weißen Haaren... das ist Professor Kugelblitz! Und die Alte ist Xiùlán!",
+   "left_expr": "wuetend"
+  },
+  {
+   "left": "bienenmaedchen",
+   "right": "hund",
+   "speaker": "bienenmaedchen",
+   "text": "Sie streiten ums Geld. Wunderbar. Dann kämpfen sie schlechter.",
+   "left_expr": "lachend"
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "bienenmaedchen",
+   "speaker": "maedchen_baer",
+   "text": "Zwei Truhen stehen dort drüben. Vielleicht lässt sich Xiùlán damit ablenken."
+  }
+ ],
+ "outro": [
+  {
+   "left": "maedchen_baer",
+   "right": "hund",
+   "speaker": "maedchen_baer",
+   "text": "Der Sumpf liegt hinter uns, und der Professor ist geflohen. Die Berge warten."
+  },
+  {
+   "left": "hund",
+   "right": "bienenmaedchen",
+   "speaker": "hund",
+   "text": "Dann auf zum Meister.",
+   "left_expr": "wuetend"
+  }
+ ]
+}
