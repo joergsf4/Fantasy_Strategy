@@ -7,8 +7,10 @@ signal closed
 signal save_requested
 signal quit_requested
 signal menu_requested
+signal restart_requested
 signal fullscreen_toggled
 
+var can_restart := false        # nur waehrend eines Kampfes: Mission neu starten
 var can_save := true            # im Hauptmenue gibt es noch nichts zu speichern
 var _panel: PanelContainer
 var _col: VBoxContainer
@@ -82,6 +84,8 @@ func _show_main() -> void:
 		_fs_button.text = _fullscreen_text())
 	_col.add_child(_fs_button)
 	_col.add_child(_button("Grafik", _show_graphics))
+	if can_restart:
+		_col.add_child(_button("Mission neu starten", _confirm_restart))
 	if can_save:      # im Hauptmenue selbst gibt es keinen Weg dorthin zurueck
 		_col.add_child(_button("Zum Hauptmenü", _confirm_menu))
 	_col.add_child(_button("Beenden", _confirm_quit))
@@ -146,6 +150,16 @@ func _show_graphics() -> void:
 		_col.add_theme_constant_override("separation", 10)
 		_show_main())
 	back.custom_minimum_size = Vector2(320, 38)
+	_col.add_child(back)
+	back.grab_focus.call_deferred()
+
+
+func _confirm_restart() -> void:
+	_clear()
+	_col.add_child(_label("Mission neu starten?", UiTheme.F_TITLE, 32, UiTheme.GOLD))
+	_col.add_child(_label("Der Kampf beginnt von vorn, der Fortschritt dieser Mission geht verloren (nichts wird gespeichert).", UiTheme.F_BODY, 19, UiTheme.CREAM, 340))
+	_col.add_child(_button("Ja, neu starten", func() -> void: restart_requested.emit()))
+	var back := _button("Zurück", _show_main)
 	_col.add_child(back)
 	back.grab_focus.call_deferred()
 

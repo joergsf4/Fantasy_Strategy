@@ -36,6 +36,8 @@ func _ready() -> void:
 	_pause = PauseHost.new()
 	_pause.save_cb = func() -> void: party.save()
 	_pause.can_save_cb = func() -> bool: return _in_game
+	_pause.can_restart_cb = func() -> bool: return _battle_active
+	_pause.restart_cb = _restart_battle
 	get_tree().root.add_child.call_deferred(_pause)
 	_run()
 
@@ -263,6 +265,17 @@ func _mission_with_squad(cid: String) -> Dictionary:
 
 ## Schwarzblende zwischen den Kapiteln (ohne Text, nur so lang wie noetig): zu am Ende eines Kapitels, auf nach dem Aufbau des naechsten.
 var _cover: ColorRect
+var _battle_active := false          # ein Kampf laeuft (Esc-Menue: Mission neu starten)
+var _restart_requested := false
+
+
+## Kampf ohne Niederlage-Bildschirm von vorn beginnen (Esc-Menue). Die Schleife in _chapter baut das Schlachtfeld neu auf.
+func _restart_battle() -> void:
+	if not _battle_active or stage.battle == null:
+		return
+	_restart_requested = true
+	stage.battle.state = Battle.State.OVER
+	stage.battle.finished.emit(false)
 
 
 func _cover_in(t := 0.4) -> void:
@@ -321,8 +334,15 @@ func _chapter(cid: String, skip_intro := false, next_cid := "") -> void:
 		await _talent_screen(joining)
 	_play_music(BATTLE_MUSIC, 2.5)
 	while true:
+		_battle_active = true
 		await stage.start_battle()
 		var won: bool = await stage.battle.finished
+		_battle_active = false
+		if _restart_requested:        # Esc-Menue: Mission neu starten, ohne Statistik
+			_restart_requested = false
+			stage.new_battle()
+			_play_music(BATTLE_MUSIC, 1.5)
+			continue
 		if won:
 			break
 		await _reward(stage.battle.defeat_summary())     # Niederlage: Statistik mit trauriger Musik, dann neuer Versuch

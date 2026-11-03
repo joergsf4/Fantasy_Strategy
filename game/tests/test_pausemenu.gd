@@ -40,5 +40,26 @@ func _initialize() -> void:
 			bt.pressed.emit()
 			break
 	check(got.size() == 1, "Bestaetigen meldet menu_requested")
+	# Mission neu starten: nur im Kampf, mit Rueckfrage
+	check(not _texts(b).has("Mission neu starten"), "Ohne Kampf kein Neustart-Knopf")
+	var c := PauseMenu.new()
+	c.can_save = true
+	c.can_restart = true
+	root.add_child(c)
+	await process_frame
+	check(_texts(c).has("Mission neu starten"), "Im Kampf: Mission neu starten: %s" % [_texts(c)])
+	var rgot := []
+	c.restart_requested.connect(func() -> void: rgot.append(1))
+	for bt: Button in c.find_children("*", "Button", true, false):
+		if bt.text == "Mission neu starten":
+			bt.pressed.emit()
+			break
+	await process_frame
+	check(rgot.is_empty() and _texts(c).has("Ja, neu starten"), "Erst Rueckfrage")
+	for bt: Button in c.find_children("*", "Button", true, false):
+		if bt.text == "Ja, neu starten":
+			bt.pressed.emit()
+			break
+	check(rgot.size() == 1, "Bestaetigen meldet restart_requested")
 	print("pausemenu: ", "OK" if fails == 0 else "%d Fehler" % fails)
 	quit(fails)

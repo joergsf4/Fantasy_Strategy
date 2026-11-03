@@ -5,6 +5,8 @@ extends Node
 
 var save_cb := Callable()       # func() -> void
 var quit_cb := Callable()       # func() -> void
+var can_restart_cb := Callable()  # func() -> bool: laeuft gerade ein Kampf?
+var restart_cb := Callable()      # func() -> void: Kampf neu beginnen
 var can_save_cb := Callable()   # func() -> bool: gibt es schon einen Spielstand zu sichern (nicht im Hauptmenue)?
 var _layer: CanvasLayer
 var _menu: PauseMenu
@@ -41,6 +43,12 @@ func open() -> void:
 	add_child(_layer)
 	_menu = PauseMenu.new()
 	_menu.can_save = can_save_cb.call() if can_save_cb.is_valid() else false
+	_menu.can_restart = can_restart_cb.call() if can_restart_cb.is_valid() else false
+	_menu.restart_requested.connect(func() -> void:       # Mission neu starten: Menue zu, Spiel weiter, Kampf von vorn
+		get_tree().paused = false
+		_menu.close()
+		if restart_cb.is_valid():
+			restart_cb.call())
 	_menu.save_requested.connect(func() -> void:
 		if save_cb.is_valid():
 			save_cb.call())
