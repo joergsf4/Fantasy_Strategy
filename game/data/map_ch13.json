@@ -106,6 +106,15 @@
     5,
     5
    ]
+  },
+  {
+   "id": "frischlinge",
+   "pos": [
+    7,
+    3
+   ],
+   "hp": 55,
+   "atk_mult": 1.1
   }
  ],
  "objects": [
@@ -143,6 +152,14 @@
     6
    ],
    "figure": "kind_mia"
+  },
+  {
+   "id": "zylinder",
+   "type": "zylinder",
+   "pos": [
+    10,
+    2
+   ]
   }
  ],
  "decor": [],

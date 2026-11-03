@@ -197,5 +197,14 @@
  },
  "drunken_strike": {
   "lunge": false
+ },
+ "computer_analyse": {
+  "color": [
+   0.3,
+   0.9,
+   1.0,
+   0.8
+  ],
+  "lunge": false
  }
 }

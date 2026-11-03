@@ -60,6 +60,8 @@ static func damage(att: Dictionary, def: Dictionary, cover: int, pos_bonus: floa
 		dmg = maxi(1, ceili(float(dmg) * defend_factor(def)))
 	if Status.has(def, "schild"):
 		dmg = maxi(1, ceili(float(dmg) * 0.5))      # Wollmantel
+	if Status.has(def, "analysiert"):
+		dmg = maxi(1, ceili(float(dmg) * 1.2))      # Computer-Analyse (Cyborg-Wart): 20 % mehr Schaden
 	for s: Dictionary in def.get("status", []):
 		var red := int((s.get("mods", {}) as Dictionary).get("reduce_pct", 0))
 		if red > 0:

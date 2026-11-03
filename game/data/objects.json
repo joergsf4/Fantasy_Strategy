@@ -178,5 +178,15 @@
   "solutions": {
    "blast": "break"
   }
+ },
+ "zylinder": {
+  "name": "Glasbehälter",
+  "start": "intact",
+  "active": "",
+  "blocks": [
+   "intact"
+  ],
+  "hp": 0,
+  "solutions": {}
  }
 }

@@ -416,8 +416,21 @@ func on_splash(_id: String, _u: Dictionary, _v: Dictionary) -> void:
 func on_status(id: String, u: Dictionary, v: Dictionary, status: String) -> void:
 	if status == "taunt":
 		await _taunt_reaction(u, v)
+	elif status == "analysiert":
+		await _scan(u, v)
 	else:
 		await ab.on_status(id, u, v, status)
+
+
+## Computer-Analyse: cyanfarbener Abtaststrahl vom Cyborg zum Ziel, Gitter-Ring und kurzes Aufleuchten.
+func _scan(u: Dictionary, v: Dictionary) -> void:
+	var from := chest(u, 0.8)
+	var to := chest(v, 0.5)
+	await beam(from, to, Color(0.3, 0.9, 1.0), 0.07, 0.35)
+	shockwave((v["node"] as Node3D).position, 0.9, Color(0.3, 0.9, 1.0, 0.8), 0.5)
+	light_flash(to, Color(0.3, 0.9, 1.0), 2.0, 3.0, 0.4)
+	flash_unit(v, Color(0.5, 1.6, 2.0), 0.3)
+	particles("fx_star", to, 8, 1.5, 0.16, 0.7, 0.0, Color(0.4, 1.0, 1.0), true, 180.0)
 
 
 # ------------------------------------------------------------------ Kanone

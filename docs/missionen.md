@@ -285,3 +285,9 @@ Benannte Gegner (`"flees": true` in `units.json`: Wart, Oskar, Maja) sterben nic
 - **Stimmung:** neues Kartenfeld `mood: "nacht"` (wie „nacht_regen“, aber ohne Regen).
 - **Offen:** Balancing beider Missionen im Simulator (kennt weder Zugbrücke noch Maschine), Dialoge zum Verfeinern im Texteditor, Kapitelwahl „Hebel, Brücke“ nur im Test sichtbar.
 - **Test:** `tests/test_labor.gd`.
+
+### Mission 13, Überraschung: Cyborg-Wart
+- **Der Behälter:** Ein grünlicher Glaszylinder in Humanoidengröße steht neben dem Professor (Objekt `zylinder`, Sprites `fx_glaszylinder` heil und `fx_glaszylinder_kaputt` geborsten, grünes Glühen). Er ist eindeutig als technisches Gerät zu erkennen (Stahlsockel, Kontrollleuchten, Kabel, Schatten einer Gestalt in der Flüssigkeit).
+- **Auslöser:** Die **Frischlinge** (in Mission 13 wieder dabei, 55 Leben) fallen unter **50 % Leben**: Kugelblitz öffnet „Behälter Sieben“, der Zylinder birst (`{"world": … "break"}`, Funken, Lichtblitz, Beben), und **Cyborg-Wart** erscheint (`spawn`) mit eigenem Dialog. Die Bösen haben Wart als Cyborg wiederbelebt, wütend und stärker.
+- **Cyborg-Wart (`cyborg_wart`):** Porträts neutral/lachend/wütend (Stahlzahn, rotes Kamera-Auge, Chromarm, Raketenwerfer), Karten-Figur. 72 Leben, Angriff 13, Verteidigung 6, **Raketenwerfer** wie zuvor und neu **Computer-Analyse** (`computer_analyse`, Reichweite 1–4, Abklingzeit 3, kostet keine Aktion): Das Ziel ist 3 Runden **analysiert** und **nimmt 20 % mehr Schaden** (`Status` `analysiert`, `Combat.damage`). Die Gegner-KI setzt sie vor dem Angriff ein (`ai_debuff`, `Battle._enemy_debuff`), Effekt `Fx._scan` (cyanfarbener Abtaststrahl).
+- **Offen:** Balancing (der Simulator kennt Mission 13 nicht; Cyborg-Wart macht sie deutlich schwerer), Stufenwerte nach Spielgefühl anpassen.

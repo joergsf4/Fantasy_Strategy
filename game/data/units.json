@@ -617,5 +617,28 @@
   "body": "flesh",
   "flees": true,
   "size": 1.45
+ },
+ "cyborg_wart": {
+  "name": "Cyborg-Wart",
+  "hp": 72,
+  "atk": 13,
+  "def": 6,
+  "res": 3,
+  "move": 3,
+  "range_min": 1,
+  "range": 2,
+  "role": "damage",
+  "dmg_type": "body",
+  "tags": [
+   "boss"
+  ],
+  "abilities": [
+   "rakete",
+   "computer_analyse"
+  ],
+  "ranged_mult": 0.85,
+  "weapon": "metal",
+  "body": "armor",
+  "size": 1.6
  }
 }

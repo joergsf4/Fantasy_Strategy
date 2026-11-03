@@ -1506,7 +1506,7 @@ func _make_object(o: Dictionary) -> void:
 	if o["type"] == "bridge":
 		_make_bridge(o)
 		return
-	if o["type"] in ["maschine", "hive", "hive_p", "bell", "orphanage", "ship", "crate", "teahouse", "tent", "switch"]:
+	if o["type"] in ["zylinder", "maschine", "hive", "hive_p", "bell", "orphanage", "ship", "crate", "teahouse", "tent", "switch"]:
 		_make_ch5_object(o)
 		return
 	var stone := Color(0.52, 0.5, 0.54)
@@ -1631,6 +1631,15 @@ func _refresh_object(o: Dictionary, animate: bool) -> void:
 				fx.particles("fx_smoke", to_world(o["pos"]) + Vector3(0, 0.3, 0), 10, 1.5, 0.7, 1.0, -0.3, Color(0.3, 0.3, 0.3), false, 70.0)
 	if o["type"] == "hive_p":
 		(p["body"] as Node3D).visible = st == "active"
+	if o["type"] == "zylinder":
+		(p["body"] as Node3D).visible = st == "intact"
+		(p["glow"] as Node3D).visible = st == "intact"
+		(p["rubble"] as Node3D).visible = st == "broken"
+		if animate and st == "broken":
+			Sfx.event("explosion")
+			fx.particles("fx_star", to_world(o["pos"]) + Vector3(0, 0.8, 0), 20, 3.5, 0.2, 0.8, 5.0, Color(0.5, 1.0, 0.6), true, 180.0)
+			fx.light_flash(to_world(o["pos"]) + Vector3(0, 0.8, 0), Color(0.4, 1.0, 0.5), 3.0, 4.0, 0.7)
+			fx.shake(0.1, 0.4)
 	if o["type"] == "maschine":
 		(p["body"] as Node3D).visible = st == "intact"
 		(p["glow"] as Node3D).visible = st == "intact"
@@ -1639,7 +1648,7 @@ func _refresh_object(o: Dictionary, animate: bool) -> void:
 			Sfx.event("explosion")
 			fx._explosion(to_world(o["pos"]) + Vector3(0, 0.6, 0), 1.6)
 			fx.shake(0.12, 0.5)
-	if not ["gate", "wall", "house"].has(o["type"]) and p["rubble"] != null:
+	if not ["gate", "wall", "house", "zylinder"].has(o["type"]) and p["rubble"] != null:
 		(p["rubble"] as Node3D).visible = false
 
 
@@ -1678,7 +1687,7 @@ const WATER_Y := 0.02
 
 ## Karten-Objekte als Pixel-Sprites (Gemini, freigestellt): Bienenstock, Glocke, Waisenhaus, Teehaus, Schiff, Hafen-Hindernisse.
 ## Die Spiellogik (Sperren, Zustaende) steckt in World, hier nur die Optik.
-const OBJ_SPRITE := {"hive": ["fx_bienenstock", 1.0], "hive_p": ["fx_bienenstock", 0.9], "bell": ["fx_glocke", 1.6], "orphanage": ["fx_waisenhaus", 1.9], "teahouse": ["fx_teehaus", 1.7], "tent": ["fx_zelt", 1.25], "switch": ["fx_hebel", 0.7], "maschine": ["fx_maschine", 2.3]}
+const OBJ_SPRITE := {"hive": ["fx_bienenstock", 1.0], "hive_p": ["fx_bienenstock", 0.9], "bell": ["fx_glocke", 1.6], "orphanage": ["fx_waisenhaus", 1.9], "teahouse": ["fx_teehaus", 1.7], "tent": ["fx_zelt", 1.25], "switch": ["fx_hebel", 0.7], "maschine": ["fx_maschine", 2.3], "zylinder": ["fx_glaszylinder", 1.7]}
 const CRATE_SPRITES := [["fx_kiste", 1.0], ["fx_fass", 1.05], ["fx_saecke", 1.0]]
 
 
@@ -1732,6 +1741,9 @@ func _make_ch5_object(o: Dictionary) -> void:
 		_:
 			var def: Array = OBJ_SPRITE[o["type"]]
 			parts["body"] = _object_sprite(def[0], def[1], root)
+	if o["type"] == "zylinder":     # Behaelter in zwei Zustaenden: heil (gruen leuchtend) oder geborsten
+		parts["rubble"] = _object_sprite("fx_glaszylinder_kaputt", 1.5, root)
+		parts["glow"] = fx.make_sprite("soft", Vector3(0, 0.75, 0.1), 1.8, true, Color(0.35, 1.0, 0.5, 0.5), 0, root)
 	if o["type"] == "maschine":     # cyanfarbener Schein, der pulsiert, und ein Punktlicht
 		var mglow := fx.make_sprite("soft", Vector3(0, 1.0, 0.1), 3.2, true, Color(0.3, 0.8, 1.0, 0.55), 0, root)
 		var mlight := OmniLight3D.new()
@@ -3667,6 +3679,22 @@ func _machine_phase() -> void:
 			return
 
 
+## Faehigkeiten mit "ai_debuff" (Computer-Analyse): vor dem Angriff das Ziel schwaechen, solange es den Status noch nicht hat. Kostet keine Aktion.
+func _enemy_debuff(e: Dictionary, target: Dictionary) -> void:
+	for id: String in e["abilities"]:
+		var ab: Dictionary = abilities[id]
+		if str(ab.get("ai_debuff", "")) == "" or int(e["cd"].get(id, 0)) > 0:
+			continue
+		if Status.has(target, str(ab["ai_debuff"])):
+			continue
+		var dd := Grid.dist(e["pos"], target["pos"])
+		var r: Array = ab["range"]
+		if dd < r[0] or dd > r[1]:
+			continue
+		await _run_ability(e, id, target)
+		return
+
+
 func _hive_phase() -> void:
 	for o in world.objects:
 		if o["type"] != "hive" or o["state"] != "active":
@@ -3960,6 +3988,8 @@ func _enemy_move(e: Dictionary) -> void:
 		await _run_ability(e, sid, e)
 		await _flush_events()
 		return
+	if not best_target.is_empty() and units.has(best_target):
+		await _enemy_debuff(e, best_target)
 	if not best_target.is_empty():
 		if best_ab != "":
 			await _run_ability(e, best_ab, best_target)

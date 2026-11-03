@@ -87,6 +87,10 @@
     "t_wood",
     "t_flesh"
    ]
+  },
+  "cyborg_wart": {
+   "shot": "rocket_launch",
+   "hit": "explosion"
   }
  },
  "abilities": {
@@ -293,6 +297,9 @@
   },
   "laser_reflektor": {
    "cast": "chime"
+  },
+  "computer_analyse": {
+   "cast": "zap"
   }
  },
  "events": {
@@ -567,6 +574,14 @@
     0.7
    ],
    "db": 2
+  },
+  "cyborg_wart": {
+   "s": "v_grunt",
+   "pitch": [
+    0.6,
+    0.8
+   ],
+   "db": 3
   }
  }
 }

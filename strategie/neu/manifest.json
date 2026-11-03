@@ -189,5 +189,11 @@
  "kugelblitz_wuetend": true,
  "kugelblitz_chibi": true,
  "fx_maschine": true,
- "fx_wachturm": true
+ "fx_wachturm": true,
+ "fx_glaszylinder": true,
+ "fx_glaszylinder_kaputt": true,
+ "cyborg_wart": true,
+ "cyborg_wart_lachend": true,
+ "cyborg_wart_wuetend": true,
+ "cyborg_wart_chibi": true
 }

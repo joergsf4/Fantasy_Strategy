@@ -893,5 +893,25 @@
   ],
   "super": true,
   "super_sub": "Betrunkener Meister"
+ },
+ "computer_analyse": {
+  "name": "Computer-Analyse",
+  "text": "Untersucht einen Feind (Reichweite 1–4): Er nimmt 3 Runden lang 20 % mehr Schaden. Kostet keine Aktion.",
+  "cd": 3,
+  "target": "enemy",
+  "range": [
+   1,
+   4
+  ],
+  "ends_turn": false,
+  "caps": [],
+  "effects": [
+   {
+    "type": "status",
+    "id": "analysiert",
+    "turns": 3
+   }
+  ],
+  "ai_debuff": "analysiert"
  }
 }

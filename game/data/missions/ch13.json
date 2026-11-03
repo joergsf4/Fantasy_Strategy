@@ -2,7 +2,7 @@
  "id": "ch13",
  "title": "Das Labor im Wald",
  "map": "res://data/map_ch13.json",
- "briefing": "Mitten im Wald steht das Labor von Professor Kugelblitz. Seine Energiemaschine hängt an den entführten Waisenkindern und am magischen Honig. Befreit alle drei Kinder: Wer neben einem Kind steht, löst in zwei Runden die Fesseln, aber nur wenn kein Gegner daneben steht. Die Maschine verpasst jedem Helden neben ihr jede Runde einen Stromschlag. Zerstört sie (Bonus), oder haltet euch fern. Der Professor flieht, wenn es ihm zu bunt wird.",
+ "briefing": "Mitten im Wald steht das Labor von Professor Kugelblitz. Seine Energiemaschine hängt an den entführten Waisenkindern und am magischen Honig. Befreit alle drei Kinder: Wer neben einem Kind steht, löst in zwei Runden die Fesseln, aber nur wenn kein Gegner daneben steht. Die Maschine verpasst jedem Helden neben ihr jede Runde einen Stromschlag. Zerstört sie (Bonus), oder haltet euch fern. Der Professor flieht, wenn es ihm zu bunt wird. Achtung: Die Frischlinge sind zurück. Fällt ihre Gesundheit unter die Hälfte, bricht der grüne Glasbehälter neben dem Professor auf, und etwas Schreckliches kommt heraus.",
  "goals": [
   {
    "type": "free_all",
@@ -94,6 +94,89 @@
   },
   {
    "when": {
+    "hp_below": {
+     "id": "frischlinge",
+     "ratio": 0.5
+    }
+   },
+   "if": {
+    "present": [
+     "frischlinge"
+    ]
+   },
+   "note": "Cyborg-Wart erwacht",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "hund",
+       "right": "kugelblitz",
+       "speaker": "kugelblitz",
+       "text": "Die Schweinchen schwächeln! Zeit für Plan B. Behälter Sieben, öffnen!",
+       "right_expr": "lachend"
+      },
+      {
+       "left": "hund",
+       "right": "kugelblitz",
+       "speaker": "hund",
+       "text": "Behälter...? Was habt ihr da drin?",
+       "left_expr": "wuetend"
+      }
+     ]
+    },
+    {
+     "world": {
+      "id": "zylinder",
+      "effect": "break"
+     }
+    },
+    {
+     "spawn": [
+      {
+       "id": "cyborg_wart",
+       "pos": [
+        10,
+        2
+       ],
+       "label": "Cyborg-Wart erwacht"
+      }
+     ]
+    },
+    {
+     "dialogue": [
+      {
+       "left": "robo",
+       "right": "cyborg_wart",
+       "speaker": "robo",
+       "text": "Scan: kybernetischer Organismus. Wutlevel kritisch. Identifikation: ...Wart."
+      },
+      {
+       "left": "hund",
+       "right": "cyborg_wart",
+       "speaker": "hund",
+       "text": "Wart?! Du bist doch tot!",
+       "left_expr": "wuetend"
+      },
+      {
+       "left": "hund",
+       "right": "cyborg_wart",
+       "speaker": "cyborg_wart",
+       "text": "Tot. Ja. Sie haben mich repariert. Besser. Stärker. Und SEHR, SEHR WÜTEND.",
+       "right_expr": "wuetend"
+      },
+      {
+       "left": "hund",
+       "right": "frischlinge",
+       "speaker": "frischlinge",
+       "text": "Boss!! Du lebst! Jetzt geht es euch an den Kragen!",
+       "right_expr": "lachend"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
     "victory": true
    },
    "note": "Die Kinder sind frei",
@@ -152,6 +235,15 @@
     "right": "kugelblitz",
     "speaker": "kugelblitz",
     "text": "Das ist nur ein Experiment! Ein misslungenes Experiment! Ich komme wieder, mit besseren Daten!",
+    "right_expr": "wuetend"
+   }
+  ],
+  "frischlinge": [
+   {
+    "left": "$hero",
+    "right": "frischlinge",
+    "speaker": "frischlinge",
+    "text": "Der Boss kriegt euch! Der Boss kriegt euch alle!",
     "right_expr": "wuetend"
    }
   ]
