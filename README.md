@@ -40,6 +40,16 @@ Rundenstrategie im Stil von **Fire Emblem** und **Advance Wars**, gebaut mit **G
 </tr>
 </table>
 
+### Kapitel 2: Hafen bei Nacht, Gewitter, Sumpf
+
+<table>
+<tr>
+<td width="33%"><img src="docs/img/hafen_nacht.jpg" alt="Hafen bei Nacht und Regen"><br><b>Hafen bei Nacht.</b> Regen, Mondlicht, Lichter in den Häusern; die Überfahrt mit dem Schiff läuft in der Engine über ein bewegtes Meer.</td>
+<td width="33%"><img src="docs/img/labor.jpg" alt="Labor von Professor Kugelblitz im Gewitter"><br><b>Labor im Gewitter.</b> Blitz und Donner, Professor Kugelblitz, eine Energiemaschine, die Kinder in Gefahr und Cyborg-Wart im Glasbehälter.</td>
+<td width="33%"><img src="docs/img/sumpf.jpg" alt="Neues Biom Sumpf"><br><b>Neues Biom Sumpf.</b> Morast, der doppelte Bewegung kostet und Sumpfgas ausatmet, tote Bäume, Schilf und leuchtende Pilze.</td>
+</tr>
+</table>
+
 ### Geheime Interaktionen und Super-Attacken
 
 Manche Fähigkeiten wirken auf Verbündete anders, als man denkt. Wer es herausfindet, wird mit einer eigenen Szene und einer **Super-Attacke** belohnt: Polarlicht-Himmel, der stark vergrößerte Held und eigene Musik. Hier ein Blick auf das erste Geheimnis (Spoiler!). Es gibt Raum für mehr.
@@ -51,13 +61,16 @@ Manche Fähigkeiten wirken auf Verbündete anders, als man denkt. Wer es herausf
 </tr>
 </table>
 
-### Lager, Gruppenwahl und Statistik
+### Lager, Talente, Gruppenwahl und Statistik
 
 <table>
 <tr>
-<td width="33%"><img src="docs/img/lager.jpg" alt="Lager mit Händler Sack"><br><b>Lager.</b> Händler Sack (ein lebender Wollsack), Brauen, Ausrüstung und Aufstellung.</td>
+<td width="33%"><img src="docs/img/lager.jpg" alt="Lager mit Händler Sack"><br><b>Lager.</b> Händler Sack (ein lebender Wollsack) mit Ausrüstung in vier Stufen und Verkauf, Brauen, Aufstellung und Talente.</td>
 <td width="33%"><img src="docs/img/gruppenwahl.jpg" alt="Gruppenwahl"><br><b>Gruppenwahl.</b> Vor jeder Runde wählst du deine Helden. Wer in der Geschichte gebraucht wird, ist gesperrt.</td>
 <td width="33%"><img src="docs/img/statistik.jpg" alt="Siegbildschirm mit Statistik"><br><b>Statistik.</b> Beute, Bonusziele und Auszeichnungen, nach dem Sieg mit fröhlicher, nach der Niederlage mit trauriger Musik.</td>
+</tr>
+<tr>
+<td colspan="3"><img src="docs/img/talente.jpg" alt="Aufstiegsbildschirm mit Talentpunkten" width="560"><br><b>Talente.</b> Die Gruppe steigt je Mission eine Stufe auf, alle drei Stufen gibt es einen Talentpunkt für jeden Helden der Gruppe. Du verteilst ihn selbst auf Leben, Angriff und die zwei Fähigkeiten (Rang 1 bis 3: mehr Wirkung, mehr Reichweite). Neue Helden werden vor ihrer ersten Mission aufgelevelt.</td>
 </tr>
 </table>
 
@@ -66,9 +79,11 @@ Manche Fähigkeiten wirken auf Verbündete anders, als man denkt. Wer es herausf
 - **Benannte Gegner sterben nicht**, sondern fliehen wütend und tauchen in späteren Missionen wieder auf, mit eigenen Dialogen.
 - **Fähigkeiten als Werkzeuge:** Stabsprung über Gräben, Kanone gegen Mauern, Fässer gegen Feuer, Glocken, die Verstärkung rufen, und vieles mehr.
 - **Gemeinsame Abklingzeit** je Figur: Man hat die Wahl, nicht mehr Spezialeffekte pro Runde.
+- **Talente statt automatischer Stufen:** Punkte verteilst du selbst; Ausrüstung kommt in vier Stufen im Sortiment des Händlers, Geld ist knapp.
+- **Missionsmechaniken:** Zugbrücke mit Hebel (Fernkampf trifft ihn), Energiemaschine mit Stromschlägen, Glasbehälter, aus dem ein Cyborg bricht, Sumpfgas, brennendes Waisenhaus, Truhen, die Söldner abziehen lassen, und Stachelia, die plötzlich auf deiner Seite kämpft.
 - **Gruppenwahl mit Story-Sperre:** Nur wer im Kapitel spricht, muss mit, der Rest ist frei wählbar.
 - **Brabbel-Laute** beim Dialogtext (Robo piept, Wendy blökt, der Hundsfreund bellt …) statt Sprachausgabe.
-- **Messbares Balancing:** Der grafikfreie Simulator in `game/sim/` spielt Missionen tausendfach durch (auch Mission 5 mit Bienenstöcken, Mission 6 mit Schiff, Mission 7 mit den Zwillingen und Mission 8 mit dem Panzer, den man nach drei Runden übernimmt). Damit werden Leben, Schaden und Verstärkungen eingestellt, nicht geraten. Ergebnisse in [docs/balance.md](docs/balance.md).
+- **Messbares Balancing:** Der grafikfreie Simulator in `game/sim/` spielt Missionen tausendfach durch (Bienenstöcke, Schiff, Zwillinge, Panzer-Übernahme, Zugbrücke), dazu Matrizen „alle Helden gegen alle Bosse“ und eine Fortschrittskurve über die Missionen. Damit werden Leben, Schaden, Verstärkungen und Gegnerstärke eingestellt, nicht geraten. Ergebnisse in [docs/balance.md](docs/balance.md), [Heldenmatrix](docs/balance_matrix.md), [Gruppen](docs/balance_gruppen.md) und [Kurve](docs/balance_kurve.md).
 - **Alles datengetrieben:** Einheiten, Fähigkeiten, Missionen, Karten, Dialoge und Geheimnisse liegen als JSON in `game/data/` und lassen sich mit dem Dialog-Editor bearbeiten.
 
 ## Spielen
@@ -89,10 +104,10 @@ Benötigt Godot 4.7 (Compatibility-Renderer).
 - **Maus:** Figur wählen, Feld wählen, Menü neben der Figur. Rechtsklick geht zurück.
 - **Dialoge:** Linksklick, Enter oder Leertaste schaltet weiter.
 - **Alt (gedrückt halten):** zeigt über allen Figuren Lebenszahl und alle Status mit Restdauer. Sonst steht über jeder Figur nur ein schmaler Lebensbalken, Details zeigen Auswahl und Hover.
-- **Esc:** öffnet das Pause-Menü (Weiter, Speichern, Vollbild, Beenden). Beim Beenden bleibt der Stand nach der letzten geschafften Mission erhalten.
+- **Esc:** öffnet das Pause-Menü (Weiter, Mission neu starten, Speichern, Grafik, Vollbild, Zum Hauptmenü, Beenden). Beim Beenden bleibt der Stand nach der letzten geschafften Mission erhalten. **Grafik:** Voreinstellungen und Einzelwerte (Anzeige, V-Sync, Bildrate, Renderauflösung, Kantenglättung, Schatten, Leuchteffekt, Tiefenunschärfe, Partikel und Regen).
 - **Hauptmenü:** *Fortfahren* (nur mit Spielstand, geht im Lager vor dem nächsten Kapitel weiter), *Neues Spiel* (mit Rückfrage, löscht den Spielstand) und *Beenden*. Bedienung mit Maus oder Pfeiltasten und Enter.
 - **Speichern:** automatisch nach jeder geschafften Mission (Meldung „Spielstand automatisch gespeichert“), zusätzlich von Hand im Pause-Menü. Der Spielstand liegt im Nutzerordner `Strategy Adventure` (der Ordnername blieb bei der Umbenennung des Spiels, damit alte Spielstände weiter gelten).
-- **Testmenü:** Im Hauptmenü kleingeschrieben `brumm` tippen („Kapitelwahl freigeschaltet“), dann gibt es nach dem Start die Kapitelwahl (mit oder ohne Einleitung), das Soundlabor und „Spielstand zurücksetzen“.
+- **Testmenü:** Im Hauptmenü kleingeschrieben `brumm` tippen („Kapitelwahl freigeschaltet“), dann gibt es nach dem Start die Kapitelwahl (mit oder ohne Einleitung), das Soundlabor, das **Testlabor** (Arena mit beliebigem Helden gegen Gegner, Aufstiegs-, Lager-, Belohnungs- und Reisebild direkt aufrufbar) und „Spielstand zurücksetzen“. Für Entwickler: `START_CH=ch14 godot --path game` startet direkt in einer Mission mit der dort üblichen Ausstattung.
 
 ## Werkzeuge
 
@@ -123,7 +138,7 @@ Test: `python3 -m unittest tools/dialog_editor/test_server.py`
 - `gemini/`: Gemini-Automatisierung für Bilder (`run.mjs`) und Musik (`music.mjs`)
 - `make_sfx.py`: erzeugt alle Soundeffekte und Brabbel-Laute synthetisch
 - `balance.py` mit dem grafikfreien Simulator in `game/sim/`: Balancing-Experimente, Bericht in [docs/balance.md](docs/balance.md)
-- `make_trailer.sh`: nimmt Trailer direkt aus dem Spiel auf
+- `make_trailer.sh`, `make_short.sh`: nehmen Trailer und YouTube Short direkt aus dem Spiel auf
 - `make_ui.py`, `make_thumbnail.py`: UI-Texturen und Thumbnail
 
 ## Projektstruktur
@@ -141,7 +156,7 @@ Dazu viele weitere in `game/tests/` (Fähigkeiten, Missionen, Feuer, Gruppenwahl
 ## Dokumentation
 - [Kampfsystem](docs/kampfsystem.md) · [Figuren](docs/figuren.md) · [Missionen](docs/missionen.md)
 - [Geheime Interaktionen und Super-Attacken](docs/geheimnisse.md) · [Sound](docs/sound.md)
-- [Balancing](docs/balance.md) · [Backlog](docs/backlog.md)
+- [Balancing](docs/balance.md) · [Fortschritt und Talente](docs/fortschritt.md) · [Backlog](docs/backlog.md)
 
 ## Hinweise
 - **KI-generierte Inhalte:** Alle Figuren-, Effekt- und Hintergrundbilder (`strategie/`, `game/assets/portraits|tokens|fx`) und die Musik (`game/assets/audio/`) wurden mit Google Gemini erzeugt, die Soundeffekte synthetisch. Programmcode und Daten entstanden mit Claude Code. Das Projekt ist ein nicht kommerzielles Hobbyprojekt.
