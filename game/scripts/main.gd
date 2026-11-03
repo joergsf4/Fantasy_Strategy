@@ -31,7 +31,8 @@ func _ready() -> void:
 		return
 	if DisplayServer.get_name() != "headless":
 		DisplayServer.window_set_title("フザケタ・タクティクス")      # unabhaengig vom (ASCII) Namen der macOS-App
-		PauseHost.set_fullscreen(true)           # das Spiel startet im Vollbild (F11 oder Pause-Menue schalten um)
+		Settings.load_file()
+		Settings.apply()                         # Grafikoptionen (Standard: Vollbild; F11 oder Pause-Menue schalten um)
 	_pause = PauseHost.new()
 	_pause.save_cb = func() -> void: party.save()
 	_pause.can_save_cb = func() -> bool: return _in_game
@@ -556,6 +557,22 @@ func _screenshot_mode() -> void:
 			add_child(dl)
 			dl.add_child(sd)
 		await get_tree().create_timer(float(OS.get_environment("SHOT_DELAY")) if OS.get_environment("SHOT_DELAY") != "" else 4.0).timeout
+		get_viewport().get_texture().get_image().save_png(OS.get_environment("SHOT_OUT"))
+		get_tree().quit()
+		return
+	if mode == "grafik":   # Pause-Menue, Reiter Grafik
+		stage = Stage.new()
+		stage.setup(map, units)
+		add_child(stage)
+		var gl := CanvasLayer.new()
+		gl.layer = 40
+		add_child(gl)
+		var gm := PauseMenu.new()
+		gm.can_save = true
+		gl.add_child(gm)
+		await get_tree().process_frame
+		gm._show_graphics()
+		await get_tree().create_timer(1.0).timeout
 		get_viewport().get_texture().get_image().save_png(OS.get_environment("SHOT_OUT"))
 		get_tree().quit()
 		return

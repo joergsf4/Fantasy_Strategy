@@ -69,6 +69,7 @@ func _clear() -> void:
 
 
 func _show_main() -> void:
+	_panel.position = Vector2(440, 150)
 	_clear()
 	_col.add_child(_label("Pause", UiTheme.F_TITLE, 40, UiTheme.GOLD))
 	var first := _button("Weiter", close)
@@ -80,6 +81,7 @@ func _show_main() -> void:
 		fullscreen_toggled.emit()
 		_fs_button.text = _fullscreen_text())
 	_col.add_child(_fs_button)
+	_col.add_child(_button("Grafik", _show_graphics))
 	if can_save:      # im Hauptmenue selbst gibt es keinen Weg dorthin zurueck
 		_col.add_child(_button("Zum Hauptmenü", _confirm_menu))
 	_col.add_child(_button("Beenden", _confirm_quit))
@@ -106,6 +108,44 @@ func _confirm_quit() -> void:
 	var yes := _button("Ja, beenden", func() -> void: quit_requested.emit())
 	_col.add_child(yes)
 	var back := _button("Zurück", _show_main)
+	_col.add_child(back)
+	back.grab_focus.call_deferred()
+
+
+## Reiter "Grafik": jede Option ist ein Knopf, der beim Klicken den naechsten Wert waehlt (Settings.OPTIONS); wirkt sofort und wird gespeichert.
+func _show_graphics() -> void:
+	_panel.position = Vector2(440, 22)
+	_clear()
+	_col.add_theme_constant_override("separation", 7)
+	_col.add_child(_label("Grafik", UiTheme.F_TITLE, 36, UiTheme.GOLD))
+	var buttons: Dictionary = {}
+	var refresh := func() -> void:
+		for o: Dictionary in Settings.OPTIONS:
+			(buttons[o["key"]] as Button).text = "%s: %s" % [o["label"], Settings.value_text(o["key"])]
+		(buttons["_preset"] as Button).text = "Voreinstellung: " + Settings.preset_name()
+	var preset := _button("", func() -> void:
+		Settings.cycle_preset()
+		Settings.apply()
+		Settings.save_file()
+		refresh.call())
+	preset.custom_minimum_size = Vector2(320, 38)
+	buttons["_preset"] = preset
+	_col.add_child(preset)
+	for o: Dictionary in Settings.OPTIONS:
+		var key: String = o["key"]
+		var b := _button("", func() -> void:
+			Settings.cycle(key)
+			Settings.apply()
+			Settings.save_file()
+			refresh.call())
+		b.custom_minimum_size = Vector2(320, 38)
+		buttons[key] = b
+		_col.add_child(b)
+	refresh.call()
+	var back := _button("Zurück", func() -> void:
+		_col.add_theme_constant_override("separation", 10)
+		_show_main())
+	back.custom_minimum_size = Vector2(320, 38)
 	_col.add_child(back)
 	back.grab_focus.call_deferred()
 

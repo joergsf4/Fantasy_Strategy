@@ -265,7 +265,7 @@ func _build_rain() -> void:
 	m.billboard_keep_scale = true
 	q.material = m
 	p.mesh = q
-	p.amount = 1600
+	p.amount = int(1600 * Settings.particle_factor())
 	p.lifetime = 0.8
 	p.preprocess = 1.0
 	p.emission_shape = CPUParticles3D.EMISSION_SHAPE_BOX
@@ -326,7 +326,7 @@ func _build_environment() -> void:
 	env.fog_enabled = false
 	env.fog_light_color = Color(0.78, 0.86, 0.93)
 	env.fog_density = 0.005
-	env.glow_enabled = true
+	env.glow_enabled = Settings.glow_on()
 	env.glow_intensity = 0.2
 	env.glow_bloom = 0.0
 	env.glow_hdr_threshold = 1.2
@@ -341,7 +341,7 @@ func _build_environment() -> void:
 	sun.rotation_degrees = Vector3(-48, -38, 0)
 	sun.light_color = Color(1.0, 0.94, 0.82)
 	sun.light_energy = 1.0
-	sun.shadow_enabled = true
+	sun.shadow_enabled = Settings.shadows_on()
 	sun.directional_shadow_max_distance = 45.0
 	sun.shadow_blur = 1.5
 	sun.shadow_opacity = 0.65

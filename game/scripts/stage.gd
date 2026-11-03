@@ -65,7 +65,7 @@ func set_mode(m: String) -> void:
 		"dialog":
 			_dim.color.a = 0.34
 			_set_fx(0.5, 0.26, 1.3, 1.04)
-	_fx_layer.visible = m != "battle"
+	_fx_layer.visible = m != "battle" and Settings.tilt_on()
 
 
 func _set_fx(y: float, width: float, blur: float, sat: float) -> void:

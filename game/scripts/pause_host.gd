@@ -71,6 +71,7 @@ static func is_fullscreen() -> bool:
 
 static func set_fullscreen(on: bool) -> void:
 	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN if on else DisplayServer.WINDOW_MODE_WINDOWED)
+	Settings.set_value("window", 1 if on else 0)      # F11 und Pause-Menue halten die Grafikoption mit
 
 
 static func toggle_fullscreen() -> void:
