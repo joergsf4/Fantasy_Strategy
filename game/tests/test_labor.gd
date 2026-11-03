@@ -39,7 +39,7 @@ func _initialize() -> void:
 	var hp0: int = hero["hp"]
 	b._actor = {}
 	await b._machine_phase()
-	check(hero["hp"] == hp0 - 5, "Zap: 5 Schaden neben der Maschine (%d -> %d)" % [hp0, hero["hp"]])
+	check(hero["hp"] == hp0 - int(m["zap"]), "Zap: %d Schaden neben der Maschine (%d -> %d)" % [int(m["zap"]), hp0, hero["hp"]])
 	hero["pos"] = Vector2i(2, 5)
 	var hp1: int = hero["hp"]
 	await b._machine_phase()
