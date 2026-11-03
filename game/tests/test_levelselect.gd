@@ -17,7 +17,7 @@ func _initialize() -> void:
 	root.add_child(ls)
 	await process_frame
 	var buttons: Array = ls.find_children("*", "Button", true, false)
-	buttons = buttons.filter(func(b: Button) -> bool: return b.text != "Soundlabor" and b.text != "Spielstand zurücksetzen" and not b is OptionButton)
+	buttons = buttons.filter(func(b: Button) -> bool: return b.text != "Soundlabor" and not b.text.begins_with("Testlabor") and b.text != "Spielstand zurücksetzen" and not b is OptionButton)
 	var dd: OptionButton = ls.find_children("*", "OptionButton", true, false)[0]
 	check(dd.item_count == 2 and dd.selected == 1, "Dropdown mit zwei Kapiteln, letztes vorgewaehlt")
 	check(buttons.size() == 2, "Zwei Knoepfe (mit Einleitung, direkt), war %d" % buttons.size())
