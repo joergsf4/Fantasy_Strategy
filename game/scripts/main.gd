@@ -737,6 +737,34 @@ func _screenshot_mode() -> void:
 		get_viewport().get_texture().get_image().save_png(OS.get_environment("SHOT_OUT"))
 		get_tree().quit()
 		return
+	if mode == "aufstieg":   # Aufstiegs-Bildschirm (SHOT_PART=reward: Belohnungsbildschirm mit Stufenzeile)
+		stage = Stage.new()
+		stage.setup(map, units)
+		add_child(stage)
+		stage.set_mode("dialog")
+		var pa := Party.new_game()
+		pa.earned = 3
+		pa.talents = {"robo": {"hp": 0, "atk": 0, "a1": 0, "a2": 0}}
+		var la := CanvasLayer.new()
+		la.layer = 6
+		add_child(la)
+		if OS.get_environment("SHOT_PART") == "reward":
+			var rs := RewardScreen.new()
+			rs.setup({"gold": 205, "items": {"heiltrank": 1}, "materials": {"kraut": 3}, "equipment": [], "level_to": 4, "point_gain": true,
+				"objectives": [{"id": "a", "text": "Kein Held fällt", "done": true, "reward": {"gold": 60}}], "turns": 7,
+				"stats": {"rows": [{"id": "robo", "name": "Robo", "alive": true, "hp": 20, "maxhp": 32, "dealt": 41, "taken": 12, "healed": 0, "kills": 3, "abs": 2, "bonus": 1},
+					{"id": "hund", "name": "Blauer Hundsfreund", "alive": true, "hp": 26, "maxhp": 26, "dealt": 22, "taken": 4, "healed": 0, "kills": 2, "abs": 3, "bonus": 0}], "awards": []}})
+			la.add_child(rs)
+		else:
+			var tsr := TalentScreen.new()
+			tsr.setup(pa, units, ["robo", "hund", "elisabeth"])
+			la.add_child(tsr)
+			if OS.get_environment("SHOT_PICK") != "":
+				pa.spend_point("robo", "a1")
+		await get_tree().create_timer(1.0).timeout
+		get_viewport().get_texture().get_image().save_png(OS.get_environment("SHOT_OUT"))
+		get_tree().quit()
+		return
 	if mode == "camp":   # Lager: SHOT_TAB=0..4, SHOT_GOLD=n
 		var bc := Battle.new()
 		bc.setup(map, units)
