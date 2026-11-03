@@ -2,12 +2,12 @@
  "rows": [
   "MMMMMMMMMMMM",
   "MMGGGGGGGGMM",
-  "GGGSSGGSSGGG",
-  "GSSSWWSSSSSG",
-  "SSGSSWSSGSSS",
-  "SSSSSSSGGSSS",
-  "GSSWSSSSSSSG",
-  "GGSSGGGSSGGG",
+  "GGGGGSSGGGGG",
+  "GGSSGGSSGGGG",
+  "GGSSGGGGGSSG",
+  "GGGGGGWWGSSG",
+  "GSSGGGWWGGGG",
+  "GSSGGGGGGGSG",
   "GGGGGGGGGGGG",
   "GGGGGGGGGGGG"
  ],
@@ -16,7 +16,7 @@
  "walls": [
   "n"
  ],
- "sumpf_dmg": 3,
+ "sumpf_dmg": 2,
  "players": [
   {
    "id": "maedchen_baer",

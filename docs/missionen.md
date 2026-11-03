@@ -312,7 +312,9 @@ Das Waisenhaus ist endgültig gerettet, die Gruppe berät. **Stachelia** gibt z�
 
 ## Mission 15: Der Sumpf vor den Bergen (`ch15`, neues Biom Sumpf)
 - **Neues Biom Sumpf** (Kartenfeld `biome: "sumpf"`, `mood: "sumpf"`): Gelände **`S` Sumpf** (Bewegung 2), mooriges Olivgrün im Bodenshader, trübes Grünbraun im Wasser, gelbgrüner Dunst mit fahlem Licht (`Battle._apply_swamp`). Streuobjekte als Sprites: **toter Baum** (`fx_totbaum`), **Schilf** (`fx_schilf`) und **leuchtende Sumpfpilze** (`fx_sumpfpilz`, als `decor`), alle von Gemini. Jedes Sumpffeld hat zusätzlich eine dunkle, pulsierende Schlammfläche (`_build_swamp_overlay`), damit man es vom festen Boden unterscheidet.
-- **Sumpfgas:** Wer zu **Beginn seiner Phase** im Sumpf steht, nimmt **3 Schaden** (`sumpf_dmg`). **Flieger** (Stachelia, Bienen) sind verschont, Gras ist sicher. Das gilt für alle Seiten.
+- **Sumpfgas:** Wer zu **Beginn seiner Phase** im Sumpf steht, nimmt **2 Schaden** (`sumpf_dmg`, nach Spieltest von 3 gesenkt). **Flieger** (Stachelia, Bienen) sind verschont, Gras ist sicher. Das gilt für alle Seiten.
 - **Gegner:** Cyborg-Wart (flieht jetzt) und die Frischlinge (55 Leben) stellen sich in den Weg, dazu Büttel, Bogenschützen und ein Priester. Gegnerfaktor ×1,7 (nicht gemessen).
 - **Gruppe:** Mira, Hundsfreund, Albrecht, Wendy, Robo und **Stachelia** (ab hier wählbar, Heldin).
 - **Test:** `tests/test_sumpf.gd`.
+
+- **Weniger Sumpf (2026-11-03, Spieltest „viel zu viel Sumpfgas“):** Statt eines Sumpffelds über fast die ganze Karte jetzt **17 von 120 Feldern** (einzelne Moorstreifen und -tümpel, viel festes Gelände dazwischen), Sumpfgas 2 statt 3 Schaden.
