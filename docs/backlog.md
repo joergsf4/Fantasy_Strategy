@@ -165,3 +165,6 @@ Das Sprite `fx_wachturm` (Holzturm auf Stelzen mit Eberschädel-Banner) ist fert
 
 ### Reserve für Mission 12: Stachelia greift in Runde 4 von hinten an (nur falls die Mission zu schwer ist)
 Entscheidung des Nutzers: Wenn Mission 12 zu schwer ist, taucht in **Runde 4 Stachelia mit drei Bienen** auf und greift die Schweine **von hinten** (Ostufer) an. Sie kämpft **auf Seiten der Helden und wird vom Spieler gesteuert**, steht der Gruppe aber **ablehnend** gegenüber (Dialog mit spitzen Bemerkungen). Technik: `spawn`-Schritt mit `team: "p"` (gibt es schon) in einem `turn: 4`-Auslöser, Stachelia plus drei `bienenkrieger`, Dialog `left_expr`/`right_expr` auf misstrauisch. Zeitlich passt es zu Mission 11 (sie ist dort geflohen und hat Rache geschworen). **Messung (E13):** nicht nötig, die Mission ist laut Simulation leicht (100 % bei ×1,0 bis ×1,5, 86 bis 94 % bei ×1,75).
+
+### Später: Heldenstufen für alle gleich (Entscheidung des Nutzers)
+Alle Helden sollen **gleich leveln, egal ob sie in der Gruppe waren**; kein Grinden zum Aufholen. Heute (siehe `docs/fortschritt.md`): Gruppe 12 EP, Wartende 6 EP je Mission. Umbau: Stufe je Kapitel aus `progression.json` (erwartete Stufe der Mission) für alle gleich, neue Helden steigen auf diese Stufe ein; `Party.xp` und `xp_bench` entfallen oder werden vereinheitlicht.
