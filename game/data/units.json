@@ -643,6 +643,7 @@
   "ranged_mult": 0.85,
   "weapon": "metal",
   "body": "armor",
-  "size": 1.6
+  "size": 1.6,
+  "flees": true
  }
 }

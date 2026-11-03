@@ -6,6 +6,7 @@ render_mode specular_disabled;
 uniform float water_level = -0.08;
 uniform vec4 map_rect = vec4(-0.5, -0.5, 11.5, 9.5);
 uniform float grid_strength : hint_range(0.0, 1.0) = 0.2;
+uniform float swamp : hint_range(0.0, 1.0) = 0.0;      // Biom Sumpf: Gras wird mooriges Olivgruen, Waldboden dunkler Schlamm
 uniform float desert : hint_range(0.0, 1.0) = 0.0;     // Biom Wueste: Gras und Waldboden werden zu Sand
 
 varying vec3 wpos;
@@ -59,6 +60,8 @@ void fragment() {
 
 	vec3 dune = mix(vec3(0.80, 0.66, 0.42), vec3(0.91, 0.78, 0.52), smoothstep(0.25, 0.75, large * 0.7 + mid * 0.3));
 	dune *= (0.94 + 0.12 * fine) * (0.96 + 0.08 * sin(p.x * 5.0 + p.y * 2.2 + large * 7.0));
+	grass = mix(grass, vec3(0.42, 0.58, 0.22) * (0.9 + 0.25 * mid), swamp);
+	forest = mix(forest, mix(vec3(0.06, 0.05, 0.03), vec3(0.14, 0.10, 0.05), mid) * (0.9 + 0.2 * fine), swamp);
 	grass = mix(grass, dune, desert);
 	forest = mix(forest, dune * vec3(0.84, 0.72, 0.62), desert);
 

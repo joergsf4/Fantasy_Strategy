@@ -8,17 +8,17 @@ const RES := 5               # Gitterpunkte pro Kachel im Bodenmesh
 const WATER_LEVEL := -0.08
 
 # Zielhoehe und Rauigkeit je Gelaendetyp (an den Kachelmitten, dazwischen weich interpoliert)
-const H := {"G": 0.0, "F": 0.03, "M": 1.0, "W": -0.5, "V": 0.02, "C": 0.05, "P": 0.0, "D": 0.16}
-const AMP := {"G": 0.035, "F": 0.05, "M": 0.3, "W": 0.04, "V": 0.0, "C": 0.0, "P": 0.0, "D": 0.07}
+const H := {"G": 0.0, "F": 0.03, "M": 1.0, "W": -0.5, "V": 0.02, "C": 0.05, "P": 0.0, "D": 0.16, "S": -0.035}
+const AMP := {"G": 0.035, "F": 0.05, "M": 0.3, "W": 0.04, "V": 0.0, "C": 0.0, "P": 0.0, "D": 0.07, "S": 0.03}
 # Bodengewichte: R Gras, G Waldboden, B Fels, A Pfad
 const WT := {
 	"G": Color(1, 0, 0, 0), "F": Color(0.35, 0.65, 0, 0), "M": Color(0.1, 0, 0.9, 0),
-	"W": Color(1, 0, 0, 0), "V": Color(0.7, 0, 0, 0.6), "C": Color(0, 0, 0.7, 0.3), "P": Color(1, 0, 0, 0), "D": Color(1, 0, 0, 0),
+	"W": Color(1, 0, 0, 0), "V": Color(0.7, 0, 0, 0.6), "C": Color(0, 0, 0.7, 0.3), "P": Color(1, 0, 0, 0), "D": Color(1, 0, 0, 0), "S": Color(0, 1.4, 0, 0),
 }
 
 var grid: Grid
 var wall_sides: Array = []    # Kartenfeld "walls": ["n","e","w","s"]: dort steigt das Gelaende hinter der Karte zur Felswand an (Sackgasse)
-var biome := "wiese"          # "wueste": Sand statt Gras, keine Baeume und Blumen (Karten-Feld "biome")
+var biome := "wiese"          # "sumpf": Moor mit Schlamm, Schilf und toten Baeumen; "wueste": Sand statt Gras, keine Baeume und Blumen (Karten-Feld "biome")
 var _noise := FastNoiseLite.new()
 var _noise_hills := FastNoiseLite.new()
 var _noise_forest := FastNoiseLite.new()
@@ -233,6 +233,7 @@ func _build_ground() -> void:
 	mat.shader = load("res://shaders/ground.gdshader")
 	mat.set_shader_parameter("water_level", WATER_LEVEL)
 	mat.set_shader_parameter("desert", 1.0 if biome == "wueste" else 0.0)
+	mat.set_shader_parameter("swamp", 1.0 if biome == "sumpf" else 0.0)
 	mat.set_shader_parameter("map_rect", Vector4(-0.5, -0.5, grid.width - 0.5, grid.height - 0.5))
 	var mi := MeshInstance3D.new()
 	mi.mesh = m
@@ -282,6 +283,7 @@ func _build_water() -> void:
 	m.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arr)
 	var mat := ShaderMaterial.new()
 	mat.shader = load("res://shaders/water.gdshader")
+	mat.set_shader_parameter("swamp", 1.0 if biome == "sumpf" else 0.0)
 	var mi := MeshInstance3D.new()
 	mi.mesh = m
 	mi.material_override = mat
@@ -296,6 +298,7 @@ func _build_water() -> void:
 const SPRITES := {
 	"pine0": ["fx_baum_fichte1", 1.05, 0.5], "pine1": ["fx_baum_fichte2", 1.0, 0.42],
 	"oak0": ["fx_baum_eiche1", 0.95, 0.55], "oak1": ["fx_baum_eiche2", 1.0, 0.6], "oak2": ["fx_baum_eiche3", 1.1, 0.42],
+	"dead": ["fx_totbaum", 1.0, 0.4], "reed": ["fx_schilf", 0.5, 0.3],
 	"bush": ["fx_busch", 0.4, 0.32], "rock0": ["fx_fels1", 0.25, 0.26], "rock1": ["fx_fels2", 0.24, 0.3],
 }
 var _prop_shader: Shader
@@ -413,6 +416,20 @@ func _scatter() -> void:
 			var inside := ti >= 0 and tj >= 0 and ti < grid.width and tj < grid.height
 			var t := _tt(ti, tj)
 			var d := dist_outside(ti, tj)
+			if biome == "sumpf":      # Moor: Schilf auf Schlamm und am Wasser, tote Baeume, wenige Steine
+				if inside and t == "S" and _rng.randf() < 0.45:
+					_place("reed", _jit(ti, 0.4), _jit(tj, 0.4), _rng.randf_range(0.8, 1.3), _tint(0.1))
+				elif t == "G" and height_at(ti, tj) > WATER_LEVEL + 0.03:
+					var roll := _rng.randf()
+					if roll < (0.16 if inside else 0.3):
+						_place("dead", _jit(ti, 0.4), _jit(tj, 0.4), _rng.randf_range(0.8, 1.3), _tint(0.1))
+					elif roll < 0.3:
+						_place("reed", _jit(ti, 0.45), _jit(tj, 0.45), _rng.randf_range(0.7, 1.1), _tint(0.1))
+					elif roll < 0.36:
+						_place("rock%d" % _rng.randi_range(0, 1), _jit(ti, 0.45), _jit(tj, 0.45), _rng.randf_range(0.5, 1.0), _tint(0.12))
+				elif not inside and height_at(ti, tj) > WATER_LEVEL + 0.03 and _rng.randf() < 0.28:
+					_place("dead", _jit(ti, 0.45), _jit(tj, 0.45), _rng.randf_range(0.9, 1.5), _tint(0.12))
+				continue
 			if biome == "wueste":     # nur Steine und trockene Buesche, Kakteen und Palmen setzt der Kampf als Sprites
 				if height_at(ti, tj) > WATER_LEVEL + 0.03 and _rng.randf() < (0.16 if inside else 0.1):
 					_place("rock%d" % _rng.randi_range(0, 1), _jit(ti, 0.45), _jit(tj, 0.45), _rng.randf_range(0.5, 1.1), _tint(0.12))

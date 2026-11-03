@@ -129,6 +129,8 @@ func _ready() -> void:
 	add_child(fx)
 	fx.setup(self)
 	_build_loot()
+	if map_data.get("biome", "") == "sumpf":
+		_build_swamp_overlay()
 	_build_objects()
 	_build_decor()
 	for fy in grid.height:
@@ -212,6 +214,43 @@ func _apply_desert_light(env: Environment, sun: DirectionalLight3D) -> void:
 		mat.set_shader_parameter("contrast", 1.22)
 		mat.set_shader_parameter("haze", 0.03)
 		mat.set_shader_parameter("vignette", 0.55)
+
+
+## Kartenfeld "mood": "sumpf": fahles gelbgruenes Licht, dichter Dunst und ein kuehler Filter (Mission 15).
+func _apply_swamp(env: Environment, sun: DirectionalLight3D) -> void:
+	sun.rotation_degrees = Vector3(-40, -35, 0)
+	sun.light_color = Color(0.86, 0.95, 0.62)
+	sun.light_energy = 0.75
+	sun.shadow_opacity = 0.75
+	env.ambient_light_color = Color(0.5, 0.62, 0.45)
+	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
+	env.ambient_light_energy = 0.55
+	env.fog_enabled = true
+	env.fog_light_color = Color(0.3, 0.38, 0.26)
+	env.fog_density = 0.02
+	env.tonemap_exposure = 0.92
+	var sk := env.sky.sky_material as ProceduralSkyMaterial
+	sk.sky_top_color = Color(0.32, 0.4, 0.28)
+	sk.sky_horizon_color = Color(0.62, 0.68, 0.44)
+	sk.ground_horizon_color = Color(0.42, 0.5, 0.32)
+	sk.ground_bottom_color = Color(0.2, 0.26, 0.16)
+	var layer := CanvasLayer.new()
+	layer.layer = 2
+	add_child(layer)
+	var rect := ColorRect.new()
+	rect.size = Vector2(1280, 720)
+	rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var mat := ShaderMaterial.new()
+	mat.shader = load("res://shaders/grade_mexiko.gdshader")
+	mat.set_shader_parameter("tint", Vector3(0.94, 1.0, 0.9))
+	mat.set_shader_parameter("shadow_tint", Vector3(0.0, 0.02, 0.0))
+	mat.set_shader_parameter("saturation", 0.8)
+	mat.set_shader_parameter("contrast", 1.12)
+	mat.set_shader_parameter("haze", 0.02)
+	mat.set_shader_parameter("vignette", 0.55)
+	mat.set_shader_parameter("shimmer", 0.0)
+	rect.material = mat
+	layer.add_child(rect)
 
 
 ## Kartenfeld "mood": "nacht_regen": Mondlicht, tiefblauer Himmel, Dunst, kuehler Farbfilter und Regen (Hafen in Kapitel 10).
@@ -396,6 +435,8 @@ func _build_environment() -> void:
 	add_child(sun)
 	if map_data.get("biome", "") == "wueste" and map_data.get("grade", "mexiko") != "none":
 		_apply_desert_light(env, sun)
+	if map_data.get("mood", "") == "sumpf":
+		_apply_swamp(env, sun)
 	if map_data.get("mood", "") in ["nacht_regen", "nacht", "gewitter"]:
 		_apply_night_rain(env, sun)
 	var center := Vector3((grid.width - 1) / 2.0, 0, (grid.height - 1) / 2.0)
@@ -1578,6 +1619,27 @@ func _enemy_ability_ids() -> Array:
 func _sync_grid() -> void:
 	grid.blocked = world.blocked()
 	grid.bridges = world.open_bridges()
+
+
+## Sumpffelder (Gelaendetyp S) bekommen eine dunkle, leicht pulsierende Schlammflaeche, damit man sie vom sicheren Boden sofort unterscheidet.
+func _build_swamp_overlay() -> void:
+	var mat := _mat(Color(0.1, 0.09, 0.03, 0.55), true, true)
+	var holder := Node3D.new()
+	holder.name = "SwampOverlay"
+	add_child(holder)
+	for y in grid.height:
+		for x in grid.width:
+			var p := Vector2i(x, y)
+			if grid.terrain(p) != "S":
+				continue
+			var mi := MeshInstance3D.new()
+			mi.mesh = terrain.tile_mesh(p, 0.5, 0.02)
+			mi.material_override = mat
+			mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+			holder.add_child(mi)
+	var tw := holder.create_tween().set_loops()
+	tw.tween_property(mat, "albedo_color:a", 0.42, 1.6).set_trans(Tween.TRANS_SINE)
+	tw.tween_property(mat, "albedo_color:a", 0.6, 1.6).set_trans(Tween.TRANS_SINE)
 
 
 func _build_objects() -> void:
@@ -3732,6 +3794,9 @@ func _begin_phase(team: String) -> void:
 				await _return_from_polymorph(u)
 		if units.has(u) and not u["flying"] and world.burning_tiles().has(u["pos"]):
 			await _burn(u)
+		if units.has(u) and not u["flying"] and map_data.get("biome", "") == "sumpf" and grid.terrain(u["pos"]) == "S":
+			_actor = {}
+			await _deal(u, int(map_data.get("sumpf_dmg", 3)), "Sumpfgas")      # Sumpf: wer zu Beginn seiner Phase im Morast steht, atmet Gas ein
 		if units.has(u):
 			if stunned:
 				u["done"] = true

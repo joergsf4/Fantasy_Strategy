@@ -2,6 +2,7 @@ shader_type spatial;
 render_mode blend_mix, cull_disabled, specular_schlick_ggx;
 
 // Wasser: Vertexfarbe R = Wassertiefe in Kacheln (<= 0 = kein Wasser).
+uniform float swamp : hint_range(0.0, 1.0) = 0.0;     // Sumpfwasser: truebes Gruenbraun
 varying vec3 wpos;
 
 float hash21(vec2 p) {
@@ -41,6 +42,8 @@ void fragment() {
 
 	vec3 shallow = vec3(0.28, 0.62, 0.64);
 	vec3 deep = vec3(0.07, 0.25, 0.42);
+	shallow = mix(shallow, vec3(0.30, 0.38, 0.20), swamp);
+	deep = mix(deep, vec3(0.10, 0.17, 0.10), swamp);
 	vec3 col = mix(shallow, deep, smoothstep(0.03, 0.4, depth));
 	col += vec3(0.14, 0.18, 0.20) * smoothstep(0.58, 0.72, rip);
 

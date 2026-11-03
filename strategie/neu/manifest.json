@@ -195,5 +195,8 @@
  "cyborg_wart": true,
  "cyborg_wart_lachend": true,
  "cyborg_wart_wuetend": true,
- "cyborg_wart_chibi": true
+ "cyborg_wart_chibi": true,
+ "fx_totbaum": true,
+ "fx_schilf": true,
+ "fx_sumpfpilz": true
 }

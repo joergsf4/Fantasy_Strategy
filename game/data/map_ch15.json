@@ -1,0 +1,158 @@
+{
+ "rows": [
+  "MMMMMMMMMMMM",
+  "MMGGGGGGGGMM",
+  "GGGSSGGSSGGG",
+  "GSSSWWSSSSSG",
+  "SSGSSWSSGSSS",
+  "SSSSSSSGGSSS",
+  "GSSWSSSSSSSG",
+  "GGSSGGGSSGGG",
+  "GGGGGGGGGGGG",
+  "GGGGGGGGGGGG"
+ ],
+ "biome": "sumpf",
+ "mood": "sumpf",
+ "walls": [
+  "n"
+ ],
+ "sumpf_dmg": 3,
+ "players": [
+  {
+   "id": "maedchen_baer",
+   "pos": [
+    5,
+    8
+   ]
+  },
+  {
+   "id": "hund",
+   "pos": [
+    4,
+    8
+   ]
+  },
+  {
+   "id": "ritter",
+   "pos": [
+    6,
+    8
+   ]
+  },
+  {
+   "id": "wendy",
+   "pos": [
+    3,
+    8
+   ]
+  },
+  {
+   "id": "bienenmaedchen",
+   "pos": [
+    7,
+    8
+   ]
+  },
+  {
+   "id": "robo",
+   "pos": [
+    2,
+    8
+   ]
+  }
+ ],
+ "enemies": [
+  {
+   "id": "cyborg_wart",
+   "pos": [
+    6,
+    2
+   ]
+  },
+  {
+   "id": "frischlinge",
+   "pos": [
+    4,
+    2
+   ],
+   "hp": 55,
+   "atk_mult": 1.15
+  },
+  {
+   "id": "soldat_infanterie",
+   "pos": [
+    3,
+    3
+   ]
+  },
+  {
+   "id": "soldat_infanterie",
+   "pos": [
+    8,
+    2
+   ]
+  },
+  {
+   "id": "soldat_bogenschuetze",
+   "pos": [
+    5,
+    1
+   ]
+  },
+  {
+   "id": "soldat_bogenschuetze",
+   "pos": [
+    8,
+    3
+   ]
+  },
+  {
+   "id": "soldat_priester",
+   "pos": [
+    7,
+    2
+   ]
+  }
+ ],
+ "objects": [],
+ "decor": [
+  {
+   "sprite": "fx_sumpfpilz",
+   "pos": [
+    2,
+    5
+   ],
+   "size": 0.9
+  },
+  {
+   "sprite": "fx_sumpfpilz",
+   "pos": [
+    9,
+    6
+   ],
+   "size": 0.9
+  }
+ ],
+ "rewards": {
+  "gold": 280
+ },
+ "objectives": [
+  {
+   "id": "alle_leben",
+   "text": "Kein Held fällt",
+   "reward": {
+    "gold": 110
+   }
+  },
+  {
+   "id": "schnell",
+   "text": "In 12 Runden gewonnen",
+   "turns": 12,
+   "reward": {
+    "items": {
+     "heilhonig": 2
+    }
+   }
+  }
+ ]
+}

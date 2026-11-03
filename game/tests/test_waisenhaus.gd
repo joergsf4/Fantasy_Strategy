@@ -28,7 +28,7 @@ func _initialize() -> void:
 	var m := Mission.load_mission("ch14")
 	check((m["players"] as Array).size() == 5, "Mission 14 startet mit fuenf Helden")
 	for id: String in Mission.dialogue_ids("ch14"):
-		check(defs.has(id) or id == "waisenkinder", "Sprecher %s existiert" % id)
+		check(defs.has(id) or id == "waisenkinder" or id == "mutter", "Sprecher %s existiert" % id)
 	check(not Party.roster(defs, 14, true).has("bienenmaedchen"), "Stachelia ist in Mission 14 nicht waehlbar (sie stoesst im Kampf dazu)")
 	var b := _make(defs, "ch14")
 	await process_frame

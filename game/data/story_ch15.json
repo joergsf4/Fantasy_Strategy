@@ -1,0 +1,44 @@
+{
+ "intro": [
+  {
+   "left": "maedchen_baer",
+   "right": "bienenmaedchen",
+   "speaker": "maedchen_baer",
+   "text": "Vor uns liegt der Sumpf, dahinter beginnen die Berge. Bleibt auf dem festen Boden."
+  },
+  {
+   "left": "hund",
+   "right": "bienenmaedchen",
+   "speaker": "hund",
+   "text": "Der Morast stinkt nach Gas. Wer zu lange darin steht, wird schwach."
+  },
+  {
+   "left": "bienenmaedchen",
+   "right": "hund",
+   "speaker": "bienenmaedchen",
+   "text": "Ich fliege drüber. Ihr nicht? Pech.",
+   "left_expr": "lachend"
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "bienenmaedchen",
+   "speaker": "maedchen_baer",
+   "text": "Seid ihr bereit? Da vorne bewegt sich etwas Großes aus Metall."
+  }
+ ],
+ "outro": [
+  {
+   "left": "maedchen_baer",
+   "right": "hund",
+   "speaker": "maedchen_baer",
+   "text": "Der Sumpf liegt hinter uns. Ab jetzt geht es in die Berge."
+  },
+  {
+   "left": "hund",
+   "right": "bienenmaedchen",
+   "speaker": "hund",
+   "text": "Dann auf zum Meister.",
+   "left_expr": "wuetend"
+  }
+ ]
+}

@@ -306,3 +306,13 @@ Fällt die Gesundheit der Frischlinge nie unter 50 %, platzt der Glasbehälter t
 - **Test:** `tests/test_waisenhaus.gd`.
 
 - **Nachgestellt (2026-11-03, Spieltest mit üblicher Ausstattung):** Mit Talenten und Ausrüstung der Zielkurve war Mission 13 bei ×1,3 zu leicht: Gegnerfaktor wieder **×1,7** (der Maschinenschock bleibt bei 3), Mission 14 von ×1,4 auf **×1,6**.
+
+## Mission 14, Abschluss: Beratung und Lieselotte (2026-11-03)
+Das Waisenhaus ist endgültig gerettet, die Gruppe berät. **Stachelia** gibt zähneknirschend zu, dass sie den Meister auch nicht kennt, aber **ihn vernichten muss**, wenn sie in Ruhe mit ihren Bienen leben will. Dann taucht **Lieselotte** (die Mutter mit dem Baby) auf: Sie sollte entführt werden, weil sie das Geheimnis kennt, hatte aber Angst zu sprechen. **Der Meister versteckt sich in den Bergen im hohen Norden.** Die Gruppe bricht auf, Lieselotte warnt vor dem Sumpf. (Text im Texteditor unter dem Abschluss von Kapitel 14.)
+
+## Mission 15: Der Sumpf vor den Bergen (`ch15`, neues Biom Sumpf)
+- **Neues Biom Sumpf** (Kartenfeld `biome: "sumpf"`, `mood: "sumpf"`): Gelände **`S` Sumpf** (Bewegung 2), mooriges Olivgrün im Bodenshader, trübes Grünbraun im Wasser, gelbgrüner Dunst mit fahlem Licht (`Battle._apply_swamp`). Streuobjekte als Sprites: **toter Baum** (`fx_totbaum`), **Schilf** (`fx_schilf`) und **leuchtende Sumpfpilze** (`fx_sumpfpilz`, als `decor`), alle von Gemini. Jedes Sumpffeld hat zusätzlich eine dunkle, pulsierende Schlammfläche (`_build_swamp_overlay`), damit man es vom festen Boden unterscheidet.
+- **Sumpfgas:** Wer zu **Beginn seiner Phase** im Sumpf steht, nimmt **3 Schaden** (`sumpf_dmg`). **Flieger** (Stachelia, Bienen) sind verschont, Gras ist sicher. Das gilt für alle Seiten.
+- **Gegner:** Cyborg-Wart (flieht jetzt) und die Frischlinge (55 Leben) stellen sich in den Weg, dazu Büttel, Bogenschützen und ein Priester. Gegnerfaktor ×1,7 (nicht gemessen).
+- **Gruppe:** Mira, Hundsfreund, Albrecht, Wendy, Robo und **Stachelia** (ab hier wählbar, Heldin).
+- **Test:** `tests/test_sumpf.gd`.

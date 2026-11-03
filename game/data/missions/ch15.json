@@ -1,0 +1,134 @@
+{
+ "id": "ch15",
+ "title": "Der Sumpf vor den Bergen",
+ "map": "res://data/map_ch15.json",
+ "briefing": "Vor dem Gebirge im Norden liegt ein gefährlicher Sumpf (neues Biom). Morast kostet doppelte Bewegung, und wer zu Beginn seiner Phase im Morast steht, atmet Sumpfgas ein (3 Schaden). Flieger sind verschont. Trockener Boden (Gras) ist sicher. Cyborg-Wart und die Frischlinge stellen sich euch in den Weg; Stachelia ist jetzt Teil der Gruppe.",
+ "goals": [
+  {
+   "type": "rout"
+  }
+ ],
+ "triggers": [
+  {
+   "when": {
+    "near": {
+     "a": "hund",
+     "b": "cyborg_wart",
+     "dist": 7
+    }
+   },
+   "if": {
+    "present": [
+     "cyborg_wart"
+    ]
+   },
+   "note": "Cyborg-Wart stellt sich in den Weg",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "hund",
+       "right": "cyborg_wart",
+       "speaker": "cyborg_wart",
+       "text": "Kein Schritt weiter. Der Meister wartet nicht auf euch.",
+       "right_expr": "wuetend"
+      },
+      {
+       "left": "hund",
+       "right": "cyborg_wart",
+       "speaker": "hund",
+       "text": "Wart. Du warst mal tot.",
+       "left_expr": "wuetend"
+      },
+      {
+       "left": "hund",
+       "right": "frischlinge",
+       "speaker": "frischlinge",
+       "text": "Der Boss ist stärker als je zuvor! Jetzt kriegt ihr's!",
+       "right_expr": "lachend"
+      },
+      {
+       "left": "bienenmaedchen",
+       "right": "cyborg_wart",
+       "speaker": "bienenmaedchen",
+       "text": "Hübsches Spielzeug. Aber ich fliege. Du nicht.",
+       "left_expr": "lachend"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "hp_below": {
+     "id": "cyborg_wart",
+     "ratio": 0.5
+    }
+   },
+   "if": {
+    "present": [
+     "cyborg_wart"
+    ]
+   },
+   "note": "Cyborg-Wart wird wild",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "maedchen_baer",
+       "right": "cyborg_wart",
+       "speaker": "cyborg_wart",
+       "text": "Meine Systeme... warnen. Egal. ICH. HÖRE. NICHT. AUF.",
+       "right_expr": "wuetend"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "victory": true
+   },
+   "note": "Der Weg ist frei",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "maedchen_baer",
+       "right": "hund",
+       "speaker": "maedchen_baer",
+       "text": "Der Weg zu den Bergen ist frei. Der Meister kann sich nicht ewig verstecken."
+      },
+      {
+       "left": "bienenmaedchen",
+       "right": "hund",
+       "speaker": "bienenmaedchen",
+       "text": "Hoffentlich nicht. Los jetzt.",
+       "left_expr": "wuetend"
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "flee": {
+  "cyborg_wart": [
+   {
+    "left": "$hero",
+    "right": "cyborg_wart",
+    "speaker": "cyborg_wart",
+    "text": "Rückzug... Reparatur... Ich komme wieder. Stärker.",
+    "right_expr": "wuetend"
+   }
+  ],
+  "frischlinge": [
+   {
+    "left": "$hero",
+    "right": "frischlinge",
+    "speaker": "frischlinge",
+    "text": "Wir sagen's dem Meister! Der macht euch fertig!",
+    "right_expr": "wuetend"
+   }
+  ]
+ }
+}
