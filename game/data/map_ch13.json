@@ -23,14 +23,14 @@
   {
    "id": "robo",
    "pos": [
-    2,
+    0,
     4
    ]
   },
   {
    "id": "samurai",
    "pos": [
-    2,
+    1,
     6
    ]
   },
@@ -44,7 +44,7 @@
   {
    "id": "ritter",
    "pos": [
-    1,
+    0,
     6
    ]
   },
@@ -69,28 +69,28 @@
    "id": "soldat_infanterie",
    "pos": [
     6,
-    3
+    2
    ]
   },
   {
    "id": "soldat_infanterie",
    "pos": [
     6,
-    6
-   ]
-  },
-  {
-   "id": "soldat_bogenschuetze",
-   "pos": [
-    7,
-    2
-   ]
-  },
-  {
-   "id": "soldat_bogenschuetze",
-   "pos": [
-    7,
     7
+   ]
+  },
+  {
+   "id": "soldat_bogenschuetze",
+   "pos": [
+    7,
+    1
+   ]
+  },
+  {
+   "id": "soldat_bogenschuetze",
+   "pos": [
+    7,
+    8
    ]
   },
   {
@@ -103,7 +103,7 @@
   {
    "id": "soldat_beritten",
    "pos": [
-    5,
+    6,
     5
    ]
   },

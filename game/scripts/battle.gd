@@ -1778,7 +1778,7 @@ func _make_hostage(o: Dictionary) -> void:
 	var root := Node3D.new()
 	root.position = to_world(o["pos"])
 	add_child(root)
-	var tex := _portrait_tex(o.get("figure", "mutter"))
+	var tex := _portrait_tex(o["figure"] if o.get("figure", "") != "" else "mutter")
 	var sp := Sprite3D.new()
 	sp.texture = tex
 	sp.pixel_size = 1.2 / maxf(tex.get_width(), tex.get_height())
