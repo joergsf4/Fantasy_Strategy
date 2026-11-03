@@ -425,7 +425,8 @@
   "flees": true,
   "weapon": "metal",
   "body": "armor",
-  "intro": 3
+  "intro": 3,
+  "size": 1.6
  },
  "maja": {
   "name": "Maja",

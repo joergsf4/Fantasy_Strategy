@@ -343,3 +343,7 @@ Lebender Wollsack aus blauer Häkelwolle, der Händler im Lager (`shop.json`, Po
 
 ## Robina (Dampfpanzer, Robos ältere Schwester)
 Gegnerin in Mission 8 „Die bewachte Oase“ (unantastbar, bis man sie nach drei Runden in Folge neben ihr übernimmt), danach **spielbarer Held** (`hero`, ab Mission 9 wählbar, id `panzer`, Porträts neutral, lachend, wütend). Langsame Panzer-Tank-Figur (Bewegung 2, Leben 70, Verteidigung 7, Angriff 10, Reichweite 1–2). **Fähigkeit 1: Breitseite** (wie Elisabeths Schiff: ×1,4, Reichweite 3–9, Streuschaden 50 %, Abklingzeit 3). **Fähigkeit 2: Dampframme** (Ziel: Feld bis 4 Felder geradeaus; sie fährt mit Volldampf dorthin, alle Feinde im Weg bekommen ×1,2 Schaden und werden zur Seite gestoßen; Abklingzeit 4; Weg muss frei sein, Verbündete und Hindernisse beenden die Linie; `Battle._run_ram`, `_ram_tiles`). Stimme: tiefes Piepsen (`v_robot`).
+
+
+## Größen der Karten-Figuren (2026-11-03)
+Alle Standardfiguren sind auf die gleiche Bildhöhe (`size` 1,35 Felder) skaliert, wirken aber je nach Körperproportionen verschieden groß (Breite und Kopfgröße). Gemessen an der sichtbaren Fläche: Oskar 86 %, Xiùlán 75 %, Büttel und Bogenschützen 77 bis 79 %, Takeda 85 % des Mittelwerts; Ninja-Schwestern, Stachelia und Lumi 124 bis 133 %. **Oskar** war mit Abstand der kleinste Anführer (schmal, kleinerer Kopf, wirkte neben Maja klein): `size` auf **1,6**. Xiùlán (alte Frau) und die Soldaten sind absichtlich klein geblieben.
