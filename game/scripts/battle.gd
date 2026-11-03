@@ -131,6 +131,7 @@ func _ready() -> void:
 	_build_loot()
 	if map_data.get("biome", "") == "sumpf":
 		_build_swamp_overlay()
+		_build_swamp_fog()
 	_build_objects()
 	_build_decor()
 	for fy in grid.height:
@@ -251,6 +252,84 @@ func _apply_swamp(env: Environment, sun: DirectionalLight3D) -> void:
 	mat.set_shader_parameter("shimmer", 0.0)
 	rect.material = mat
 	layer.add_child(rect)
+
+
+## Nebelschwaden im Sumpf: grosse, weiche, langsam ziehende Dunstwolken dicht ueber dem Boden (CPUParticles3D mit weicher Scheibe), dazu ein paar
+## leuchtende Sporen. Dichte folgt der Grafikoption "Partikel".
+func _build_swamp_fog() -> void:
+	var grad := Gradient.new()
+	grad.set_color(0, Color(1, 1, 1, 0.9))
+	grad.set_color(1, Color(1, 1, 1, 0.0))
+	var gt := GradientTexture2D.new()
+	gt.gradient = grad
+	gt.fill = GradientTexture2D.FILL_RADIAL
+	gt.fill_from = Vector2(0.5, 0.5)
+	gt.fill_to = Vector2(1.0, 0.5)
+	gt.width = 128
+	gt.height = 128
+	var fog := CPUParticles3D.new()
+	var q := QuadMesh.new()
+	q.size = Vector2(6.0, 2.4)
+	var m := StandardMaterial3D.new()
+	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	m.albedo_texture = gt
+	m.albedo_color = Color(0.84, 0.92, 0.7, 0.36)
+	m.billboard_mode = BaseMaterial3D.BILLBOARD_ENABLED
+	m.no_depth_test = false
+	m.cull_mode = BaseMaterial3D.CULL_DISABLED
+	q.material = m
+	fog.mesh = q
+	fog.amount = int(34 * Settings.particle_factor())
+	fog.lifetime = 16.0
+	fog.preprocess = 16.0
+	fog.emission_shape = CPUParticles3D.EMISSION_SHAPE_BOX
+	fog.emission_box_extents = Vector3(grid.width * 0.5 + 2.0, 0.15, grid.height * 0.5 + 1.5)
+	fog.position = Vector3((grid.width - 1) / 2.0, 0.8, (grid.height - 1) / 2.0)
+	fog.direction = Vector3(1, 0, 0.25)
+	fog.spread = 12.0
+	fog.gravity = Vector3.ZERO
+	fog.initial_velocity_min = 0.12
+	fog.initial_velocity_max = 0.3
+	fog.scale_amount_min = 0.9
+	fog.scale_amount_max = 1.7
+	fog.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	var ramp := Curve.new()          # sanft ein- und ausblenden, damit nichts aufploppt
+	ramp.add_point(Vector2(0.0, 0.0))
+	ramp.add_point(Vector2(0.2, 1.0))
+	ramp.add_point(Vector2(0.8, 1.0))
+	ramp.add_point(Vector2(1.0, 0.0))
+	fog.scale_amount_curve = ramp
+	fog.name = "SwampFog"
+	add_child(fog)
+	var spores := CPUParticles3D.new()
+	var sq := QuadMesh.new()
+	sq.size = Vector2(0.07, 0.07)
+	var sm := StandardMaterial3D.new()
+	sm.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	sm.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	sm.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
+	sm.albedo_texture = gt
+	sm.albedo_color = Color(0.6, 1.0, 0.7, 0.9)
+	sm.billboard_mode = BaseMaterial3D.BILLBOARD_ENABLED
+	sq.material = sm
+	spores.mesh = sq
+	spores.amount = int(40 * Settings.particle_factor())
+	spores.lifetime = 7.0
+	spores.preprocess = 7.0
+	spores.emission_shape = CPUParticles3D.EMISSION_SHAPE_BOX
+	spores.emission_box_extents = Vector3(grid.width * 0.5, 0.5, grid.height * 0.5)
+	spores.position = Vector3((grid.width - 1) / 2.0, 0.7, (grid.height - 1) / 2.0)
+	spores.direction = Vector3(0, 1, 0)
+	spores.spread = 60.0
+	spores.gravity = Vector3.ZERO
+	spores.initial_velocity_min = 0.05
+	spores.initial_velocity_max = 0.18
+	spores.scale_amount_min = 0.6
+	spores.scale_amount_max = 1.6
+	spores.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	spores.name = "SwampSpores"
+	add_child(spores)
 
 
 ## Kartenfeld "mood": "nacht_regen": Mondlicht, tiefblauer Himmel, Dunst, kuehler Farbfilter und Regen (Hafen in Kapitel 10).

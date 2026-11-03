@@ -328,3 +328,5 @@ Das Waisenhaus ist endgültig gerettet, die Gruppe berät. **Stachelia** gibt z�
 - **Test:** `tests/test_sumpf.gd`.
 
 - **Berge nur in Mission 16 (2026-11-03):** Die angedeutete Felswand im Norden (Bergfelder in den obersten Reihen, `walls: ["n"]`) gehört zur **zweiten** Sumpfmission (`ch16`), damit die Reise zu den Bergen nachvollziehbar wird; Mission 15 bleibt ohne Berge.
+
+- **Nebelschwaden im Sumpf (2026-11-03):** Auf allen Sumpf-Karten ziehen große, weiche, langsam wandernde Dunstwolken dicht über dem Boden, dazu leuchtende Sporen (`Battle._build_swamp_fog`, CPUParticles3D mit weicher Scheibe). Die Dichte folgt der Grafikoption „Partikel und Regen“.
