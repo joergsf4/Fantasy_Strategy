@@ -178,3 +178,9 @@ Im Kapitelmenü (Hauptmenü, „brumm“ tippen) gibt es **„Testlabor“** (`T
 
 ### Gruppenwahl ohne Scrollen (2026-11-04)
 Mit rund 14 wählbaren Helden lief die Auswahlliste über den Bildschirm. Die **Gruppenwahl** ist neu aufgebaut (`SquadSelect`): oben die Truppe als kompakte Karten (gewählter Platz hervorgehoben), darunter **immer sichtbar die Reservebank** als dichtes Raster (ganze Karte klickbar, Name zweizeilig, Rolle), breiteres Panel (1180 px). Ablauf: erst bei einem Platz „Tauschen“, dann auf einen Helden der Bank klicken. Passt bis etwa 20 Helden in zwei Reihen, darüber scrollt es weiter.
+
+## Plottwist (später): Der Endboss ist in Wirklichkeit der Sack (notiert 2026-11-04)
+**Der Händler „Sack“, der mit der Gruppe reist, ist der eigentliche Endboss.** Bisher nur Idee, nicht umgesetzt, und **geheim zu halten** (nicht in Trailern andeuten, im Spiel nur als dezenter Hinweis).
+- **Hinweis im Kampf gegen den Regenten** (Mission 9 „Die Festung im Gebirge“, Gespräch „Der Regent gesteht“ bzw. direkt vor seiner Flucht): Der Regent sagt, bevor er flieht, dass er **Angst vor dem „blauen Ungetüm“** hat. Der **Hundsfreund fühlt sich angesprochen und beleidigt** (er ist blau), gemeint ist aber **der Sack**, der mit der Gruppe reist (Händler, blauer Wollsack).
+- Umsetzung später: Zeilen in `story_ch9.json`/`missions/ch9.json` (Regent + Hundsfreund, Story-Flag und Rückfallstimmen beachten), weitere dezente Hinweise in späteren Missionen, Kampf mit dem Sack als letzter Gegner. Vorher klären: Wie wird der Sack zum Gegner (Rolle des Meisters? Verrat?), und die Rolle des Händlers in Lager und Shop.
+- Konflikt zum Meister-Plot (Professor Kugelblitz, „der Meister“ im Norden): Der Sack könnte der Meister sein oder dahinterstehen; mit dem Nutzer abstimmen, bevor Missionen 18+ geschrieben werden.
