@@ -174,3 +174,6 @@ Die festen Stufen wurden entfernt; die Gruppe steigt je Mission eine Stufe, alle
 
 ### Testlabor (umgesetzt, 2026-11-03)
 Im Kapitelmenü (Hauptmenü, „brumm“ tippen) gibt es **„Testlabor“** (`TestLab`, `Main._lab_run`): **Arena** (gewählter Held gegen Gegner und zwei Büttel, auf Wunsch mit vollen Talenten und Ausrüstung Stufe 3), **Aufstiegsbildschirm**, **Lager** (Kapitel 8, 999 Gold), **Belohnungs- und Statistikbildschirm** und **Reisebild**. So lässt sich jede neue Fähigkeit oder jeder Bildschirm direkt ansehen, ohne Missionen zu spielen. Screenshot-Variante: `SHOT=lab SHOT_PART=arena|aufstieg|lager|belohnung|reise`.
+
+### Gruppenwahl ohne Scrollen (2026-11-04)
+Mit rund 14 wählbaren Helden lief die Auswahlliste über den Bildschirm. Die **Gruppenwahl** ist neu aufgebaut (`SquadSelect`): oben die Truppe als kompakte Karten (gewählter Platz hervorgehoben), darunter **immer sichtbar die Reservebank** als dichtes Raster (ganze Karte klickbar, Name zweizeilig, Rolle), breiteres Panel (1180 px). Ablauf: erst bei einem Platz „Tauschen“, dann auf einen Helden der Bank klicken. Passt bis etwa 20 Helden in zwei Reihen, darüber scrollt es weiter.

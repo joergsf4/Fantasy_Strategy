@@ -36,7 +36,7 @@ func _initialize() -> void:
 			free_i = i
 	buttons[free_i].pressed.emit()
 	await process_frame
-	var cand: Array = s.find_children("*", "Button", true, false).filter(func(b: Button) -> bool: return b.text == defs["robo"]["name"])
+	var cand: Array = s.find_children("*", "Button", true, false).filter(func(b: Button) -> bool: return b.tooltip_text == s._stats("robo") and not b.disabled)
 	check(cand.size() == 1, "Ersatzheld Robo wird angeboten")
 	cand[0].pressed.emit()
 	await process_frame

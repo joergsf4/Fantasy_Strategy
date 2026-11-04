@@ -49,9 +49,9 @@ func _ready() -> void:
 	add_child(dim)
 	var panel := PanelContainer.new()
 	panel.add_theme_stylebox_override("panel", UiTheme.box("panel_dark_s.png", 24, Vector4(28, 18, 28, 18), 0.95))
-	panel.position = Vector2(90, 34)
-	panel.custom_minimum_size = Vector2(1100, 650)
-	panel.size = Vector2(1100, 650)
+	panel.position = Vector2(50, 30)
+	panel.custom_minimum_size = Vector2(1180, 660)
+	panel.size = Vector2(1180, 660)
 	add_child(panel)
 	var col := VBoxContainer.new()
 	col.add_theme_constant_override("separation", 8)
@@ -68,7 +68,7 @@ func _ready() -> void:
 	col.add_child(scroll)
 	_body = VBoxContainer.new()
 	_body.add_theme_constant_override("separation", 8)
-	_body.custom_minimum_size = Vector2(1040, 0)
+	_body.custom_minimum_size = Vector2(1120, 0)
 	scroll.add_child(_body)
 	var go := _button("Los geht's", func() -> void:
 		closed.emit()
@@ -78,60 +78,101 @@ func _ready() -> void:
 	_refresh()
 
 
+## Aufbau (ohne Scrollen): oben die Truppe als kompakte Karten, darunter immer sichtbar die Reservebank als dichtes Raster. Erst auf "Tauschen" bei einem
+## Platz, dann auf einen Helden der Bank klicken: ein Klick, zwei Schritte. Gewaehlter Platz ist hervorgehoben, die Bank zeigt, wer ersetzt wird.
 func _refresh() -> void:
 	for c in _body.get_children():
 		c.queue_free()
 	var fixed: Array = Mission.dialogue_ids(mission["id"])
-	var hint := _text("Wer in diesem Kapitel spricht (🔒 Story), muss mit. Alle anderen Plätze lassen sich tauschen. Ausrüstung von Zurückbleibenden wandert ins Lager.", 19, Color(0.8, 0.85, 0.75), 1030)
-	_body.add_child(hint)
+	_body.add_child(_text("🔒 Story: muss mit. Alle anderen Plätze lassen sich tauschen. Ausrüstung von Zurückbleibenden wandert ins Lager.", 16, Color(0.8, 0.85, 0.75), 1120))
 	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation", 12)
+	row.add_theme_constant_override("separation", 10)
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
 	_body.add_child(row)
 	for i in squad.size():
 		var id: String = squad[i]
 		var locked: bool = fixed.has(id)
-		var card := VBoxContainer.new()
-		card.add_theme_constant_override("separation", 2)
-		card.add_child(_portrait(id, Vector2(150, 150)))
-		var nm := _label(unit_defs[id]["name"], UiTheme.F_HEAD, 15, GOLD_COL)
+		var card := PanelContainer.new()
+		var sb := StyleBoxFlat.new()
+		sb.bg_color = Color(0.25, 0.2, 0.08, 0.7) if _pick == i else Color(0.1, 0.12, 0.2, 0.55)
+		sb.border_color = GOLD_COL if _pick == i else Color(0.4, 0.42, 0.5, 0.6)
+		sb.set_border_width_all(2 if _pick == i else 1)
+		sb.set_corner_radius_all(8)
+		sb.set_content_margin_all(5)
+		card.add_theme_stylebox_override("panel", sb)
+		var cv := VBoxContainer.new()
+		cv.add_theme_constant_override("separation", 1)
+		card.add_child(cv)
+		cv.add_child(_portrait(id, Vector2(124, 100)))
+		var nm := _label(unit_defs[id]["name"], UiTheme.F_HEAD, 13, GOLD_COL)
 		nm.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		card.add_child(nm)
-		var info := _text(_stats(id), 14, Color(0.85, 0.85, 0.8), 150)
+		nm.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		nm.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		nm.custom_minimum_size = Vector2(124, 32)
+		cv.add_child(nm)
+		var info := _text(_stats(id), 12, Color(0.85, 0.85, 0.8), 124)
 		info.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		card.add_child(info)
-		var b := _button("🔒 Story" if locked else ("▲ Auswahl" if _pick == i else "Tauschen"), func() -> void:
+		cv.add_child(info)
+		var b := _button("🔒 Story" if locked else ("▲ gewählt" if _pick == i else "Tauschen"), func() -> void:
 			_pick = -1 if _pick == i else i
-			_refresh(), Vector2(150, 30))
+			_refresh(), Vector2(124, 26))
 		b.disabled = locked
-		card.add_child(b)
+		cv.add_child(b)
 		row.add_child(card)
+	var bench: Array = []
+	for id: String in Party.roster(unit_defs, int(String(mission["id"]).substr(2)), true, party.recruited):
+		if not squad.has(id):
+			bench.append(id)
+	var head := "Reservebank (%d)" % bench.size()
 	if _pick >= 0:
-		_body.add_child(_label("Ersatz für %s:" % unit_defs[squad[_pick]]["name"], UiTheme.F_HEAD, 20, GOLD_COL))
-		var flow := HFlowContainer.new()
-		flow.add_theme_constant_override("h_separation", 10)
-		flow.add_theme_constant_override("v_separation", 8)
-		_body.add_child(flow)
-		for id: String in Party.roster(unit_defs, int(String(mission["id"]).substr(2)), true, party.recruited):
-			if squad.has(id):
-				continue
-			var cand := VBoxContainer.new()
-			cand.add_theme_constant_override("separation", 1)
-			cand.add_child(_portrait(id, Vector2(80, 80)))
-			var cb := _button(unit_defs[id]["name"], func() -> void:
-				if party.set_squad_member(mission, _pick, id):
-					squad = party.squad_for(mission)
-				_pick = -1
-				_refresh(), Vector2(150, 28))
-			cand.add_child(cb)
-			var ci := _text(ROLES.get(unit_defs[id].get("role", ""), ""), 13, Color(0.82, 0.82, 0.78), 150)
-			ci.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-			cand.add_child(ci)
-			flow.add_child(cand)
+		head = "Wer ersetzt %s? Klicke auf einen Helden:" % unit_defs[squad[_pick]]["name"]
+	elif not bench.is_empty():
+		head += "  –  zuerst oben bei einem Platz auf „Tauschen“ klicken"
+	_body.add_child(_label(head, UiTheme.F_HEAD, 18, GOLD_COL if _pick >= 0 else Color(0.8, 0.85, 0.75)))
+	var flow := HFlowContainer.new()
+	flow.add_theme_constant_override("h_separation", 8)
+	flow.add_theme_constant_override("v_separation", 6)
+	flow.custom_minimum_size = Vector2(1120, 0)
+	_body.add_child(flow)
+	for id: String in bench:
+		var cb := Button.new()                 # die ganze Karte ist der Knopf (Portrait, Name, Rolle)
+		cb.focus_mode = Control.FOCUS_NONE
+		cb.custom_minimum_size = Vector2(110, 124)
+		cb.disabled = _pick < 0
+		cb.tooltip_text = _stats(id)
+		for st in ["normal", "hover", "pressed", "disabled"]:
+			cb.add_theme_stylebox_override(st, UiTheme.soft_button(st))
+		cb.pressed.connect(func() -> void:
+			if party.set_squad_member(mission, _pick, id):
+				squad = party.squad_for(mission)
+			_pick = -1
+			_refresh())
+		var cand := VBoxContainer.new()
+		cand.add_theme_constant_override("separation", 0)
+		cand.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		cand.set_anchors_preset(Control.PRESET_FULL_RECT)
+		cb.add_child(cand)
+		var pt := _portrait(id, Vector2(110, 58))
+		pt.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		pt.modulate = Color.WHITE if _pick >= 0 else Color(0.75, 0.75, 0.75)
+		cand.add_child(pt)
+		var nl := _label(unit_defs[id]["name"], UiTheme.F_HEAD, 12, GOLD_COL if _pick >= 0 else Color(0.7, 0.7, 0.65))
+		nl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		nl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		nl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		nl.custom_minimum_size = Vector2(106, 34)
+		nl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		cand.add_child(nl)
+		var ci := _label(ROLES.get(unit_defs[id].get("role", ""), ""), UiTheme.F_BODY, 12, Color(0.82, 0.82, 0.78))
+		ci.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		ci.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		cand.add_child(ci)
+		flow.add_child(cb)
 
 
 func _stats(id: String) -> String:
 	var d: Dictionary = unit_defs[id]
-	return "%s · Leben %d · Angriff %d" % [ROLES.get(d.get("role", ""), ""), int(d["hp"]), int(d["atk"])]
+	return "%s · L %d · A %d" % [ROLES.get(d.get("role", ""), ""), int(d["hp"]), int(d["atk"])]
 
 
 func _label(text: String, font: String, size: int, color: Color) -> Label:
