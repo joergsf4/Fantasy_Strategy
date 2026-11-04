@@ -943,7 +943,7 @@ func _screenshot_mode() -> void:
 		get_viewport().get_texture().get_image().save_png(OS.get_environment("SHOT_OUT"))
 		get_tree().quit()
 		return
-	if mode == "oiroke":   # Geheimnis Oiroke no Jutsu im Kampf: SHOT_DELAY = Sekunden nach dem Start der Faehigkeit
+	if mode == "oiroke":   # Geheimnis Sexy Jutsu im Kampf: SHOT_DELAY = Sekunden nach dem Start der Faehigkeit
 		stage = Stage.new()
 		stage.setup(map, units)
 		add_child(stage)

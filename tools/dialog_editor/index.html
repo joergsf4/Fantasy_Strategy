@@ -815,7 +815,7 @@ function secTech(x, i) {
         <select data-f="ability" aria-label="Fähigkeit">${secOpts((o.units[t.by]?.all_abilities || []).map(a => [a, o.abilities[a] || a]), t.ability)}</select>
         auf den Gegner <select data-f="foe" aria-label="Gegner">${secOpts(fig.filter(([k]) => !o.units[k]?.hero), t.foe)}</select> ein.</div></div>
       <div class="sbox"><h4>Wirkung</h4><div class="row">
-        Menüname <input type="text" data-f="menu_name" maxlength="30" value="${esc(x.effects.menu_name || "")}" placeholder="Oiroke no Jutsu" style="width:180px" aria-label="Name im Fähigkeitsmenü">
+        Menüname <input type="text" data-f="menu_name" maxlength="30" value="${esc(x.effects.menu_name || "")}" placeholder="Sexy Jutsu" style="width:180px" aria-label="Name im Fähigkeitsmenü">
         · Karten-Bild der Figur während des Auftritts <select data-f="foe_token" aria-label="Karten-Bild">${secOpts(pt(o.tokens || []), x.effects.token || "", "– keins –")}</select></div>
         <div class="row" style="margin-top:6px">Menütext <input type="text" data-f="menu_text" maxlength="160" value="${esc(x.effects.menu_text || "")}" style="width:520px" aria-label="Text im Menü"></div>
         <div class="row" style="margin-top:6px">Der Gegner bekommt Status <input type="text" data-f="foe_st_id" value="${esc(x.effects.status?.id || "verwirrt")}" style="width:110px" aria-label="Status"> für

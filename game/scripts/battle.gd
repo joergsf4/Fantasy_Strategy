@@ -3766,7 +3766,7 @@ func _object_apply(u: Dictionary, sec: Dictionary, target: Dictionary) -> void:
 	await get_tree().create_timer(0.3).timeout
 
 
-## Geheimnis "Oiroke no Jutsu" (Typ ability_on_foe): Greifen die Kage-Schwestern Maja mit dem Hinterhalt an, gibt es statt des Hinterhalts das Jutsu.
+## Geheimnis "Sexy Jutsu" (Typ ability_on_foe): Greifen die Kage-Schwestern Maja mit dem Hinterhalt an, gibt es statt des Hinterhalts das Jutsu.
 ## Rauchwolke, die Schwestern werden zu attraktiven Ninja-Brueder (nur ein Gag), Polarlicht-Auftritt, Maja ist 3 Runden verwirrt und greift nicht an.
 ## Danach (beim ersten Mal) die Szene, dann Rauch und die Schwestern sind wieder normal.
 func _foe_secret(u: Dictionary, id: String, target: Dictionary) -> Dictionary:
@@ -3803,7 +3803,7 @@ func _run_oiroke(u: Dictionary, id: String, target: Dictionary, sec: Dictionary)
 	_actor = u
 	_note("ability", {"id": id, "by": u})
 	_turn_towards(u, target["pos"])
-	_banner(str(ef.get("menu_name", "Oiroke no Jutsu")))
+	_banner(str(ef.get("menu_name", "Sexy Jutsu")))
 	await get_tree().create_timer(0.35).timeout
 	await fx.ab._smoke_bomb(u)                                   # Rauchwolke, darin der Wechsel
 	var token := str(ef.get("token", "ninja_brueder"))
@@ -4997,7 +4997,7 @@ func _enemy_move(e: Dictionary) -> void:
 	if Status.has(e, "angst"):
 		await _flee_scared(e, reach_e, occupied)
 		return
-	if Status.has(e, "verwirrt"):          # Geheimnis Oiroke no Jutsu: sie taumelt herum und greift nicht an
+	if Status.has(e, "verwirrt"):          # Geheimnis Sexy Jutsu: sie taumelt herum und greift nicht an
 		await _wander_confused(e, reach_e, occupied)
 		return
 	if e["heal"] > 0 and await _enemy_heal(e, reach_e, occupied):

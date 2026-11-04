@@ -290,7 +290,7 @@ func _initialize() -> void:
 	await b._run_ability(o_hum, "tonikum", {"pos": Vector2i(5, 5), "tile": true})
 	check(not Status.has(o_rob, "treibstoff"), "zweites Mal im selben Kampf: kein Treibstoff mehr")
 
-	# --- Oiroke no Jutsu: Kage-Schwestern schleichen sich von hinten an Maja heran
+	# --- Sexy Jutsu: Kage-Schwestern schleichen sich von hinten an Maja heran
 	clear()
 	scenes.clear()
 	var oi_maja := spawn("maja", "e", Vector2i(5, 5))
