@@ -59,13 +59,6 @@
   {
    "id": "soldat_infanterie",
    "pos": [
-    7,
-    3
-   ]
-  },
-  {
-   "id": "soldat_infanterie",
-   "pos": [
     8,
     5
    ]
@@ -74,6 +67,20 @@
    "id": "bienenmaedchen",
    "pos": [
     9,
+    2
+   ]
+  },
+  {
+   "id": "bienenkrieger",
+   "pos": [
+    8,
+    3
+   ]
+  },
+  {
+   "id": "bienenkrieger",
+   "pos": [
+    10,
     2
    ]
   },
