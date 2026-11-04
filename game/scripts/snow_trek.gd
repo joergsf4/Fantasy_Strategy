@@ -8,6 +8,7 @@ signal finished
 
 const PARTY := ["maedchen_baer", "ritter", "hund", "wendy", "bienenmaedchen", "robo"]
 const SKY := Color(0.56, 0.61, 0.70)
+const SINK := 0.34                             # so tief stecken die Figuren im Schnee (Meter)
 const WIND := Vector3(-1.0, -0.22, 0.34)       # Richtung der Schneeflocken (von rechts hinten nach links vorn)
 
 var duration := 24.0
@@ -197,21 +198,11 @@ func _build_party() -> void:
 		sp.offset = Vector2(0, tex.get_height() / 2.0)
 		sp.modulate = Color(0.92, 0.95, 1.0)       # leicht bereift
 		root.add_child(sp)
-		# Schneeverwehung vor den Fuessen: die Figur stapft knietief durch den Schnee
-		var drift := Sprite3D.new()
-		var dtex: Texture2D = load("res://assets/fx/fx_schneehaufen.png")
-		drift.texture = dtex
-		drift.pixel_size = 1.05 / maxf(dtex.get_width(), dtex.get_height())
-		drift.billboard = BaseMaterial3D.BILLBOARD_FIXED_Y
-		drift.shaded = false
-		drift.alpha_cut = SpriteBase3D.ALPHA_CUT_OPAQUE_PREPASS
-		drift.offset = Vector2(0, dtex.get_height() / 2.0)
-		drift.modulate = Color(0.94, 0.97, 1.0)
-		drift.position = Vector3(0, 0.0, 0.16)
-		root.add_child(drift)
+		# Die Figur steht knietief im Schnee: sie ist ein Stueck in das 3D-Gelaende versenkt, der Schnee verdeckt die Fuesse (Tiefentest), keine Zusatz-Sprites
 		var puff := _feet_puffs()
+		puff.position = Vector3(0.0, SINK + 0.05, 0.0)
 		root.add_child(puff)
-		_figs.append({"root": root, "sprite": sp, "drift": drift, "slot": i, "phase": _rng.randf() * TAU, "fly": id == "bienenmaedchen"})
+		_figs.append({"root": root, "sprite": sp, "slot": i, "phase": _rng.randf() * TAU, "fly": id == "bienenmaedchen"})
 
 
 func _feet_puffs() -> GPUParticles3D:
@@ -390,11 +381,10 @@ func _step(delta: float) -> void:
 		var bob := absf(sin(_t * 3.1 + float(f["phase"]))) * 0.085
 		var fly: bool = f["fly"]
 		var root: Node3D = f["root"]
-		root.position = Vector3(x, _height(x, z) - 0.16 + (0.42 + sin(_t * 2.2) * 0.1 if fly else bob), z)
+		root.position = Vector3(x, _height(x, z) - (SINK if not fly else -0.45 - sin(_t * 2.2) * 0.1) + (0.0 if fly else bob), z)
 		var sp: Sprite3D = f["sprite"]
 		sp.scale = Vector3(1.0, 1.0 - bob * 0.5, 1.0)
 		sp.flip_h = false
-		(f["drift"] as Sprite3D).visible = not fly
 	# Kamera: flach, erst seitlich dicht am Zug, dann nach vorn wandernd und schliesslich schraeg von vorn
 	var k := clampf(_t / duration, 0.0, 1.0)
 	var mid_x := lead_x - 2.2
