@@ -336,11 +336,11 @@ def save_secrets(body: dict) -> None:
         if sec.get("trigger"):
             t = sec["trigger"]
             ttype = t.get("type", "ability_on_ally")
-            if ttype not in ("ability_on_ally", "beam_via_ally", "throw_ally", "ability_near_ally", "hit_near_ally", "ability_near_object"):
+            if ttype not in ("ability_on_ally", "beam_via_ally", "throw_ally", "ability_near_ally", "hit_near_ally", "ability_near_object", "ability_area_ally"):
                 raise ValueError(f"{name}: unbekannter Ausloeser-Typ '{ttype}'")
             beam = ttype == "beam_via_ally"
             by = t["by"]
-            on = t["via"] if beam else (t["owner"] if ttype == "ability_near_object" else (t["near"] if ttype in ("ability_near_ally", "hit_near_ally") else t["target"]))
+            on = t["via"] if beam else (t["owner"] if ttype == "ability_near_object" else (t["ally"] if ttype == "ability_area_ally" else (t["near"] if ttype in ("ability_near_ally", "hit_near_ally") else t["target"])))
             if by not in units or "name" not in units[by] or on not in units or "name" not in units[on]:
                 raise ValueError(f"{name}: unbekannte Figur im Ausloeser")
             if by == on:
@@ -381,6 +381,25 @@ def save_secrets(body: dict) -> None:
                                 or not isinstance(turns, int) or isinstance(turns, bool) or not 1 <= turns <= 9:
                             raise ValueError(f"{name}: Status braucht eine Kennung, Schadensminderung 0 bis 90 Prozent und 1 bis 9 Runden")
                         new_effects["status"] = {"id": sid_, "turns": turns, "reduce_pct": red}
+            elif ttype == "ability_area_ally":
+                ab = t["ability"]
+                if ab not in units[by].get("abilities", []) or abilities.get(ab, {}).get("target") != "self" or not abilities.get(ab, {}).get("area") \
+                        or not any(e.get("to") == "area_allies" for e in abilities[ab].get("effects", [])):
+                    raise ValueError(f"{name}: '{ab}' muss eine Faehigkeit mit Wirkbereich fuer Verbuendete sein (z. B. Heulen)")
+                if (by, ab, on) in triples:
+                    raise ValueError(f"{name}: dieser Ausloeser kommt zweimal vor")
+                triples.add((by, ab, on))
+                fu = sec["effects"].get("fury") or {}
+                fab, pct = str(fu.get("ability", "")), fu.get("mult_pct", 150)
+                if fab not in units[on].get("abilities", []) or abilities.get(fab, {}).get("target") != "enemy" \
+                        or not any(e.get("type") == "damage" for e in abilities[fab].get("effects", [])):
+                    raise ValueError(f"{name}: {units[on]['name']} braucht eine Schadens-Faehigkeit gegen Gegner als Urinstinkt")
+                if not isinstance(pct, int) or isinstance(pct, bool) or not 50 <= pct <= 400:
+                    raise ValueError(f"{name}: der Schaden muss 50 bis 400 Prozent sein")
+                new_trigger = {"type": "ability_area_ally", "by": by, "ability": ab, "ally": on}
+                new_effects = {"fury": {"ability": fab, "mult_pct": pct}}
+                if isinstance(fu.get("popup"), str) and fu["popup"].strip():
+                    new_effects["fury"]["popup"] = fu["popup"].strip()[:20]
             elif ttype == "hit_near_ally":
                 ab = t["ability"]
                 if ab not in units[by].get("abilities", []) or not any(e.get("type") == "damage" for e in abilities.get(ab, {}).get("effects", [])):

@@ -19,6 +19,7 @@ func clear() -> void:
 	b.units.clear()
 	b._away.clear()
 	b.state = Battle.State.IDLE
+	Secrets.fired.clear()      # jedes Szenario zaehlt als eigener Kampf
 
 
 func spawn(id: String, team: String, pos: Vector2i) -> Dictionary:
@@ -80,6 +81,7 @@ func _initialize() -> void:
 
 	# --- Zweites Mal: keine Szene mehr, Effekt bleibt
 	scenes.clear()
+	Secrets.fired.clear()      # naechster Kampf (Szene ist schon gesehen)
 	robo["cd"] = {}
 	var hp_before: int = nahe["hp"]
 	await b._run_ability(robo, "roter_laser", target)
@@ -150,6 +152,7 @@ func _initialize() -> void:
 	check(raw > 0, "Gegenprobe ok")
 	# zweites Mal: keine Szene, Effekt bleibt
 	scenes.clear()
+	Secrets.fired.clear()
 	hund["cd"] = {}
 	mira["hp"] = 10
 	await b._run_ability(hund, "knochenwurf", gegner)
@@ -274,6 +277,45 @@ func _initialize() -> void:
 	pat2["hp"] = 5
 	await b._run_ability(hum4, "wundersalbe", pat2)
 	check(not Status.has(rob4, "geschmiert"), "Robina nicht daneben: kein Schmiermittel")
+
+	# --- Jedes Geheimnis wirkt pro Level nur einmal (Aether darf es nicht beliebig oft abrufbar machen)
+	clear()
+	var o_hum := spawn("quacksalber", "p", Vector2i(3, 5))
+	var o_rob := spawn("panzer", "p", Vector2i(3, 6))
+	spawn("soldat_infanterie", "e", Vector2i(5, 5))
+	await b._run_ability(o_hum, "tonikum", {"pos": Vector2i(5, 5), "tile": true})
+	check(Status.has(o_rob, "treibstoff"), "erstes Mal: Treibstoff")
+	Status.remove(o_rob, "treibstoff")
+	o_hum["cd"]["tonikum"] = 0
+	await b._run_ability(o_hum, "tonikum", {"pos": Vector2i(5, 5), "tile": true})
+	check(not Status.has(o_rob, "treibstoff"), "zweites Mal im selben Kampf: kein Treibstoff mehr")
+
+	# --- Urinstinkt: Der Hundsfreund im Heulen der Alphaetoelfin wirft wuetend Knochen auf alle Gegner in Reichweite
+	clear()
+	scenes.clear()
+	var ur_w := spawn("alphawolf", "p", Vector2i(4, 5))
+	var ur_h := spawn("hund", "p", Vector2i(5, 5))
+	var ur_e1 := spawn("soldat_infanterie", "e", Vector2i(6, 5))        # 1 Feld vom Hund
+	var ur_e2 := spawn("soldat_infanterie", "e", Vector2i(7, 5))        # 2 Felder
+	var ur_e3 := spawn("soldat_infanterie", "e", Vector2i(9, 5))        # 4 Felder: ausser Reichweite
+	for z in [ur_e1, ur_e2, ur_e3]:
+		z["hp"] = 100
+		z["maxhp"] = 100
+	await b._run_ability(ur_w, "heulen", ur_w)
+	check(ur_e1["hp"] < 100 and ur_e2["hp"] < 100 and ur_e3["hp"] == 100, "Urinstinkt trifft alle Gegner in Knochenwurf-Reichweite: %d %d %d" % [ur_e1["hp"], ur_e2["hp"], ur_e3["hp"]])
+	check(scenes == ["urinstinkt"] and ur_h["cd"].get("knochenwurf", 0) == 0, "Szene beim ersten Mal, keine Abklingzeit fuer den Hund")
+	ur_e1["hp"] = 100
+	ur_w["cd"] = {}
+	await b._run_ability(ur_w, "heulen", ur_w)
+	check(ur_e1["hp"] == 100, "pro Level nur einmal")
+	clear()
+	var ur_w2 := spawn("alphawolf", "p", Vector2i(4, 5))
+	spawn("hund", "p", Vector2i(5, 8))
+	var ur_e4 := spawn("soldat_infanterie", "e", Vector2i(5, 7))
+	ur_e4["hp"] = 100
+	ur_e4["maxhp"] = 100
+	await b._run_ability(ur_w2, "heulen", ur_w2)
+	check(ur_e4["hp"] == 100 and not Secrets.fired.has("urinstinkt"), "Hund ausserhalb des Heulens: nichts, Geheimnis bleibt frei")
 
 	# --- Shinobi no Kaze: Kage-Schwestern neben Takeda machen den Wirbel groesser (Radius 2)
 	clear()

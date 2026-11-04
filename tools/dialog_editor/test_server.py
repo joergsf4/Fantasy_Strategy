@@ -292,6 +292,19 @@ class EditorTest(unittest.TestCase):
             with self.assertRaises(ValueError):
                 server.save_secrets({"secrets": sl})
 
+    def test_geheimnis_urinstinkt_im_wirkbereich(self):
+        import copy
+        d = server.secrets()
+        ur = next(x for x in d["secrets"] if x["id"] == "urinstinkt")
+        self.assertEqual((ur["trigger"]["by"], ur["trigger"]["ability"], ur["trigger"]["ally"], ur["effects"]["fury"]["ability"]), ("alphawolf", "heulen", "hund", "knochenwurf"))
+        server.save_secrets({"secrets": d["secrets"]})
+        for mutate in (lambda s: s["trigger"].update(ability="kehlbiss"), lambda s: s["effects"]["fury"].update(ability="gibtsnicht"), lambda s: s["effects"]["fury"].update(mult_pct=10),
+                       lambda s: s["trigger"].update(ally="alphawolf")):
+            sl = copy.deepcopy(d["secrets"])
+            mutate(next(x for x in sl if x["id"] == "urinstinkt"))
+            with self.assertRaises(ValueError):
+                server.save_secrets({"secrets": sl})
+
     def test_geheimnis_treffer_neben_verbuendetem(self):
         import copy
         d = server.secrets()

@@ -114,6 +114,7 @@ func _ready() -> void:
 	inventory = (loadout.get("inventory", {}) as Dictionary).duplicate()
 	nemeses = (loadout.get("nemesis", []) as Array).duplicate()
 	secrets_seen = (loadout.get("secrets_seen", []) as Array).duplicate()
+	Secrets.fired = []
 	_start_inventory = inventory.duplicate()
 	for k: String in abilities:
 		abilities[k]["id"] = k
@@ -3659,6 +3660,7 @@ func _hit_near_reactions(u: Dictionary, id: String, target: Dictionary) -> void:
 
 
 func _run_inspire(u: Dictionary, o: Dictionary, sec: Dictionary) -> void:
+	Secrets.fire(sec["id"])
 	var ef: Dictionary = sec["effects"]
 	if not secrets_seen.has(sec["id"]):
 		secrets_seen.append(sec["id"])
@@ -3722,6 +3724,7 @@ func _object_secret(u: Dictionary, id: String, target: Dictionary) -> Dictionary
 
 ## Szene und Auftritt des Geheimnisses (nur beim ersten Mal), vor dem Schuss.
 func _object_secret_intro(u: Dictionary, sec: Dictionary) -> void:
+	Secrets.fire(sec["id"])
 	if secrets_seen.has(sec["id"]):
 		return
 	secrets_seen.append(sec["id"])
@@ -3735,6 +3738,7 @@ func _object_secret_intro(u: Dictionary, sec: Dictionary) -> void:
 
 ## Klebeeffekt am Einschlag (nach dem Schaden der Kanone).
 func _object_apply(u: Dictionary, sec: Dictionary, target: Dictionary) -> void:
+	Secrets.fire(sec["id"])
 	var ef: Dictionary = sec["effects"]
 	var at: Vector3 = to_world(target["pos"]) + Vector3(0, 0.4, 0)
 	var tiles := _area_tiles({"area": {"shape": "radius", "r": int(ef.get("radius", 2))}}, target["pos"])
@@ -3752,6 +3756,63 @@ func _object_apply(u: Dictionary, sec: Dictionary, target: Dictionary) -> void:
 	await get_tree().create_timer(0.3).timeout
 
 
+## Geheimnis "Urinstinkt" (Typ ability_area_ally): Steht die Verbuendete "ally" im Wirkbereich der Faehigkeit von u (z. B. Heulen), erwachen ihre Urinstinkte:
+## sie fuehrt wuetend eine Faehigkeit (fury.ability) auf alle Gegner in Reichweite aus, mit mehr Schaden (fury.mult_pct). Das kostet keine Aktion.
+## Gibt es keinen Gegner in Reichweite, passiert nichts (und das Geheimnis bleibt frei).
+func _area_ally_reactions(u: Dictionary, id: String) -> void:
+	if not units.has(u) or u["team"] != "p" or abilities[id].get("target", "") != "self" or abilities[id].get("area", {}).is_empty():
+		return
+	var tiles := _area_tiles(abilities[id], u["pos"])
+	for o in units.duplicate():
+		if o == u or o["team"] != u["team"] or not tiles.has(o["pos"]):
+			continue
+		var sec := Secrets.find_area(u["id"], id, o["id"])
+		if sec.is_empty():
+			continue
+		var fab: Dictionary = abilities[str(sec["effects"]["fury"]["ability"])]
+		var victims: Array[Dictionary] = []
+		for v in units:
+			var d: int = Grid.dist(o["pos"], v["pos"])
+			if v["team"] != o["team"] and _hittable(v) and not Status.has(v, "stealth") and d >= int(fab["range"][0]) and d <= int(fab["range"][1]):
+				victims.append(v)
+		if victims.is_empty():
+			continue
+		await _run_fury(u, o, sec, fab, victims)
+		return
+
+
+func _run_fury(_u: Dictionary, o: Dictionary, sec: Dictionary, fab: Dictionary, victims: Array[Dictionary]) -> void:
+	Secrets.fire(sec["id"])
+	var ef: Dictionary = sec["effects"]
+	if not secrets_seen.has(sec["id"]):
+		secrets_seen.append(sec["id"])
+		if secret_runner.is_valid():
+			await secret_runner.call(sec)
+		var ci: Dictionary = ef.get("cutin", {})
+		if not ci.is_empty():
+			await _super_cutin(o, {}, str(ci.get("title", sec["name"])), str(ci.get("sub", "")))
+			_super_music_stop()
+	_actor = o
+	fx.flash_unit(o, Color(2.0, 0.6, 0.4), 0.5)
+	await fx.squash(o, 1.25, 0.8, 0.3)
+	_popup(o, str(ef["fury"].get("popup", "Urinstinkt!")), Color(1.0, 0.35, 0.25))
+	await get_tree().create_timer(0.3).timeout
+	var factor := float(ef["fury"].get("mult_pct", 150)) / 100.0
+	for v in victims:
+		if not units.has(v) or not units.has(o):
+			continue
+		_turn_towards(o, v["pos"])
+		await fx.windup(str(fab["id"]), o, v)
+		await fx.cast(str(fab["id"]), o, v, [])
+		for fe: Dictionary in fab["effects"]:
+			var fe2 := fe.duplicate()
+			if fe2.has("mult"):
+				fe2["mult"] = float(fe2["mult"]) * factor
+			await _apply_effect(o, fab, v, fe2)
+		await fx.after(str(fab["id"]), o, v)
+	_refresh_unit(o)
+
+
 ## Geheimnis "Shinobi no Kaze" (ability_near_ally mit effects.enlarge): Setzt u die Ring-Faehigkeit ein, waehrend die Figur "near" auf einem
 ## Nachbarfeld steht, wirft sie ihre Wurfsterne in den Wirbel und macht ihn groesser (Radius statt 1). Zuerst (beim ersten Mal) Szene und
 ## Polarlicht, DANACH wirbelt es, schon mit dem groesseren Radius. Rueckgabe: das Geheimnis oder {}.
@@ -3764,6 +3825,7 @@ func _widen_secret(u: Dictionary, id: String) -> Dictionary:
 		var sec := Secrets.find_near(u["id"], id, o["id"])
 		if sec.is_empty() or not (sec["effects"] as Dictionary).has("enlarge"):
 			continue
+		Secrets.fire(sec["id"])
 		var ef: Dictionary = sec["effects"]
 		if not secrets_seen.has(sec["id"]):
 			secrets_seen.append(sec["id"])
@@ -3785,6 +3847,7 @@ func _widen_secret(u: Dictionary, id: String) -> Dictionary:
 ## Geheimnis "Turbo-Treibstoff" (ability_near_ally mit effects.boost): u setzt die Faehigkeit ein, o steht daneben, und o bekommt einen
 ## Angriffsbonus (z. B. +50 % = x1,5 fuer 3 Runden). Die eigentliche Faehigkeit von u bleibt unveraendert. Beim ersten Mal Szene und Polarlicht.
 func _run_boost(u: Dictionary, o: Dictionary, sec: Dictionary) -> void:
+	Secrets.fire(sec["id"])
 	var ef: Dictionary = sec["effects"]
 	var bo: Dictionary = ef["boost"]
 	if not secrets_seen.has(sec["id"]):
@@ -3809,6 +3872,7 @@ func _run_boost(u: Dictionary, o: Dictionary, sec: Dictionary) -> void:
 
 
 func _run_near(u: Dictionary, o: Dictionary, sec: Dictionary) -> void:
+	Secrets.fire(sec["id"])
 	var ef: Dictionary = sec["effects"]
 	if ef.has("boost"):
 		await _run_boost(u, o, sec)
@@ -3846,6 +3910,7 @@ func _run_near(u: Dictionary, o: Dictionary, sec: Dictionary) -> void:
 ## Geheimnis "Shuriken Regen": Wirft die Figur ihre Verbuendete, fliegt diese besonders hoch und verteilt aus der Luft einen Shuriken-Regen
 ## auf die Gegner im Umkreis um das Landefeld (Anteil ihres normalen Angriffsschadens). Beim ersten Mal Szene und Polarlicht-Auftritt.
 func _throw_with_rain(u: Dictionary, ally: Dictionary, dest: Vector2i, sec: Dictionary) -> void:
+	Secrets.fire(sec["id"])
 	var ef: Dictionary = sec["effects"]
 	if not secrets_seen.has(sec["id"]):
 		secrets_seen.append(sec["id"])
@@ -3885,6 +3950,7 @@ func _throw_with_rain(u: Dictionary, ally: Dictionary, dest: Vector2i, sec: Dict
 ## Geheimnis "Futter fuer Brumm" (mode "catch"): Die Figur auf der Flugbahn faengt etwas auf (Heilung und ein Status mit Schadensminderung),
 ## der Angriff selbst bleibt unveraendert. Beim ersten Mal laeuft die Szene.
 func _run_catch(u: Dictionary, via: Dictionary, sec: Dictionary) -> void:
+	Secrets.fire(sec["id"])
 	var ef: Dictionary = sec["effects"]
 	await fx.catch_bone(u, via)
 	if not secrets_seen.has(sec["id"]):
@@ -3913,6 +3979,7 @@ func _run_catch(u: Dictionary, via: Dictionary, sec: Dictionary) -> void:
 ## Geheimnis "Laser-Reflektor": Die Figur auf der Linie lenkt den Strahl um. Er endet dort und trifft (bzw. heilt) alle Figuren im Umkreis
 ## um die Figur mit einem Teil der Wirkung. Beim ersten Mal laufen Szene und grosser Auftritt, danach nur ein kurzer Effekt.
 func _run_reflect(u: Dictionary, id: String, target: Dictionary, via: Dictionary, sec: Dictionary) -> void:
+	Secrets.fire(sec["id"])
 	var ab: Dictionary = abilities[id]
 	var ef: Dictionary = sec["effects"]
 	u["st"]["abs"] += 1
@@ -4163,6 +4230,7 @@ func _run_ability(u: Dictionary, id: String, target: Dictionary) -> void:
 	_widen_r = 0
 	fx.spin_scale = 1.0
 	await _near_reactions(u, id)
+	await _area_ally_reactions(u, id)
 	await _hit_near_reactions(u, id, target)
 	if not glue_sec.is_empty() and units.has(u):
 		await _object_apply(u, glue_sec, target)

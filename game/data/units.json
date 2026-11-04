@@ -669,7 +669,7 @@
   "size": 1.25
  },
  "alphawolf": {
-  "name": "Alphawolf",
+  "name": "Alphawölfin",
   "hp": 42,
   "atk": 10,
   "def": 4,
@@ -690,7 +690,7 @@
   ],
   "weapon": "fist",
   "body": "flesh",
-  "size": 2.0,
+  "size": 1.7,
   "recruit_only": true,
   "hero": true,
   "from": 18,

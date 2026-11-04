@@ -2,7 +2,7 @@
  "id": "ch17",
  "title": "Die Wölfe der Nacht",
  "map": "res://data/map_ch17.json",
- "briefing": "Im verschneiten Gebirge wird die Gruppe nachts von einem Wolfsrudel überfallen. Der Anführer ist ein schneeweißer Alphawolf, größer als die anderen. Wölfe sind schnell und beißen hart. Vielleicht muss nicht jeder Kampf bis zum letzten Biss ausgefochten werden.",
+ "briefing": "Im verschneiten Gebirge wird die Gruppe nachts von einem Wolfsrudel überfallen. Die Anführerin ist eine schneeweiße Alphawölfin, größer als die anderen. Wölfe sind schnell und beißen hart. Vielleicht muss nicht jeder Kampf bis zum letzten Biss ausgefochten werden.",
  "goals": [
   {
    "type": "rout"
@@ -22,7 +22,7 @@
      "alphawolf"
     ]
    },
-   "note": "Der Alphawolf zeigt sich",
+   "note": "Die Alphawölfin zeigt sich",
    "do": [
     {
      "dialogue": [
@@ -96,7 +96,7 @@
     ],
     "kills_max": 0
    },
-   "note": "Das Rudel ist weg, der Alphawolf schließt sich an",
+   "note": "Das Rudel ist weg, die Alphawölfin schließt sich an",
    "do": [
     {
      "dialogue": [
@@ -104,14 +104,14 @@
        "left": "maedchen_baer",
        "right": "alphawolf",
        "speaker": "maedchen_baer",
-       "text": "Das Rudel ist in die Nacht verschwunden. Nur er ist geblieben.",
+       "text": "Das Rudel ist in die Nacht verschwunden. Nur sie ist geblieben.",
        "story": true
       },
       {
        "left": "hund",
        "right": "alphawolf",
        "speaker": "alphawolf",
-       "text": "*Der Alphawolf hebt den Kopf und heult einmal tief und lang. Er hat sein Rudel wegziehen lassen.*",
+       "text": "*Die Alphawölfin hebt den Kopf und heult einmal tief und lang. Sie hat ihr Rudel wegziehen lassen.*",
        "right_expr": "",
        "story": true
       },
@@ -119,7 +119,7 @@
        "left": "hund",
        "right": "alphawolf",
        "speaker": "hund",
-       "text": "Er ist mutig. Er hat keine Angst vor uns. Er wollte nur sehen, wer wir sind.",
+       "text": "Sie ist mutig. Sie hat keine Angst vor uns. Sie wollte nur sehen, wer wir sind.",
        "left_expr": "lachend",
        "story": true
       },
@@ -127,7 +127,7 @@
        "left": "bienenmaedchen",
        "right": "alphawolf",
        "speaker": "bienenmaedchen",
-       "text": "Und jetzt will er mit. Na wunderbar, noch ein Anhängsel.",
+       "text": "Und jetzt will sie mit. Na wunderbar, noch ein Anhängsel.",
        "left_expr": "wuetend",
        "story": true
       },
@@ -135,7 +135,7 @@
        "left": "maedchen_baer",
        "right": "alphawolf",
        "speaker": "alphawolf",
-       "text": "*Er senkt den Kopf vor Mira und stellt sich neben die Gruppe. Ein neuer Gefährte.*",
+       "text": "*Sie senkt den Kopf vor Mira und stellt sich neben die Gruppe. Eine neue Gefährtin.*",
        "right_expr": "lachend",
        "story": true
       }
@@ -175,7 +175,7 @@
        "left": "maedchen_baer",
        "right": "alphawolf",
        "speaker": "alphawolf",
-       "text": "*Der Alphawolf heult. Jetzt kämpft das ganze Rudel.*",
+       "text": "*Die Alphawölfin heult. Jetzt kämpft das ganze Rudel.*",
        "right_expr": "wuetend"
       }
      ]
@@ -188,7 +188,7 @@
      "id": "alphawolf"
     }
    },
-   "note": "Der Alphawolf fällt",
+   "note": "Die Alphawölfin fällt",
    "do": [
     {
      "dialogue": [
@@ -196,7 +196,7 @@
        "left": "wendy",
        "right": "maedchen_baer",
        "speaker": "wendy",
-       "text": "Der weiße Wolf... Das hätte nicht sein müssen."
+       "text": "Die weiße Wölfin... Das hätte nicht sein müssen."
       },
       {
        "left": "wendy",

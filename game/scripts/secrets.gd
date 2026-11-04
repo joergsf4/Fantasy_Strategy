@@ -4,9 +4,22 @@ extends RefCounted
 ## fuer den Rest des Kampfes einen Bonus und ggf. eine Sonderfaehigkeit frei. Die Szene dazu laeuft nur beim ersten Mal.
 
 static var _list: Array = []
+static var fired: Array = []       # in diesem Kampf schon ausgeloeste Geheimnisse: jedes wirkt pro Kampf (Level) nur einmal (sonst waere es mit Aether beliebig oft abrufbar)
+
+
+## Markiert ein Geheimnis als ausgeloest (gilt bis zum naechsten Kampf).
+static func fire(id: String) -> void:
+	if not fired.has(id):
+		fired.append(id)
 
 
 static func all() -> Array:
+	if not fired.is_empty():
+		return _all_loaded().filter(func(s: Dictionary) -> bool: return not fired.has(s["id"]))
+	return _all_loaded()
+
+
+static func _all_loaded() -> Array:
 	if _list.is_empty():
 		_list = []
 		for sec: Dictionary in (JSON.parse_string(FileAccess.get_file_as_string("res://data/secrets.json")) as Dictionary)["secrets"]:
@@ -65,6 +78,15 @@ static func find_object(by: String, ability: String) -> Dictionary:
 	for s: Dictionary in all():
 		var t: Dictionary = s["trigger"]
 		if t.get("type", "") == "ability_near_object" and t["by"] == by and t["ability"] == ability:
+			return s
+	return {}
+
+
+## Das Geheimnis, bei dem die Verbuendete "ally" im Wirkbereich der Faehigkeit "ability" von "by" steht (Typ ability_area_ally), oder {}.
+static func find_area(by: String, ability: String, ally: String) -> Dictionary:
+	for s: Dictionary in all():
+		var t: Dictionary = s["trigger"]
+		if t.get("type", "") == "ability_area_ally" and t["by"] == by and t["ability"] == ability and t["ally"] == ally:
 			return s
 	return {}
 
