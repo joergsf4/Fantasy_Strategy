@@ -691,6 +691,11 @@ func status_holder(id: String, root: Node3D) -> bool:
 			var twi := root.create_tween().set_loops()
 			twi.tween_property(ist, "scale", ist.scale * 1.25, 0.5).set_trans(Tween.TRANS_SINE)
 			twi.tween_property(ist, "scale", ist.scale, 0.5).set_trans(Tween.TRANS_SINE)
+		"verwirrt":    # kreisende violette Sterne ueber dem Kopf
+			var vst := fx.make_sprite("fx_star", Vector3.ZERO, 0.3, true, Color(0.85, 0.6, 1.0), 1, fx.icon_node(root))
+			var tvw := root.create_tween().set_loops()
+			tvw.tween_property(vst, "scale", vst.scale * 1.35, 0.35).set_trans(Tween.TRANS_SINE)
+			tvw.tween_property(vst, "scale", vst.scale, 0.35).set_trans(Tween.TRANS_SINE)
 		"geschmiert":  # Oeltropfen als Symbol
 			fx.make_sprite("fx_bubble", Vector3.ZERO, 0.3, false, Color(1.0, 0.8, 0.25), 1, fx.icon_node(root))
 		"treibstoff":  # kleine Flasche als Symbol

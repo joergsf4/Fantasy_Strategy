@@ -208,5 +208,7 @@
  "fx_schneefichte2": true,
  "fx_schneehaufen": true,
  "fx_eisfels": true,
- "fx_kleber": true
+ "fx_kleber": true,
+ "sec_ninja_brueder": true,
+ "ninja_brueder_chibi": true
 }

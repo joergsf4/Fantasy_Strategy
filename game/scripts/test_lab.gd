@@ -13,6 +13,7 @@ var _foe: OptionButton
 var _maxed: CheckBox
 var secrets: Array = []       # [{id, name, heroes}]
 var _sec: OptionButton
+var _secret_foe := "soldat_infanterie"      # Gegner des gewaehlten Geheimnisses (z. B. Maja), sonst Buettel
 var _sh: Array[OptionButton] = []     # drei Helden fuer die Geheimnis-Arena (der dritte ist optional)
 
 
@@ -67,10 +68,13 @@ func _ready() -> void:
 	_sec.add_theme_font_size_override("font_size", 19)
 	_sec.add_item("Geheimnis wählen (setzt die Helden) …", 0)
 	for i in secrets.size():
-		_sec.add_item("%s (%s)" % [secrets[i]["name"], " + ".join(secrets[i]["heroes"].map(func(h: String) -> String: return _hero_name(h)))], i + 1)
-	var pop := _sec.get_popup()      # Liste darf nie ueber den Bildschirm laufen: kleinere Schrift, hoechstens 560 Pixel hoch (dann scrollbar)
+		var who: String = " + ".join(secrets[i]["heroes"].map(func(h: String) -> String: return _hero_name(h)))
+		if str(secrets[i].get("foe_name", "")) != "":
+			who = "%s gegen %s" % [_hero_name(secrets[i]["heroes"][0]), secrets[i]["foe_name"]]
+		_sec.add_item("%s (%s)" % [secrets[i]["name"], who], i + 1)
+	var pop := _sec.get_popup()      # Liste darf nie ueber den Bildschirm laufen: kleinere Schrift, hoechstens 330 Pixel hoch (dann scrollbar)
 	pop.add_theme_font_size_override("font_size", 16)
-	pop.max_size = Vector2i(900, 560)
+	pop.max_size = Vector2i(900, 330)
 	_sec.item_selected.connect(_pick_secret)
 	col.add_child(_sec)
 	for k in 3:
@@ -85,7 +89,7 @@ func _ready() -> void:
 			var id: String = (heroes if k < 2 else [{"id": ""}] + heroes)[_sh[k].selected]["id"]
 			if id != "" and not ids.has(id):
 				ids.append(id)
-		run.emit("geheimnis", ",".join(ids), "soldat_infanterie", false)))
+		run.emit("geheimnis", ",".join(ids), _secret_foe, false)))
 	col2.add_child(_label("Bildschirme", UiTheme.F_HEAD, 20, UiTheme.CREAM))
 	col2.add_child(_button("Aufstiegsbildschirm (Stufe 4, ein Punkt)", func() -> void: run.emit("aufstieg", _hero_id(), _foe_id(), false)))
 	col2.add_child(_button("Lager (Kapitel 8, 999 Gold)", func() -> void: run.emit("lager", _hero_id(), _foe_id(), false)))
@@ -104,9 +108,11 @@ func _hero_name(id: String) -> String:
 
 
 func _pick_secret(i: int) -> void:
+	_secret_foe = "soldat_infanterie"
 	if i <= 0:
 		return
 	var hs: Array = secrets[i - 1]["heroes"]
+	_secret_foe = str(secrets[i - 1].get("foe", "soldat_infanterie"))
 	for k in 2:
 		for j in heroes.size():
 			if heroes[j]["id"] == hs[k]:

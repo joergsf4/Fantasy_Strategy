@@ -290,6 +290,31 @@ func _initialize() -> void:
 	await b._run_ability(o_hum, "tonikum", {"pos": Vector2i(5, 5), "tile": true})
 	check(not Status.has(o_rob, "treibstoff"), "zweites Mal im selben Kampf: kein Treibstoff mehr")
 
+	# --- Oiroke no Jutsu: Kage-Schwestern schleichen sich von hinten an Maja heran
+	clear()
+	scenes.clear()
+	var oi_maja := spawn("maja", "e", Vector2i(5, 5))
+	oi_maja["dir"] = Vector2i(1, 0)                           # Maja blickt nach rechts, die Schwestern stehen links hinter ihr
+	var oi_nin := spawn("ninjas", "p", Vector2i(4, 5))
+	var oi_hero := spawn("ritter", "p", Vector2i(5, 6))       # Ziel fuer Majas Angriff
+	oi_maja["hp"] = oi_maja["maxhp"]
+	check(not b._foe_secret_available(oi_nin, "hinterhalt", oi_nin["pos"]).is_empty(), "Menue bietet das Jutsu an (Maja von hinten)")
+	var oi_hp: int = oi_maja["hp"]
+	await b._run_ability(oi_nin, "hinterhalt", oi_maja)
+	check(Status.has(oi_maja, "verwirrt") and int(Status.get_status(oi_maja, "verwirrt")["turns"]) == 3 and oi_maja["hp"] == oi_hp, "Maja ist 3 Runden verwirrt, ohne Schaden")
+	check(scenes == ["oiroke_no_jutsu"] and oi_nin["cd"].get("hinterhalt", 0) > 0, "Szene beim ersten Mal, Abklingzeit des Hinterhalts")
+	check((oi_nin["sprite"] as Sprite3D).texture == b._portrait_tex("ninjas"), "die Schwestern sind wieder normal")
+	var hero_hp: int = oi_hero["hp"]
+	await b._enemy_move(oi_maja)
+	check(oi_hero["hp"] == hero_hp, "verwirrte Maja greift nicht an")
+	Status.remove(oi_maja, "verwirrt")
+	check(b._foe_secret_available(oi_nin, "hinterhalt", oi_nin["pos"]).is_empty(), "pro Level nur einmal: Menue zeigt wieder den Hinterhalt")
+	clear()
+	var oi2_maja := spawn("maja", "e", Vector2i(5, 5))
+	oi2_maja["dir"] = Vector2i(-1, 0)                         # Schwestern stehen vor ihr: kein Hinterhalt moeglich
+	var oi2_nin := spawn("ninjas", "p", Vector2i(4, 5))
+	check(b._foe_secret_available(oi2_nin, "hinterhalt", oi2_nin["pos"]).is_empty(), "nicht von hinten: kein Jutsu im Menue")
+
 	# --- Heiliges Licht: Mira faellt, Wendy steht hoechstens 2 Felder entfernt
 	clear()
 	scenes.clear()

@@ -1573,8 +1573,14 @@ func _enter_action(show_abilities := false, show_items := false) -> void:
 			var ab: Dictionary = abilities[id]
 			var cd: int = sel["cd"].get(id, 0)
 			var ok := cd == 0 and (not _ab_targets(sel, id, sel["pos"]).is_empty() or not _obj_targets(sel, id, sel["pos"]).is_empty() or not _ab_tiles(sel, id, sel["pos"]).is_empty())
-			var b := _menu_button(box, ab["name"] + (" (%d)" % cd if cd > 0 else ""), ok, func() -> void: _begin_ability(id))
-			b.mouse_entered.connect(func() -> void: _info.text = ab["text"])
+			var label: String = ab["name"]
+			var info: String = ab["text"]
+			var jsec := _foe_secret_available(sel, id, sel["pos"])      # Geheimnis: statt des Hinterhalts das Jutsu anbieten
+			if not jsec.is_empty():
+				label = str(jsec["effects"].get("menu_name", label))
+				info = str(jsec["effects"].get("menu_text", info))
+			var b := _menu_button(box, label + (" (%d)" % cd if cd > 0 else ""), ok, func() -> void: _begin_ability(id))
+			b.mouse_entered.connect(func() -> void: _info.text = info)
 		_menu_button(box, "Zurück", true, func() -> void: _enter_action())
 	elif show_items:
 		for id: String in Items.consumables():
@@ -3760,6 +3766,71 @@ func _object_apply(u: Dictionary, sec: Dictionary, target: Dictionary) -> void:
 	await get_tree().create_timer(0.3).timeout
 
 
+## Geheimnis "Oiroke no Jutsu" (Typ ability_on_foe): Greifen die Kage-Schwestern Maja mit dem Hinterhalt an, gibt es statt des Hinterhalts das Jutsu.
+## Rauchwolke, die Schwestern werden zu attraktiven Ninja-Brueder (nur ein Gag), Polarlicht-Auftritt, Maja ist 3 Runden verwirrt und greift nicht an.
+## Danach (beim ersten Mal) die Szene, dann Rauch und die Schwestern sind wieder normal.
+func _foe_secret(u: Dictionary, id: String, target: Dictionary) -> Dictionary:
+	if not units.has(u) or u["team"] != "p" or not target.has("uid") or target.get("team", "p") == "p":
+		return {}
+	return Secrets.find_foe(u["id"], id, target["id"])
+
+
+## Bietet dieser Held in dieser Lage das Jutsu im Menue an (ein gueltiges Hinterhalt-Ziel ist der Gegner des Geheimnisses)?
+func _foe_secret_available(u: Dictionary, id: String, pos: Vector2i) -> Dictionary:
+	if u["team"] != "p":
+		return {}
+	for o in _ab_targets(u, id, pos):
+		var sec := Secrets.find_foe(u["id"], id, o["id"])
+		if not sec.is_empty():
+			return sec
+	return {}
+
+
+func _swap_token(u: Dictionary, token_id: String) -> void:
+	var sp := u["sprite"] as Sprite3D
+	var tex := _portrait_tex(token_id)
+	sp.texture = tex
+	sp.pixel_size = float(unit_defs[u["id"]].get("size", 1.35)) / maxf(tex.get_width(), tex.get_height())
+	sp.offset = Vector2(0, tex.get_height() / 2.0)
+
+
+func _run_oiroke(u: Dictionary, id: String, target: Dictionary, sec: Dictionary) -> void:
+	Secrets.fire(sec["id"])
+	var ab: Dictionary = abilities[id]
+	var ef: Dictionary = sec["effects"]
+	u["st"]["abs"] += 1
+	Items.start_cooldown(u, id, int(ab["cd"]))
+	_actor = u
+	_note("ability", {"id": id, "by": u})
+	_turn_towards(u, target["pos"])
+	_banner(str(ef.get("menu_name", "Oiroke no Jutsu")))
+	await get_tree().create_timer(0.35).timeout
+	await fx.ab._smoke_bomb(u)                                   # Rauchwolke, darin der Wechsel
+	var token := str(ef.get("token", "ninja_brueder"))
+	_swap_token(u, token)
+	Sfx.play("chime", -2.0, 1.4)
+	fx.particles("fx_star", fx.chest(u, 0.7), 18, 3.0, 0.2, 0.9, 1.0, Color(1.0, 0.85, 0.95), true, 180.0)
+	await get_tree().create_timer(0.5).timeout
+	var ci: Dictionary = ef.get("cutin", {})
+	if not ci.is_empty():
+		await _super_cutin(u, {}, str(ci.get("title", sec["name"])), str(ci.get("sub", "")))
+		_super_music_stop()
+	var st: Dictionary = ef.get("status", {"id": "verwirrt", "turns": 3})
+	if units.has(target):
+		Status.add(target, str(st["id"]), int(st.get("turns", 3)))
+		_refresh_unit(target)
+		fx.particles("fx_star", fx.chest(target, 1.0), 12, 2.0, 0.18, 1.0, -0.5, Color(0.85, 0.6, 1.0), true, 160.0)
+		await _popup(target, "Verwirrt!", Color(0.85, 0.65, 1.0))
+	await get_tree().create_timer(0.5).timeout
+	if not secrets_seen.has(sec["id"]) and secret_runner.is_valid():
+		secrets_seen.append(sec["id"])
+		await secret_runner.call(sec)
+	await fx.ab._smoke_bomb(u)                                   # Rauch: die Schwestern sind wieder normal
+	_swap_token(u, u["id"])
+	await get_tree().create_timer(0.3).timeout
+	_refresh_unit(u)
+
+
 ## Geheimnis "Heiliges Licht" (Typ ally_fallen_near): Faellt die Figur "unit" (Leben 0, schon aus `units` entfernt), waehrend "by" hoechstens "dist" Felder
 ## entfernt steht, wird "by" von heiligem Licht erfuellt, schwebt auf, und "unit" kehrt mit einem Anteil der Leben zurueck. Rueckgabe: true, wenn wiederbelebt.
 func _revive_secret(def: Dictionary) -> bool:
@@ -4294,6 +4365,10 @@ func _effect_targets(u: Dictionary, ab: Dictionary, target: Dictionary, to: Stri
 
 func _run_ability(u: Dictionary, id: String, target: Dictionary) -> void:
 	var ab: Dictionary = abilities[id]
+	var foe_sec := _foe_secret(u, id, target)
+	if not foe_sec.is_empty():
+		await _run_oiroke(u, id, target, foe_sec)
+		return
 	if ab["target"] == "enemy" and target.get("team", "") == u["team"] and target != u:
 		await _run_secret(u, id, target)
 		return
@@ -4786,6 +4861,19 @@ func _flee_scared(e: Dictionary, reach_e: Dictionary, occupied: Dictionary) -> v
 	await _flush_events()
 
 
+## Verwirrte Gegner stolpern auf ein zufaelliges erreichbares Feld und greifen nicht an.
+func _wander_confused(e: Dictionary, reach_e: Dictionary, occupied: Dictionary) -> void:
+	var tiles: Array[Vector2i] = []
+	for t: Vector2i in reach_e:
+		if not occupied.has(t) or t == e["pos"]:
+			tiles.append(t)
+	reach = reach_e
+	await _popup(e, "Verwirrt …", Color(0.85, 0.65, 1.0))
+	if not tiles.is_empty():
+		await _walk(e, tiles[rng.randi() % tiles.size()])
+	await _flush_events()
+
+
 ## Normale Gegner (Soldaten, Bienen) sterben beim Hinterhalt sofort; Namenstraeger und Bosse nicht.
 func _is_normal(o: Dictionary) -> bool:
 	var tags: Array = o["tags"]
@@ -4908,6 +4996,9 @@ func _enemy_move(e: Dictionary) -> void:
 				occupied[ft] = true      # kein Ziel-/Standfeld im Feuer
 	if Status.has(e, "angst"):
 		await _flee_scared(e, reach_e, occupied)
+		return
+	if Status.has(e, "verwirrt"):          # Geheimnis Oiroke no Jutsu: sie taumelt herum und greift nicht an
+		await _wander_confused(e, reach_e, occupied)
 		return
 	if e["heal"] > 0 and await _enemy_heal(e, reach_e, occupied):
 		return

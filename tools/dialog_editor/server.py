@@ -289,7 +289,8 @@ def secrets() -> dict:
                           "hero": bool(v.get("hero"))}
                       for k, v in units.items() if isinstance(v, dict) and "name" in v},
             "abilities": {k: v["name"] for k, v in abilities.items()},
-            "portraits": portraits, "fly_sprites": FLY_SPRITES}
+            "portraits": portraits, "fly_sprites": FLY_SPRITES,
+            "tokens": sorted(p.stem for p in (ASSETS / "tokens").glob("*.png"))}
 
 
 def _check_cutin(name: str, ef: dict, units: dict) -> dict:
@@ -336,11 +337,11 @@ def save_secrets(body: dict) -> None:
         if sec.get("trigger"):
             t = sec["trigger"]
             ttype = t.get("type", "ability_on_ally")
-            if ttype not in ("ability_on_ally", "beam_via_ally", "throw_ally", "ability_near_ally", "hit_near_ally", "ability_near_object", "ability_area_ally", "hp_below_near", "ally_fallen_near"):
+            if ttype not in ("ability_on_ally", "beam_via_ally", "throw_ally", "ability_near_ally", "hit_near_ally", "ability_near_object", "ability_area_ally", "hp_below_near", "ally_fallen_near", "ability_on_foe"):
                 raise ValueError(f"{name}: unbekannter Ausloeser-Typ '{ttype}'")
             beam = ttype == "beam_via_ally"
             by = t["by"]
-            on = t["via"] if beam else (t["owner"] if ttype == "ability_near_object" else (t["unit"] if ttype in ("hp_below_near", "ally_fallen_near") else t["ally"] if ttype == "ability_area_ally" else (t["near"] if ttype in ("ability_near_ally", "hit_near_ally") else t["target"])))
+            on = t["via"] if beam else (t["owner"] if ttype == "ability_near_object" else (t["foe"] if ttype == "ability_on_foe" else t["unit"] if ttype in ("hp_below_near", "ally_fallen_near") else t["ally"] if ttype == "ability_area_ally" else (t["near"] if ttype in ("ability_near_ally", "hit_near_ally") else t["target"])))
             if by not in units or "name" not in units[by] or on not in units or "name" not in units[on]:
                 raise ValueError(f"{name}: unbekannte Figur im Ausloeser")
             if by == on:
@@ -381,6 +382,31 @@ def save_secrets(body: dict) -> None:
                                 or not isinstance(turns, int) or isinstance(turns, bool) or not 1 <= turns <= 9:
                             raise ValueError(f"{name}: Status braucht eine Kennung, Schadensminderung 0 bis 90 Prozent und 1 bis 9 Runden")
                         new_effects["status"] = {"id": sid_, "turns": turns, "reduce_pct": red}
+            elif ttype == "ability_on_foe":
+                ab = t["ability"]
+                if ab not in units[by].get("abilities", []) or abilities.get(ab, {}).get("target") != "enemy":
+                    raise ValueError(f"{name}: {units[by]['name']} hat keine Gegner-Faehigkeit '{ab}'")
+                if units[on].get("hero"):
+                    raise ValueError(f"{name}: der Gegner des Geheimnisses darf kein Held sein")
+                if (by, ab, on) in triples:
+                    raise ValueError(f"{name}: dieser Ausloeser kommt zweimal vor")
+                triples.add((by, ab, on))
+                ef = sec["effects"]
+                st = ef.get("status") or {}
+                sid_, turns = str(st.get("id", "")), st.get("turns", 3)
+                if not re.match(r"^[a-z_]{1,20}$", sid_) or not isinstance(turns, int) or isinstance(turns, bool) or not 1 <= turns <= 9:
+                    raise ValueError(f"{name}: Status braucht eine Kennung und 1 bis 9 Runden")
+                token = str(ef.get("token", ""))
+                if token and not (ASSETS / "tokens" / f"{token}.png").exists():
+                    raise ValueError(f"{name}: unbekanntes Karten-Bild '{token}'")
+                mname, mtext = str(ef.get("menu_name", "")).strip(), str(ef.get("menu_text", "")).strip()
+                if len(mname) > 30 or len(mtext) > 160:
+                    raise ValueError(f"{name}: Menuename hoechstens 30, Menuetext hoechstens 160 Zeichen")
+                new_trigger = {"type": "ability_on_foe", "by": by, "ability": ab, "foe": on}
+                new_effects = {"status": {"id": sid_, "turns": turns}}
+                for k, v in (("token", token), ("menu_name", mname), ("menu_text", mtext)):
+                    if v:
+                        new_effects[k] = v
             elif ttype == "ally_fallen_near":
                 dist = t.get("dist", 2)
                 if not isinstance(dist, int) or isinstance(dist, bool) or not 1 <= dist <= 4:

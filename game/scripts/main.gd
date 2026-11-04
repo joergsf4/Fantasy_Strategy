@@ -169,11 +169,7 @@ func _choose_level() -> Array:
 	for hid: String in units:
 		if units[hid].get("hero", false):
 			ls.lab_heroes.append({"id": hid, "name": units[hid]["name"]})
-	for sec: Dictionary in Secrets.all():
-		var t: Dictionary = sec["trigger"]
-		var other: String = Secrets.partner(t)
-		if units.has(other) and units.has(t["by"]):
-			ls.lab_secrets.append({"id": sec["id"], "name": sec["name"], "heroes": [t["by"], other]})
+	ls.lab_secrets = _lab_secret_list()
 	ls.lab_foes = [{"id": "soldat_infanterie", "name": "3 Büttel"}]
 	for fid in ["wolf", "alphawolf", "wart", "cyborg_wart", "kugelblitz", "fuerst", "oskar", "maja", "xiulan", "frischlinge", "bienenmaedchen", "panzer"]:
 		if units.has(fid):
@@ -190,11 +186,25 @@ func _choose_level() -> Array:
 	return res
 
 
+## Aktive Geheimnisse fuer das Testlabor: {id, name, heroes: [a, b], foe, foe_name}. Bei Geheimnissen gegen einen bestimmten Gegner (Maja) steht der Gegner in der Arena.
+func _lab_secret_list() -> Array:
+	var out: Array = []
+	for sec: Dictionary in Secrets.all():
+		var t: Dictionary = sec["trigger"]
+		var other: String = Secrets.partner(t)
+		if not (units.has(other) and units.has(t["by"])):
+			continue
+		var foe_secret: bool = t.get("type", "") == "ability_on_foe"
+		out.append({"id": sec["id"], "name": sec["name"], "heroes": [t["by"], t["by"] if foe_secret else other],
+			"foe": other if foe_secret else "soldat_infanterie", "foe_name": str(units[other]["name"]) if foe_secret else ""})
+	return out
+
+
 ## Testlabor: springt direkt zu einer Stelle (Arena mit gewaehltem Helden und Gegner, Aufstiegs-, Lager-, Belohnungs- oder Reisebild).
 func _lab_run(kind: String, hero: String, foe: String, maxed: bool) -> void:
 	var hero_ids: Array = hero.split(",", false)
 	if kind == "geheimnis":
-		await _lab_secret_arena(hero_ids)
+		await _lab_secret_arena(hero_ids, foe)
 		return
 	var lab_party := Party.new_game()
 	lab_party.earned = 21 if maxed else 3                 # Stufe 22 (7 Punkte) bzw. Stufe 4
@@ -267,7 +277,7 @@ func _lab_run(kind: String, hero: String, foe: String, maxed: bool) -> void:
 
 
 ## Geheimnis-Arena: die gewaehlten Helden stehen nebeneinander, drei Buettel in Reichweite. Geheimnisse laufen wie im Kampf (Szene beim ersten Mal).
-func _lab_secret_arena(ids: Array) -> void:
+func _lab_secret_arena(ids: Array, foe := "soldat_infanterie") -> void:
 	if ids.is_empty():
 		return
 	var lab_party := Party.new_game()
@@ -279,6 +289,9 @@ func _lab_secret_arena(ids: Array) -> void:
 		pl.append({"id": ids[i], "pos": spots[i]})
 	m["players"] = pl
 	m["enemies"] = [{"id": "soldat_infanterie", "pos": [7, 6]}, {"id": "soldat_infanterie", "pos": [7, 8]}, {"id": "soldat_infanterie", "pos": [8, 7]}]
+	if foe != "soldat_infanterie":
+		m["enemies"][2] = {"id": foe, "pos": [8, 7]}      # der Gegner des Geheimnisses (z. B. Maja) statt eines Buettels
+		m["no_flee"] = [foe]
 	m["triggers"] = []
 	m["goals"] = [{"type": "rout"}]
 	stage.map_data = m
@@ -930,6 +943,34 @@ func _screenshot_mode() -> void:
 		get_viewport().get_texture().get_image().save_png(OS.get_environment("SHOT_OUT"))
 		get_tree().quit()
 		return
+	if mode == "oiroke":   # Geheimnis Oiroke no Jutsu im Kampf: SHOT_DELAY = Sekunden nach dem Start der Faehigkeit
+		stage = Stage.new()
+		stage.setup(map, units)
+		add_child(stage)
+		stage.start_battle()
+		await get_tree().process_frame
+		var ob := stage.battle
+		ob.secret_runner = func(_sec: Dictionary) -> void: await get_tree().create_timer(0.1).timeout
+		ob.super_music = func(_on: bool) -> void: pass
+		for ou in ob.units.duplicate():
+			(ou["node"] as Node3D).queue_free()
+		ob.units.clear()
+		ob._enter_close_view()
+		ob._spawn("maja", "e", Vector2i(5, 7))
+		var omaja: Dictionary = ob.units.back()
+		omaja["dir"] = Vector2i(1, 0)
+		ob._spawn("ninjas", "p", Vector2i(4, 7))
+		var onin: Dictionary = ob.units.back()
+		ob._spawn("ritter", "p", Vector2i(4, 8))
+		var omid := ob.to_world(Vector2i(5, 7))
+		ob.cam.fov = 36.0
+		ob.cam.position = omid + Vector3(0.0, 3.0, 4.2)
+		ob.cam.look_at(omid + Vector3(0, 0.7, 0))
+		ob._run_ability(onin, "hinterhalt", omaja)
+		await get_tree().create_timer(float(OS.get_environment("SHOT_DELAY")) if OS.get_environment("SHOT_DELAY") != "" else 2.0).timeout
+		get_viewport().get_texture().get_image().save_png(OS.get_environment("SHOT_OUT"))
+		get_tree().quit()
+		return
 	if mode == "testlab":   # das Testlabor-Menue selbst (Layout pruefen)
 		stage = Stage.new()
 		stage.setup(map, units)
@@ -939,10 +980,7 @@ func _screenshot_mode() -> void:
 		for hid: String in units:
 			if units[hid].get("hero", false):
 				tl_heroes.append({"id": hid, "name": units[hid]["name"]})
-		var tl_secs: Array = []
-		for sec: Dictionary in Secrets.all():
-			var tt: Dictionary = sec["trigger"]
-			tl_secs.append({"id": sec["id"], "name": sec["name"], "heroes": [tt["by"], Secrets.partner(tt)]})
+		var tl_secs: Array = _lab_secret_list()
 		var tl_layer := CanvasLayer.new()
 		tl_layer.layer = 6
 		add_child(tl_layer)

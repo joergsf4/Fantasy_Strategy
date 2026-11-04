@@ -102,7 +102,7 @@ static func find_protect(by: String, unit: String) -> Dictionary:
 
 ## Die zweite beteiligte Figur eines Geheimnisses (je nach Typ target, via, near, owner, ally oder unit).
 static func partner(trigger: Dictionary) -> String:
-	for k in ["target", "via", "near", "owner", "ally", "unit"]:
+	for k in ["target", "via", "near", "owner", "ally", "unit", "foe"]:
 		if trigger.has(k):
 			return str(trigger[k])
 	return ""
@@ -116,6 +116,15 @@ static func find_revives(unit: String) -> Array:
 		if t.get("type", "") == "ally_fallen_near" and t["unit"] == unit:
 			out.append(s)
 	return out
+
+
+## Das Geheimnis, bei dem "by" mit "ability" den GEGNER "foe" angreift (Typ ability_on_foe), oder {}.
+static func find_foe(by: String, ability: String, foe: String) -> Dictionary:
+	for s: Dictionary in all():
+		var t: Dictionary = s["trigger"]
+		if t.get("type", "") == "ability_on_foe" and t["by"] == by and t["ability"] == ability and t["foe"] == foe:
+			return s
+	return {}
 
 
 static func by_id(id: String) -> Dictionary:

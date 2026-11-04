@@ -19,7 +19,8 @@ func _initialize() -> void:
 	var secs: Array = []
 	for s: Dictionary in Secrets.all():
 		var t: Dictionary = s["trigger"]
-		secs.append({"id": s["id"], "name": s["name"], "heroes": [t["by"], Secrets.partner(t)]})
+		var foe_s: bool = t.get("type", "") == "ability_on_foe"
+		secs.append({"id": s["id"], "name": s["name"], "heroes": [t["by"], t["by"] if foe_s else Secrets.partner(t)], "foe": Secrets.partner(t) if foe_s else "soldat_infanterie", "foe_name": defs[Secrets.partner(t)]["name"] if foe_s else ""})
 	for sc: Dictionary in secs:
 		check(sc["heroes"][1] != "" and defs.has(sc["heroes"][1]), "Geheimnis %s hat einen zweiten Helden im Labor" % sc["id"])
 	check(secs.size() == Secrets.all().size() and secs.size() >= 8, "alle aktiven Geheimnisse sind im Labor waehlbar: %d" % secs.size())

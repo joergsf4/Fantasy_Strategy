@@ -305,6 +305,20 @@ class EditorTest(unittest.TestCase):
             with self.assertRaises(ValueError):
                 server.save_secrets({"secrets": sl})
 
+    def test_geheimnis_ausloeser_gegen_bestimmten_gegner(self):
+        import copy
+        d = server.secrets()
+        oi = next(x for x in d["secrets"] if x["id"] == "oiroke_no_jutsu")
+        self.assertEqual((oi["trigger"]["by"], oi["trigger"]["ability"], oi["trigger"]["foe"], oi["effects"]["status"]["turns"]), ("ninjas", "hinterhalt", "maja", 3))
+        self.assertIn("ninja_brueder", d["tokens"])
+        server.save_secrets({"secrets": d["secrets"]})
+        for mutate in (lambda s: s["trigger"].update(foe="robo"), lambda s: s["effects"]["status"].update(turns=0), lambda s: s["effects"].update(token="gibtsnicht"),
+                       lambda s: s["trigger"].update(ability="versteck")):
+            sl = copy.deepcopy(d["secrets"])
+            mutate(next(x for x in sl if x["id"] == "oiroke_no_jutsu"))
+            with self.assertRaises(ValueError):
+                server.save_secrets({"secrets": sl})
+
     def test_geheimnis_treffer_neben_verbuendetem(self):
         import copy
         d = server.secrets()
