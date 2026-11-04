@@ -603,6 +603,114 @@ def e16_curve():
     print("docs/balance_kurve.md geschrieben")
 
 
+def story_fixed(c, players):
+    """Feste Plaetze einer Mission (wie Mission.dialogue_ids): Figuren aus Story-Gespraechen, die auf der Karte stehen."""
+    st = json.loads((GAME / "data" / f"story_ch{c}.json").read_text())
+    mi = json.loads((GAME / "data" / "missions" / f"ch{c}.json").read_text())
+    ids = set()
+
+    def add(ls):
+        for l in ls:
+            if l.get("story"):
+                ids.update(x for x in (l.get("left"), l.get("right"), l.get("speaker")) if x)
+    add(st["intro"]); add(st["outro"])
+    for t in mi["triggers"]:
+        for step in t["do"]:
+            add(step.get("dialogue", []))
+    for v in (mi.get("flee") or {}).values():
+        add(v)
+    return [p for p in players if p in ids]
+
+
+def e17_squads():
+    """Gruppenvielfalt: je Mission viele zufaellige, regelkonforme Gruppen (feste Story-Plaetze, Rest aus allen bis dahin bekannten Helden)
+    mit den erwarteten Talentpunkten und der erwarteten Ausruestung gegen die Gegner der Karte (Faktoren aus progression.json).
+    Ergebnis: Siegquote ueber alle Gruppen, Anteil schwacher Gruppen, schlechteste Gruppen, Beitrag jedes Helden."""
+    import random
+    print("E17: Gruppenvielfalt je Mission")
+    prog = json.loads((GAME / "data" / "progression.json").read_text())["missions"]
+    units = json.loads((GAME / "data" / "units.json").read_text())
+    jm = lambda d: d.get("from", d.get("intro", 9999))
+    missions = [1, 3, 5, 6, 7, 8, 9, 12, 14, 15, 16, 17]      # Missionen, die der Simulator abbilden kann (2, 4, 13 haben Sonderziele)
+    squads_per, fights = 60, 16
+    cells, meta = [], {}
+    for c in missions:
+        mp = json.loads((GAME / "data" / f"map_ch{c}.json").read_text())
+        base = [p["id"] for p in mp["players"]]
+        foes = [e["id"] for e in mp["enemies"]]
+        pr = prog[f"ch{c}"]
+        fixed = story_fixed(c, base)
+        if json.loads((GAME / "data" / "missions" / f"ch{c}.json").read_text()).get("fixed_squad"):
+            fixed = base
+        pool = [h for h, u in units.items() if u.get("hero") and not u.get("recruit_only") and h != "claude" and jm(u) <= c]
+        rnd = random.Random(1700 + c)
+        seen, squads = set(), []
+        free = [h for h in pool if h not in fixed]
+        k = len(base) - len(fixed)
+        possible = 1
+        for i in range(k):
+            possible = possible * (len(free) - i) // (i + 1)
+        want = min(squads_per, possible)
+        while len(squads) < want:
+            pick = tuple(sorted(rnd.sample(free, k)))
+            if pick not in seen:
+                seen.add(pick)
+                squads.append(fixed + list(pick))
+        equip = {h: gear_for(units[h], pr["gear_tier"]) for h in pool} if c > 1 else {}
+        meta[c] = {"squads": squads, "fixed": fixed, "pool": pool, "pr": pr}
+        for i, sq in enumerate(squads):
+            cells.append({"name": f"ch{c}|{i}", "n": fights, "seed": 1700000 + c * 1000, "map": f"ch{c}", "party": {"fixed": sq}, "enemy": {"fixed": foes},
+                          "e_mods": {"hp": pr["enemy_hp"], "atk": pr["enemy_atk"]}, "points": pr["points"], "bridge_turn": 4 if c == 12 else -1,
+                          "loadout": {"equip_map": equip, "inventory": {"heiltrank": 2, "gegengift": 1, "aether": 1}}})
+    res = run_cells(cells)
+    names = {k: v["name"] for k, v in units.items()}
+    L = ["", "## 16. Gruppenvielfalt je Mission (E17)\n",
+         "`python3 tools/balance.py e17`. Je Mission bis zu 60 zufällige, regelkonforme Gruppen: die **festen Story-Plätze** bleiben, der Rest kommt aus allen bis dahin bekannten Helden. Jede Gruppe kämpft 16-mal mit den erwarteten **Talentpunkten** und der erwarteten **Ausrüstung** gegen die Gegner der Karte (Faktoren aus `progression.json`). Gemessen mit der Simulations-KI; Sonderziele (Tor in Mission 2, Geisel in 4, Kinder befreien in 13, Feuer in 14, Wolfsangst in 17) kennt sie nicht, dort zählt „alle Gegner besiegt“. Nicht gemessen: Missionen 2, 4, 11, 13.\n",
+         "| Mission | feste Plätze | Gruppen | Ziel | Ø Siegquote | schlechteste 10 % der Gruppen | schlechteste Gruppe | Gruppen unter Ziel−15 % |", "|---|---|--:|--:|--:|--:|--:|--:|"]
+    heroline = {}
+    problems = []
+    for c in missions:
+        m = meta[c]
+        rates = []
+        for i, sq in enumerate(m["squads"]):
+            r = res[f"ch{c}|{i}"]
+            rates.append((r["wins"] / r["n"], sq, i))
+        vals = sorted(v for v, _, _ in rates)
+        avg = sum(vals) / len(vals)
+        low10 = sum(vals[:max(1, len(vals) // 10)]) / max(1, len(vals) // 10)
+        tgt = m["pr"]["target_win"]
+        under = sum(1 for v in vals if v < tgt - 0.15)
+        L.append(f"| {c} | {', '.join(names[x] for x in m['fixed'])} | {len(vals)} | {tgt:.0%} | {avg:.0%} | {low10:.0%} | {vals[0]:.0%} | {under} ({under / len(vals):.0%}) |")
+        print(f"  ch{c}: Ø {avg:.0%}  schlechteste 10% {low10:.0%}  schlechteste {vals[0]:.0%}  unter Ziel-15%: {under}/{len(vals)}  (Ziel {tgt:.0%})")
+        # Beitrag je Held: Siegquote der Gruppen mit ihm minus Ø
+        per = {}
+        for v, sq, _ in rates:
+            for h in sq:
+                per.setdefault(h, []).append(v)
+        heroline[c] = {h: (sum(v) / len(v) - avg, len(v)) for h, v in per.items()}
+        worst = sorted(rates)[:3]
+        problems.append((c, [(v, [names[x] for x in sq]) for v, sq, _ in worst]))
+    L += ["", "### Schlechteste Gruppen je Mission\n"]
+    for c, w in problems:
+        L.append(f"- **Mission {c}:** " + "; ".join(f"{v:.0%}: {', '.join(g)}" for v, g in w))
+    L += ["", "### Beitrag der Helden (Siegquote der Gruppen mit dem Helden minus Durchschnitt, in Prozentpunkten)\n"]
+    allh = sorted({h for d in heroline.values() for h in d}, key=lambda h: names[h])
+    L.append("| Held | " + " | ".join(f"M{c}" for c in missions) + " |")
+    L.append("|---|" + "--:|" * len(missions))
+    for h in allh:
+        row = []
+        for c in missions:
+            if h in heroline[c]:
+                d, n = heroline[c][h]
+                row.append(f"{d * 100:+.0f}" if n >= 8 else "–")
+            else:
+                row.append("")
+        L.append(f"| {names[h]} | " + " | ".join(row) + " |")
+    (ROOT / "docs" / "balance_missionsgruppen.md").write_text("\n".join(L) + "\n")
+    save("e17", {"missions": missions})
+    print("docs/balance_missionsgruppen.md geschrieben")
+
+
 def e7_fire():
     """Mission 3 (Feuer): Siegquote und gerettete Haeuser mit/ohne Loeschen, mit/ohne Brunhilde, bei steigender Gegnerstaerke."""
     print("E7: Mission 3, Feuer und Loeschen")
@@ -1106,7 +1214,7 @@ def report():
 
 
 STEPS = {"calib": calib, "e0": e0_ratings, "e1": e1_contribution, "e2": e2_ablation, "e3": e3_difficulty,
-         "e3base": lambda: e3_difficulty(False), "e4": e4_power_ratio, "e5": e5_items, "e6": e6_defend, "e7": e7_fire, "e8": e8_bees, "e9": e9_harbor, "e10": e10_wait, "e11": e11_desert, "e12": e12_oasis, "e13": e13_river, "e14": e14_matrix, "e16": e16_curve, "e15": e15_group, "report": report}
+         "e3base": lambda: e3_difficulty(False), "e4": e4_power_ratio, "e5": e5_items, "e6": e6_defend, "e7": e7_fire, "e8": e8_bees, "e9": e9_harbor, "e10": e10_wait, "e11": e11_desert, "e12": e12_oasis, "e13": e13_river, "e14": e14_matrix, "e16": e16_curve, "e17": e17_squads, "e15": e15_group, "report": report}
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
