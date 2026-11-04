@@ -310,12 +310,28 @@
        ]
       },
       {
-       "left": "",
+       "left": "hund",
        "right": "fuerst",
        "speaker": "fuerst",
-       "text": "Viel größer. Bitte lasst mich gehen, ich will heim zu meiner Mama!",
+       "text": "Viel größer. Und bringt bloß dieses blaue Ungetüm nicht näher! Ich habe es gesehen. Ich habe so eine Angst!",
        "right_expr": "weinerlich",
        "story": true
+      },
+      {
+       "left": "hund",
+       "right": "fuerst",
+       "speaker": "hund",
+       "left_expr": "wuetend",
+       "story": true,
+       "text": "Ungetüm?! Ich bin blau, ja, aber ein Ungetüm? Das ist eine Beleidigung! Ich bin ein Hund!"
+      },
+      {
+       "left": "hund",
+       "right": "fuerst",
+       "speaker": "fuerst",
+       "right_expr": "weinerlich",
+       "story": true,
+       "text": "Ähm… ja… genau… Bitte lasst mich gehen, ich will heim zu meiner Mama!"
       }
      ]
     },

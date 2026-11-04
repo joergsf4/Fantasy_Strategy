@@ -17,7 +17,9 @@ func _initialize() -> void:
 	var defs: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/units.json"))
 	var m := Mission.load_mission("ch9")
 	check(m["goals"][0]["type"] == "defeat" and (m["no_flee"] as Array).has("wart"), "Kapitel 9: Wart muss besiegt werden und flieht nicht")
-	for id: String in Mission.dialogue_ids("ch9"):
+	var f9 := Mission.dialogue_ids("ch9")
+	check(f9.has("hund") and f9.has("maedchen_baer"), "Mission 9: der Hundsfreund ist fest dabei (Hinweis auf das blaue Ungetuem, falsche Faehrte): %s" % [f9])
+	for id: String in f9:
 		check(defs.has(id), "Sprecher %s existiert" % id)
 	for e in ["fuerst_weinerlich", "frischlinge", "frischlinge_lachend", "frischlinge_wuetend", "wart_sterbend"]:
 		check(ResourceLoader.exists("res://assets/portraits/%s.png" % e), "Portrait %s" % e)
