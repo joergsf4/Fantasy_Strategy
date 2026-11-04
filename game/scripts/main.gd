@@ -186,6 +186,18 @@ func _choose_level() -> Array:
 	return res
 
 
+## Zwischensequenz im Schneesturm (Proof of Concept): Gruppe stapft einen Pass hinauf, alles in 3D mit den Chibi-Sprites.
+func _play_snow_trek() -> void:
+	stage.set_mode("dialog")
+	var layer := CanvasLayer.new()
+	layer.layer = 12
+	add_child(layer)
+	var trek := SnowTrek.new()
+	layer.add_child(trek)
+	await trek.finished
+	layer.queue_free()
+
+
 ## Aktive Geheimnisse fuer das Testlabor: {id, name, heroes: [a, b], foe, foe_name}. Bei Geheimnissen gegen einen bestimmten Gegner (Maja) steht der Gegner in der Arena.
 func _lab_secret_list() -> Array:
 	var out: Array = []
@@ -205,6 +217,9 @@ func _lab_run(kind: String, hero: String, foe: String, maxed: bool) -> void:
 	var hero_ids: Array = hero.split(",", false)
 	if kind == "geheimnis":
 		await _lab_secret_arena(hero_ids, foe)
+		return
+	if kind == "schneesturm":
+		await _play_snow_trek()
 		return
 	var lab_party := Party.new_game()
 	lab_party.earned = 21 if maxed else 3                 # Stufe 22 (7 Punkte) bzw. Stufe 4
@@ -968,6 +983,24 @@ func _screenshot_mode() -> void:
 		ob.cam.look_at(omid + Vector3(0, 0.7, 0))
 		ob._run_ability(onin, "hinterhalt", omaja)
 		await get_tree().create_timer(float(OS.get_environment("SHOT_DELAY")) if OS.get_environment("SHOT_DELAY") != "" else 2.0).timeout
+		get_viewport().get_texture().get_image().save_png(OS.get_environment("SHOT_OUT"))
+		get_tree().quit()
+		return
+	if mode == "snowtrek":   # Schneesturm-Zwischensequenz: tools/make_trailer.sh-aehnlich aufnehmen oder SHOT_DELAY (Sekunden) + SHOT_OUT fuer ein Bild
+		stage = Stage.new()
+		stage.setup(map, units)
+		add_child(stage)
+		stage.set_mode("dialog")
+		var strek := SnowTrek.new()
+		var sl2 := CanvasLayer.new()
+		sl2.layer = 12
+		add_child(sl2)
+		sl2.add_child(strek)
+		if OS.get_environment("SHOT_OUT") == "":      # Aufnahme: bis zum Ende laufen lassen
+			await strek.finished
+			get_tree().quit()
+			return
+		await get_tree().create_timer(float(OS.get_environment("SHOT_DELAY")) if OS.get_environment("SHOT_DELAY") != "" else 8.0).timeout
 		get_viewport().get_texture().get_image().save_png(OS.get_environment("SHOT_OUT"))
 		get_tree().quit()
 		return
