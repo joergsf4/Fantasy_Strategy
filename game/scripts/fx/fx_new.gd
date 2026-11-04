@@ -617,6 +617,8 @@ func status_holder(id: String, root: Node3D) -> bool:
 			var twi := root.create_tween().set_loops()
 			twi.tween_property(ist, "scale", ist.scale * 1.25, 0.5).set_trans(Tween.TRANS_SINE)
 			twi.tween_property(ist, "scale", ist.scale, 0.5).set_trans(Tween.TRANS_SINE)
+		"geschmiert":  # Oeltropfen als Symbol
+			fx.make_sprite("fx_bubble", Vector3.ZERO, 0.3, false, Color(1.0, 0.8, 0.25), 1, fx.icon_node(root))
 		"treibstoff":  # kleine Flasche als Symbol
 			fx.make_sprite("fx_flasche", Vector3.ZERO, 0.3, false, Color.WHITE, 1, fx.icon_node(root))
 		"satt":        # kleiner Knochen als Symbol (Restdauer-Zahl daneben)

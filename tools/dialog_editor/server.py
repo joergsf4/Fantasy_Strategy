@@ -406,11 +406,17 @@ def save_secrets(body: dict) -> None:
                 new_trigger = {"type": "ability_near_ally", "by": by, "ability": ab, "near": on}
                 if ef.get("boost"):       # Verstaerkung: die Figur in der Naehe bekommt einen Angriffsbonus
                     bo = ef["boost"]
-                    bid, pct, turns = str(bo.get("id", "")), bo.get("atk_pct", 0), bo.get("turns", 3)
-                    if not re.match(r"^[a-z_]{1,20}$", bid) or not isinstance(pct, int) or isinstance(pct, bool) or not 1 <= pct <= 200 \
-                            or not isinstance(turns, int) or isinstance(turns, bool) or not 1 <= turns <= 9:
-                        raise ValueError(f"{name}: Verstaerkung braucht eine Kennung, 1 bis 200 Prozent mehr Angriff und 1 bis 9 Runden")
-                    new_effects = {"boost": {"id": bid, "turns": turns, "atk_pct": pct}}
+                    bid, pct, turns, mv = str(bo.get("id", "")), bo.get("atk_pct", 0), bo.get("turns", 3), bo.get("move", 0)
+                    ints = all(isinstance(v, int) and not isinstance(v, bool) for v in (pct, turns, mv))
+                    if not re.match(r"^[a-z_]{1,20}$", bid) or not ints or not 0 <= pct <= 200 or not -3 <= mv <= 3 or not 1 <= turns <= 9 or (pct == 0 and mv == 0):
+                        raise ValueError(f"{name}: Verstaerkung braucht eine Kennung, 1 bis 9 Runden und mehr Angriff (bis 200 Prozent) und/oder Bewegung (-3 bis 3)")
+                    new_effects = {"boost": {"id": bid, "turns": turns}}
+                    if pct:
+                        new_effects["boost"]["atk_pct"] = pct
+                    if mv:
+                        new_effects["boost"]["move"] = mv
+                    if isinstance(bo.get("popup"), str) and bo["popup"].strip():
+                        new_effects["boost"]["popup"] = bo["popup"].strip()[:20]
                 else:
                     rid, rad = ef.get("react_ability", ""), ef.get("radius", 2)
                     if rid not in units[on].get("abilities", []) or not any(e.get("type") == "status" for e in abilities.get(rid, {}).get("effects", [])):

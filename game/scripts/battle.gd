@@ -3764,10 +3764,14 @@ func _run_boost(u: Dictionary, o: Dictionary, sec: Dictionary) -> void:
 			_super_music_stop()
 	_turn_towards(u, o["pos"])
 	await fx.fuel(u, o)
-	var mods := {"atk": maxi(1, roundi(float(o["atk"]) * float(bo.get("atk_pct", 50)) / 100.0))}
+	var mods := {}
+	if int(bo.get("atk_pct", 0)) > 0:
+		mods["atk"] = maxi(1, roundi(float(o["atk"]) * float(bo["atk_pct"]) / 100.0))
+	if int(bo.get("move", 0)) != 0:
+		mods["move"] = int(bo["move"])
 	Status.add(o, str(bo.get("id", "treibstoff")), int(bo.get("turns", 3)), mods)
 	_refresh_unit(o)
-	_popup(o, "Turbo!", Color(1.0, 0.7, 0.3))
+	_popup(o, str(bo.get("popup", "Turbo!")), Color(1.0, 0.7, 0.3))
 	await get_tree().create_timer(0.4).timeout
 
 

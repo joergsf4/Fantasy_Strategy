@@ -256,6 +256,25 @@ func _initialize() -> void:
 	await b._run_ability(hum2, "tonikum", {"pos": Vector2i(5, 5), "tile": true})
 	check(not Status.has(rob2, "treibstoff"), "Robina nicht daneben: kein Treibstoff")
 
+	# --- Schmiermittel: Wundersalbe neben Robina gibt ihr 4 Runden +1 Bewegung
+	clear()
+	scenes.clear()
+	var hum3 := spawn("quacksalber", "p", Vector2i(3, 5))
+	var rob3 := spawn("panzer", "p", Vector2i(3, 6))
+	var pat := spawn("ritter", "p", Vector2i(4, 5))
+	pat["hp"] = 5
+	await b._run_ability(hum3, "wundersalbe", pat)
+	var gs := Status.get_status(rob3, "geschmiert")
+	check(not gs.is_empty() and int(gs["turns"]) == 4 and int(gs["mods"]["move"]) == 1 and not gs["mods"].has("atk"), "Robina bekommt Schmiermittel: +1 Bewegung fuer 4 Runden")
+	check(pat["hp"] > 5 and scenes == ["schmiermittel"], "Wundersalbe heilt wie sonst, Szene beim ersten Mal")
+	clear()
+	var hum4 := spawn("quacksalber", "p", Vector2i(3, 5))
+	var rob4 := spawn("panzer", "p", Vector2i(3, 8))
+	var pat2 := spawn("ritter", "p", Vector2i(4, 5))
+	pat2["hp"] = 5
+	await b._run_ability(hum4, "wundersalbe", pat2)
+	check(not Status.has(rob4, "geschmiert"), "Robina nicht daneben: kein Schmiermittel")
+
 	# --- Inspiration von oben: Albrecht steht neben dem Gegner, den Lumis Sternschnuppe trifft
 	clear()
 	scenes.clear()

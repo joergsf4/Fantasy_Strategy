@@ -837,7 +837,7 @@ func sync_status(u: Dictionary) -> void:
 
 ## Kopf-Symbole (Betaeubt, Spott, Wut, Beflügelt, Übel) stehen in einer Reihe ueber dem Lebensbalken (feste Plaetze, hoechstens ICON_MAX,
 ## der Rest als "+N"), mit kleiner Restdauer. Ohne Ueberlappung mit Balken, Zahl und Meldungen.
-const ICON_IDS := ["stun", "taunt", "wut", "tempo", "uebel", "satt", "inspiriert", "treibstoff"]
+const ICON_IDS := ["stun", "taunt", "wut", "tempo", "uebel", "satt", "inspiriert", "treibstoff", "geschmiert"]
 const ICON_MAX := 3
 const ICON_STEP := 0.36
 

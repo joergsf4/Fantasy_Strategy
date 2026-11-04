@@ -826,7 +826,8 @@ function secTech(x, i) {
         <select data-f="nearmode" aria-label="Wirkungsart">${secOpts([["react", "Figur in der Nähe reagiert mit einer Fähigkeit"], ["boost", "Figur in der Nähe wird verstärkt (Angriffsbonus)"]], x.effects.boost ? "boost" : "react")}</select></div>
         ${x.effects.boost ? `<div class="row" style="margin-top:6px">${esc(uname(t.near))} bekommt Status <input type="text" data-f="bo_id" value="${esc(x.effects.boost.id || "treibstoff")}" style="width:110px" aria-label="Status-Kennung">
         für <input type="number" data-f="bo_turns" min="1" max="9" value="${+x.effects.boost.turns || 3}" aria-label="Runden"> Runden
-        · <input type="number" data-f="bo_atk" min="1" max="200" value="${+x.effects.boost.atk_pct || 50}" aria-label="Mehr Angriff in Prozent"> % mehr Angriff (50 % = ×1,5). Die Aktion von ${esc(uname(t.by))} bleibt unverändert.</div>`
+        · <input type="number" data-f="bo_atk" min="0" max="200" value="${+x.effects.boost.atk_pct || 0}" aria-label="Mehr Angriff in Prozent"> % mehr Angriff (50 % = ×1,5)
+        · <input type="number" data-f="bo_move" min="-3" max="3" value="${+x.effects.boost.move || 0}" aria-label="Mehr Bewegung"> Felder Bewegung. Die Aktion von ${esc(uname(t.by))} bleibt unverändert.</div>`
         : `<div class="row" style="margin-top:6px">${esc(uname(t.near))} wirkt <select data-f="react_ability" aria-label="Reaktion">${secOpts(reacts, x.effects.react_ability)}</select> auf alle Verbündeten im Umkreis
         <input type="number" data-f="radius" min="1" max="4" value="${+x.effects.radius || 2}" aria-label="Umkreis"> Felder.</div>
         <p class="hint" style="margin:6px 0 0">Die Fähigkeit muss eine Statuswirkung haben und bereit sein (keine Abklingzeit); danach hat ${esc(uname(t.near))} ihre normale Abklingzeit.</p>`}</div>`
@@ -972,7 +973,8 @@ document.addEventListener("input", e => {
   else if (f === "st_id") (x.effects.status ||= { id: "satt", turns: 3, reduce_pct: 25 }).id = el.value.trim();
   else if (f === "bo_id") x.effects.boost.id = el.value.replace(/[^a-z_]/g, "").slice(0, 20) || "treibstoff";
   else if (f === "bo_turns") x.effects.boost.turns = Math.max(1, Math.min(9, parseInt(el.value || "3", 10) || 3));
-  else if (f === "bo_atk") x.effects.boost.atk_pct = Math.max(1, Math.min(200, parseInt(el.value || "50", 10) || 50));
+  else if (f === "bo_atk") { const v = Math.max(0, Math.min(200, parseInt(el.value || "0", 10) || 0)); v ? x.effects.boost.atk_pct = v : delete x.effects.boost.atk_pct; }
+  else if (f === "bo_move") { const v = Math.max(-3, Math.min(3, parseInt(el.value || "0", 10) || 0)); v ? x.effects.boost.move = v : delete x.effects.boost.move; }
   else if (f === "st_atk") (x.effects.status ||= { id: "inspiriert", turns: 2, atk_pct: 25 }).atk_pct = Math.max(1, Math.min(200, parseInt(el.value || "25", 10) || 25));
   else if (f === "st_turns") (x.effects.status ||= { id: "satt", turns: 3, reduce_pct: 25 }).turns = Math.max(1, Math.min(9, parseInt(el.value || "3", 10) || 3));
   else if (f === "st_red") (x.effects.status ||= { id: "satt", turns: 3, reduce_pct: 25 }).reduce_pct = Math.max(0, Math.min(90, parseInt(el.value || "0", 10) || 0));
