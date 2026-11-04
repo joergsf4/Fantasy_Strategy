@@ -3666,10 +3666,10 @@ func _run_inspire(u: Dictionary, o: Dictionary, sec: Dictionary) -> void:
 		secrets_seen.append(sec["id"])
 		if secret_runner.is_valid():
 			await secret_runner.call(sec)
-		var ci: Dictionary = ef.get("cutin", {})
-		if not ci.is_empty():
-			await _super_cutin(o, {}, str(ci.get("title", sec["name"])), str(ci.get("sub", "")))
-			_super_music_stop()
+	var ci: Dictionary = ef.get("cutin", {})
+	if not ci.is_empty():
+		await _super_cutin(o, {}, str(ci.get("title", sec["name"])), str(ci.get("sub", "")))
+		_super_music_stop()
 	var st: Dictionary = ef["status"]
 	var mods := {"atk": maxi(1, roundi(float(o["atk"]) * float(st.get("atk_pct", 25)) / 100.0))}
 	await fx.inspire(o)
@@ -3725,11 +3725,10 @@ func _object_secret(u: Dictionary, id: String, target: Dictionary) -> Dictionary
 ## Szene und Auftritt des Geheimnisses (nur beim ersten Mal), vor dem Schuss.
 func _object_secret_intro(u: Dictionary, sec: Dictionary) -> void:
 	Secrets.fire(sec["id"])
-	if secrets_seen.has(sec["id"]):
-		return
-	secrets_seen.append(sec["id"])
-	if secret_runner.is_valid():
-		await secret_runner.call(sec)
+	if not secrets_seen.has(sec["id"]):
+		secrets_seen.append(sec["id"])
+		if secret_runner.is_valid():
+			await secret_runner.call(sec)
 	var ci: Dictionary = (sec["effects"] as Dictionary).get("cutin", {})
 	if not ci.is_empty():
 		await _super_cutin(u, {}, str(ci.get("title", sec["name"])), str(ci.get("sub", "")))
@@ -3788,10 +3787,10 @@ func _run_fury(_u: Dictionary, o: Dictionary, sec: Dictionary, fab: Dictionary, 
 		secrets_seen.append(sec["id"])
 		if secret_runner.is_valid():
 			await secret_runner.call(sec)
-		var ci: Dictionary = ef.get("cutin", {})
-		if not ci.is_empty():
-			await _super_cutin(o, {}, str(ci.get("title", sec["name"])), str(ci.get("sub", "")))
-			_super_music_stop()
+	var ci: Dictionary = ef.get("cutin", {})
+	if not ci.is_empty():
+		await _super_cutin(o, {}, str(ci.get("title", sec["name"])), str(ci.get("sub", "")))
+		_super_music_stop()
 	_actor = o
 	fx.flash_unit(o, Color(2.0, 0.6, 0.4), 0.5)
 	await fx.squash(o, 1.25, 0.8, 0.3)
@@ -3831,10 +3830,10 @@ func _widen_secret(u: Dictionary, id: String) -> Dictionary:
 			secrets_seen.append(sec["id"])
 			if secret_runner.is_valid():
 				await secret_runner.call(sec)
-			var ci: Dictionary = ef.get("cutin", {})
-			if not ci.is_empty():
-				await _super_cutin(o, {}, str(ci.get("title", sec["name"])), str(ci.get("sub", "")))
-				_super_music_stop()
+		var ci: Dictionary = ef.get("cutin", {})
+		if not ci.is_empty():
+			await _super_cutin(o, {}, str(ci.get("title", sec["name"])), str(ci.get("sub", "")))
+			_super_music_stop()
 		_widen_r = int(ef["enlarge"].get("radius", 2))
 		fx.spin_scale = 1.0 + 0.45 * float(_widen_r - 1)
 		_turn_towards(o, u["pos"])
@@ -3854,10 +3853,10 @@ func _run_boost(u: Dictionary, o: Dictionary, sec: Dictionary) -> void:
 		secrets_seen.append(sec["id"])
 		if secret_runner.is_valid():
 			await secret_runner.call(sec)
-		var ci: Dictionary = ef.get("cutin", {})
-		if not ci.is_empty():
-			await _super_cutin(o, {}, str(ci.get("title", sec["name"])), str(ci.get("sub", "")))
-			_super_music_stop()
+	var ci: Dictionary = ef.get("cutin", {})
+	if not ci.is_empty():
+		await _super_cutin(o, {}, str(ci.get("title", sec["name"])), str(ci.get("sub", "")))
+		_super_music_stop()
 	_turn_towards(u, o["pos"])
 	await fx.fuel(u, o)
 	var mods := {}
@@ -3883,10 +3882,10 @@ func _run_near(u: Dictionary, o: Dictionary, sec: Dictionary) -> void:
 		secrets_seen.append(sec["id"])
 		if secret_runner.is_valid():
 			await secret_runner.call(sec)
-		var ci: Dictionary = ef.get("cutin", {})
-		if not ci.is_empty():
-			await _super_cutin(o, {}, str(ci.get("title", sec["name"])), str(ci.get("sub", "")))
-			_super_music_stop()
+	var ci: Dictionary = ef.get("cutin", {})
+	if not ci.is_empty():
+		await _super_cutin(o, {}, str(ci.get("title", sec["name"])), str(ci.get("sub", "")))
+		_super_music_stop()
 	o["st"]["abs"] += 1
 	Items.start_cooldown(o, rid, int(rab["cd"]))
 	_actor = o
@@ -3916,10 +3915,10 @@ func _throw_with_rain(u: Dictionary, ally: Dictionary, dest: Vector2i, sec: Dict
 		secrets_seen.append(sec["id"])
 		if secret_runner.is_valid():
 			await secret_runner.call(sec)
-		var ci: Dictionary = ef.get("cutin", {})
-		if not ci.is_empty():
-			await _super_cutin(ally, {}, str(ci.get("title", sec["name"])), str(ci.get("sub", "")))
-			_super_music_stop()
+	var ci: Dictionary = ef.get("cutin", {})
+	if not ci.is_empty():
+		await _super_cutin(ally, {}, str(ci.get("title", sec["name"])), str(ci.get("sub", "")))
+		_super_music_stop()
 	var tiles := _area_tiles({"area": {"shape": "radius", "r": int(ef.get("radius", 2))}}, dest)
 	var victims: Array[Dictionary] = []
 	for o in units:
@@ -3957,10 +3956,10 @@ func _run_catch(u: Dictionary, via: Dictionary, sec: Dictionary) -> void:
 		secrets_seen.append(sec["id"])
 		if secret_runner.is_valid():
 			await secret_runner.call(sec)
-		var ci: Dictionary = ef.get("cutin", {})
-		if not ci.is_empty():
-			await _super_cutin(via, {}, str(ci.get("title", "Futter")), str(ci.get("sub", "")))
-			_super_music_stop()
+	var ci: Dictionary = ef.get("cutin", {})
+	if not ci.is_empty():
+		await _super_cutin(via, {}, str(ci.get("title", "Futter")), str(ci.get("sub", "")))
+		_super_music_stop()
 	var amount := mini(int(ef.get("heal", 0)), via["maxhp"] - via["hp"])
 	if amount > 0:
 		via["hp"] += amount
@@ -3999,9 +3998,9 @@ func _run_reflect(u: Dictionary, id: String, target: Dictionary, via: Dictionary
 		secrets_seen.append(sec["id"])
 		if secret_runner.is_valid():
 			await secret_runner.call(sec)
-		var ci: Dictionary = ef.get("cutin", {})
-		if not ci.is_empty():
-			await _super_cutin(via, ab, str(ci.get("title", ab["name"])), str(ci.get("sub", "")))
+	var ci: Dictionary = ef.get("cutin", {})
+	if not ci.is_empty():
+		await _super_cutin(via, ab, str(ci.get("title", ab["name"])), str(ci.get("sub", "")))
 	await fx.reflect_spin(via)
 	_popup(via, "Reflektiert!", Color(1.0, 0.9, 0.5))
 	var pct := float(ef.get("reflect_pct", 75)) / 100.0
@@ -4068,10 +4067,10 @@ func _run_secret(u: Dictionary, id: String, target: Dictionary) -> void:
 		secrets_seen.append(sec["id"])
 		if secret_runner.is_valid():
 			await secret_runner.call(sec)
-		var ci: Dictionary = ef.get("cutin", {})          # Erkennungszeichen: der Polarlicht-Auftritt
-		if not ci.is_empty():
-			await _super_cutin(target, {}, str(ci.get("title", sec["name"])), str(ci.get("sub", "")))
-			_super_music_stop()
+	var ci: Dictionary = ef.get("cutin", {})          # Erkennungszeichen: der Polarlicht-Auftritt
+	if not ci.is_empty():
+		await _super_cutin(target, {}, str(ci.get("title", sec["name"])), str(ci.get("sub", "")))
+		_super_music_stop()
 	var pct := float(ef.get("atk_pct", 0))
 	var mods := {}
 	if pct > 0.0:

@@ -87,4 +87,6 @@ Im Testlabor (Kapitelmenü, „brumm“) gibt es den Abschnitt **Geheimnisse**: 
 - **Daten:** `trigger: {type: "ability_area_ally", by, ability, ally}`, `effects: {fury: {ability, mult_pct, popup?}, cutin}`. Code: `Battle._area_ally_reactions`, `_run_fury`. Test: `tests/test_reflect.gd`, `test_geheimnis_urinstinkt_im_wirkbereich`.
 
 ## Regel: jedes Geheimnis nur einmal pro Level
-Jedes Geheimnis löst **pro Kampf höchstens einmal aus** (`Secrets.fired`, zurückgesetzt beim Start jedes Kampfes, `Secrets.fire(id)` in jeder Wirkung). Grund: Mit Äther (Abklingzeiten zurücksetzen) ließen sich die Geheimnisse sonst beliebig oft abrufen. Danach verhält sich die Fähigkeit wie ohne Geheimnis. Die Szene und der Polarlicht-Auftritt kommen weiterhin nur beim ersten Mal im ganzen Spiel (`Party.secrets_seen`). Test: `tests/test_reflect.gd`.
+Jedes Geheimnis löst **pro Kampf höchstens einmal aus** (`Secrets.fired`, zurückgesetzt beim Start jedes Kampfes, `Secrets.fire(id)` in jeder Wirkung). Grund: Mit Äther (Abklingzeiten zurücksetzen) ließen sich die Geheimnisse sonst beliebig oft abrufen. Danach verhält sich die Fähigkeit wie ohne Geheimnis. Der **Polarlicht-Auftritt kommt jedes Mal**, wenn ein Geheimnis auslöst (also einmal pro Level); die **Dialogszene** läuft nur beim allerersten Mal im ganzen Spiel (`Party.secrets_seen`) und wird nicht wiederholt. Test: `tests/test_reflect.gd`.
+
+- **Erkennungszeichen jedes Mal:** `SuperCutin` (Polarlicht, Super-Musik) läuft bei jedem Auslösen eines Geheimnisses, nur der Dialog davor bleibt beim ersten Mal.
