@@ -335,9 +335,10 @@ func _build_swamp_fog() -> void:
 func _apply_night_rain(env: Environment, sun: DirectionalLight3D) -> void:
 	sun.rotation_degrees = Vector3(-38, -30, 0)
 	sun.light_color = Color(0.5, 0.62, 1.0)
-	sun.light_energy = 0.32
+	var snowy: bool = map_data.get("mood", "") == "nacht_schnee"      # Schnee reflektiert Mondlicht: deutlich heller
+	sun.light_energy = 0.75 if snowy else 0.32
 	sun.shadow_opacity = 0.7
-	env.ambient_light_color = Color(0.16, 0.21, 0.4)
+	env.ambient_light_color = Color(0.3, 0.38, 0.6) if snowy else Color(0.16, 0.21, 0.4)
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
 	env.ambient_light_energy = 0.5
 	env.fog_enabled = true
@@ -357,7 +358,7 @@ func _apply_night_rain(env: Environment, sun: DirectionalLight3D) -> void:
 	rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var mat := ShaderMaterial.new()
 	mat.shader = load("res://shaders/grade_mexiko.gdshader")
-	mat.set_shader_parameter("tint", Vector3(0.72, 0.84, 1.08))
+	mat.set_shader_parameter("tint", Vector3(0.72, 0.84, 1.08) if map_data.get("mood", "") != "nacht_schnee" else Vector3(0.86, 0.95, 1.12))
 	mat.set_shader_parameter("shadow_tint", Vector3(0.0, 0.01, 0.05))
 	mat.set_shader_parameter("saturation", 0.78)
 	mat.set_shader_parameter("contrast", 1.18)
@@ -368,6 +369,8 @@ func _apply_night_rain(env: Environment, sun: DirectionalLight3D) -> void:
 	layer.add_child(rect)
 	if map_data.get("mood", "") in ["nacht_regen", "gewitter"]:
 		_build_rain()
+	if map_data.get("mood", "") == "nacht_schnee":
+		_build_snowfall()
 	if map_data.get("mood", "") == "gewitter":
 		_storm_loop(sun)
 
@@ -415,6 +418,47 @@ func _storm_loop(sun: DirectionalLight3D) -> void:
 		tw.parallel().tween_property(sun, "light_energy", base_energy, 0.5)
 		await get_tree().create_timer(strike_rng.randf_range(0.3, 1.4)).timeout
 		Sfx.event("thunder")
+
+
+## Schneefall (Kartenfeld "mood": "nacht_schnee"): grosse weiche Flocken, die langsam und leicht schwankend fallen. Dichte folgt der Grafikoption "Partikel".
+func _build_snowfall() -> void:
+	var grad := Gradient.new()
+	grad.set_color(0, Color(1, 1, 1, 1.0))
+	grad.set_color(1, Color(1, 1, 1, 0.0))
+	var flake := GradientTexture2D.new()      # runde, weiche Flocke statt eines Quadrats
+	flake.gradient = grad
+	flake.fill = GradientTexture2D.FILL_RADIAL
+	flake.fill_from = Vector2(0.5, 0.5)
+	flake.fill_to = Vector2(1.0, 0.5)
+	flake.width = 32
+	flake.height = 32
+	var p := CPUParticles3D.new()
+	var q := QuadMesh.new()
+	q.size = Vector2(0.09, 0.09)
+	var m := StandardMaterial3D.new()
+	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	m.albedo_texture = flake
+	m.albedo_color = Color(0.95, 0.97, 1.0, 0.9)
+	m.billboard_mode = BaseMaterial3D.BILLBOARD_PARTICLES
+	q.material = m
+	p.mesh = q
+	p.amount = int(1100 * Settings.particle_factor())
+	p.lifetime = 5.5
+	p.preprocess = 5.5
+	p.emission_shape = CPUParticles3D.EMISSION_SHAPE_BOX
+	p.emission_box_extents = Vector3(grid.width * 0.5 + 5.0, 0.2, grid.height * 0.5 + 5.0)
+	p.position = Vector3((grid.width - 1) / 2.0, 8.0, (grid.height - 1) / 2.0)
+	p.direction = Vector3(0.25, -1.0, 0.1)
+	p.spread = 14.0
+	p.gravity = Vector3.ZERO
+	p.initial_velocity_min = 1.2
+	p.initial_velocity_max = 1.9
+	p.scale_amount_min = 0.7
+	p.scale_amount_max = 1.7
+	p.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	p.name = "Snow"
+	add_child(p)
 
 
 ## Regen: dichte Streifen, die schraeg ueber der Karte fallen (CPUParticles3D, laeuft im Compatibility-Renderer sicher).
@@ -515,7 +559,7 @@ func _build_environment() -> void:
 		_apply_desert_light(env, sun)
 	if map_data.get("mood", "") == "sumpf":
 		_apply_swamp(env, sun)
-	if map_data.get("mood", "") in ["nacht_regen", "nacht", "gewitter"]:
+	if map_data.get("mood", "") in ["nacht_regen", "nacht", "gewitter", "nacht_schnee"]:
 		_apply_night_rain(env, sun)
 	var center := Vector3((grid.width - 1) / 2.0, 0, (grid.height - 1) / 2.0)
 	cam = Camera3D.new()
@@ -1572,6 +1616,8 @@ func results() -> Dictionary:
 				ok = _count_team("e") == 0
 			"ueberzeugt":
 				ok = retreated.has(o["unit"])
+			"friedlich":
+				ok = peace_win
 			"maschine_zerstoert":
 				ok = world.by_id("maschine")["state"] == "broken"
 			"durchgehalten":
@@ -1595,6 +1641,7 @@ func results() -> Dictionary:
 	gained["objectives"] = done
 	gained["turns"] = turn
 	gained["fled"] = fled.duplicate()
+	gained["recruited"] = recruited.duplicate()
 	gained["secrets_seen"] = secrets_seen.duplicate()
 	gained["stats"] = stats()
 	_results = gained
@@ -2796,6 +2843,8 @@ func goal_met() -> bool:
 
 
 var goal_then_done := false
+var peace_win := false             # Schritt {"win": true}: friedlicher Sieg
+var recruited: Array = []           # Schritt {"recruit": id}: gewonnene Verbuendete
 
 
 func _check_end() -> void:
@@ -2805,7 +2854,7 @@ func _check_end() -> void:
 	var guard_id := str(map_data.get("lose_if_ruin", ""))      # Kartenfeld "lose_if_ruin": brennt dieses Haus ab, ist die Mission verloren
 	if guard_id != "" and world.by_id(guard_id).get("state", "") == "ruin":
 		lost = true
-	var won := not lost and goal_met()
+	var won := not lost and (goal_met() or peace_win)
 	if story_lost:
 		won = true
 		lost = false
@@ -2856,6 +2905,10 @@ func _cond_ok(c: Dictionary) -> bool:
 	for id: String in c.get("absent", []):      # keine dieser Figuren lebt noch
 		if not _find(id).is_empty():
 			return false
+	if c.has("kills_max") and kills_total > int(c["kills_max"]):      # nur wenn hoechstens so viele Gegner gefallen sind
+		return false
+	if c.has("kills_min") and kills_total < int(c["kills_min"]):
+		return false
 	if c.has("object"):
 		var o := world.by_id(c["object"]["id"])
 		return not o.is_empty() and o["state"] == c["object"]["state"]
@@ -2919,6 +2972,19 @@ func _match_state(w: Dictionary) -> Dictionary:
 				var okb: bool = (c2["b"] == "any_enemy" and o["team"] != a["team"]) or o["id"] == c2["b"]
 				if okb and o != a and Grid.dist(a["pos"], o["pos"]) <= int(c2.get("dist", 3)):
 					return a
+	if w.has("all_frightened"):    # alle lebenden Figuren dieser Arten wurden schon einmal erschreckt (und mindestens eine ist da)
+		var ids: Array = w["all_frightened"]
+		var seen := 0
+		var all_scared := true
+		for fu in units:
+			if fu["team"] == "e" and ids.has(fu["id"]):
+				seen += 1
+				if not fu.get("fright", false):
+					all_scared = false
+		if seen > 0 and all_scared:
+			for u in units:
+				if u["team"] == "p":
+					return u
 	if w.has("chests_open"):     # so viele Truhen der Karte sind geoeffnet
 		var opened := 0
 		for c in chests:
@@ -2995,6 +3061,20 @@ func _fire(t: Dictionary, who := {}) -> void:
 				units.erase(rt)
 				retreated.append(rt["id"])
 				await _flee(rt, false)
+		if step.has("retreat_all"):   # {"retreat_all": ["wolf", "alphawolf"]}: alle Gegner dieser Arten ziehen sich zurueck
+			for rid: String in step["retreat_all"]:
+				while true:
+					var rt2 := _find(rid)
+					if rt2.is_empty():
+						break
+					units.erase(rt2)
+					retreated.append(rt2["id"])
+					await _flee(rt2, false)
+		if step.has("recruit"):       # {"recruit": "alphawolf"}: diese Figur schliesst sich fuer die Zukunft an (Party.recruited)
+			if not recruited.has(step["recruit"]):
+				recruited.append(step["recruit"])
+		if step.has("win"):           # {"win": true}: die Mission ist friedlich gewonnen (ohne Gegner zu besiegen)
+			peace_win = true
 		if step.has("burn"):   # {"burn": "hive_p"}: alle Objekte dieser Art gehen in Flammen auf (und verschwinden)
 			for bo in world.objects.duplicate():
 				if bo["type"] == step["burn"] and bo["state"] == "active":
@@ -3324,6 +3404,51 @@ func _near_reactions(u: Dictionary, id: String) -> void:
 			continue
 		await _run_near(u, o, sec)
 		return
+
+
+## Geheimnis "Klebekanone" (Typ ability_near_object): Setzt u die Faehigkeit ein, waehrend neben u ein Bienenkorb der Figur "owner" steht, wird der
+## Schuss zur Klebekanone: alle Gegner im Umkreis des Einschlags sind 2 Runden festgeklebt (koennen sich nicht bewegen). Beim ersten Mal Szene und Polarlicht-Auftritt.
+func _object_reactions(u: Dictionary, id: String, target: Dictionary) -> void:
+	if not units.has(u) or u["team"] != "p" or not target.has("pos"):
+		return
+	var sec := Secrets.find_object(u["id"], id)
+	if sec.is_empty():
+		return
+	var tr: Dictionary = sec["trigger"]
+	var hive := {}
+	for o in world.objects:
+		if o["type"] == str(tr["object"]) and o["state"] == "active" and Grid.dist(u["pos"], o["pos"]) <= 1:
+			var owner := {}
+			for w in units + _away:
+				if w["uid"] == str(o.get("owner", "")):
+					owner = w
+			if owner.is_empty() or owner["id"] == str(tr["owner"]):
+				hive = o
+	if hive.is_empty():
+		return
+	var ef: Dictionary = sec["effects"]
+	if not secrets_seen.has(sec["id"]):
+		secrets_seen.append(sec["id"])
+		if secret_runner.is_valid():
+			await secret_runner.call(sec)
+		var ci: Dictionary = ef.get("cutin", {})
+		if not ci.is_empty():
+			await _super_cutin(u, {}, str(ci.get("title", sec["name"])), str(ci.get("sub", "")))
+			_super_music_stop()
+	var at: Vector3 = to_world(target["pos"]) + Vector3(0, 0.4, 0)
+	var tiles := _area_tiles({"area": {"shape": "radius", "r": int(ef.get("radius", 2))}}, target["pos"])
+	var glue := fx.make_sprite("fx_kleber", at + Vector3(0, 0.3, 0), 2.6, false, Color.WHITE, 3)
+	fx.pop(glue, 1.5, 0.9, 0.0, 0.2, 0.5)
+	fx.particles("fx_foam", at, 14, 2.5, 0.3, 0.9, 3.0, Color(1.0, 0.8, 0.3), false, 150.0)
+	Sfx.event("splash")
+	_popup(u, "Klebekanone!", Color(1.0, 0.85, 0.3))
+	for v in units.duplicate():
+		if v["team"] != u["team"] and _hittable(v) and not Status.has(v, "stealth") and tiles.has(v["pos"]):
+			Status.add(v, str(ef.get("status", "klebrig")), int(ef.get("turns", 2)))
+			_refresh_unit(v)
+			fx.flash_unit(v, Color(1.6, 1.3, 0.5), 0.3)
+			await _popup(v, "Festgeklebt!", Color(1.0, 0.85, 0.3))
+	await get_tree().create_timer(0.3).timeout
 
 
 func _run_near(u: Dictionary, o: Dictionary, sec: Dictionary) -> void:
@@ -3671,6 +3796,7 @@ func _run_ability(u: Dictionary, id: String, target: Dictionary) -> void:
 		_super_music_stop()
 	await _near_reactions(u, id)
 	await _hit_near_reactions(u, id, target)
+	await _object_reactions(u, id, target)
 	_check_end()
 
 
@@ -3725,6 +3851,8 @@ func _apply_effect(u: Dictionary, ab: Dictionary, target: Dictionary, ef: Dictio
 			for v in victims:
 				var src: String = u["uid"] if ef["id"] == "taunt" else ""
 				Status.add(v, ef["id"], ef["turns"], ef.get("mods", {}), src)
+				if ef["id"] == "scared" or ef["id"] == "angst":
+					v["fright"] = true      # merkt sich: diese Figur wurde einmal erschreckt (Wolfsrudel in Mission 17)
 				_refresh_unit(v)
 				var good: bool = Status.GOOD.has(ef["id"])
 				if fx.has_fx(ab["id"]):

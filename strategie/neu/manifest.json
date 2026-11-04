@@ -198,5 +198,15 @@
  "cyborg_wart_chibi": true,
  "fx_totbaum": true,
  "fx_schilf": true,
- "fx_sumpfpilz": true
+ "fx_sumpfpilz": true,
+ "alphawolf": true,
+ "alphawolf_lachend": true,
+ "alphawolf_wuetend": true,
+ "alphawolf_chibi": true,
+ "wolf_chibi": true,
+ "fx_schneefichte1": true,
+ "fx_schneefichte2": true,
+ "fx_schneehaufen": true,
+ "fx_eisfels": true,
+ "fx_kleber": true
 }

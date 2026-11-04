@@ -15,6 +15,7 @@ var squads: Dictionary = {}              # {Mission: [Helden]}: vom Spieler geae
 var nemesis: Array = []            # entkommene Gegner, tauchen in spaeteren Missionen wieder auf
 var secrets_seen: Array = []     # gesehene Geheimnis-Szenen (Szene laeuft nur beim ersten Mal)
 var test_run := false              # Teststart (START_CH, Testlabor): wird nie gespeichert
+var recruited: Array = []          # in einer Mission gewonnene Verbuendete (z. B. Alphawolf), nur dann waehlbar (recruit_only)
 var earned := 0                    # geschaffte Kampfmissionen; daraus ergeben sich Gruppenstufe und Talentpunkte (alle levels_per_point Stufen einer)
 var prompted: Dictionary = {}      # {Held: Stufe}, ab der der Aufstiegsbildschirm fuer ihn schon gezeigt wurde
 var talents: Dictionary = {}       # verteilte Punkte je Held {id: {hp, atk, a1, a2}} (Talents)
@@ -119,6 +120,9 @@ func absorb(results: Dictionary) -> void:
 	for id: String in results.get("secrets_seen", []):
 		if not secrets_seen.has(id):
 			secrets_seen.append(id)
+	for rid: String in results.get("recruited", []):
+		if not recruited.has(rid):
+			recruited.append(rid)
 	earned += 1      # eine Stufe mehr; Talentpunkte gibt es alle levels_per_point Stufen (fuer alle gleich, verteilt wird nur fuer Helden in der Gruppe)
 	chapter += 1
 	bought = {}
@@ -137,13 +141,14 @@ func spend(price: int) -> bool:
 
 
 func to_dict() -> Dictionary:
-	return {"chapter": chapter, "gold": gold, "inventory": inventory, "materials": materials, "equipment": equipment, "pool": pool, "bought": bought, "nemesis": nemesis, "squads": squads, "secrets_seen": secrets_seen, "earned": earned, "talents": talents, "prompted": prompted}
+	return {"chapter": chapter, "gold": gold, "inventory": inventory, "materials": materials, "equipment": equipment, "pool": pool, "bought": bought, "nemesis": nemesis, "squads": squads, "secrets_seen": secrets_seen, "earned": earned, "talents": talents, "prompted": prompted, "recruited": recruited}
 
 
 static func from_dict(d: Dictionary) -> Party:
 	var p := Party.new()
 	p.chapter = int(d.get("chapter", 1))
 	p.earned = int(d.get("earned", 0))
+	p.recruited = (d.get("recruited", []) as Array).duplicate()
 	p.prompted = _ints(d.get("prompted", {}))
 	p.talents = (d.get("talents", {}) as Dictionary).duplicate(true)
 	p.gold = int(d.get("gold", 0))
@@ -186,11 +191,13 @@ static func join_mission(def: Dictionary) -> int:
 ## Helden, die man in Mission mission_no (ab 1) in die Gruppe holen kann: nur wer schon kennengelernt ist ("hero": true und join_mission <= Nummer).
 ## after_intro = false (Lager vor der Mission): nur Helden, die schon in frueheren Missionen aufgetreten sind (join_mission < Nummer);
 ## true (Gruppenwahl nach der Einleitung der Mission): auch wer in der Einleitung dieser Mission auftritt.
-static func roster(defs: Dictionary, mission_no: int, after_intro := true) -> Array:
+static func roster(defs: Dictionary, mission_no: int, after_intro := true, recruited: Array = []) -> Array:
 	var out: Array = []
 	for id: String in defs:
 		if not defs[id].get("hero", false):
 			continue
+		if defs[id].get("recruit_only", false) and not recruited.has(id):
+			continue      # nur waehlbar, wenn in einer Mission gewonnen
 		var j := join_mission(defs[id])
 		if j < mission_no or (after_intro and j == mission_no):
 			out.append(id)

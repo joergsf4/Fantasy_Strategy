@@ -1,0 +1,132 @@
+{
+ "rows": [
+  "MMGGGGGGGGMM",
+  "MGGFFGGGGFGM",
+  "GGGFGGGMGGGG",
+  "GGGGGGMMGGFG",
+  "GFGGWWGGGGGG",
+  "GGGGWWGGFFGG",
+  "GGMGGGGGGGGG",
+  "GGGGGGGGGGGG",
+  "GGGGGGGGGGGG",
+  "GGGGGGGGGGGG"
+ ],
+ "biome": "schnee",
+ "mood": "nacht_schnee",
+ "walls": [
+  "n",
+  "w",
+  "e"
+ ],
+ "players": [
+  {
+   "id": "maedchen_baer",
+   "pos": [
+    5,
+    8
+   ]
+  },
+  {
+   "id": "hund",
+   "pos": [
+    4,
+    8
+   ]
+  },
+  {
+   "id": "ritter",
+   "pos": [
+    6,
+    8
+   ]
+  },
+  {
+   "id": "elisabeth",
+   "pos": [
+    3,
+    8
+   ]
+  },
+  {
+   "id": "bienenmaedchen",
+   "pos": [
+    7,
+    8
+   ]
+  },
+  {
+   "id": "wendy",
+   "pos": [
+    2,
+    8
+   ]
+  }
+ ],
+ "enemies": [
+  {
+   "id": "alphawolf",
+   "pos": [
+    6,
+    2
+   ]
+  },
+  {
+   "id": "wolf",
+   "pos": [
+    4,
+    2
+   ]
+  },
+  {
+   "id": "wolf",
+   "pos": [
+    8,
+    3
+   ]
+  },
+  {
+   "id": "wolf",
+   "pos": [
+    3,
+    4
+   ]
+  },
+  {
+   "id": "wolf",
+   "pos": [
+    9,
+    4
+   ]
+  },
+  {
+   "id": "wolf",
+   "pos": [
+    5,
+    3
+   ]
+  }
+ ],
+ "objects": [],
+ "decor": [],
+ "rewards": {
+  "gold": 320
+ },
+ "objectives": [
+  {
+   "id": "alle_leben",
+   "text": "Kein Held fällt",
+   "reward": {
+    "gold": 110
+   }
+  },
+  {
+   "id": "friedlich",
+   "text": "Das Rudel friedlich vertrieben",
+   "reward": {
+    "items": {
+     "heilhonig": 2
+    }
+   }
+  }
+ ]
+}

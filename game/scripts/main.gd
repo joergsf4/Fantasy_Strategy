@@ -5,7 +5,7 @@ const TITLE_MUSIC := "res://assets/audio/title_theme.mp3"
 const BATTLE_MUSIC := "res://assets/audio/battle_theme.mp3"
 const WIN_MUSIC := "res://assets/audio/sieg_statistik.mp3"
 const DEFEAT_MUSIC := "res://assets/audio/niederlage_statistik.mp3"
-const CHAPTERS := ["ch1", "ch2", "ch3", "ch4", "ch5", "ch6", "ch7", "ch8", "ch9", "ch10", "ch11", "ch12", "ch13", "ch14", "ch15", "ch16"]
+const CHAPTERS := ["ch1", "ch2", "ch3", "ch4", "ch5", "ch6", "ch7", "ch8", "ch9", "ch10", "ch11", "ch12", "ch13", "ch14", "ch15", "ch16", "ch17"]
 const MUSIC_DB := -6.0
 
 var units: Dictionary
@@ -170,7 +170,7 @@ func _choose_level() -> Array:
 		if units[hid].get("hero", false):
 			ls.lab_heroes.append({"id": hid, "name": units[hid]["name"]})
 	ls.lab_foes = [{"id": "soldat_infanterie", "name": "3 Büttel"}]
-	for fid in ["wart", "cyborg_wart", "kugelblitz", "fuerst", "oskar", "maja", "xiulan", "frischlinge", "bienenmaedchen", "panzer"]:
+	for fid in ["wolf", "alphawolf", "wart", "cyborg_wart", "kugelblitz", "fuerst", "oskar", "maja", "xiulan", "frischlinge", "bienenmaedchen", "panzer"]:
 		if units.has(fid):
 			ls.lab_foes.append({"id": fid, "name": units[fid]["name"] + " + 2 Büttel"})
 	ls.new_game_requested.connect(func() -> void:

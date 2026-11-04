@@ -60,6 +60,15 @@ static func find_hitnear(by: String, ability: String, near: String) -> Dictionar
 	return {}
 
 
+## Das Geheimnis, bei dem "by" die Faehigkeit "ability" einsetzt, waehrend neben "by" ein Objekt dieser Art steht (Typ ability_near_object), oder {}.
+static func find_object(by: String, ability: String) -> Dictionary:
+	for s: Dictionary in all():
+		var t: Dictionary = s["trigger"]
+		if t.get("type", "") == "ability_near_object" and t["by"] == by and t["ability"] == ability:
+			return s
+	return {}
+
+
 static func by_id(id: String) -> Dictionary:
 	for s: Dictionary in all():
 		if s["id"] == id:

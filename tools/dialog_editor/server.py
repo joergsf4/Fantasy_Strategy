@@ -269,7 +269,7 @@ def missions() -> dict:
     return {"missions": out}
 
 
-FLY_SPRITES = ["fx_barrel", "fx_bone", "fx_shuriken", "fx_star", "fx_flower", "fx_bolt", "fx_fireball", "fx_honig", "fx_bierkrug", "fx_flasche", "fx_wolle"]     # fliegende Objekte der Geheimnis-Szene
+FLY_SPRITES = ["fx_barrel", "fx_bone", "fx_shuriken", "fx_star", "fx_flower", "fx_bolt", "fx_fireball", "fx_honig", "fx_bierkrug", "fx_flasche", "fx_wolle", "fx_kleber"]     # fliegende Objekte der Geheimnis-Szene
 
 
 def secrets() -> dict:
@@ -336,11 +336,11 @@ def save_secrets(body: dict) -> None:
         if sec.get("trigger"):
             t = sec["trigger"]
             ttype = t.get("type", "ability_on_ally")
-            if ttype not in ("ability_on_ally", "beam_via_ally", "throw_ally", "ability_near_ally", "hit_near_ally"):
+            if ttype not in ("ability_on_ally", "beam_via_ally", "throw_ally", "ability_near_ally", "hit_near_ally", "ability_near_object"):
                 raise ValueError(f"{name}: unbekannter Ausloeser-Typ '{ttype}'")
             beam = ttype == "beam_via_ally"
             by = t["by"]
-            on = t["via"] if beam else (t["near"] if ttype in ("ability_near_ally", "hit_near_ally") else t["target"])
+            on = t["via"] if beam else (t["owner"] if ttype == "ability_near_object" else (t["near"] if ttype in ("ability_near_ally", "hit_near_ally") else t["target"]))
             if by not in units or "name" not in units[by] or on not in units or "name" not in units[on]:
                 raise ValueError(f"{name}: unbekannte Figur im Ausloeser")
             if by == on:
@@ -410,6 +410,26 @@ def save_secrets(body: dict) -> None:
                     raise ValueError(f"{name}: der Umkreis muss 1 bis 4 Felder sein")
                 new_trigger = {"type": "ability_near_ally", "by": by, "ability": ab, "near": on}
                 new_effects = {"react_ability": rid, "radius": rad}
+            elif ttype == "ability_near_object":
+                ab = t["ability"]
+                if ab not in units[by].get("abilities", []):
+                    raise ValueError(f"{name}: {units[by]['name']} hat die Faehigkeit '{ab}' nicht")
+                objs = read(DATA / "objects.json")
+                if t.get("object") not in objs or t["object"].startswith("_"):
+                    raise ValueError(f"{name}: unbekanntes Objekt '{t.get('object')}'")
+                if (by, ab, on) in triples:
+                    raise ValueError(f"{name}: dieser Ausloeser kommt zweimal vor")
+                triples.add((by, ab, on))
+                ef = sec["effects"]
+                stid, trn, rad = ef.get("status", "klebrig"), ef.get("turns", 2), ef.get("radius", 2)
+                if not isinstance(stid, str) or not re.match(r"^[a-z]{2,20}$", stid):
+                    raise ValueError(f"{name}: ungueltiger Status")
+                if not isinstance(trn, int) or isinstance(trn, bool) or not 1 <= trn <= 6:
+                    raise ValueError(f"{name}: die Dauer muss 1 bis 6 Runden sein")
+                if not isinstance(rad, int) or isinstance(rad, bool) or not 1 <= rad <= 4:
+                    raise ValueError(f"{name}: der Umkreis muss 1 bis 4 Felder sein")
+                new_trigger = {"type": "ability_near_object", "by": by, "ability": ab, "object": t["object"], "owner": on}
+                new_effects = {"status": stid, "turns": trn, "radius": rad}
             elif ttype == "throw_ally":
                 ab = t["ability"]
                 if ab not in units[by].get("abilities", []) or "throw_ally" not in abilities.get(ab, {}).get("caps", []):

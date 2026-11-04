@@ -304,6 +304,20 @@
   "dampframme": {
    "cast": "wall_break",
    "hit": "explosion"
+  },
+  "kehlbiss": {
+   "windup": "whoosh_s",
+   "hit": [
+    "w_fist",
+    "crunch",
+    {
+     "s": "crit",
+     "db": -6
+    }
+   ]
+  },
+  "heulen": {
+   "cast": "roar"
   }
  },
  "events": {
@@ -587,6 +601,22 @@
     0.8
    ],
    "db": 3
+  },
+  "wolf": {
+   "s": "v_bark",
+   "pitch": [
+    0.55,
+    0.75
+   ],
+   "db": 0
+  },
+  "alphawolf": {
+   "s": "v_bark",
+   "pitch": [
+    0.45,
+    0.6
+   ],
+   "db": 2
   }
  }
 }

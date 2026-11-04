@@ -71,6 +71,8 @@ static func damage(att: Dictionary, def: Dictionary, cover: int, pos_bonus: floa
 
 ## Bewegungsweite inkl. Status (Beflügelt +1, Übel −2), mindestens 1.
 static func move_of(u: Dictionary) -> int:
+	if Status.has(u, "klebrig"):
+		return 0      # Klebekanone: festgeklebt, kann sich nicht bewegen (angreifen schon)
 	return maxi(1, stat(u, "move"))
 
 

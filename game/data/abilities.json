@@ -930,5 +930,62 @@
    }
   ],
   "caps": []
+ },
+ "kehlbiss": {
+  "name": "Kehlbiss",
+  "text": "Packt zu (×1,6) und der Biss blutet: Gift 3 Runden. Heilung stoppt es.",
+  "cd": 3,
+  "target": "enemy",
+  "range": [
+   1,
+   1
+  ],
+  "effects": [
+   {
+    "type": "damage",
+    "mult": 1.6
+   },
+   {
+    "type": "status",
+    "id": "poison",
+    "turns": 3,
+    "to": "target"
+   }
+  ],
+  "ai_bonus": 7,
+  "caps": [
+   "smash"
+  ]
+ },
+ "heulen": {
+  "name": "Heulen",
+  "text": "Verbündete im Umkreis 3: +2 Angriff für 2 Runden, Feinde im Umkreis 3: Angst für 1 Runde.",
+  "cd": 4,
+  "target": "self",
+  "area": {
+   "shape": "radius",
+   "r": 3
+  },
+  "effects": [
+   {
+    "type": "status",
+    "id": "buff",
+    "turns": 2,
+    "mods": {
+     "atk": 2
+    },
+    "to": "area_allies"
+   },
+   {
+    "type": "status",
+    "id": "angst",
+    "turns": 1,
+    "to": "area_enemies"
+   }
+  ],
+  "caps": [
+   "rally"
+  ],
+  "solo": true
  }
 }

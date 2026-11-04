@@ -206,5 +206,17 @@
    0.8
   ],
   "lunge": false
+ },
+ "heulen": {
+  "color": [
+   0.75,
+   0.85,
+   1.0,
+   0.5
+  ],
+  "lunge": false
+ },
+ "kehlbiss": {
+  "lunge": true
  }
 }

@@ -387,7 +387,7 @@ func _build_squad() -> void:
 		row.add_theme_constant_override("h_separation", 8)
 		row.add_theme_constant_override("v_separation", 6)
 		cand.add_child(row)
-		for id: String in Party.roster(unit_defs, no, false):
+		for id: String in Party.roster(unit_defs, no, false, party.recruited):
 			if squad.has(id):
 				continue
 			row.add_child(_button(unit_defs[id]["name"], func() -> void:

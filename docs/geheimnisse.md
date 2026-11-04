@@ -61,3 +61,10 @@ Der große Auftritt mit Polarlicht-Himmel, vergrößerter Figur und Super-Musik 
 
 ## Balancing: Geheimnisse bleiben außen vor (Entscheidung des Nutzers, 2026-11-02)
 Geheimnisse fließen **nicht** in Balancing, Simulator oder Gegnerwerte ein: Man kann nicht davon ausgehen, dass Spieler sie entdecken, also muss jede Mission auch ohne sie fair schaffbar sein. Sie sind reiner Bonus. Ihre Stärke ist bewusst ungleich: Der **Laser-Reflektor** (Robo und Takeda) kann mit einem Angriff ganze Schlachten entscheiden, der **Shuriken Regen** (Muskelaugust und Kage-Schwestern) ist dagegen eher schwach. Das ist vorerst okay und wird nicht angeglichen.
+
+
+## Klebekanone (Elisabeth und Stachelia)
+- **Auslöser (neuer Typ `ability_near_object`):** Elisabeth feuert ihre **Kanone**, während sie auf einem Nachbarfeld **eines von Stachelias Bienenkörben** (`hive_p`, mit Stachelia als Besitzerin) steht.
+- **Wirkung:** Der Schuss wird zur **Klebekanone**: alle Gegner im **Umkreis 2 um den Einschlag** sind **2 Runden festgeklebt** (Status `klebrig`: sie können sich nicht bewegen, aber angreifen; `Combat.move_of` liefert 0). Klebriger Honig-Fleck und Schaumspritzer am Einschlag (`fx_kleber`).
+- **Erstes Mal:** Szene vor der Karte (Elisabeth und Stachelia, fliegendes Objekt `fx_kleber`) und der **Polarlicht-Auftritt** (Erkennungszeichen jedes Geheimnisses) mit Elisabeth: „Klebekanone / Geheimnis entdeckt“.
+- **Technik:** `Secrets.find_object`, `Battle._object_reactions`; im Editor unter „Geheimnisse“ (Typ wird angezeigt, Text und Szene bearbeitbar), Server-Prüfung `ability_near_object`. Das Geheimnis liegt wie die anderen außerhalb von Simulator und Balancing. Test: `tests/test_woelfe.gd`.

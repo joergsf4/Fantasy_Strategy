@@ -1,0 +1,248 @@
+{
+ "id": "ch17",
+ "title": "Die Wölfe der Nacht",
+ "map": "res://data/map_ch17.json",
+ "briefing": "Im verschneiten Gebirge wird die Gruppe nachts von einem Wolfsrudel überfallen. Der Anführer ist ein schneeweißer Alphawolf, größer als die anderen. Wölfe sind schnell und beißen hart. Es gibt zwei Wege: Besiegt das Rudel im Kampf, oder jagt allen Wölfen einmal Angst ein (Bellen, Bärengebrüll …), bevor einer fällt: Dann ziehen sie ab, und der Alphawolf schließt sich euch an. Das müsst ihr durch Probieren herausfinden.",
+ "goals": [
+  {
+   "type": "rout"
+  }
+ ],
+ "triggers": [
+  {
+   "when": {
+    "near": {
+     "a": "hund",
+     "b": "alphawolf",
+     "dist": 9
+    }
+   },
+   "if": {
+    "present": [
+     "alphawolf"
+    ]
+   },
+   "note": "Der Alphawolf zeigt sich",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "hund",
+       "right": "alphawolf",
+       "speaker": "alphawolf",
+       "text": "*Ein tiefes Knurren. Augen wie Eis, ein weißes Fell, größer als alle anderen Wölfe.*",
+       "right_expr": "wuetend"
+      },
+      {
+       "left": "hund",
+       "right": "bienenmaedchen",
+       "speaker": "bienenmaedchen",
+       "text": "Das ist ihr Anführer. Der Schneeweiße. Ich hasse Wölfe, sie sind zu laut.",
+       "right_expr": "wuetend"
+      },
+      {
+       "left": "hund",
+       "right": "maedchen_baer",
+       "speaker": "hund",
+       "text": "Sie sind nur Tiere. Wir müssen ihnen nicht wehtun, wenn es anders geht.",
+       "left_expr": "wuetend"
+      },
+      {
+       "left": "hund",
+       "right": "maedchen_baer",
+       "speaker": "maedchen_baer",
+       "text": "Brumm sagt, sie haben Angst vor etwas. Vielleicht kann man ihnen Angst machen."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "ability": {
+     "id": "bellen",
+     "by": "hund"
+    }
+   },
+   "if": {
+    "present": [
+     "wolf"
+    ],
+    "kills_max": 0
+   },
+   "note": "Hinweis: Wölfe fürchten sich",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "hund",
+       "right": "maedchen_baer",
+       "speaker": "hund",
+       "text": "Die Wölfe zucken zusammen! Sie weichen zurück, wenn ich belle!",
+       "left_expr": "lachend"
+      },
+      {
+       "left": "hund",
+       "right": "maedchen_baer",
+       "speaker": "maedchen_baer",
+       "text": "Dann macht ihnen allen Angst, bevor einer fällt. Vielleicht verziehen sie sich."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "all_frightened": [
+     "wolf",
+     "alphawolf"
+    ]
+   },
+   "if": {
+    "present": [
+     "alphawolf"
+    ],
+    "kills_max": 0
+   },
+   "note": "Das Rudel zieht ab, der Alphawolf schließt sich an",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "maedchen_baer",
+       "right": "alphawolf",
+       "speaker": "maedchen_baer",
+       "text": "Sie fürchten sich alle! Seht, wie sie zittern!"
+      },
+      {
+       "left": "hund",
+       "right": "alphawolf",
+       "speaker": "alphawolf",
+       "text": "*Der Alphawolf hebt den Kopf, heult einmal tief und lang. Das Rudel weicht in die Nacht zurück.*",
+       "right_expr": ""
+      },
+      {
+       "left": "hund",
+       "right": "alphawolf",
+       "speaker": "hund",
+       "text": "Er ruft sie ab. Er hat verstanden, dass wir keine Beute sind.",
+       "left_expr": "lachend"
+      },
+      {
+       "left": "bienenmaedchen",
+       "right": "alphawolf",
+       "speaker": "bienenmaedchen",
+       "text": "Und er bleibt. Als einziger. Na wunderbar, noch ein Anhängsel.",
+       "left_expr": "wuetend"
+      },
+      {
+       "left": "maedchen_baer",
+       "right": "alphawolf",
+       "speaker": "alphawolf",
+       "text": "*Er senkt den Kopf vor Mira und stellt sich neben die Gruppe. Ein neuer Gefährte.*",
+       "right_expr": "lachend"
+      }
+     ]
+    },
+    {
+     "retreat_all": [
+      "wolf"
+     ]
+    },
+    {
+     "recruit": "alphawolf"
+    },
+    {
+     "retreat": "alphawolf"
+    },
+    {
+     "win": true
+    }
+   ]
+  },
+  {
+   "when": {
+    "first_kill": true
+   },
+   "if": {
+    "present": [
+     "alphawolf"
+    ]
+   },
+   "note": "Das Rudel heult",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "maedchen_baer",
+       "right": "alphawolf",
+       "speaker": "maedchen_baer",
+       "text": "Jetzt gibt es kein Zurück. Das Rudel wird alles geben."
+      },
+      {
+       "left": "maedchen_baer",
+       "right": "alphawolf",
+       "speaker": "alphawolf",
+       "text": "*Der Alphawolf heult. Jetzt kämpft das ganze Rudel.*",
+       "right_expr": "wuetend"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "kill": {
+     "id": "alphawolf"
+    }
+   },
+   "note": "Der Alphawolf fällt",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "wendy",
+       "right": "maedchen_baer",
+       "speaker": "wendy",
+       "text": "Der weiße Wolf... Das hätte nicht sein müssen."
+      },
+      {
+       "left": "wendy",
+       "right": "maedchen_baer",
+       "speaker": "maedchen_baer",
+       "text": "Wir hatten keine Wahl. Aber wir merken es uns."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "victory": true
+   },
+   "if": {
+    "kills_min": 1
+   },
+   "note": "Das Rudel ist geschlagen",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "maedchen_baer",
+       "right": "wendy",
+       "speaker": "maedchen_baer",
+       "text": "Das Rudel ist geschlagen. Der Weg über den Pass ist frei."
+      },
+      {
+       "left": "bienenmaedchen",
+       "right": "wendy",
+       "speaker": "bienenmaedchen",
+       "text": "Kein Wort über Wölfe. Ich will nur noch ins Warme.",
+       "left_expr": "wuetend"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

@@ -18,7 +18,7 @@ const WT := {
 
 var grid: Grid
 var wall_sides: Array = []    # Kartenfeld "walls": ["n","e","w","s"]: dort steigt das Gelaende hinter der Karte zur Felswand an (Sackgasse)
-var biome := "wiese"          # "sumpf": Moor mit Schlamm, Schilf und toten Baeumen; "wueste": Sand statt Gras, keine Baeume und Blumen (Karten-Feld "biome")
+var biome := "wiese"          # "schnee": Schneelandschaft mit Schneefichten und Eisfelsen; "sumpf": Moor mit Schlamm, Schilf und toten Baeumen; "wueste": Sand statt Gras, keine Baeume und Blumen (Karten-Feld "biome")
 var _noise := FastNoiseLite.new()
 var _noise_hills := FastNoiseLite.new()
 var _noise_forest := FastNoiseLite.new()
@@ -234,6 +234,7 @@ func _build_ground() -> void:
 	mat.set_shader_parameter("water_level", WATER_LEVEL)
 	mat.set_shader_parameter("desert", 1.0 if biome == "wueste" else 0.0)
 	mat.set_shader_parameter("swamp", 1.0 if biome == "sumpf" else 0.0)
+	mat.set_shader_parameter("snowland", 1.0 if biome == "schnee" else 0.0)
 	if biome == "sumpf":
 		var mimg := Image.create(grid.width, grid.height, false, Image.FORMAT_R8)
 		for y in grid.height:
@@ -291,6 +292,7 @@ func _build_water() -> void:
 	var mat := ShaderMaterial.new()
 	mat.shader = load("res://shaders/water.gdshader")
 	mat.set_shader_parameter("swamp", 1.0 if biome == "sumpf" else 0.0)
+	mat.set_shader_parameter("ice", 1.0 if biome == "schnee" else 0.0)
 	var mi := MeshInstance3D.new()
 	mi.mesh = m
 	mi.material_override = mat
@@ -305,6 +307,8 @@ func _build_water() -> void:
 const SPRITES := {
 	"pine0": ["fx_baum_fichte1", 1.05, 0.5], "pine1": ["fx_baum_fichte2", 1.0, 0.42],
 	"oak0": ["fx_baum_eiche1", 0.95, 0.55], "oak1": ["fx_baum_eiche2", 1.0, 0.6], "oak2": ["fx_baum_eiche3", 1.1, 0.42],
+	"snowpine0": ["fx_schneefichte1", 1.05, 0.5], "snowpine1": ["fx_schneefichte2", 1.1, 0.42],
+	"snowrock": ["fx_eisfels", 0.35, 0.3], "snowmound": ["fx_schneehaufen", 0.28, 0.3],
 	"dead": ["fx_totbaum", 1.0, 0.4], "reed": ["fx_schilf", 0.5, 0.3],
 	"bush": ["fx_busch", 0.4, 0.32], "rock0": ["fx_fels1", 0.25, 0.26], "rock1": ["fx_fels2", 0.24, 0.3],
 }
@@ -423,6 +427,27 @@ func _scatter() -> void:
 			var inside := ti >= 0 and tj >= 0 and ti < grid.width and tj < grid.height
 			var t := _tt(ti, tj)
 			var d := dist_outside(ti, tj)
+			if biome == "schnee":     # Schnee: Schneefichten (dicht am Rand und auf F-Feldern), Eisfelsen, Schneehaufen
+				var hh := height_at(ti, tj)
+				if hh <= WATER_LEVEL + 0.03:
+					continue
+				var rr := _rng.randf()
+				if t == "F":
+					for k in 3:
+						_place("snowpine%d" % _rng.randi_range(0, 1), _jit(ti, 0.4), _jit(tj, 0.4), _rng.randf_range(0.8, 1.2), Color.WHITE)
+				elif inside:
+					if rr < 0.05:
+						_place("snowpine%d" % _rng.randi_range(0, 1), _jit(ti, 0.4), _jit(tj, 0.4), _rng.randf_range(0.8, 1.1), Color.WHITE)
+					elif rr < 0.12:
+						_place("snowmound", _jit(ti, 0.45), _jit(tj, 0.45), _rng.randf_range(0.8, 1.2), Color.WHITE)
+					elif rr < 0.17:
+						_place("snowrock", _jit(ti, 0.4), _jit(tj, 0.4), _rng.randf_range(0.6, 1.1), Color.WHITE)
+				else:
+					if rr < 0.32:
+						_place("snowpine%d" % _rng.randi_range(0, 1), _jit(ti, 0.5), _jit(tj, 0.5), _rng.randf_range(0.9, 1.5), Color.WHITE)
+					elif rr < 0.4 or hh > 0.55:
+						_place("snowrock", _jit(ti, 0.45), _jit(tj, 0.45), _rng.randf_range(0.8, 1.6), Color.WHITE)
+				continue
 			if biome == "sumpf":      # Moor: Schilf auf Schlamm und am Wasser, tote Baeume, wenige Steine
 				if inside and t == "S" and _rng.randf() < 0.45:
 					_place("reed", _jit(ti, 0.4), _jit(tj, 0.4), _rng.randf_range(0.8, 1.3), _tint(0.1))

@@ -766,14 +766,15 @@ function secPreview(x) {
 const SEC_PLACEHOLDER = "Beschreibe das Geheimnis frei, z. B.: Brunhilde wirft ein Fass auf Lin. Der kämpft ab dann 10 % stärker im Drunken-Master-Stil und bekommt eine Sonderfähigkeit. Was soll passieren, wie soll es aussehen, welche Szene, welche Musik? Alles, was Claude für die Umsetzung wissen muss.";
 function secTech(x, i) {
   const o = SEC, uname = id => o.units[id]?.name || id, t = x.trigger, sc = x.scene, fig = Object.entries(o.units).map(([k, u]) => [k, u.name]);
-  const beam = t.type === "beam_via_ally", thr = t.type === "throw_ally", near = t.type === "ability_near_ally" || t.type === "hit_near_ally", hitn = t.type === "hit_near_ally", second = beam ? t.via : near ? t.near : t.target;
+  const beam = t.type === "beam_via_ally", thr = t.type === "throw_ally", near = t.type === "ability_near_ally" || t.type === "hit_near_ally", hitn = t.type === "hit_near_ally", objn = t.type === "ability_near_object", second = beam ? t.via : objn ? t.owner : near ? t.near : t.target;
   const abs = (o.units[t.by]?.abilities || []).map(a => [a, o.abilities[a] || a]); if (!abs.length) abs.push(["", "(keine passende Fähigkeit)"]);
   const who = [[t.by, uname(t.by)], [second, uname(second)]];
   const pt = list => list.map(n => [n, n]);
   const typ = `<div class="sbox"><h4>Auslöser-Typ</h4><div class="row"><select data-f="ttype" aria-label="Auslöser-Typ">${secOpts([["ability_on_ally", "Fähigkeit auf einen Verbündeten einsetzen"], ["beam_via_ally", "Strahl über einen Verbündeten umlenken"], ["throw_ally", "Einen Verbündeten werfen"], ["ability_near_ally", "Verbündeter in der Nähe erschrickt"], ["hit_near_ally", "Verbündeter neben dem getroffenen Gegner"]], t.type || "ability_on_ally")}</select></div></div>`;
   const throwAbs = (o.units[t.by]?.throws || []).map(a => [a, o.abilities[a] || a]); if (!throwAbs.length) throwAbs.push(["", "(keine Wurf-Fähigkeit)"]);
   const reacts = (o.units[t.near]?.all_abilities || []).map(a => [a, o.abilities[a] || a]);
-  const trig = hitn ? `<div class="sbox"><h4>Auslöser</h4><div class="row">
+  const trig = objn ? `<div class="sbox"><h4>Auslöser (Objekt in der Nähe)</h4><p class="hint" style="margin:0">${esc(uname(t.by))} setzt ${esc(o.abilities[t.ability] || t.ability)} ein, während neben ${esc(uname(t.by))} ein Objekt „${esc(t.object)}“ von ${esc(uname(t.owner))} steht. Wirkung: Gegner im Umkreis ${+x.effects.radius || 2} des Einschlags haben ${+x.effects.turns || 2} Runden den Status „${esc(x.effects.status || "klebrig")}“. Dieser Auslöser wird im Spiel gebaut, hier sind Text und Szene bearbeitbar.</p></div>`
+  : hitn ? `<div class="sbox"><h4>Auslöser</h4><div class="row">
         <select data-f="by" aria-label="Figur">${secOpts(fig, t.by)}</select> trifft mit
         <select data-f="ability" aria-label="Fähigkeit">${secOpts((o.units[t.by]?.all_abilities || []).map(a => [a, o.abilities[a] || a]), t.ability)}</select>
         einen Gegner, und <select data-f="near" aria-label="Verbündeter daneben">${secOpts(fig, t.near)}</select> steht direkt daneben.</div></div>

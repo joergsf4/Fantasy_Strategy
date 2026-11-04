@@ -645,5 +645,52 @@
   "body": "armor",
   "size": 1.6,
   "flees": true
+ },
+ "wolf": {
+  "name": "Wolf",
+  "hp": 20,
+  "atk": 8,
+  "def": 2,
+  "res": 1,
+  "move": 5,
+  "range_min": 1,
+  "range": 1,
+  "role": "damage",
+  "dmg_type": "body",
+  "tags": [
+   "standard",
+   "rudel"
+  ],
+  "abilities": [],
+  "weapon": "fist",
+  "body": "flesh",
+  "size": 1.25
+ },
+ "alphawolf": {
+  "name": "Alphawolf",
+  "hp": 42,
+  "atk": 10,
+  "def": 4,
+  "res": 3,
+  "move": 5,
+  "range_min": 1,
+  "range": 1,
+  "role": "damage",
+  "dmg_type": "body",
+  "tags": [
+   "boss",
+   "rudel"
+  ],
+  "abilities": [
+   "kehlbiss",
+   "heulen"
+  ],
+  "weapon": "fist",
+  "body": "flesh",
+  "size": 2.0,
+  "recruit_only": true,
+  "hero": true,
+  "from": 18,
+  "intro": 17
  }
 }

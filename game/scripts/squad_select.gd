@@ -33,7 +33,7 @@ static func has_choice(p: Party, defs: Dictionary, m: Dictionary) -> bool:
 			free_slot = true
 	if not free_slot:
 		return false
-	for id: String in Party.roster(defs, int(String(m["id"]).substr(2))):
+	for id: String in Party.roster(defs, int(String(m["id"]).substr(2)), true, p.recruited):
 		if not squad_ids.has(id):
 			return true
 	return false
@@ -111,7 +111,7 @@ func _refresh() -> void:
 		flow.add_theme_constant_override("h_separation", 10)
 		flow.add_theme_constant_override("v_separation", 8)
 		_body.add_child(flow)
-		for id: String in Party.roster(unit_defs, int(String(mission["id"]).substr(2))):
+		for id: String in Party.roster(unit_defs, int(String(mission["id"]).substr(2)), true, party.recruited):
 			if squad.has(id):
 				continue
 			var cand := VBoxContainer.new()

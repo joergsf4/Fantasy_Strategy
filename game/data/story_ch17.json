@@ -1,0 +1,72 @@
+{
+ "intro": [
+  {
+   "left": "maedchen_baer",
+   "right": "wendy",
+   "speaker": "maedchen_baer",
+   "text": "Der Sumpf liegt hinter uns, vor uns beginnt das Gebirge. Hier oben liegt Schnee, so weit man sehen kann."
+  },
+  {
+   "left": "bienenmaedchen",
+   "right": "wendy",
+   "speaker": "bienenmaedchen",
+   "text": "Es ist eiskalt. Meine Flügel sind steif, meine Fühler gefroren. Wer hatte die Idee, in die Berge zu gehen?",
+   "left_expr": "wuetend"
+  },
+  {
+   "left": "hund",
+   "right": "wendy",
+   "speaker": "hund",
+   "text": "Der Meister versteckt sich im Norden, Stachelia. Das war der Plan, und du warst dabei."
+  },
+  {
+   "left": "wendy",
+   "right": "maedchen_baer",
+   "speaker": "wendy",
+   "text": "Keine Sorge, ich habe vorgesorgt! Für jeden ein dicker Mantel, Mütze und Handschuhe. Ich habe einfach alles gestrickt, was ich hatte.",
+   "left_expr": "lachend"
+  },
+  {
+   "left": "wendy",
+   "right": "bienenmaedchen",
+   "speaker": "wendy",
+   "text": "Für dich gibt es auch einen Pullover, Stachelia. Mit Flügellöchern!",
+   "left_expr": "lachend"
+  },
+  {
+   "left": "wendy",
+   "right": "bienenmaedchen",
+   "speaker": "bienenmaedchen",
+   "text": "Ich trage keine Wolle. ...Doch. Gib her. Aber nur, weil mir kalt ist.",
+   "right_expr": "wuetend"
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "wendy",
+   "speaker": "maedchen_baer",
+   "text": "Nach einem langen, beschwerlichen Aufstieg bricht die Nacht herein. Der Mond steht hell über dem Schnee."
+  },
+  {
+   "left": "hund",
+   "right": "maedchen_baer",
+   "speaker": "hund",
+   "text": "Hört ihr das? Da heult etwas. Mehr als eines.",
+   "left_expr": "wuetend"
+  }
+ ],
+ "outro": [
+  {
+   "left": "maedchen_baer",
+   "right": "wendy",
+   "speaker": "maedchen_baer",
+   "text": "Die Nacht ist überstanden. Weiter über den Pass, der Meister ist nicht mehr weit."
+  },
+  {
+   "left": "wendy",
+   "right": "maedchen_baer",
+   "speaker": "wendy",
+   "text": "Gut, dass ich genug Wolle hatte.",
+   "left_expr": "lachend"
+  }
+ ]
+}

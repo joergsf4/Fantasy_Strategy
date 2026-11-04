@@ -8,6 +8,7 @@ uniform vec4 map_rect = vec4(-0.5, -0.5, 11.5, 9.5);
 uniform float grid_strength : hint_range(0.0, 1.0) = 0.2;
 uniform sampler2D swamp_mask : filter_linear, repeat_disable;   // Sumpf: eine Texel je Kachel (1 = Sumpf), weich gefiltert
 uniform float swamp_on : hint_range(0.0, 1.0) = 0.0;
+uniform float snowland : hint_range(0.0, 1.0) = 0.0;   // Biom Schnee: Gras wird Schnee, Waldboden harter Firn
 uniform float swamp : hint_range(0.0, 1.0) = 0.0;      // Biom Sumpf: Gras wird mooriges Olivgruen, Waldboden dunkler Schlamm
 uniform float desert : hint_range(0.0, 1.0) = 0.0;     // Biom Wueste: Gras und Waldboden werden zu Sand
 
@@ -64,6 +65,10 @@ void fragment() {
 	dune *= (0.94 + 0.12 * fine) * (0.96 + 0.08 * sin(p.x * 5.0 + p.y * 2.2 + large * 7.0));
 	grass = mix(grass, vec3(0.42, 0.58, 0.22) * (0.9 + 0.25 * mid), swamp);
 	forest = mix(forest, mix(vec3(0.06, 0.05, 0.03), vec3(0.14, 0.10, 0.05), mid) * (0.9 + 0.2 * fine), swamp);
+	vec3 snowc = mix(vec3(0.80, 0.86, 0.95), vec3(0.96, 0.98, 1.0), smoothstep(0.25, 0.75, large * 0.65 + mid * 0.35));
+	snowc *= (0.95 + 0.07 * fine) * (0.97 + 0.04 * sin(p.x * 3.0 + p.y * 1.6 + large * 6.0));
+	grass = mix(grass, snowc, snowland);
+	forest = mix(forest, mix(vec3(0.62, 0.70, 0.82), vec3(0.78, 0.84, 0.92), mid) * (0.94 + 0.1 * fine), snowland);
 	grass = mix(grass, dune, desert);
 	forest = mix(forest, dune * vec3(0.84, 0.72, 0.62), desert);
 

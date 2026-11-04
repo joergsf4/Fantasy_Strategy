@@ -321,6 +321,20 @@ jobs.push({ name: 'fx_totbaum', refs: [path.join(OUT, 'fx_fireball.jpg')], promp
 jobs.push({ name: 'fx_schilf', refs: [path.join(OUT, 'fx_fireball.jpg')], prompt: 'Create a clump of swamp reeds and cattails: tall green-brown reed blades with brown cattail heads, a few dark lily pads and a bit of muddy ground at the base. Game sprite, seen from the front slightly from above.' + FX_STYLE });
 jobs.push({ name: 'fx_sumpfpilz', refs: [path.join(OUT, 'fx_fireball.jpg')], prompt: 'Create a cluster of glowing swamp mushrooms: three toadstools with pale green-turquoise glowing caps and spots, small glowing spores floating above them, dark mossy base. Game sprite, seen from the front slightly from above.' + FX_STYLE });
 
+// Mission 17 (Schneegebirge): Woelfe, schneeweisser Alphawolf (spaeter Held), Schnee-Sprites, Klebekanone.
+const WOLF = 'a grey-brown snarling timber wolf, lean and fierce, thick winter fur, bared fangs, yellow eyes, snow on its back';
+const ALPHA = 'the white alpha wolf: a huge snow-white wolf, much larger and more majestic than a normal wolf, thick silver-white mane, pale ice-blue eyes, a long old scar over one eye, proud noble and wild, wearing a simple leather and bone necklace';
+const ALPHA_EMO = { '': 'standing proud and calm, serious wise gaze', lachend: 'a toothy happy wolf grin, tongue out, tail wagging, eyes bright', wuetend: 'snarling fiercely with bared fangs, hackles raised, eyes blazing' };
+for (const [emo, d] of Object.entries(ALPHA_EMO))
+  jobs.push({ name: emo ? `alphawolf_${emo}` : 'alphawolf', refs: [ref(STYLE_REF)], prompt: `Create a dialogue portrait of ${ALPHA}, ${d}. Upper body, facing right.` + PORTRAIT_TAIL });
+jobs.push({ name: 'alphawolf_chibi', refs: [path.join(OUT, 'ritter_chibi.jpg')], prompt: `Create ${ALPHA}.` + CHIBI_TAIL + ' A four-legged wolf standing on all fours, facing right, strict full body.' });
+jobs.push({ name: 'wolf_chibi', refs: [path.join(OUT, 'ritter_chibi.jpg')], prompt: `Create ${WOLF}.` + CHIBI_TAIL + ' A four-legged wolf standing on all fours, facing right, strict full body.' });
+jobs.push({ name: 'fx_schneefichte1', refs: [path.join(OUT, 'fx_fireball.jpg')], prompt: 'Create a snow-covered spruce fir tree: dark green branches heavy with white snow, a few icicles, snowy base. Game sprite, seen from the front slightly from above.' + FX_STYLE });
+jobs.push({ name: 'fx_schneefichte2', refs: [path.join(OUT, 'fx_fireball.jpg')], prompt: 'Create a slender tall snowy pine tree with thick white snow on its branches, a slightly bent top, snow at the base. Game sprite, seen from the front slightly from above.' + FX_STYLE });
+jobs.push({ name: 'fx_eisfels', refs: [path.join(OUT, 'fx_fireball.jpg')], prompt: 'Create a grey rock boulder covered with white snow on top and blue-white ice crystals at its side. Game sprite, seen from the front slightly from above.' + FX_STYLE });
+jobs.push({ name: 'fx_schneehaufen', refs: [path.join(OUT, 'fx_fireball.jpg')], prompt: 'Create a small snow drift mound with a few frozen dry twigs and tufts of pale grass poking out, blue-white shadows. Game sprite, seen from the front slightly from above.' + FX_STYLE });
+jobs.push({ name: 'fx_kleber', refs: [path.join(OUT, 'fx_fireball.jpg')], prompt: 'Create a big splat of sticky golden-amber honey glue goo: a glossy blob with stretching strands and drips, translucent, a few small bubbles. Game sprite, seen from the front slightly from above.' + FX_STYLE });
+
 // Kapitel 9: Warts Frischlinge (drei kleine Wildschweine als EINE Figur), der weinerliche Regent, die bedrohliche Festung.
 const FRISCH = 'Warts Frischlinge: a gang of exactly THREE small mean wild-boar piglets standing close together as one group character: tiny tusks, bristly dark mohawks, small mean red-brown eyes and evil grins, wearing scraps of patched leather armor; the left one swings a spiked club (a wooden club studded with iron nails), the middle one holds a rusty hand axe, the right one a second spiked club; small but nasty';
 const FRISCH_EMO = { '': 'cackling nastily, ready to attack', wuetend: 'squealing furiously with bared tusks, weapons raised high' };
