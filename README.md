@@ -138,6 +138,7 @@ Test: `python3 -m unittest tools/dialog_editor/test_server.py`
 - `gemini/`: Gemini-Automatisierung für Bilder (`run.mjs`) und Musik (`music.mjs`)
 - `make_sfx.py`: erzeugt alle Soundeffekte und Brabbel-Laute synthetisch
 - `balance.py` mit dem grafikfreien Simulator in `game/sim/`: Balancing-Experimente, Bericht in [docs/balance.md](docs/balance.md)
+- **Text-Editor für Mitwirkende:** https://joergsf4.github.io/Fantasy_Strategy/ (GitHub Pages, ohne Server). Texter bearbeiten dort, **„Änderungen einreichen“** erzeugt eine Datei für ein GitHub-Issue, im lokalen Editor gibt es **„Vorschlag importieren“**. Anleitung: [docs/text_editor_mitmachen.md](docs/text_editor_mitmachen.md).
 - `make_trailer.sh`, `make_short.sh`: nehmen Trailer und YouTube Short direkt aus dem Spiel auf
 - `make_ui.py`, `make_thumbnail.py`: UI-Texturen und Thumbnail
 
