@@ -245,7 +245,7 @@ func _barrel_burst(_u: Dictionary, v: Dictionary) -> void:
 func _spin(u: Dictionary) -> void:
 	var n: Node3D = u["node"]
 	var center := n.position + Vector3(0, 0.55, 0)
-	var radius := float(fx.c("todeswirbel", "radius", 0.95))
+	var radius := float(fx.c("todeswirbel", "radius", 0.95)) * fx.spin_scale
 	var spins := float(fx.c("todeswirbel", "spins", 2))
 	var time := float(fx.c("todeswirbel", "time", 0.65))
 	var blade := fx.make_sprite("fx_slash", center + Vector3(radius, 0, 0), 1.6, true, Color.WHITE, 3)

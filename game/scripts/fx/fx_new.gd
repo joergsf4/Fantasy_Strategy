@@ -413,6 +413,28 @@ func shuriken_rain(from_unit: Dictionary, dest: Vector2i, victims: Array[Diction
 	await _wait(0.34 + minf(float(spots.size()) * 0.07, 1.1) + 0.1)
 
 
+## Shinobi no Kaze: Die Schwestern werfen ihre Wurfsterne in den Wirbel (Sterne fliegen im Bogen zur Mitte und kreisen kurz).
+func shuriken_into_whirl(helpers: Array, whirl: Dictionary) -> void:
+	Sfx.play("whoosh_l", -4.0, 1.5)
+	var to := fx.chest(whirl, 0.6)
+	for h: Dictionary in helpers:
+		for i in 3:
+			var star := fx.make_sprite("fx_shuriken", fx.chest(h, 0.8), 0.36, false, Color.WHITE, 2)
+			var from := star.position
+			var tw := fx.create_tween()
+			tw.tween_interval(float(i) * 0.08)
+			tw.tween_method(func(t: float) -> void:
+				if is_instance_valid(star):
+					star.position = from.lerp(to, t) + Vector3(0, sin(t * PI) * 0.7, 0)
+					fx._sp(star, "roll", t * 14.0), 0.0, 1.0, 0.3)
+			tw.tween_callback(func() -> void:
+				if is_instance_valid(star):
+					star.queue_free())
+	await _wait(0.5)
+	fx.light_flash(to, Color(0.8, 0.9, 1.0), 3.0, 4.5, 0.5)
+	fx.particles("fx_shuriken", to, 10, 2.5, 0.25, 0.7, 3.0, Color.WHITE, false, 180.0)
+
+
 ## Turbo-Treibstoff: Dr. Humbug reicht Robina eine Flasche, sie trinkt, Dampf und Funken schiessen aus dem Auspuff.
 func fuel(giver: Dictionary, v: Dictionary) -> void:
 	Sfx.play("chime", -4.0, 0.7)

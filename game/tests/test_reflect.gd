@@ -275,6 +275,28 @@ func _initialize() -> void:
 	await b._run_ability(hum4, "wundersalbe", pat2)
 	check(not Status.has(rob4, "geschmiert"), "Robina nicht daneben: kein Schmiermittel")
 
+	# --- Shinobi no Kaze: Kage-Schwestern neben Takeda machen den Wirbel groesser (Radius 2)
+	clear()
+	scenes.clear()
+	var sk_tak := spawn("samurai", "p", Vector2i(5, 5))
+	var sk_kage := spawn("ninjas", "p", Vector2i(4, 5))
+	var sk_nah := spawn("soldat_infanterie", "e", Vector2i(6, 5))
+	var sk_fern := spawn("soldat_infanterie", "e", Vector2i(7, 5))       # 2 Felder entfernt
+	var sk_weit := spawn("soldat_infanterie", "e", Vector2i(8, 5))       # 3 Felder: ausserhalb
+	for z in [sk_nah, sk_fern, sk_weit]:
+		z["hp"] = 100
+		z["maxhp"] = 100
+	await b._run_ability(sk_tak, "todeswirbel", sk_tak)
+	check(sk_nah["hp"] < 100 and sk_fern["hp"] < 100 and sk_weit["hp"] == 100, "Wirbel trifft jetzt auch 2 Felder weit, nicht 3: %d %d %d" % [sk_nah["hp"], sk_fern["hp"], sk_weit["hp"]])
+	check(scenes == ["shinobi_no_kaze"] and b._widen_r == 0, "Szene beim ersten Mal, Radius danach zurueckgesetzt")
+	clear()
+	var sk_tak2 := spawn("samurai", "p", Vector2i(5, 5))
+	var sk_fern2 := spawn("soldat_infanterie", "e", Vector2i(7, 5))
+	sk_fern2["hp"] = 100
+	sk_fern2["maxhp"] = 100
+	await b._run_ability(sk_tak2, "todeswirbel", sk_tak2)
+	check(sk_fern2["hp"] == 100, "ohne Schwestern bleibt der Wirbel klein")
+
 	# --- Inspiration von oben: Albrecht steht neben dem Gegner, den Lumis Sternschnuppe trifft
 	clear()
 	scenes.clear()

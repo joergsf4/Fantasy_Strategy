@@ -16,6 +16,7 @@ var _soft: Texture2D
 var _ring: Texture2D
 var _hitstop_busy := false
 var ab: FxAbilities
+var spin_scale := 1.0              # Wirbel groesser (Geheimnis Shinobi no Kaze)
 var nw: FxNew
 
 
@@ -714,6 +715,10 @@ func catch_bone(u: Dictionary, via: Dictionary) -> void:
 
 func inspire(v: Dictionary) -> void:
 	await nw.inspire(v)
+
+
+func shuriken_into_whirl(helpers: Array, whirl: Dictionary) -> void:
+	await nw.shuriken_into_whirl(helpers, whirl)
 
 
 func fuel(giver: Dictionary, v: Dictionary) -> void:

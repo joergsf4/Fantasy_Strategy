@@ -76,6 +76,7 @@ var kids_stung := 0                     # wie oft Bienen das Waisenhaus erreicht
 var triggers: Array = []                 # {when, do, fired}
 var _notes: Array = []                    # Ereignisse seit der letzten Pruefung: {kind, ...}
 var kills_total := 0                      # besiegte Gegner insgesamt
+var _widen_r := 0                          # >0: Ring-Faehigkeit hat gerade diesen groesseren Radius (Geheimnis Shinobi no Kaze)
 var _actor: Dictionary = {}               # zuletzt handelnde Figur (fuer "$hero" bei Ereignissen ohne eigenen Ausloeser)
 var super_music := Callable()            # von main gesetzt: func(on: bool) -> daempft die Kampfmusik waehrend einer Super-Attacke
 var secret_runner := Callable()           # async func(secret: Dictionary) -> von main gesetzt, zeigt die Szene einer geheimen Interaktion
@@ -3688,6 +3689,8 @@ func _near_reactions(u: Dictionary, id: String) -> void:
 		var sec := Secrets.find_near(u["id"], id, o["id"])
 		if sec.is_empty():
 			continue
+		if (sec["effects"] as Dictionary).has("enlarge"):
+			continue          # laeuft schon vor dem Wirken der Faehigkeit (_widen_secret)
 		if not (sec["effects"] as Dictionary).has("boost"):
 			var rid: String = sec["effects"]["react_ability"]
 			if not (o["abilities"] as Array).has(rid) or int(o["cd"].get(rid, 0)) > 0:
@@ -3747,6 +3750,36 @@ func _object_apply(u: Dictionary, sec: Dictionary, target: Dictionary) -> void:
 			fx.flash_unit(v, Color(1.6, 1.3, 0.5), 0.3)
 			await _popup(v, "Festgeklebt!", Color(1.0, 0.85, 0.3))
 	await get_tree().create_timer(0.3).timeout
+
+
+## Geheimnis "Shinobi no Kaze" (ability_near_ally mit effects.enlarge): Setzt u die Ring-Faehigkeit ein, waehrend die Figur "near" auf einem
+## Nachbarfeld steht, wirft sie ihre Wurfsterne in den Wirbel und macht ihn groesser (Radius statt 1). Zuerst (beim ersten Mal) Szene und
+## Polarlicht, DANACH wirbelt es, schon mit dem groesseren Radius. Rueckgabe: das Geheimnis oder {}.
+func _widen_secret(u: Dictionary, id: String) -> Dictionary:
+	if not units.has(u) or u["team"] != "p" or abilities[id].get("area", {}).get("shape", "") != "ring8":
+		return {}
+	for o in units.duplicate():
+		if o == u or o["team"] != u["team"] or Grid.dist(o["pos"], u["pos"]) != 1:
+			continue
+		var sec := Secrets.find_near(u["id"], id, o["id"])
+		if sec.is_empty() or not (sec["effects"] as Dictionary).has("enlarge"):
+			continue
+		var ef: Dictionary = sec["effects"]
+		if not secrets_seen.has(sec["id"]):
+			secrets_seen.append(sec["id"])
+			if secret_runner.is_valid():
+				await secret_runner.call(sec)
+			var ci: Dictionary = ef.get("cutin", {})
+			if not ci.is_empty():
+				await _super_cutin(o, {}, str(ci.get("title", sec["name"])), str(ci.get("sub", "")))
+				_super_music_stop()
+		_widen_r = int(ef["enlarge"].get("radius", 2))
+		fx.spin_scale = 1.0 + 0.45 * float(_widen_r - 1)
+		_turn_towards(o, u["pos"])
+		await fx.shuriken_into_whirl([o], u)
+		_popup(u, str(ef["enlarge"].get("popup", "Wirbelwind!")), Color(0.8, 0.9, 1.0))
+		return sec
+	return {}
 
 
 ## Geheimnis "Turbo-Treibstoff" (ability_near_ally mit effects.boost): u setzt die Faehigkeit ein, o steht daneben, und o bekommt einen
@@ -3995,6 +4028,8 @@ func _area_tiles(ab: Dictionary, center: Vector2i) -> Array[Vector2i]:
 	if a.is_empty():
 		return out
 	var r: int = a.get("r", 1)
+	if a["shape"] == "ring8":
+		r = maxi(r, _widen_r)
 	for dy in range(-r, r + 1):
 		for dx in range(-r, r + 1):
 			var p := center + Vector2i(dx, dy)
@@ -4002,7 +4037,7 @@ func _area_tiles(ab: Dictionary, center: Vector2i) -> Array[Vector2i]:
 				continue
 			if a["shape"] == "radius" and absi(dx) + absi(dy) <= r:
 				out.append(p)
-			elif a["shape"] == "ring8" and maxi(absi(dx), absi(dy)) == 1:
+			elif a["shape"] == "ring8" and maxi(absi(dx), absi(dy)) >= 1 and maxi(absi(dx), absi(dy)) <= maxi(1, _widen_r):
 				out.append(p)
 	return out
 
@@ -4095,6 +4130,7 @@ func _run_ability(u: Dictionary, id: String, target: Dictionary) -> void:
 			await _run_reflect(u, id, target, bb["via"], bb["sec"])
 			return
 		catch_bb = bb          # "catch": der Angriff laeuft normal weiter, die Figur im Weg faengt etwas auf
+	await _widen_secret(u, id)
 	var glue_sec := _object_secret(u, id, target)      # Klebekanone: erst Szene und Auftritt, danach der Schuss
 	if not glue_sec.is_empty():
 		await _object_secret_intro(u, glue_sec)
@@ -4124,6 +4160,8 @@ func _run_ability(u: Dictionary, id: String, target: Dictionary) -> void:
 	_refresh_unit(u)
 	if ab.get("super", false):
 		_super_music_stop()
+	_widen_r = 0
+	fx.spin_scale = 1.0
 	await _near_reactions(u, id)
 	await _hit_near_reactions(u, id, target)
 	if not glue_sec.is_empty() and units.has(u):

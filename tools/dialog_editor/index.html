@@ -823,8 +823,9 @@ function secTech(x, i) {
         <select data-f="ability" aria-label="Fähigkeit">${secOpts((o.units[t.by]?.all_abilities || []).map(a => [a, o.abilities[a] || a]), t.ability)}</select>
         ein, und <select data-f="near" aria-label="Figur in der Nähe">${secOpts(fig, t.near)}</select> steht auf einem Nachbarfeld.</div></div>
       <div class="sbox"><h4>Wirkung</h4><div class="row">
-        <select data-f="nearmode" aria-label="Wirkungsart">${secOpts([["react", "Figur in der Nähe reagiert mit einer Fähigkeit"], ["boost", "Figur in der Nähe wird verstärkt (Angriffsbonus)"]], x.effects.boost ? "boost" : "react")}</select></div>
-        ${x.effects.boost ? `<div class="row" style="margin-top:6px">${esc(uname(t.near))} bekommt Status <input type="text" data-f="bo_id" value="${esc(x.effects.boost.id || "treibstoff")}" style="width:110px" aria-label="Status-Kennung">
+        <select data-f="nearmode" aria-label="Wirkungsart">${secOpts([["react", "Figur in der Nähe reagiert mit einer Fähigkeit"], ["boost", "Figur in der Nähe wird verstärkt (Angriffsbonus)"], ["enlarge", "Figur in der Nähe vergrößert den Wirbel (Ring-Fähigkeit)"]], x.effects.boost ? "boost" : x.effects.enlarge ? "enlarge" : "react")}</select></div>
+        ${x.effects.enlarge ? `<div class="row" style="margin-top:6px">${esc(uname(t.near))} wirft Wurfsterne in den Wirbel: neuer Radius <input type="number" data-f="en_radius" min="2" max="4" value="${+x.effects.enlarge.radius || 2}" aria-label="Neuer Radius"> Felder (statt 1). Nur für Ring-Fähigkeiten, die Wirkung gilt für diesen Einsatz.</div>`
+        : x.effects.boost ? `<div class="row" style="margin-top:6px">${esc(uname(t.near))} bekommt Status <input type="text" data-f="bo_id" value="${esc(x.effects.boost.id || "treibstoff")}" style="width:110px" aria-label="Status-Kennung">
         für <input type="number" data-f="bo_turns" min="1" max="9" value="${+x.effects.boost.turns || 3}" aria-label="Runden"> Runden
         · <input type="number" data-f="bo_atk" min="0" max="200" value="${+x.effects.boost.atk_pct || 0}" aria-label="Mehr Angriff in Prozent"> % mehr Angriff (50 % = ×1,5)
         · <input type="number" data-f="bo_move" min="-3" max="3" value="${+x.effects.boost.move || 0}" aria-label="Mehr Bewegung"> Felder Bewegung. Die Aktion von ${esc(uname(t.by))} bleibt unverändert.</div>`
@@ -971,6 +972,7 @@ document.addEventListener("input", e => {
   else if (f === "height") x.effects.height = Math.max(2, Math.min(8, parseFloat(el.value || "4.2") || 4.2));
   else if (f === "heal") x.effects.heal = Math.max(0, Math.min(60, parseInt(el.value || "0", 10) || 0));
   else if (f === "st_id") (x.effects.status ||= { id: "satt", turns: 3, reduce_pct: 25 }).id = el.value.trim();
+  else if (f === "en_radius") x.effects.enlarge.radius = Math.max(2, Math.min(4, parseInt(el.value || "2", 10) || 2));
   else if (f === "bo_id") x.effects.boost.id = el.value.replace(/[^a-z_]/g, "").slice(0, 20) || "treibstoff";
   else if (f === "bo_turns") x.effects.boost.turns = Math.max(1, Math.min(9, parseInt(el.value || "3", 10) || 3));
   else if (f === "bo_atk") { const v = Math.max(0, Math.min(200, parseInt(el.value || "0", 10) || 0)); v ? x.effects.boost.atk_pct = v : delete x.effects.boost.atk_pct; }
@@ -988,9 +990,9 @@ document.addEventListener("change", e => {
   const x = sec[+card.dataset.sec], f = el.dataset.f;
   if (f === "addchar") { if (el.value) (x.characters ||= []).push(el.value); }
   else if (f === "ttype") secSwitchType(x, el.value);
-  else if (f === "near") { x.trigger.near = el.value; if (x.trigger.type === "ability_near_ally" && !x.effects.boost) x.effects.react_ability = SEC.units[el.value]?.all_abilities?.[0] || ""; x.scene.lines.forEach(l => { if (l.speaker !== x.trigger.by) l.speaker = el.value; }); }
+  else if (f === "near") { x.trigger.near = el.value; if (x.trigger.type === "ability_near_ally" && !x.effects.boost && !x.effects.enlarge) x.effects.react_ability = SEC.units[el.value]?.all_abilities?.[0] || ""; x.scene.lines.forEach(l => { if (l.speaker !== x.trigger.by) l.speaker = el.value; }); }
   else if (f === "react_ability") x.effects.react_ability = el.value;
-  else if (f === "nearmode") { const cut = x.effects.cutin; x.effects = el.value === "boost" ? { boost: { id: "treibstoff", turns: 3, atk_pct: 50 } } : { react_ability: SEC.units[x.trigger.near]?.all_abilities?.[0] || "", radius: 2 }; if (cut) x.effects.cutin = cut; }
+  else if (f === "nearmode") { const cut = x.effects.cutin; x.effects = el.value === "enlarge" ? { enlarge: { radius: 2 } } : el.value === "boost" ? { boost: { id: "treibstoff", turns: 3, atk_pct: 50 } } : { react_ability: SEC.units[x.trigger.near]?.all_abilities?.[0] || "", radius: 2 }; if (cut) x.effects.cutin = cut; }
   else if (f === "mode") { const cut = x.effects.cutin; x.effects = el.value === "catch" ? { mode: "catch", heal: 8, status: { id: "satt", turns: 3, reduce_pct: 25 } } : { mode: "reflect", reflect_pct: 75, radius: 2 }; if (cut) x.effects.cutin = cut; }
   else if (f === "via") { x.trigger.via = el.value; x.scene.lines.forEach(l => { if (l.speaker !== x.trigger.by) l.speaker = el.value; }); }
   else if (f === "beamab") { const set = new Set(x.trigger.abilities || []); el.checked ? set.add(el.dataset.ab) : set.delete(el.dataset.ab); x.trigger.abilities = [...set]; }

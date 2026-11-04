@@ -417,6 +417,16 @@ def save_secrets(body: dict) -> None:
                         new_effects["boost"]["move"] = mv
                     if isinstance(bo.get("popup"), str) and bo["popup"].strip():
                         new_effects["boost"]["popup"] = bo["popup"].strip()[:20]
+                elif ef.get("enlarge"):   # Ring-Faehigkeit wird groesser (Radius), die Figur in der Naehe hilft
+                    en = ef["enlarge"]
+                    rad = en.get("radius", 2)
+                    if abilities.get(ab, {}).get("area", {}).get("shape") != "ring8":
+                        raise ValueError(f"{name}: '{ab}' ist keine Ring-Faehigkeit (ring8), sie kann nicht groesser werden")
+                    if not isinstance(rad, int) or isinstance(rad, bool) or not 2 <= rad <= 4:
+                        raise ValueError(f"{name}: der neue Radius muss 2 bis 4 Felder sein")
+                    new_effects = {"enlarge": {"radius": rad}}
+                    if isinstance(en.get("popup"), str) and en["popup"].strip():
+                        new_effects["enlarge"]["popup"] = en["popup"].strip()[:20]
                 else:
                     rid, rad = ef.get("react_ability", ""), ef.get("radius", 2)
                     if rid not in units[on].get("abilities", []) or not any(e.get("type") == "status" for e in abilities.get(rid, {}).get("effects", [])):
