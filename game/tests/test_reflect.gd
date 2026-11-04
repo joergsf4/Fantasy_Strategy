@@ -178,7 +178,7 @@ func _initialize() -> void:
 	b.sel = aug
 	b._landing_ally = nin
 	b._cur_ab = "wurf"
-	var expect := Combat.damage(nin, f1, b._cover_for(f1, f1["pos"]), 0.0, 0.75)
+	var expect := Combat.damage(nin, f1, b._cover_for(f1, f1["pos"]), 0.0, 1.5, 0.5)
 	await b._do_throw_ally(Vector2i(6, 5))
 	check(nin["pos"] == Vector2i(6, 5), "die Ninjas landen auf dem Zielfeld")
 	check(100 - f1["hp"] == expect and 100 - f2["hp"] > 0, "Gegner im Umkreis bekommen den Regen (%d, erwartet %d)" % [100 - f1["hp"], expect])

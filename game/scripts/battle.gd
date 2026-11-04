@@ -3876,7 +3876,7 @@ func _throw_with_rain(u: Dictionary, ally: Dictionary, dest: Vector2i, sec: Dict
 	for v in victims:
 		if not units.has(v):
 			continue
-		var dmg := Combat.damage(ally, v, _cover_for(v, v["pos"]), 0.0, pct)
+		var dmg := Combat.damage(ally, v, _cover_for(v, v["pos"]), 0.0, pct, float(ef.get("ignore_def_pct", 0)) / 100.0)
 		fx.reflect_hit(v)
 		await _deal(v, dmg, "")
 	await get_tree().create_timer(0.35).timeout

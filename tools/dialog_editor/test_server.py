@@ -255,7 +255,7 @@ class EditorTest(unittest.TestCase):
         import copy
         d = server.secrets()
         wurf = next(x for x in d["secrets"] if x.get("trigger", {}).get("type") == "throw_ally")
-        self.assertEqual((wurf["trigger"]["by"], wurf["trigger"]["ability"], wurf["trigger"]["target"], wurf["effects"]["rain_pct"]), ("museklaugust", "wurf", "ninjas", 75))
+        self.assertEqual((wurf["trigger"]["by"], wurf["trigger"]["ability"], wurf["trigger"]["target"], wurf["effects"]["rain_pct"]), ("museklaugust", "wurf", "ninjas", 150))
         self.assertIn("wurf", d["units"]["museklaugust"]["throws"])
         server.save_secrets({"secrets": d["secrets"]})
         for mutate in (lambda s: s["trigger"].update(ability="bearhug"), lambda s: s["trigger"].update(target="museklaugust"), lambda s: s["effects"].update(rain_pct=0),

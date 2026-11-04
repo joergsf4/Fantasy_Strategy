@@ -470,7 +470,12 @@ def save_secrets(body: dict) -> None:
                 if not isinstance(hgt, (int, float)) or isinstance(hgt, bool) or not 2.0 <= hgt <= 8.0:
                     raise ValueError(f"{name}: die Flughoehe muss 2 bis 8 sein")
                 new_trigger = {"type": "throw_ally", "by": by, "ability": ab, "target": on}
+                ign = ef.get("ignore_def_pct", 0)
+                if not isinstance(ign, int) or isinstance(ign, bool) or not 0 <= ign <= 100:
+                    raise ValueError(f"{name}: ignorierte Verteidigung muss 0 bis 100 Prozent sein")
                 new_effects = {"rain_pct": rain, "radius": rad, "height": float(hgt)}
+                if ign:
+                    new_effects["ignore_def_pct"] = ign
             else:
                 ab = t["ability"]
                 if ab not in units[by].get("abilities", []) or abilities.get(ab, {}).get("target") != "enemy":
