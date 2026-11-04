@@ -182,28 +182,32 @@
        "right": "maja",
        "speaker": "oskar",
        "text": "Schwesterherz, sieh nur: Helden. Wie rührend. Und wie brennbar.",
-       "left_expr": "lachend"
+       "left_expr": "lachend",
+       "story": true
       },
       {
        "left": "oskar",
        "right": "maja",
        "speaker": "maja",
        "text": "Brennbar ist mein Lieblingswort. Machen wir es kurz, Oskar, ich will noch zu Mittag essen.",
-       "right_expr": "lachend"
+       "right_expr": "lachend",
+       "story": true
       },
       {
        "left": "braumeisterin",
        "right": "oskar",
        "speaker": "braumeisterin",
        "text": "Zwei Blondschöpfe im Gleichschritt. Wer von euch hat das Dorf angezündet?",
-       "left_expr": "wuetend"
+       "left_expr": "wuetend",
+       "story": true
       },
       {
        "left": "braumeisterin",
        "right": "oskar",
        "speaker": "oskar",
        "text": "Angezündet? Wir haben nur Atmosphäre geschaffen.",
-       "right_expr": "lachend"
+       "right_expr": "lachend",
+       "story": true
       }
      ]
     }
@@ -340,20 +344,23 @@
        "right": "wart",
        "speaker": "wart",
        "right_expr": "lachend",
-       "text": "HALT! Habt ihr meine Rakete vermisst? Ich hab mir neue gebaut, größere!"
+       "text": "HALT! Habt ihr meine Rakete vermisst? Ich hab mir neue gebaut, größere!",
+       "story": true
       },
       {
        "left": "$hero",
        "right": "wart",
        "speaker": "$hero",
-       "text": "Das Wildschwein vom Hohlweg! Der Regent schickt wohl alles, was Beine hat."
+       "text": "Das Wildschwein vom Hohlweg! Der Regent schickt wohl alles, was Beine hat.",
+       "story": true
       },
       {
        "left": "$hero",
        "right": "wart",
        "speaker": "wart",
        "right_expr": "wuetend",
-       "text": "Erst brennen wir euer Dorf nieder, dann seid ihr dran!"
+       "text": "Erst brennen wir euer Dorf nieder, dann seid ihr dran!",
+       "story": true
       }
      ]
     },
@@ -461,6 +468,98 @@
      ]
     }
    ]
+  },
+  {
+   "when": {
+    "turn": 2
+   },
+   "if": {
+    "present": [
+     "kungfu"
+    ]
+   },
+   "note": "Fluff: kungfu",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "kungfu",
+       "right": "",
+       "speaker": "kungfu",
+       "text": "Feuer ist wie ein schlechter Schüler. Es hört nur zu, wenn man es mit Wasser überzeugt."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 3
+   },
+   "if": {
+    "present": [
+     "elisabeth"
+    ]
+   },
+   "note": "Fluff: elisabeth",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "elisabeth",
+       "right": "",
+       "speaker": "elisabeth",
+       "text": "Brennende Häuser und kein Meer in Sicht. Ich bin beleidigt – und verschwitzt."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 4
+   },
+   "if": {
+    "present": [
+     "museklaugust"
+    ]
+   },
+   "note": "Fluff: museklaugust",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "museklaugust",
+       "right": "",
+       "speaker": "museklaugust",
+       "text": "Wasser holen? Ich bin Kurfürst und König! …Gut. Aber nur, wenn alle zusehen."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 5
+   },
+   "if": {
+    "present": [
+     "robo"
+    ]
+   },
+   "note": "Fluff: robo",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "robo",
+       "right": "",
+       "speaker": "robo",
+       "text": "Warnung: Brandgeruch. Ich habe keine Nase, aber ich bin trotzdem empört."
+      }
+     ]
+    }
+   ]
   }
  ],
  "flee": {
@@ -470,20 +569,23 @@
     "right": "oskar",
     "speaker": "oskar",
     "right_expr": "wuetend",
-    "text": "Mein Haar! Mein schönes Haar riecht nach Rauch! Das vergesse ich euch nie!"
+    "text": "Mein Haar! Mein schönes Haar riecht nach Rauch! Das vergesse ich euch nie!",
+    "story": true
    },
    {
     "left": "$hero",
     "right": "oskar",
     "speaker": "$hero",
-    "text": "Er läuft davon. Sein Haar ist ihm wichtiger als sein Heer."
+    "text": "Er läuft davon. Sein Haar ist ihm wichtiger als sein Heer.",
+    "story": true
    },
    {
     "left": "$hero",
     "right": "oskar",
     "speaker": "oskar",
     "right_expr": "wuetend",
-    "text": "Rückzug! Wir sehen uns wieder, und dann bin ich frisiert!"
+    "text": "Rückzug! Wir sehen uns wieder, und dann bin ich frisiert!",
+    "story": true
    }
   ],
   "maja": [
@@ -492,20 +594,23 @@
     "right": "maja",
     "speaker": "maja",
     "right_expr": "wuetend",
-    "text": "Ihr kleinen Würmer! Ich merke mir jedes eurer Gesichter. Jedes einzelne."
+    "text": "Ihr kleinen Würmer! Ich merke mir jedes eurer Gesichter. Jedes einzelne.",
+    "story": true
    },
    {
     "left": "$hero",
     "right": "maja",
     "speaker": "$hero",
-    "text": "Ihr Blick hat sich ins Mark gebrannt. Aber sie flieht."
+    "text": "Ihr Blick hat sich ins Mark gebrannt. Aber sie flieht.",
+    "story": true
    },
    {
     "left": "$hero",
     "right": "maja",
     "speaker": "maja",
     "right_expr": "wuetend",
-    "text": "Das war der Anfang, nicht das Ende. Der Regent erfährt davon!"
+    "text": "Das war der Anfang, nicht das Ende. Der Regent erfährt davon!",
+    "story": true
    }
   ]
  }

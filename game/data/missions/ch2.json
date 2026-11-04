@@ -255,14 +255,16 @@
        "left": "museklaugust",
        "right": "wart",
        "speaker": "museklaugust",
-       "text": "Ein Wildschwein! Ich dachte, die gibt es nur im Eintopf."
+       "text": "Ein Wildschwein! Ich dachte, die gibt es nur im Eintopf.",
+       "story": true
       },
       {
        "left": "museklaugust",
        "right": "wart",
        "speaker": "wart",
        "text": "Keine Ahnung, wer du bist, Perückenaugust. Raketen frei!",
-       "right_expr": "lachend"
+       "right_expr": "lachend",
+       "story": true
       }
      ]
     }
@@ -300,6 +302,75 @@
      ]
     }
    ]
+  },
+  {
+   "when": {
+    "turn": 2
+   },
+   "if": {
+    "present": [
+     "ritter"
+    ]
+   },
+   "note": "Fluff: ritter",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "ritter",
+       "right": "",
+       "speaker": "ritter",
+       "text": "Eine Mauer, ein Tor, enge Wege. Endlich ein Ort, an dem man in Ruhe würdevoll sein kann."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 3
+   },
+   "if": {
+    "present": [
+     "wendy"
+    ]
+   },
+   "note": "Fluff: wendy",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "wendy",
+       "right": "",
+       "speaker": "wendy",
+       "text": "Mäh… dieser Hohlweg hallt so schön. MÄÄÄH! …Mäh. Mäh. Mäh. Herrlich."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 4
+   },
+   "if": {
+    "present": [
+     "braumeisterin"
+    ]
+   },
+   "note": "Fluff: braumeisterin",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "braumeisterin",
+       "right": "",
+       "speaker": "braumeisterin",
+       "text": "Enge Gasse, dicke Mauern… ideal zum Lagern von Fässern. Nur leider nicht für Gegner."
+      }
+     ]
+    }
+   ]
   }
  ],
  "flee": {
@@ -309,20 +380,23 @@
     "right": "wart",
     "speaker": "wart",
     "right_expr": "wuetend",
-    "text": "Genug! Meine Raketen sind leer und mein Stolz ist verbeult. Das… das bleibt nicht ungerächt!"
+    "text": "Genug! Meine Raketen sind leer und mein Stolz ist verbeult. Das… das bleibt nicht ungerächt!",
+    "story": true
    },
    {
     "left": "$hero",
     "right": "wart",
     "speaker": "$hero",
-    "text": "Er rennt wie ein Ferkel, dem man das Futter wegnimmt."
+    "text": "Er rennt wie ein Ferkel, dem man das Futter wegnimmt.",
+    "story": true
    },
    {
     "left": "$hero",
     "right": "wart",
     "speaker": "wart",
     "right_expr": "wuetend",
-    "text": "Ich komme wieder! Mit mehr Raketen! Und mit Senf!"
+    "text": "Ich komme wieder! Mit mehr Raketen! Und mit Senf!",
+    "story": true
    }
   ]
  }

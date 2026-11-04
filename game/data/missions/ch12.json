@@ -50,14 +50,246 @@
        "right": "frischlinge",
        "speaker": "hund",
        "text": "Die Zugbrücke senkt sich! Jetzt kommen wir!",
-       "left_expr": "wuetend"
+       "left_expr": "wuetend",
+       "story": true
       },
       {
        "left": "hund",
        "right": "frischlinge",
        "speaker": "frischlinge",
        "text": "Oh nein! Wer hat den Hebel getroffen?! Der sollte doch niemand erreichen!",
-       "right_expr": "wuetend"
+       "right_expr": "wuetend",
+       "story": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 2
+   },
+   "if": {
+    "present": [
+     "maedchen_baer"
+    ]
+   },
+   "note": "Fluff: maedchen_baer",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "maedchen_baer",
+       "right": "",
+       "speaker": "maedchen_baer",
+       "text": "Brumm will schwimmen. Brumm will immer schwimmen. Brumm hat keine Ahnung von Zugbrücken."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 3
+   },
+   "if": {
+    "present": [
+     "samurai"
+    ]
+   },
+   "note": "Fluff: samurai",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "samurai",
+       "right": "",
+       "speaker": "samurai",
+       "text": "Ein hochgezogener Steg. Wie unhöflich. Man lässt Gäste nicht vor dem Tor stehen."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 4
+   },
+   "if": {
+    "present": [
+     "kungfu"
+    ]
+   },
+   "note": "Fluff: kungfu",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "kungfu",
+       "right": "",
+       "speaker": "kungfu",
+       "text": "Wenn die Brücke nicht zu uns kommt, kommen wir zur Brücke. …Moment. Das war nicht das Problem."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 5
+   },
+   "if": {
+    "present": [
+     "ninjas"
+    ]
+   },
+   "note": "Fluff: ninjas",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "ninjas",
+       "right": "",
+       "speaker": "ninjas",
+       "text": "Wir hätten schwimmen können. – Wir hassen nasse Kapuzen. – Dann also Brücke."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 6
+   },
+   "if": {
+    "present": [
+     "museklaugust"
+    ]
+   },
+   "note": "Fluff: museklaugust",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "museklaugust",
+       "right": "",
+       "speaker": "museklaugust",
+       "text": "Ich werfe Steine über den Fluss! Oder Frischlinge! Oder beides!"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 2
+   },
+   "if": {
+    "present": [
+     "wendy"
+    ]
+   },
+   "note": "Fluff: wendy",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "wendy",
+       "right": "",
+       "speaker": "wendy",
+       "text": "Mäh… ich kann nicht schwimmen. Wolle saugt sich voll. Ich werde zum Schwamm."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 3
+   },
+   "if": {
+    "present": [
+     "braumeisterin"
+    ]
+   },
+   "note": "Fluff: braumeisterin",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "braumeisterin",
+       "right": "",
+       "speaker": "braumeisterin",
+       "text": "Ein Fluss! Ich würde ja Bier hineinkippen, aber der Fluss hat es nicht verdient."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 4
+   },
+   "if": {
+    "present": [
+     "magical_girl"
+    ]
+   },
+   "note": "Fluff: magical_girl",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "magical_girl",
+       "right": "",
+       "speaker": "magical_girl",
+       "text": "Keine Sorge, ich zaubere uns eine Brücke! …Gleich. Hoffentlich. Wo ist mein Zauberstab?"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 5
+   },
+   "if": {
+    "present": [
+     "quacksalber"
+    ]
+   },
+   "note": "Fluff: quacksalber",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "quacksalber",
+       "right": "",
+       "speaker": "quacksalber",
+       "text": "Wer ins Wasser fällt, bekommt von mir ein Elixier. Es schmeckt nach Fluss. Verdächtig."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 6
+   },
+   "if": {
+    "present": [
+     "panzer"
+    ]
+   },
+   "note": "Fluff: panzer",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "panzer",
+       "right": "",
+       "speaker": "panzer",
+       "text": "Fluss? Ich bin ein Panzer. Wasser rostet. Ich nehme die Brücke."
       }
      ]
     }
@@ -71,14 +303,16 @@
     "right": "frischlinge",
     "speaker": "frischlinge",
     "text": "Wir kommen wieder! Mit noch mehr Stacheln! Und mit Verstärkung!",
-    "right_expr": "wuetend"
+    "right_expr": "wuetend",
+    "story": true
    },
    {
     "left": "$hero",
     "right": "frischlinge",
     "speaker": "frischlinge",
     "text": "Wart wird gerächt! ...Wartet, wo ist eigentlich unser nächster Chef?",
-    "right_expr": "wuetend"
+    "right_expr": "wuetend",
+    "story": true
    }
   ]
  }

@@ -66,34 +66,39 @@
        "right": "oskar",
        "speaker": "oskar",
        "text": "Da ist er also, der magische Honig. Schwesterherz, riechst du das? Flüssiges Gold für uns!",
-       "right_expr": "lachend"
+       "right_expr": "lachend",
+       "story": true
       },
       {
        "left": "bienenmaedchen",
        "right": "maja",
        "speaker": "maja",
-       "text": "Nicht nur für uns. Der Meister wird sehr zufrieden sein."
+       "text": "Nicht nur für uns. Der Meister wird sehr zufrieden sein.",
+       "story": true
       },
       {
        "left": "bienenmaedchen",
        "right": "oskar",
        "speaker": "bienenmaedchen",
        "text": "Ihr kommt nicht im Namen des Regenten? Wer soll dieser Meister sein?",
-       "left_expr": "wuetend"
+       "left_expr": "wuetend",
+       "story": true
       },
       {
        "left": "bienenmaedchen",
        "right": "oskar",
        "speaker": "oskar",
        "text": "Der Regent ist Geschichte. Wir kommen für das, was hinter ihm steht.",
-       "right_expr": "lachend"
+       "right_expr": "lachend",
+       "story": true
       },
       {
        "left": "bienenmaedchen",
        "right": "maja",
        "speaker": "bienenmaedchen",
        "text": "Schwärmt aus, Mädels! Sie sollen eure Stachel spüren!",
-       "left_expr": "wuetend"
+       "left_expr": "wuetend",
+       "story": true
       }
      ]
     }
@@ -115,14 +120,16 @@
        "right": "maja",
        "speaker": "maja",
        "text": "Oskar, sie wird müde. Zeit für das Feuer.",
-       "right_expr": "lachend"
+       "right_expr": "lachend",
+       "story": true
       },
       {
        "left": "bienenmaedchen",
        "right": "maja",
        "speaker": "bienenmaedchen",
        "text": "Lasst meine Bienenkörbe in Frieden!",
-       "left_expr": "wuetend"
+       "left_expr": "wuetend",
+       "story": true
       }
      ]
     }
@@ -177,14 +184,16 @@
        "right": "oskar",
        "speaker": "oskar",
        "text": "Genug gespielt. Feuer frei, Schwesterherz!",
-       "right_expr": "lachend"
+       "right_expr": "lachend",
+       "story": true
       },
       {
        "left": "bienenmaedchen",
        "right": "maja",
        "speaker": "maja",
        "text": "Mit Vergnügen. Brennt alles nieder, was summt.",
-       "right_expr": "wuetend"
+       "right_expr": "wuetend",
+       "story": true
       }
      ]
     },
@@ -198,7 +207,8 @@
        "right": "maja",
        "speaker": "bienenmaedchen",
        "text": "Meine Stöcke! Meine Bienen! Nein, nein, NEIN!",
-       "left_expr": "wuetend"
+       "left_expr": "wuetend",
+       "story": true
       }
      ]
     }
@@ -217,14 +227,16 @@
        "right": "oskar",
        "speaker": "bienenmaedchen",
        "text": "Ich kann nicht mehr... Aber das war nicht das Ende! Ich schwöre euch Rache. Euch beiden, und eurem finsteren Meister!",
-       "left_expr": "wuetend"
+       "left_expr": "wuetend",
+       "story": true
       },
       {
        "left": "bienenmaedchen",
        "right": "oskar",
        "speaker": "oskar",
        "text": "Lass sie laufen, Schwesterherz. Sammelt den Honig ein.",
-       "right_expr": "lachend"
+       "right_expr": "lachend",
+       "story": true
       }
      ]
     },

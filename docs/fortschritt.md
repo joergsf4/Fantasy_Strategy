@@ -31,3 +31,10 @@ Feste Stufen mit wachsenden Zahlen brachten keinen Spielspaß, deshalb gibt es T
 
 ## Teststart mit üblicher Ausstattung
 `START_CH=ch14 godot --path game` (optional `START_SKIP=1`) startet direkt in einer Mission und gibt allen Helden das, was dort üblich wäre (`Party.for_chapter`): Talentpunkte nach der Standardverteilung (Leben, Fähigkeit 1, Angriff, Fähigkeit 2), Ausrüstung nach der Zielkurve (`gear_tier` der Mission, `Progression.gear_for`), 400 Gold und Vorräte (4 Heiltränke, 2 Gegengift, 2 Äther, 1 Rauchbombe). Der Teststart wird nie gespeichert (`Party.test_run`), der echte Spielstand bleibt unberührt.
+
+## 5. Story und Fluff in Gesprächen
+- Jede Dialogzeile kann `"story": true` tragen. Im Text-Editor gibt es dafür pro Gespräch die Checkbox **„Story relevant“** (setzt das Flag für alle Zeilen des Gesprächs, ein blaues „Story“-Abzeichen steht im Kopf).
+- `Mission.dialogue_ids` zählt nur Story-Zeilen. **Nur Figuren aus Story-Gesprächen sind in der Gruppenwahl fest vorgegeben**, alle anderen Plätze sind frei tauschbar. (Kapitel mit `fixed_squad` bleiben komplett fest.)
+- Story sind Einleitungen und Abschlüsse, Auftritte und Rückzüge der Gegenspieler, Beitritte, Wendepunkte. Alles andere (Sprüche zu Fähigkeiten, Wetter, Hitze, Nebengeplänkel) ist Fluff.
+- Pro Mission (1–9, 12–17) gibt es für jeden wählbaren Helden ohne Story-Rolle einen **albernen Fluff-Spruch** (Auslöser: Runde 2 bis 6, nur wenn der Held in der Gruppe ist, Notiz „Fluff: <Held>“). So bekommt jeder Held, der mitkommt, ein paar Worte.
+- Fest vorgegeben sind damit je Mission nur noch 2 bis 5 von 6 Plätzen (vorher meist 4 bis 6).

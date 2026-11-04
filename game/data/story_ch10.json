@@ -4,58 +4,67 @@
    "left": "elisabeth",
    "right": "robo",
    "speaker": "elisabeth",
-   "text": "Die Barrikaden am Kai sind weg, und in den Häusern brennt Licht. Alles wirkt so normal."
+   "text": "Die Barrikaden am Kai sind weg, und in den Häusern brennt Licht. Alles wirkt so normal.",
+   "story": true
   },
   {
    "left": "elisabeth",
    "right": "robo",
    "speaker": "robo",
-   "text": "Regen bekommt meinen Servos gar nicht."
+   "text": "Regen bekommt meinen Servos gar nicht.",
+   "story": true
   },
   {
    "left": "hund",
    "right": "lotte",
    "speaker": "lotte",
    "text": "Blauer Hundsfreund! Endlich seid ihr da! Ich habe auf euch gewartet.",
-   "right_expr": ""
+   "right_expr": "",
+   "story": true
   },
   {
    "left": "hund",
    "right": "lotte",
    "speaker": "hund",
-   "text": "Lotte? Du bist ja völlig durchnässt! Was ist passiert?"
+   "text": "Lotte? Du bist ja völlig durchnässt! Was ist passiert?",
+   "story": true
   },
   {
    "left": "hund",
    "right": "lotte",
    "speaker": "lotte",
-   "text": "Die anderen Kinder... Pip, Mia, alle. Fremde kamen im Dunkeln und haben sie mitgenommen. Nur ich konnte mich verstecken."
+   "text": "Die anderen Kinder... Pip, Mia, alle. Fremde kamen im Dunkeln und haben sie mitgenommen. Nur ich konnte mich verstecken.",
+   "story": true
   },
   {
    "left": "hund",
    "right": "lotte",
    "speaker": "hund",
    "text": "Hat jemand gesehen, wohin?",
-   "left_expr": "wuetend"
+   "left_expr": "wuetend",
+   "story": true
   },
   {
    "left": "hund",
    "right": "lotte",
    "speaker": "lotte",
-   "text": "Sie sind nach Westen in den Wald verschwunden. Mehr weiß ich leider nicht."
+   "text": "Sie sind nach Westen in den Wald verschwunden. Mehr weiß ich leider nicht.",
+   "story": true
   },
   {
    "left": "hund",
    "right": "lotte",
    "speaker": "hund",
    "text": "Ich werde die Kinder finden! Das schwöre ich bei meinem Knochen.",
-   "left_expr": "wuetend"
+   "left_expr": "wuetend",
+   "story": true
   },
   {
    "left": "maedchen_baer",
    "right": "hund",
    "speaker": "maedchen_baer",
-   "text": "Wir kommen mit! Ich habe so das Gefühl, dass uns das auf die Fährte des wahren Bösen bringt."
+   "text": "Wir kommen mit! Ich habe so das Gefühl, dass uns das auf die Fährte des wahren Bösen bringt.",
+   "story": true
   }
  ],
  "outro": []

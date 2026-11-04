@@ -159,6 +159,75 @@
      ]
     }
    ]
+  },
+  {
+   "when": {
+    "turn": 2
+   },
+   "if": {
+    "present": [
+     "kungfu"
+    ]
+   },
+   "note": "Fluff: kungfu",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "kungfu",
+       "right": "",
+       "speaker": "kungfu",
+       "text": "Wer den Stab schwingt, schwingt auch die Teetasse. Beides mit ruhiger Hand."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 3
+   },
+   "if": {
+    "present": [
+     "elisabeth"
+    ]
+   },
+   "note": "Fluff: elisabeth",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "elisabeth",
+       "right": "",
+       "speaker": "elisabeth",
+       "text": "Ein Dorf ohne Hafen. Wo soll ich hier meine Kanone festmachen? Egal, ich improvisiere."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 4
+   },
+   "if": {
+    "present": [
+     "braumeisterin"
+    ]
+   },
+   "note": "Fluff: braumeisterin",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "braumeisterin",
+       "right": "",
+       "speaker": "braumeisterin",
+       "text": "Steuern aufs Bier? Das ist keine Politik mehr, das ist ein Verbrechen."
+      }
+     ]
+    }
+   ]
   }
  ]
 }

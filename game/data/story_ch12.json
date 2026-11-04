@@ -4,41 +4,47 @@
    "left": "ritter",
    "right": "hund",
    "speaker": "ritter",
-   "text": "Der Weg nach Westen führt über diesen Fluss. Lotte sagte, die Kinder seien in den Wald gebracht worden."
+   "text": "Der Weg nach Westen führt über diesen Fluss. Lotte sagte, die Kinder seien in den Wald gebracht worden.",
+   "story": true
   },
   {
    "left": "hund",
    "right": "ritter",
    "speaker": "hund",
    "text": "Dann los! Jede Stunde zählt.",
-   "left_expr": "wuetend"
+   "left_expr": "wuetend",
+   "story": true
   },
   {
    "left": "hund",
    "right": "elisabeth",
    "speaker": "elisabeth",
-   "text": "Die Zugbrücke ist hochgezogen. Und drüben stehen Schweine, die sehr zufrieden aussehen."
+   "text": "Die Zugbrücke ist hochgezogen. Und drüben stehen Schweine, die sehr zufrieden aussehen.",
+   "story": true
   },
   {
    "left": "ritter",
    "right": "frischlinge",
    "speaker": "frischlinge",
    "text": "Hehehe! Wir haben die Zugbrücke hochgezogen! Ihr kommt nicht rüber!",
-   "right_expr": "lachend"
+   "right_expr": "lachend",
+   "story": true
   },
   {
    "left": "ritter",
    "right": "frischlinge",
    "speaker": "ritter",
    "text": "Ihr kleinen Plagegeister. Zieht die Brücke sofort wieder herunter!",
-   "left_expr": "wuetend"
+   "left_expr": "wuetend",
+   "story": true
   },
   {
    "left": "hund",
    "right": "frischlinge",
    "speaker": "frischlinge",
    "text": "Das ist für unseren Boss! Ihr habt Wart umgehauen, jetzt zahlt ihr! Wir sind jetzt die Chefs!",
-   "right_expr": "wuetend"
+   "right_expr": "wuetend",
+   "story": true
   }
  ],
  "outro": [
@@ -47,13 +53,15 @@
    "right": "robo",
    "speaker": "hund",
    "text": "Der Weg ist frei. Weiter in den Wald, zu den Kindern!",
-   "left_expr": "wuetend"
+   "left_expr": "wuetend",
+   "story": true
   },
   {
    "left": "hund",
    "right": "robo",
    "speaker": "robo",
-   "text": "Die Frischlinge sind geflohen. Auf ihrer Spur sehe ich frische Reifenspuren. Metallisch."
+   "text": "Die Frischlinge sind geflohen. Auf ihrer Spur sehe ich frische Reifenspuren. Metallisch.",
+   "story": true
   }
  ]
 }

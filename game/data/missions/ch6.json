@@ -140,13 +140,15 @@
        "right": "wart",
        "speaker": "wart",
        "text": "Piratenmädel! Hier wartet jemand auf dich. Mit einer größeren Rakete!",
-       "right_expr": "lachend"
+       "right_expr": "lachend",
+       "story": true
       },
       {
        "left": "elisabeth",
        "right": "wart",
        "speaker": "elisabeth",
-       "text": "Dann hast du dich in der Größe vertan. Mein Schiff hat die größeren Kanonen."
+       "text": "Dann hast du dich in der Größe vertan. Mein Schiff hat die größeren Kanonen.",
+       "story": true
       }
      ]
     },
@@ -214,6 +216,167 @@
      ]
     }
    ]
+  },
+  {
+   "when": {
+    "turn": 2
+   },
+   "if": {
+    "present": [
+     "samurai"
+    ]
+   },
+   "note": "Fluff: samurai",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "samurai",
+       "right": "",
+       "speaker": "samurai",
+       "text": "Das Meer ist ein Gegner, den man nicht besiegen kann. Man kann nur höflich grüßen."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 3
+   },
+   "if": {
+    "present": [
+     "kungfu"
+    ]
+   },
+   "note": "Fluff: kungfu",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "kungfu",
+       "right": "",
+       "speaker": "kungfu",
+       "text": "Wer auf schwankendem Steg kämpft, braucht Gleichgewicht. Oder eine sehr gute Versicherung."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 4
+   },
+   "if": {
+    "present": [
+     "ninjas"
+    ]
+   },
+   "note": "Fluff: ninjas",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "ninjas",
+       "right": "",
+       "speaker": "ninjas",
+       "text": "Fischernetze, Fässer, Schatten. Perfekt. – Und es riecht nach Fisch. – Das geht aus der Maske nie wieder raus."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 5
+   },
+   "if": {
+    "present": [
+     "museklaugust"
+    ]
+   },
+   "note": "Fluff: museklaugust",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "museklaugust",
+       "right": "",
+       "speaker": "museklaugust",
+       "text": "Ein Hafen! Ich erkläre ihn zu meinem Hafen. Und die Möwen zu meinen Untertanen."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 6
+   },
+   "if": {
+    "present": [
+     "wendy"
+    ]
+   },
+   "note": "Fluff: wendy",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "wendy",
+       "right": "",
+       "speaker": "wendy",
+       "text": "Mäh… die Möwen schauen auf meine Wolle. Ich glaube, die wollen ein Nest bauen."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 2
+   },
+   "if": {
+    "present": [
+     "braumeisterin"
+    ]
+   },
+   "note": "Fluff: braumeisterin",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "braumeisterin",
+       "right": "",
+       "speaker": "braumeisterin",
+       "text": "Hafenkneipe ahoi! Ich suche nur schnell die gute Seite des Stegs. Die mit dem Fass."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 3
+   },
+   "if": {
+    "present": [
+     "quacksalber"
+    ]
+   },
+   "note": "Fluff: quacksalber",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "quacksalber",
+       "right": "",
+       "speaker": "quacksalber",
+       "text": "Seekrank? Mein Elixier hilft! Nebenwirkung: Man hält sich für einen Fisch. Das erleichtert das Schwimmen."
+      }
+     ]
+    }
+   ]
   }
  ],
  "flee": {
@@ -223,20 +386,23 @@
     "right": "wart",
     "speaker": "wart",
     "text": "Meine Raketen! Mein Stolz! Und jetzt auch noch die Piratin!",
-    "right_expr": "wuetend"
+    "right_expr": "wuetend",
+    "story": true
    },
    {
     "left": "$hero",
     "right": "wart",
     "speaker": "$hero",
-    "text": "Er schwimmt davon. Hoffentlich nicht zu unserem Schiff."
+    "text": "Er schwimmt davon. Hoffentlich nicht zu unserem Schiff.",
+    "story": true
    },
    {
     "left": "$hero",
     "right": "wart",
     "speaker": "wart",
     "text": "Ich komme wieder! Mit einem Boot! Und mit Senf!",
-    "right_expr": "wuetend"
+    "right_expr": "wuetend",
+    "story": true
    }
   ]
  },

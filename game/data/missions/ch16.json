@@ -35,35 +35,40 @@
        "right": "kugelblitz",
        "speaker": "xiulan",
        "text": "Zwei Wochen Arbeit, Professor! Wo ist mein Gold?",
-       "left_expr": "wuetend"
+       "left_expr": "wuetend",
+       "story": true
       },
       {
        "left": "xiulan",
        "right": "kugelblitz",
        "speaker": "kugelblitz",
        "text": "Meine Maschine wurde zerstört! Gold gibt es, wenn der Meister zahlt!",
-       "right_expr": "wuetend"
+       "right_expr": "wuetend",
+       "story": true
       },
       {
        "left": "xiulan",
        "right": "kugelblitz",
        "speaker": "xiulan",
        "text": "Kein Gold, keine Arbeit. So steht es im Vertrag, Sie Blitzableiter!",
-       "left_expr": "wuetend"
+       "left_expr": "wuetend",
+       "story": true
       },
       {
        "left": "maedchen_baer",
        "right": "kugelblitz",
        "speaker": "kugelblitz",
        "text": "Oh. Besuch. Die Helden. Welch... schlechtes Timing.",
-       "right_expr": "lachend"
+       "right_expr": "lachend",
+       "story": true
       },
       {
        "left": "maedchen_baer",
        "right": "xiulan",
        "speaker": "xiulan",
        "text": "Ach, die Kinder. Na gut, eine Rechnung nach der anderen. Aber vorher: wer zahlt mir meinen Sold?",
-       "right_expr": "lachend"
+       "right_expr": "lachend",
+       "story": true
       }
      ]
     }
@@ -197,21 +202,24 @@
        "right": "xiulan",
        "speaker": "xiulan",
        "text": "BEIDE Truhen?! Leer! Weg! Mein Lohn ist verloren! Ich kündige, Professor!",
-       "right_expr": "wuetend"
+       "right_expr": "wuetend",
+       "story": true
       },
       {
        "left": "hund",
        "right": "kugelblitz",
        "speaker": "kugelblitz",
        "text": "Xiùlán! Warten Sie! Sie haben noch vier Monate Vertrag!",
-       "right_expr": "wuetend"
+       "right_expr": "wuetend",
+       "story": true
       },
       {
        "left": "hund",
        "right": "xiulan",
        "speaker": "xiulan",
        "text": "Ich sag's meinem Anwalt! Auf Nimmerwiedersehen!",
-       "right_expr": "wuetend"
+       "right_expr": "wuetend",
+       "story": true
       }
      ]
     },
@@ -271,6 +279,236 @@
      ]
     }
    ]
+  },
+  {
+   "when": {
+    "turn": 2
+   },
+   "if": {
+    "present": [
+     "samurai"
+    ]
+   },
+   "note": "Fluff: samurai",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "samurai",
+       "right": "",
+       "speaker": "samurai",
+       "text": "Ein Streit um Geld. Ehre kennt keinen Lohn. …Aber ein Trinkgeld nehme ich gern."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 3
+   },
+   "if": {
+    "present": [
+     "kungfu"
+    ]
+   },
+   "note": "Fluff: kungfu",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "kungfu",
+       "right": "",
+       "speaker": "kungfu",
+       "text": "Wer um Münzen streitet, hat keine Zeit für Tee. Sehr traurig."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 4
+   },
+   "if": {
+    "present": [
+     "ninjas"
+    ]
+   },
+   "note": "Fluff: ninjas",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "ninjas",
+       "right": "",
+       "speaker": "ninjas",
+       "text": "Wir haben die Truhen schon gezählt. – Vierhundert Taler. – Die Hälfte davon Knöpfe."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 5
+   },
+   "if": {
+    "present": [
+     "elisabeth"
+    ]
+   },
+   "note": "Fluff: elisabeth",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "elisabeth",
+       "right": "",
+       "speaker": "elisabeth",
+       "text": "Zwei Truhen! Mein Piratenherz schlägt höher. Wir brauchen kein Gold, wir brauchen ein Fest!"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 6
+   },
+   "if": {
+    "present": [
+     "museklaugust"
+    ]
+   },
+   "note": "Fluff: museklaugust",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "museklaugust",
+       "right": "",
+       "speaker": "museklaugust",
+       "text": "Gold! Gebt es mir! Ich bin König! Das ist legal!"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 2
+   },
+   "if": {
+    "present": [
+     "wendy"
+    ]
+   },
+   "note": "Fluff: wendy",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "wendy",
+       "right": "",
+       "speaker": "wendy",
+       "text": "Mäh… die arme Xiùlán. Ich schenke ihr Wolle. Zum Kuscheln. Oder zum Werfen."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 3
+   },
+   "if": {
+    "present": [
+     "braumeisterin"
+    ]
+   },
+   "note": "Fluff: braumeisterin",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "braumeisterin",
+       "right": "",
+       "speaker": "braumeisterin",
+       "text": "Streit ums Geld? Bei mir regelt das ein Fass. Aufmachen, einschenken, vertragen."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 4
+   },
+   "if": {
+    "present": [
+     "magical_girl"
+    ]
+   },
+   "note": "Fluff: magical_girl",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "magical_girl",
+       "right": "",
+       "speaker": "magical_girl",
+       "text": "Habt ihr es schon mit Sternenglitzer versucht? Wirkt gegen Wut, Hunger und Steuererklärungen."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 5
+   },
+   "if": {
+    "present": [
+     "quacksalber"
+    ]
+   },
+   "note": "Fluff: quacksalber",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "quacksalber",
+       "right": "",
+       "speaker": "quacksalber",
+       "text": "Ein Arbeitnehmer im Streik! Ich verkaufe ihm ein Mittel gegen Lohnausfall. Die Flasche ist leer, aber teuer."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 6
+   },
+   "if": {
+    "present": [
+     "panzer"
+    ]
+   },
+   "note": "Fluff: panzer",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "panzer",
+       "right": "",
+       "speaker": "panzer",
+       "text": "Zwei Zivilisten streiten. Ich fahre dazwischen. Das beendet jede Diskussion."
+      }
+     ]
+    }
+   ]
   }
  ],
  "flee": {
@@ -280,7 +518,8 @@
     "right": "kugelblitz",
     "speaker": "kugelblitz",
     "text": "Ich verlange eine Gehaltserhöhung! Und Urlaub! Ich komme wieder!",
-    "right_expr": "wuetend"
+    "right_expr": "wuetend",
+    "story": true
    }
   ]
  }

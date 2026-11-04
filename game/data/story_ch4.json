@@ -4,20 +4,23 @@
    "left": "maedchen_baer",
    "right": "kungfu",
    "speaker": "kungfu",
-   "text": "Am Pass steht ein Teehaus. Die Soldaten des Regenten haben eine Mutter mit Baby dort eingesperrt."
+   "text": "Am Pass steht ein Teehaus. Die Soldaten des Regenten haben eine Mutter mit Baby dort eingesperrt.",
+   "story": true
   },
   {
    "left": "maedchen_baer",
    "right": "kungfu",
    "speaker": "maedchen_baer",
    "text": "Hört ihr das Geschrei? Das Baby hat Lungen für drei. Jeder im Umkreis weiß, wo wir hinmüssen, und die Wachen auch.",
-   "left_expr": "wuetend"
+   "left_expr": "wuetend",
+   "story": true
   },
   {
    "left": "wendy",
    "right": "kungfu",
    "speaker": "wendy",
-   "text": "Mäh. Wir müssen die beiden retten. Dem Kind darf nichts geschehen!"
+   "text": "Mäh. Wir müssen die beiden retten. Dem Kind darf nichts geschehen!",
+   "story": true
   }
  ],
  "outro": [
@@ -26,19 +29,22 @@
    "right": "kungfu",
    "speaker": "wendy",
    "text": "Mäh, geschafft. Die Mutter ist in Sicherheit, und das Baby hat aufgehört zu brüllen.",
-   "left_expr": "lachend"
+   "left_expr": "lachend",
+   "story": true
   },
   {
    "left": "wendy",
    "right": "kungfu",
    "speaker": "kungfu",
-   "text": "Und eine Großmutter mit fliegendem Gebiss ist uns entkommen. Die vergesse ich nicht."
+   "text": "Und eine Großmutter mit fliegendem Gebiss ist uns entkommen. Die vergesse ich nicht.",
+   "story": true
   },
   {
    "left": "maedchen_baer",
    "right": "kungfu",
    "speaker": "maedchen_baer",
-   "text": "Der Regent schickt Babysitter. Was kommt als Nächstes?"
+   "text": "Der Regent schickt Babysitter. Was kommt als Nächstes?",
+   "story": true
   }
  ]
 }

@@ -32,28 +32,32 @@
        "right": "kugelblitz",
        "speaker": "kugelblitz",
        "text": "Faszinierend! Besuch! Welch wundervolle Versuchskaninchen!",
-       "right_expr": "lachend"
+       "right_expr": "lachend",
+       "story": true
       },
       {
        "left": "hund",
        "right": "kugelblitz",
        "speaker": "hund",
        "text": "Gebt uns die Kinder zurück!",
-       "left_expr": "wuetend"
+       "left_expr": "wuetend",
+       "story": true
       },
       {
        "left": "hund",
        "right": "kugelblitz",
        "speaker": "kugelblitz",
        "text": "Zurückgeben? Ich zapfe sie nur ein wenig an. Mit dem Honig als Katalysator fließt ihre Lebensenergie direkt zum Meister!",
-       "right_expr": "lachend"
+       "right_expr": "lachend",
+       "story": true
       },
       {
        "left": "hund",
        "right": "kugelblitz",
        "speaker": "kugelblitz",
        "text": "Prof. Kugelblitz, zu Ihren Diensten. Sie werden gleich verstehen, wie sehr man elektrisiert sein kann!",
-       "right_expr": "wuetend"
+       "right_expr": "wuetend",
+       "story": true
       }
      ]
     }
@@ -113,14 +117,16 @@
        "right": "kugelblitz",
        "speaker": "kugelblitz",
        "text": "Die Schweinchen schwächeln! Zeit für Plan B. Behälter Sieben, öffnen!",
-       "right_expr": "lachend"
+       "right_expr": "lachend",
+       "story": true
       },
       {
        "left": "hund",
        "right": "kugelblitz",
        "speaker": "hund",
        "text": "Behälter...? Was habt ihr da drin?",
-       "left_expr": "wuetend"
+       "left_expr": "wuetend",
+       "story": true
       }
      ]
     },
@@ -148,28 +154,32 @@
        "left": "robo",
        "right": "cyborg_wart",
        "speaker": "robo",
-       "text": "Scan: kybernetischer Organismus. Wutlevel kritisch. Identifikation: ...Wart."
+       "text": "Scan: kybernetischer Organismus. Wutlevel kritisch. Identifikation: ...Wart.",
+       "story": true
       },
       {
        "left": "hund",
        "right": "cyborg_wart",
        "speaker": "hund",
        "text": "Wart?! Du bist doch tot!",
-       "left_expr": "wuetend"
+       "left_expr": "wuetend",
+       "story": true
       },
       {
        "left": "hund",
        "right": "cyborg_wart",
        "speaker": "cyborg_wart",
        "text": "Tot. Ja. Sie haben mich repariert. Besser. Stärker. Und SEHR, SEHR WÜTEND.",
-       "right_expr": "wuetend"
+       "right_expr": "wuetend",
+       "story": true
       },
       {
        "left": "hund",
        "right": "frischlinge",
        "speaker": "frischlinge",
        "text": "Boss!! Du lebst! Jetzt geht es euch an den Kragen!",
-       "right_expr": "lachend"
+       "right_expr": "lachend",
+       "story": true
       }
      ]
     }
@@ -187,14 +197,16 @@
        "left": "hund",
        "right": "waisenkinder",
        "speaker": "hund",
-       "text": "Lotte, Pip, Mia! Seid ihr in Ordnung?"
+       "text": "Lotte, Pip, Mia! Seid ihr in Ordnung?",
+       "story": true
       },
       {
        "left": "hund",
        "right": "waisenkinder",
        "speaker": "waisenkinder",
        "text": "Hundsfreund! Du hast uns gefunden! Wir hatten solche Angst!",
-       "right_expr": "lachend"
+       "right_expr": "lachend",
+       "story": true
       }
      ]
     }
@@ -222,14 +234,16 @@
        "right": "waisenkinder",
        "speaker": "hund",
        "text": "Ein Ruck, ein Knacken... Was war das?",
-       "left_expr": "wuetend"
+       "left_expr": "wuetend",
+       "story": true
       },
       {
        "left": "hund",
        "right": "waisenkinder",
        "speaker": "waisenkinder",
        "text": "Der grüne Behälter da hinten! Er blubbert!",
-       "right_expr": ""
+       "right_expr": "",
+       "story": true
       }
      ]
     },
@@ -258,21 +272,24 @@
        "right": "cyborg_wart",
        "speaker": "cyborg_wart",
        "text": "...Ich... bin... zurück.",
-       "right_expr": "wuetend"
+       "right_expr": "wuetend",
+       "story": true
       },
       {
        "left": "hund",
        "right": "cyborg_wart",
        "speaker": "hund",
        "text": "Wart?! Das ist unmöglich!",
-       "left_expr": "wuetend"
+       "left_expr": "wuetend",
+       "story": true
       },
       {
        "left": "hund",
        "right": "cyborg_wart",
        "speaker": "cyborg_wart",
        "text": "Wir sehen uns wieder. Ich bin noch nicht fertig mit euch.",
-       "right_expr": "wuetend"
+       "right_expr": "wuetend",
+       "story": true
       }
      ]
     }
@@ -296,12 +313,266 @@
        "right": "kugelblitz",
        "speaker": "kugelblitz",
        "text": "Ein Rückschlag! Ein vorübergehender Rückschlag! Der Meister wird sehr, sehr unzufrieden sein. Aber ich komme wieder, mit einer größeren Maschine!",
-       "right_expr": "wuetend"
+       "right_expr": "wuetend",
+       "story": true
       }
      ]
     },
     {
      "retreat": "kugelblitz"
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 2
+   },
+   "if": {
+    "present": [
+     "maedchen_baer"
+    ]
+   },
+   "note": "Fluff: maedchen_baer",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "maedchen_baer",
+       "right": "",
+       "speaker": "maedchen_baer",
+       "text": "Brumm mag den Geruch hier nicht. Es riecht nach verbranntem Honig und schlechten Ideen."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 3
+   },
+   "if": {
+    "present": [
+     "ritter"
+    ]
+   },
+   "note": "Fluff: ritter",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "ritter",
+       "right": "",
+       "speaker": "ritter",
+       "text": "Ein Labor im Wald. Mein Rittereid verbietet mir, hier ohne Handschuhe etwas anzufassen."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 4
+   },
+   "if": {
+    "present": [
+     "samurai"
+    ]
+   },
+   "note": "Fluff: samurai",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "samurai",
+       "right": "",
+       "speaker": "samurai",
+       "text": "Maschinen ohne Seele. Ich verneige mich nicht. Ich schneide."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 5
+   },
+   "if": {
+    "present": [
+     "kungfu"
+    ]
+   },
+   "note": "Fluff: kungfu",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "kungfu",
+       "right": "",
+       "speaker": "kungfu",
+       "text": "Kinder als Batterie. Das ist keine Wissenschaft. Das ist Unhöflichkeit mit Kabeln."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 6
+   },
+   "if": {
+    "present": [
+     "ninjas"
+    ]
+   },
+   "note": "Fluff: ninjas",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "ninjas",
+       "right": "",
+       "speaker": "ninjas",
+       "text": "Überall Kameras. – Keine Kameras. Nur Glühbirnen. – Sie starren trotzdem."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 2
+   },
+   "if": {
+    "present": [
+     "museklaugust"
+    ]
+   },
+   "note": "Fluff: museklaugust",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "museklaugust",
+       "right": "",
+       "speaker": "museklaugust",
+       "text": "Eine Maschine! Die will ich haben. Als Thron. Mit Armlehnen."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 3
+   },
+   "if": {
+    "present": [
+     "wendy"
+    ]
+   },
+   "note": "Fluff: wendy",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "wendy",
+       "right": "",
+       "speaker": "wendy",
+       "text": "Mäh… ich mag keinen Strom. Meine Wolle wird davon so… kraus. Mäh!"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 4
+   },
+   "if": {
+    "present": [
+     "braumeisterin"
+    ]
+   },
+   "note": "Fluff: braumeisterin",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "braumeisterin",
+       "right": "",
+       "speaker": "braumeisterin",
+       "text": "Kugelblitz. Der Name klingt nach einem Bier. Leider nach einem schlechten."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 5
+   },
+   "if": {
+    "present": [
+     "magical_girl"
+    ]
+   },
+   "note": "Fluff: magical_girl",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "magical_girl",
+       "right": "",
+       "speaker": "magical_girl",
+       "text": "Das ist doch kein Zauber, das ist nur Strom! Mein Glitzer ist viel hübscher."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 6
+   },
+   "if": {
+    "present": [
+     "quacksalber"
+    ]
+   },
+   "note": "Fluff: quacksalber",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "quacksalber",
+       "right": "",
+       "speaker": "quacksalber",
+       "text": "Ein Kollege! Wissenschaftlich, dubios, ein bisschen verrückt. Ich sehe Potenzial. Und Haftungsprobleme."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 2
+   },
+   "if": {
+    "present": [
+     "panzer"
+    ]
+   },
+   "note": "Fluff: panzer",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "panzer",
+       "right": "",
+       "speaker": "panzer",
+       "text": "Kleine Maschinen, große Probleme. Ich fahre dazwischen. Beschwerden an den Hersteller."
+      }
+     ]
     }
    ]
   }
@@ -313,7 +584,8 @@
     "right": "kugelblitz",
     "speaker": "kugelblitz",
     "text": "Das ist nur ein Experiment! Ein misslungenes Experiment! Ich komme wieder, mit besseren Daten!",
-    "right_expr": "wuetend"
+    "right_expr": "wuetend",
+    "story": true
    }
   ],
   "frischlinge": [
@@ -322,7 +594,8 @@
     "right": "frischlinge",
     "speaker": "frischlinge",
     "text": "Der Boss kriegt euch! Der Boss kriegt euch alle!",
-    "right_expr": "wuetend"
+    "right_expr": "wuetend",
+    "story": true
    }
   ]
  }

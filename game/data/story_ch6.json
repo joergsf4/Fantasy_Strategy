@@ -4,32 +4,37 @@
    "left": "maedchen_baer",
    "right": "elisabeth",
    "speaker": "maedchen_baer",
-   "text": "Die Insel des Regenten liegt weit draußen im Meer. Wie kommen wir dort hin?"
+   "text": "Die Insel des Regenten liegt weit draußen im Meer. Wie kommen wir dort hin?",
+   "story": true
   },
   {
    "left": "maedchen_baer",
    "right": "elisabeth",
    "speaker": "elisabeth",
    "text": "Das trifft sich gut. Mein Schiff liegt in der Möwenbucht, ganz in der Nähe. Die Rostige Möwe schwimmt, solange niemand hinschaut.",
-   "right_expr": "lachend"
+   "right_expr": "lachend",
+   "story": true
   },
   {
    "left": "hund",
    "right": "elisabeth",
    "speaker": "hund",
-   "text": "Schwimmt? Ich dachte, Schiffe schwimmen immer."
+   "text": "Schwimmt? Ich dachte, Schiffe schwimmen immer.",
+   "story": true
   },
   {
    "left": "hund",
    "right": "elisabeth",
    "speaker": "elisabeth",
-   "text": "Immer. Meistens. Fast."
+   "text": "Immer. Meistens. Fast.",
+   "story": true
   },
   {
-   "left": "ritter",
+   "left": "maedchen_baer",
    "right": "elisabeth",
-   "speaker": "ritter",
-   "text": "Die Stadt ist voller Büttel des Regenten. Wir müssen uns bis zum Steg durchschlagen."
+   "speaker": "maedchen_baer",
+   "text": "Die Stadt ist voller Büttel des Regenten. Wir müssen uns bis zum Steg durchschlagen.",
+   "story": true
   }
  ],
  "outro": [
@@ -38,61 +43,63 @@
    "right": "elisabeth",
    "speaker": "hund",
    "text": "Wir sind an Bord. Und alles schwankt. Wieso schwankt alles?",
-   "left_expr": "seekrank"
+   "left_expr": "seekrank",
+   "story": true
   },
   {
    "left": "hund",
    "right": "elisabeth",
    "speaker": "elisabeth",
    "text": "Das nennt man Meer, Landratte. Hisst die Segel!",
-   "right_expr": "lachend"
+   "right_expr": "lachend",
+   "story": true
   },
   {
    "left": "hund",
    "right": "elisabeth",
    "speaker": "hund",
    "text": "Mir ist schlecht. Hab ich erwähnt, dass mir schlecht ist? Mir ist sehr schlecht.",
-   "left_expr": "seekrank"
+   "left_expr": "seekrank",
+   "story": true
   },
   {
    "left": "hund",
    "right": "elisabeth",
    "speaker": "elisabeth",
    "text": "Etwa alle zwei Minuten, Landratte. Schau zum Horizont, nicht auf die Wellen.",
-   "right_expr": "lachend"
+   "right_expr": "lachend",
+   "story": true
   },
   {
    "left": "hund",
    "right": "elisabeth",
    "speaker": "hund",
    "text": "Der Horizont schwankt auch! Alles schwankt! Sogar mein Frühstück schwankt!",
-   "left_expr": "seekrank"
+   "left_expr": "seekrank",
+   "story": true
   },
   {
    "left": "hund",
    "right": "elisabeth",
    "speaker": "elisabeth",
    "text": "Dann bitte nur über die Reling, und auf der windabgewandten Seite. Und der Eimer steht dort, der ist am Ende immer ruhig.",
-   "right_expr": "lachend"
+   "right_expr": "lachend",
+   "story": true
   },
   {
    "left": "hund",
    "right": "elisabeth",
    "speaker": "hund",
    "text": "Ich bin Hund. Ich gehöre an Land. Ich gehöre unter einen Baum.",
-   "left_expr": "seekrank"
-  },
-  {
-   "left": "robo",
-   "right": "elisabeth",
-   "speaker": "robo",
-   "text": "Insel in Sicht. Windstärke gering. Schwankungsfaktor: unangenehm."
+   "left_expr": "seekrank",
+   "story": true
   },
   {
    "left": "maedchen_baer",
    "right": "elisabeth",
    "speaker": "maedchen_baer",
-   "text": "Dort drüben wartet der Regent. Haltet durch, wir sind gleich da."
+   "text": "Dort drüben wartet der Regent. Haltet durch, wir sind gleich da.",
+   "story": true
   }
  ]
 }

@@ -5,53 +5,54 @@
    "right": "maedchen_baer",
    "speaker": "elisabeth",
    "text": "Anker werfen! Das ist der Sandhafen, Hier versteckt sich der miese Regent!",
-   "left_expr": "lachend"
-  },
-  {
-   "left": "hund",
-   "right": "elisabeth",
-   "speaker": "hund",
-   "text": "Festes Land! Und kein Schwanken mehr. Ich küsse den Sand."
+   "left_expr": "lachend",
+   "story": true
   },
   {
    "left": "magical_girl",
    "right": "maedchen_baer",
    "speaker": "magical_girl",
    "text": "Ich bin Lumi Sternenglanz. Die Sterne haben mich hier her geführt. Ich biete euch meine unfassbare Niedlichkeit an.",
-   "left_expr": "lachend"
+   "left_expr": "lachend",
+   "story": true
   },
   {
    "left": "magical_girl",
    "right": "maedchen_baer",
    "speaker": "maedchen_baer",
-   "text": "Und was kannst du so?"
+   "text": "Und was kannst du so?",
+   "story": true
   },
   {
    "left": "magical_girl",
    "right": "maedchen_baer",
    "speaker": "magical_girl",
    "text": "Ich heile und beschütze! Naja und austeilen kann ich auch ganz gut. Macht der Sternnebel macht auf!!",
-   "left_expr": "lachend"
+   "left_expr": "lachend",
+   "story": true
   },
   {
    "left": "quacksalber",
    "right": "magical_girl",
    "speaker": "quacksalber",
-   "text": "Hallo gnädiges Fräulein! Wer heilt, sollte sich kennen: Ich mit Salbe, du mit Sternen. Meine Nebenwirkungen sind überschaubar."
+   "text": "Hallo gnädiges Fräulein! Wer heilt, sollte sich kennen: Ich mit Salbe, du mit Sternen. Meine Nebenwirkungen sind überschaubar.",
+   "story": true
   },
   {
    "left": "quacksalber",
    "right": "elisabeth",
    "speaker": "elisabeth",
    "text": "Ich nehme trotzdem zwei Flaschen.",
-   "right_expr": "lachend"
+   "right_expr": "lachend",
+   "story": true
   },
   {
    "left": "maedchen_baer",
    "right": "oskar",
    "speaker": "oskar",
    "text": "Wie rührend: eine Heldenrunde im Sand. Maja, sieh nur.",
-   "right_expr": "lachend"
+   "right_expr": "lachend",
+   "story": true
   }
  ],
  "outro": [
@@ -60,26 +61,30 @@
    "right": "maedchen_baer",
    "speaker": "elisabeth",
    "text": "Die Zwillinge sind erledigt. Der Weg zur Insel ist frei!",
-   "left_expr": "lachend"
+   "left_expr": "lachend",
+   "story": true
   },
   {
    "left": "magical_girl",
    "right": "quacksalber",
    "speaker": "magical_girl",
-   "text": "Das war aufregend! Dr. Humbug, du hast tatsächlich jemanden geheilt!"
+   "text": "Das war aufregend! Dr. Humbug, du hast tatsächlich jemanden geheilt!",
+   "story": true
   },
   {
    "left": "magical_girl",
    "right": "quacksalber",
    "speaker": "quacksalber",
    "text": "Ich heile immer. Manchmal sogar ohne Nebenwirkungen.",
-   "right_expr": "lachend"
+   "right_expr": "lachend",
+   "story": true
   },
   {
-   "left": "hund",
+   "left": "maedchen_baer",
    "right": "elisabeth",
-   "speaker": "hund",
-   "text": "Dann nichts wie weiter. Wir müssen den Unterschlupf des Regenten finden!"
+   "speaker": "maedchen_baer",
+   "text": "Dann nichts wie weiter. Wir müssen den Unterschlupf des Regenten finden!",
+   "story": true
   }
  ]
 }

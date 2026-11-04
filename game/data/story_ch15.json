@@ -4,26 +4,30 @@
    "left": "maedchen_baer",
    "right": "bienenmaedchen",
    "speaker": "maedchen_baer",
-   "text": "Vor uns liegt der Sumpf, dahinter beginnen die Berge. Bleibt auf dem festen Boden."
+   "text": "Vor uns liegt der Sumpf, dahinter beginnen die Berge. Bleibt auf dem festen Boden.",
+   "story": true
   },
   {
    "left": "hund",
    "right": "bienenmaedchen",
    "speaker": "hund",
-   "text": "Der Morast stinkt nach Gas. Wer zu lange darin steht, wird schwach."
+   "text": "Der Morast stinkt nach Gas. Wer zu lange darin steht, wird schwach.",
+   "story": true
   },
   {
    "left": "bienenmaedchen",
    "right": "hund",
    "speaker": "bienenmaedchen",
    "text": "Ich fliege drüber. Ihr nicht? Pech.",
-   "left_expr": "lachend"
+   "left_expr": "lachend",
+   "story": true
   },
   {
    "left": "maedchen_baer",
    "right": "bienenmaedchen",
    "speaker": "maedchen_baer",
-   "text": "Seid ihr bereit? Da vorne bewegt sich etwas Großes aus Metall."
+   "text": "Seid ihr bereit? Da vorne bewegt sich etwas Großes aus Metall.",
+   "story": true
   }
  ],
  "outro": [
@@ -31,21 +35,24 @@
    "left": "maedchen_baer",
    "right": "hund",
    "speaker": "maedchen_baer",
-   "text": "Wart und die Frischlinge sind geschlagen, aber der Sumpf nimmt kein Ende."
+   "text": "Wart und die Frischlinge sind geschlagen, aber der Sumpf nimmt kein Ende.",
+   "story": true
   },
   {
    "left": "hund",
    "right": "bienenmaedchen",
    "speaker": "hund",
    "text": "Dahinten liegt eine Lichtung. Dort sind Stimmen zu hören. Streitende Stimmen.",
-   "left_expr": "wuetend"
+   "left_expr": "wuetend",
+   "story": true
   },
   {
    "left": "bienenmaedchen",
    "right": "hund",
    "speaker": "bienenmaedchen",
    "text": "Hoffentlich Feinde. Dann muss ich nicht höflich sein.",
-   "left_expr": "lachend"
+   "left_expr": "lachend",
+   "story": true
   }
  ]
 }

@@ -27,25 +27,29 @@
        "left": "maedchen_baer",
        "right": "waisenkinder",
        "speaker": "waisenkinder",
-       "text": "Hilfe! Die Bienen! Wenn jemand die Glocke am Haus läutet, hört der Hundsfreund sie bis ins Tal!"
+       "text": "Hilfe! Die Bienen! Wenn jemand die Glocke am Haus läutet, hört der Hundsfreund sie bis ins Tal!",
+       "story": true
       },
       {
        "left": "maedchen_baer",
        "right": "waisenkinder",
        "speaker": "maedchen_baer",
-       "text": "Der Hundsfreund? Wer ist das?"
+       "text": "Der Hundsfreund? Wer ist das?",
+       "story": true
       },
       {
        "left": "maedchen_baer",
        "right": "waisenkinder",
        "speaker": "waisenkinder",
-       "text": "Er passt auf uns auf. Aber er ist gerade unterwegs, und wir sind zu klein für die Glocke."
+       "text": "Er passt auf uns auf. Aber er ist gerade unterwegs, und wir sind zu klein für die Glocke.",
+       "story": true
       },
       {
        "left": "wendy",
        "right": "waisenkinder",
        "speaker": "wendy",
-       "text": "Mäh, die hängt ja hoch. Einer von uns muss sie läuten."
+       "text": "Mäh, die hängt ja hoch. Einer von uns muss sie läuten.",
+       "story": true
       }
      ]
     }
@@ -117,14 +121,16 @@
        "left": "hund",
        "right": "waisenkinder",
        "speaker": "hund",
-       "text": "Wer wagt es, meine Kinder zu bedrohen? Ich bin gleich da!"
+       "text": "Wer wagt es, meine Kinder zu bedrohen? Ich bin gleich da!",
+       "story": true
       },
       {
        "left": "hund",
        "right": "waisenkinder",
        "speaker": "waisenkinder",
        "text": "Hundsfreund! Hundsfreund!",
-       "right_expr": "lachend"
+       "right_expr": "lachend",
+       "story": true
       }
      ]
     },
@@ -165,19 +171,22 @@
        "right": "bienenmaedchen",
        "speaker": "bienenmaedchen",
        "text": "Mira und ihr Bär. Der Regent hat mir Honig versprochen, wenn ich dieses Haus räume.",
-       "right_expr": "lachend"
+       "right_expr": "lachend",
+       "story": true
       },
       {
        "left": "maedchen_baer",
        "right": "bienenmaedchen",
        "speaker": "maedchen_baer",
-       "text": "Das sind Kinder!"
+       "text": "Das sind Kinder!",
+       "story": true
       },
       {
        "left": "maedchen_baer",
        "right": "bienenmaedchen",
        "speaker": "bienenmaedchen",
-       "text": "Kinder sind laut. Ich mag Ruhe."
+       "text": "Kinder sind laut. Ich mag Ruhe.",
+       "story": true
       }
      ]
     }
@@ -226,26 +235,190 @@
        "left": "maedchen_baer",
        "right": "waisenkinder",
        "speaker": "waisenkinder",
-       "text": "Bitte nicht, Frau Biene! Wir tun dir nichts!"
+       "text": "Bitte nicht, Frau Biene! Wir tun dir nichts!",
+       "story": true
       },
       {
        "left": "maedchen_baer",
        "right": "bienenmaedchen",
        "speaker": "bienenmaedchen",
        "text": "Tsss. Der Regent hat nicht gesagt, dass sie weinen.",
-       "right_expr": "wuetend"
+       "right_expr": "wuetend",
+       "story": true
       },
       {
        "left": "maedchen_baer",
        "right": "bienenmaedchen",
        "speaker": "bienenmaedchen",
        "text": "Ich bin raus. Aber wir sehen uns wieder, Bärenmädchen.",
-       "right_expr": "wuetend"
+       "right_expr": "wuetend",
+       "story": true
       }
      ]
     },
     {
      "retreat": "bienenmaedchen"
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 2
+   },
+   "if": {
+    "present": [
+     "samurai"
+    ]
+   },
+   "note": "Fluff: samurai",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "samurai",
+       "right": "",
+       "speaker": "samurai",
+       "text": "Kinder und Bienen. Der Weg des Kriegers kennt keine schwierigere Aufgabe."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 3
+   },
+   "if": {
+    "present": [
+     "kungfu"
+    ]
+   },
+   "note": "Fluff: kungfu",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "kungfu",
+       "right": "",
+       "speaker": "kungfu",
+       "text": "Eine Biene sticht nur einmal. Ich hoffe, das gilt auch für ihre Besitzerin."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 4
+   },
+   "if": {
+    "present": [
+     "ninjas"
+    ]
+   },
+   "note": "Fluff: ninjas",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "ninjas",
+       "right": "",
+       "speaker": "ninjas",
+       "text": "Wir haben die Bienenkörbe gezählt. – Dreizehn. – Zwölf mit Honig, einer mit Wut."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 5
+   },
+   "if": {
+    "present": [
+     "museklaugust"
+    ]
+   },
+   "note": "Fluff: museklaugust",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "museklaugust",
+       "right": "",
+       "speaker": "museklaugust",
+       "text": "Kinder retten! Das sieht gut aus auf einem Gemälde. Vorher bitte meine Frisur richten."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 6
+   },
+   "if": {
+    "present": [
+     "robo"
+    ]
+   },
+   "note": "Fluff: robo",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "robo",
+       "right": "",
+       "speaker": "robo",
+       "text": "Bienen: ungefähr 340. Meine Verteidigung gegen Stiche: Blech. Ich fühle mich überlegen."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 2
+   },
+   "if": {
+    "present": [
+     "braumeisterin"
+    ]
+   },
+   "note": "Fluff: braumeisterin",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "braumeisterin",
+       "right": "",
+       "speaker": "braumeisterin",
+       "text": "Honig? Daraus macht man Met! Ich sage nur: Geschäftsidee. Nach der Schlacht."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 3
+   },
+   "if": {
+    "present": [
+     "quacksalber"
+    ]
+   },
+   "note": "Fluff: quacksalber",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "quacksalber",
+       "right": "",
+       "speaker": "quacksalber",
+       "text": "Bienenstiche behandle ich mit Wundersalbe. Gegen die Bienen. Oder gegen die Salbe. Eins von beidem hilft."
+      }
+     ]
     }
    ]
   }
@@ -257,20 +430,23 @@
     "right": "bienenmaedchen",
     "speaker": "bienenmaedchen",
     "text": "Autsch! Das hat gesessen. Der Regent kriegt meinen Stachel zu spüren, nicht eurer!",
-    "right_expr": "wuetend"
+    "right_expr": "wuetend",
+    "story": true
    },
    {
     "left": "$hero",
     "right": "bienenmaedchen",
     "speaker": "$hero",
-    "text": "Sie flieht mit ihrem Honig. Das war ein Stachel zu viel."
+    "text": "Sie flieht mit ihrem Honig. Das war ein Stachel zu viel.",
+    "story": true
    },
    {
     "left": "$hero",
     "right": "bienenmaedchen",
     "speaker": "bienenmaedchen",
     "text": "Ich komme wieder. Mit mehr Bienen!",
-    "right_expr": "wuetend"
+    "right_expr": "wuetend",
+    "story": true
    }
   ]
  }

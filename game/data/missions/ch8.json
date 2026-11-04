@@ -34,21 +34,24 @@
        "right": "xiulan",
        "speaker": "xiulan",
        "text": "Dieses Wasserloch ist gesperrt. Zwei Gold pro Schluck. Und nicht schlürfen.",
-       "right_expr": "lachend"
+       "right_expr": "lachend",
+       "story": true
       },
       {
        "left": "maedchen_baer",
        "right": "xiulan",
        "speaker": "maedchen_baer",
        "text": "Wir wollen nur trinken!",
-       "left_expr": "wuetend"
+       "left_expr": "wuetend",
+       "story": true
       },
       {
        "left": "maedchen_baer",
        "right": "xiulan",
        "speaker": "xiulan",
        "text": "Ich lasse euch nicht an mein kostbares Wasser, Mädchen!",
-       "right_expr": "lachend"
+       "right_expr": "lachend",
+       "story": true
       }
      ]
     }
@@ -104,46 +107,53 @@
        "left": "robo",
        "right": "panzer",
        "speaker": "panzer",
-       "text": "Kleiner Bruder. Sand im Gelenk und schlechte Gesellschaft. Ich hatte es geahnt."
+       "text": "Kleiner Bruder. Sand im Gelenk und schlechte Gesellschaft. Ich hatte es geahnt.",
+       "story": true
       },
       {
        "left": "robo",
        "right": "panzer",
        "speaker": "robo",
        "text": "Hallo große Schwester. Ich wusste, dass ich dich hier finde.",
-       "left_expr": "lachend"
+       "left_expr": "lachend",
+       "story": true
       },
       {
        "left": "robo",
        "right": "panzer",
        "speaker": "panzer",
        "text": "Du hättest nicht kommen sollen, Kleiner. Ich bin programmiert, alle Feinde des Regenten zu zerstören.",
-       "right_expr": "wuetend"
+       "right_expr": "wuetend",
+       "story": true
       },
       {
        "left": "robo",
        "right": "panzer",
        "speaker": "robo",
-       "text": "Schwester, du musst das nicht tun."
+       "text": "Schwester, du musst das nicht tun.",
+       "story": true
       },
       {
        "left": "robo",
        "right": "panzer",
        "speaker": "panzer",
        "text": "Meine Programmierung ist unumgänglich! Ihr seid verloren!",
-       "right_expr": "wuetend"
+       "right_expr": "wuetend",
+       "story": true
       },
       {
        "left": "ritter",
        "right": "robo",
        "speaker": "ritter",
-       "text": "Ihre Panzerung hält jeden Angriff aus. Das ist keine Mission für Schwerter."
+       "text": "Ihre Panzerung hält jeden Angriff aus. Das ist keine Mission für Schwerter.",
+       "story": true
       },
       {
        "left": "ritter",
        "right": "robo",
        "speaker": "robo",
-       "text": "Sie ist stur, aber nicht böse. Bleibt drei Runden in Folge bei ihr, dann öffne ich den Zugang und übernehme die Steuerung."
+       "text": "Sie ist stur, aber nicht böse. Bleibt drei Runden in Folge bei ihr, dann öffne ich den Zugang und übernehme die Steuerung.",
+       "story": true
       }
      ]
     }
@@ -214,6 +224,213 @@
      ]
     }
    ]
+  },
+  {
+   "when": {
+    "turn": 2
+   },
+   "if": {
+    "present": [
+     "samurai"
+    ]
+   },
+   "note": "Fluff: samurai",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "samurai",
+       "right": "",
+       "speaker": "samurai",
+       "text": "Hitze ist eine Prüfung der Seele. Meine Seele schwitzt gerade. Ich bestehe trotzdem."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 3
+   },
+   "if": {
+    "present": [
+     "kungfu"
+    ]
+   },
+   "note": "Fluff: kungfu",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "kungfu",
+       "right": "",
+       "speaker": "kungfu",
+       "text": "Wasser ist weich und besiegt doch den Stein. Ich hoffe, es besiegt auch meinen Durst."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 4
+   },
+   "if": {
+    "present": [
+     "ninjas"
+    ]
+   },
+   "note": "Fluff: ninjas",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "ninjas",
+       "right": "",
+       "speaker": "ninjas",
+       "text": "Eine Fata Morgana. – Oder ein Kaktus. – Oder Oma Xiùlán. – Die ist leider echt."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 5
+   },
+   "if": {
+    "present": [
+     "museklaugust"
+    ]
+   },
+   "note": "Fluff: museklaugust",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "museklaugust",
+       "right": "",
+       "speaker": "museklaugust",
+       "text": "Meine Perücke trocknet in der Sonne. Ich sehe aus wie ein toter Pudel. Bitte nicht hinsehen."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 6
+   },
+   "if": {
+    "present": [
+     "wendy"
+    ]
+   },
+   "note": "Fluff: wendy",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "wendy",
+       "right": "",
+       "speaker": "wendy",
+       "text": "Mäh… ein Schaf in der Wüste. Wer hatte diese Idee? Ich will geschoren werden. Sofort."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 2
+   },
+   "if": {
+    "present": [
+     "hund"
+    ]
+   },
+   "note": "Fluff: hund",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "hund",
+       "right": "",
+       "speaker": "hund",
+       "text": "Wasser! Ich rieche Wasser! …Nein, das ist Robos Ölkanne."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 3
+   },
+   "if": {
+    "present": [
+     "magical_girl"
+    ]
+   },
+   "note": "Fluff: magical_girl",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "magical_girl",
+       "right": "",
+       "speaker": "magical_girl",
+       "text": "Glitzer klebt bei Schweiß ganz furchtbar. Ich bin jetzt ein funkelnder Salzkristall."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 4
+   },
+   "if": {
+    "present": [
+     "quacksalber"
+    ]
+   },
+   "note": "Fluff: quacksalber",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "quacksalber",
+       "right": "",
+       "speaker": "quacksalber",
+       "text": "Austrocknung? Mein Heilmittel besteht zu neunzig Prozent aus Wasser und zu zehn aus Hoffnung."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 5
+   },
+   "if": {
+    "present": [
+     "braumeisterin"
+    ]
+   },
+   "note": "Fluff: braumeisterin",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "braumeisterin",
+       "right": "",
+       "speaker": "braumeisterin",
+       "text": "Eine Oase! Und ich habe nur Bier dabei. Das Leben ist grausam, aber lecker."
+      }
+     ]
+    }
+   ]
   }
  ],
  "flee": {
@@ -223,20 +440,23 @@
     "right": "xiulan",
     "speaker": "xiulan",
     "text": "Genug! Mein Gebiss ist verbeult und mein Kreuz auch. Wir sehen uns wieder, Kinder.",
-    "right_expr": "wuetend"
+    "right_expr": "wuetend",
+    "story": true
    },
    {
     "left": "$hero",
     "right": "xiulan",
     "speaker": "$hero",
-    "text": "Sie rollt davon wie eine Düne im Wind."
+    "text": "Sie rollt davon wie eine Düne im Wind.",
+    "story": true
    },
    {
     "left": "$hero",
     "right": "xiulan",
     "speaker": "xiulan",
     "text": "Ich komme wieder! Mit Ersatzgebiss und Kaugummi!",
-    "right_expr": "wuetend"
+    "right_expr": "wuetend",
+    "story": true
    }
   ]
  }

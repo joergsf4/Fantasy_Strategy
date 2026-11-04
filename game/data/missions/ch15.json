@@ -31,28 +31,32 @@
        "right": "cyborg_wart",
        "speaker": "cyborg_wart",
        "text": "Kein Schritt weiter. Der Meister wartet nicht auf euch.",
-       "right_expr": "wuetend"
+       "right_expr": "wuetend",
+       "story": true
       },
       {
        "left": "hund",
        "right": "cyborg_wart",
        "speaker": "hund",
        "text": "Wart. Du warst mal tot.",
-       "left_expr": "wuetend"
+       "left_expr": "wuetend",
+       "story": true
       },
       {
        "left": "hund",
        "right": "frischlinge",
        "speaker": "frischlinge",
        "text": "Der Boss ist stärker als je zuvor! Jetzt kriegt ihr's!",
-       "right_expr": "lachend"
+       "right_expr": "lachend",
+       "story": true
       },
       {
        "left": "bienenmaedchen",
        "right": "cyborg_wart",
        "speaker": "bienenmaedchen",
        "text": "Hübsches Spielzeug. Aber ich fliege. Du nicht.",
-       "left_expr": "lachend"
+       "left_expr": "lachend",
+       "story": true
       }
      ]
     }
@@ -109,6 +113,282 @@
      ]
     }
    ]
+  },
+  {
+   "when": {
+    "turn": 2
+   },
+   "if": {
+    "present": [
+     "ritter"
+    ]
+   },
+   "note": "Fluff: ritter",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "ritter",
+       "right": "",
+       "speaker": "ritter",
+       "text": "Mein Harnisch quietscht im Schlamm. Das ist keine Rüstung mehr, das ist eine Schlammpackung."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 3
+   },
+   "if": {
+    "present": [
+     "samurai"
+    ]
+   },
+   "note": "Fluff: samurai",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "samurai",
+       "right": "",
+       "speaker": "samurai",
+       "text": "Schlamm bis zu den Knien. Ein Samurai darf seine Sandalen nicht verlieren. Eine Frage der Ehre."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 4
+   },
+   "if": {
+    "present": [
+     "kungfu"
+    ]
+   },
+   "note": "Fluff: kungfu",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "kungfu",
+       "right": "",
+       "speaker": "kungfu",
+       "text": "Im Sumpf steht man still, sonst sinkt man. Eine wertvolle Lektion. Leider rutschig."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 5
+   },
+   "if": {
+    "present": [
+     "ninjas"
+    ]
+   },
+   "note": "Fluff: ninjas",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "ninjas",
+       "right": "",
+       "speaker": "ninjas",
+       "text": "Wir schweben über dem Moor. – Wir stehen auf einem Ast. – Es ist ein Ast. – Hoffentlich."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 6
+   },
+   "if": {
+    "present": [
+     "elisabeth"
+    ]
+   },
+   "note": "Fluff: elisabeth",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "elisabeth",
+       "right": "",
+       "speaker": "elisabeth",
+       "text": "Dreckwasser, Gestank und Nebel. Ich liebe es. Nur das Salz fehlt."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 2
+   },
+   "if": {
+    "present": [
+     "museklaugust"
+    ]
+   },
+   "note": "Fluff: museklaugust",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "museklaugust",
+       "right": "",
+       "speaker": "museklaugust",
+       "text": "Ich weigere mich zu waten. Tragt mich! Kurfürsten waten nicht!"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 3
+   },
+   "if": {
+    "present": [
+     "robo"
+    ]
+   },
+   "note": "Fluff: robo",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "robo",
+       "right": "",
+       "speaker": "robo",
+       "text": "Methangehalt: bedenklich. Ich schlage vor, niemand zündet etwas an. Ich schaue Elisabeth an."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 4
+   },
+   "if": {
+    "present": [
+     "wendy"
+    ]
+   },
+   "note": "Fluff: wendy",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "wendy",
+       "right": "",
+       "speaker": "wendy",
+       "text": "Mäh… meine Wolle wird zu Matsch. Ich bin ein Moorschaf. Bitte nicht lachen."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 5
+   },
+   "if": {
+    "present": [
+     "braumeisterin"
+    ]
+   },
+   "note": "Fluff: braumeisterin",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "braumeisterin",
+       "right": "",
+       "speaker": "braumeisterin",
+       "text": "Moorgeruch und Bierduft. Man gewöhnt sich an beides."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 6
+   },
+   "if": {
+    "present": [
+     "magical_girl"
+    ]
+   },
+   "note": "Fluff: magical_girl",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "magical_girl",
+       "right": "",
+       "speaker": "magical_girl",
+       "text": "Hier funkelt gar nichts. Ich funkele ein bisschen mit, damit es nicht traurig wird."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 2
+   },
+   "if": {
+    "present": [
+     "quacksalber"
+    ]
+   },
+   "note": "Fluff: quacksalber",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "quacksalber",
+       "right": "",
+       "speaker": "quacksalber",
+       "text": "Sumpfgas! Das ist gesund. Behaupte ich. Vorsichtshalber atme ich nicht ein."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 3
+   },
+   "if": {
+    "present": [
+     "panzer"
+    ]
+   },
+   "note": "Fluff: panzer",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "panzer",
+       "right": "",
+       "speaker": "panzer",
+       "text": "Matsch klebt in den Ketten. Ich hinterlasse Spuren. Tiefe."
+      }
+     ]
+    }
+   ]
   }
  ],
  "flee": {
@@ -118,7 +398,8 @@
     "right": "cyborg_wart",
     "speaker": "cyborg_wart",
     "text": "Rückzug... Reparatur... Ich komme wieder. Stärker.",
-    "right_expr": "wuetend"
+    "right_expr": "wuetend",
+    "story": true
    }
   ],
   "frischlinge": [
@@ -127,7 +408,8 @@
     "right": "frischlinge",
     "speaker": "frischlinge",
     "text": "Wir sagen's dem Meister! Der macht euch fertig!",
-    "right_expr": "wuetend"
+    "right_expr": "wuetend",
+    "story": true
    }
   ]
  }

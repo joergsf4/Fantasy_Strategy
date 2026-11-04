@@ -27,6 +27,8 @@ func _initialize() -> void:
 	check(free_i >= 0, "es gibt einen freien Platz in Kapitel 5")
 	var old: String = base[free_i]
 	party.equipment[old] = ["eisenschwert"]
+	var f6 := Mission.dialogue_ids("ch6")
+	check(f6.has("hund") and f6.has("elisabeth") and not f6.has("ritter") and not f6.has("robo"), "nur Story-Gespraeche legen fest, Fluff nicht: %s" % [f6])
 	var roster := Party.roster(defs, 5)
 	check(roster.has("ritter") and not roster.has("hund") and Party.roster(defs, 6).has("hund"), "Hundsfreund ist erst ab Kapitel 6 waehlbar")
 	# nur kennengelernte Helden

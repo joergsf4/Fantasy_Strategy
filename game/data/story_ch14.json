@@ -4,35 +4,40 @@
    "left": "maedchen_baer",
    "right": "waisenkinder",
    "speaker": "maedchen_baer",
-   "text": "Die Kinder sind in Sicherheit, und zum ersten Mal seit Tagen scheint wieder die Sonne."
+   "text": "Die Kinder sind in Sicherheit, und zum ersten Mal seit Tagen scheint wieder die Sonne.",
+   "story": true
   },
   {
    "left": "maedchen_baer",
    "right": "waisenkinder",
    "speaker": "waisenkinder",
    "text": "Danke, dass ihr uns gerettet habt! Kommt, wir zeigen euch unser Haus!",
-   "right_expr": "lachend"
+   "right_expr": "lachend",
+   "story": true
   },
   {
    "left": "hund",
    "right": "waisenkinder",
    "speaker": "hund",
    "text": "Ihr bleibt drinnen. Heute passiert euch nichts mehr.",
-   "left_expr": "wuetend"
+   "left_expr": "wuetend",
+   "story": true
   },
   {
    "left": "hund",
    "right": "maja",
    "speaker": "maja",
    "text": "Wie rührend. Aber der Meister mag keine Zeugen, und Waisenhäuser brennen so schön.",
-   "right_expr": "lachend"
+   "right_expr": "lachend",
+   "story": true
   },
   {
    "left": "hund",
    "right": "maja",
    "speaker": "hund",
    "text": "Die Zwillinge! Macht euch bereit, sie wollen das Haus anzünden!",
-   "left_expr": "wuetend"
+   "left_expr": "wuetend",
+   "story": true
   }
  ],
  "outro": [
@@ -40,105 +45,121 @@
    "left": "maedchen_baer",
    "right": "hund",
    "speaker": "maedchen_baer",
-   "text": "Das Waisenhaus ist endgültig gerettet. Aber wer dieser Meister ist, wissen wir immer noch nicht."
+   "text": "Das Waisenhaus ist endgültig gerettet. Aber wer dieser Meister ist, wissen wir immer noch nicht.",
+   "story": true
   },
   {
    "left": "maedchen_baer",
    "right": "hund",
    "speaker": "hund",
-   "text": "Irgendjemand muss ihn doch kennen. Die Zwillinge, der Regent, der Professor... alle sprechen von ihm."
+   "text": "Irgendjemand muss ihn doch kennen. Die Zwillinge, der Regent, der Professor... alle sprechen von ihm.",
+   "story": true
   },
   {
    "left": "bienenmaedchen",
    "right": "hund",
    "speaker": "bienenmaedchen",
    "text": "Schaut mich nicht so an. Ich kenne ihn auch nicht. Ich kenne nur seine Boten und sein Feuer.",
-   "left_expr": "wuetend"
+   "left_expr": "wuetend",
+   "story": true
   },
   {
    "left": "bienenmaedchen",
    "right": "maedchen_baer",
    "speaker": "bienenmaedchen",
    "text": "Aber eines weiß ich: Ich muss ihn vernichten, wenn ich jemals in Ruhe mit meinen Bienen leben will.",
-   "left_expr": "wuetend"
+   "left_expr": "wuetend",
+   "story": true
   },
   {
    "left": "bienenmaedchen",
    "right": "maedchen_baer",
    "speaker": "maedchen_baer",
-   "text": "Dann haben wir wenigstens dasselbe Ziel."
+   "text": "Dann haben wir wenigstens dasselbe Ziel.",
+   "story": true
   },
   {
    "left": "bienenmaedchen",
    "right": "maedchen_baer",
    "speaker": "bienenmaedchen",
    "text": "Dasselbe Ziel. Nicht dieselben Freunde.",
-   "left_expr": "wuetend"
+   "left_expr": "wuetend",
+   "story": true
   },
   {
    "left": "hund",
    "right": "mutter",
    "speaker": "mutter",
-   "text": "Entschuldigt... Darf ich etwas sagen?"
+   "text": "Entschuldigt... Darf ich etwas sagen?",
+   "story": true
   },
   {
    "left": "hund",
    "right": "mutter",
    "speaker": "hund",
    "text": "Lieselotte! Du bist hier, und das Baby auch!",
-   "left_expr": "lachend"
+   "left_expr": "lachend",
+   "story": true
   },
   {
    "left": "maedchen_baer",
    "right": "mutter",
    "speaker": "mutter",
-   "text": "Sie wollten mich entführen, weil ich etwas weiß. Ich hatte zu viel Angst, es euch zu sagen."
+   "text": "Sie wollten mich entführen, weil ich etwas weiß. Ich hatte zu viel Angst, es euch zu sagen.",
+   "story": true
   },
   {
    "left": "maedchen_baer",
    "right": "mutter",
    "speaker": "mutter",
-   "text": "Der Meister versteckt sich in den Bergen, weit im Norden. Ich habe die Boten nachts darüber reden hören."
+   "text": "Der Meister versteckt sich in den Bergen, weit im Norden. Ich habe die Boten nachts darüber reden hören.",
+   "story": true
   },
   {
    "left": "maedchen_baer",
    "right": "hund",
    "speaker": "hund",
    "text": "Dann gehen wir in die Berge.",
-   "right_expr": ""
+   "right_expr": "",
+   "story": true
   },
   {
    "left": "bienenmaedchen",
    "right": "maedchen_baer",
    "speaker": "bienenmaedchen",
    "text": "Endlich ein Plan. Ich komme mit, aber nur aus Berechnung. Der Meister hat meine Stöcke verbrannt.",
-   "left_expr": "wuetend"
+   "left_expr": "wuetend",
+   "story": true
   },
   {
    "left": "bienenmaedchen",
    "right": "hund",
    "speaker": "hund",
-   "text": "Garstig wie immer."
+   "text": "Garstig wie immer.",
+   "story": true
   },
   {
    "left": "bienenmaedchen",
    "right": "hund",
    "speaker": "bienenmaedchen",
    "text": "Ich höre alles. Und ich vergesse nichts.",
-   "left_expr": "wuetend"
+   "left_expr": "wuetend",
+   "story": true
   },
   {
    "left": "maedchen_baer",
    "right": "mutter",
    "speaker": "maedchen_baer",
-   "text": "Wir brechen sofort auf. Lieselotte, bleib bei den Kindern, hier seid ihr jetzt sicher."
+   "text": "Wir brechen sofort auf. Lieselotte, bleib bei den Kindern, hier seid ihr jetzt sicher.",
+   "story": true
   },
   {
    "left": "maedchen_baer",
    "right": "mutter",
    "speaker": "mutter",
    "text": "Passt auf euch auf! Vor den Bergen liegt ein gefährlicher Sumpf.",
-   "right_expr": "lachend"
+   "right_expr": "lachend",
+   "story": true
   }
  ]
 }

@@ -36,6 +36,16 @@ class EditorTest(unittest.TestCase):
         self.assertIn("goals", m)
         self.assertIn("map", m)
 
+    def test_story_flag_bleibt_beim_speichern_erhalten(self):
+        b = self.body()
+        for l in b["intro"]:
+            l["story"] = True
+        b["outro"][0].pop("story", None)
+        server.save_chapter("ch2", b)
+        story = server.read(server.DATA / "story_ch2.json")
+        self.assertTrue(all(l.get("story") for l in story["intro"]))
+        self.assertFalse(story["outro"][0].get("story", False))
+
     def test_doppelte_leerzeichen_werden_beim_speichern_bereinigt(self):
         b = self.body()
         b["intro"][0]["text"] = "Ich  knacke   das Schloss! "

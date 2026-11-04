@@ -178,6 +178,8 @@ section.block { margin-bottom: 34px; }
 .card .body { display: none; padding: 4px 14px 14px; border-top: 1px solid var(--line); }
 .card.open .body { display: block; }
 .badge { font-size: 11px; background: #3b2f12; color: var(--gold); border-radius: 6px; padding: 1px 7px; margin-left: 6px; font-family: system-ui; }
+.badge.story { background: #12303b; color: #8fd3ff; }
+.storyflag { display: flex; gap: 8px; align-items: center; margin: 4px 0 8px; font-size: 13px; cursor: pointer; }
 
 details.trig { background: var(--panel2); border: 1px solid var(--line); border-radius: 8px; margin: 12px 0; }
 details.trig > summary { padding: 8px 12px; cursor: pointer; color: var(--gold); }
@@ -484,11 +486,12 @@ function cardHtml(c, cv) {
   return `<section class="card ${open[cv.key] ? "open" : ""}" data-c="${cv.key}">
     <header tabindex="0" role="button" aria-expanded="${!!open[cv.key]}" data-act="toggle"><span class="chev">▶</span>
       <div class="cast">${cast.map(id => avatar(id, "", "sm")).join("")}</div>
-      <div class="tt"><h3>${esc(title)}${draft}</h3><div class="sub">${lines.length} Zeile${lines.length === 1 ? "" : "n"}${sub ? " · " + esc(sub) : ""}</div></div>
+      <div class="tt"><h3>${esc(title)}${draft}${lines.length && lines.every(l => l.story) ? '<span class="badge story">Story</span>' : ""}</h3><div class="sub">${lines.length} Zeile${lines.length === 1 ? "" : "n"}${sub ? " · " + esc(sub) : ""}</div></div>
       <button class="btn ghost" data-act="preview" title="Wie im Spiel ansehen">▶ Vorschau</button>
       ${cv.kind === "trig" || cv.kind === "flee" ? `<button class="btn ghost" data-act="dup" title="Duplizieren" aria-label="Duplizieren">⧉</button><button class="btn ghost danger" data-act="delconv" title="Gespräch löschen" aria-label="Gespräch löschen">🗑</button>` : ""}
     </header>
     <div class="body">${cv.kind === "trig" ? whenEditor(cv, c) : ""}
+      <label class="storyflag" title="Nur wer in einem Story-Gespräch vorkommt, ist in der Gruppenwahl fest vorgegeben. Alles andere ist Fluff, dann dürfen die Figuren frei getauscht werden."><input type="checkbox" data-act="story" ${lines.length && lines.every(l => l.story) ? "checked" : ""}> Story relevant <span class="hint">(Figuren dieses Gesprächs sind in der Gruppenwahl fest vorgegeben)</span></label>
       <div class="lines">${lines.map(lineHtml).join("")}</div>
       <button class="add" data-act="addline" data-drop="add">+ Zeile hinzufügen <span class="hint">(oder Figur hierher ziehen)</span></button>
     </div></section>`;
@@ -561,14 +564,15 @@ function newLine(lines, id) {
   if (prev.left) l.left = prev.left;
   if (prev.right) l.right = prev.right;
   if (id !== l.left && id !== l.right) l[l.left ? "right" : "left"] = id;
-  lines.push({ ...l, speaker: id, text: "" });
+  lines.push({ ...l, speaker: id, text: "", ...(prev.story ? { story: true } : {}) });
 }
 const acts = {
   toggle(el) { const card = el.closest(".card"), k = card.dataset.c; open[k] = !open[k]; card.classList.toggle("open", open[k]); el.setAttribute("aria-expanded", !!open[k]); fitAll(); },
   pick(el) { const { c, lines, i } = lineCtx(el), side = el.closest(".slot").dataset.side; openPicker(el, id => change(() => setChar(lines, i, side, id))); },
   speaker(el) { const { lines, i } = lineCtx(el), l = lines[i]; change(() => l.speaker = l[el.closest(".slot").dataset.side]); },
   clear(el) { const { lines, i } = lineCtx(el), side = el.closest(".slot").dataset.side; change(() => { const l = lines[i]; if (l.speaker === l[side]) l.speaker = l[side === "left" ? "right" : "left"]; delete l[side]; delete l[side + "_expr"]; }); },
-  addline(el) { const { lines, key } = lineCtx(el, true), prev = lines.at(-1) || {}; change(() => lines.push({ ...(prev.left ? { left: prev.left } : {}), ...(prev.right ? { right: prev.right } : {}), ...(prev.left ? { speaker: prev.left } : {}), text: "" })); setTimeout(() => $(`.card[data-c="${key}"] .line:last-child textarea`)?.focus(), 0); },
+  addline(el) { const { lines, key } = lineCtx(el, true), prev = lines.at(-1) || {}; change(() => lines.push({ ...(prev.left ? { left: prev.left } : {}), ...(prev.right ? { right: prev.right } : {}), ...(prev.left ? { speaker: prev.left } : {}), text: "", ...(prev.story ? { story: true } : {}) })); setTimeout(() => $(`.card[data-c="${key}"] .line:last-child textarea`)?.focus(), 0); },
+  story(el) { const { lines } = lineCtx(el), on = el.checked; change(() => lines.forEach(l => on ? l.story = true : delete l.story)); },
   accept(el) { const { c, key } = lineCtx(el); change(() => delete c.triggers[+key.slice(2)].draft); },
   delline(el) { const { lines, i } = lineCtx(el), l = lines[i]; change(() => lines.splice(i, 1)); toast("Zeile gelöscht", "", undo); },
   delconv(el) { const { c, key } = lineCtx(el); change(() => { if (key.startsWith("f:")) delete c.flee[key.slice(2)]; else c.triggers.splice(+key.slice(2), 1); }); toast("Gespräch gelöscht", "", undo); },

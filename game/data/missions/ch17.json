@@ -31,20 +31,23 @@
        "right": "alphawolf",
        "speaker": "alphawolf",
        "text": "*Ein tiefes Knurren. Augen wie Eis, ein weißes Fell, größer als alle anderen Wölfe.*",
-       "right_expr": "wuetend"
+       "right_expr": "wuetend",
+       "story": true
       },
       {
        "left": "hund",
        "right": "bienenmaedchen",
        "speaker": "bienenmaedchen",
        "text": "Das ist ihr Anführer. Der Schneeweiße. Ich hasse Wölfe, sie sind zu laut.",
-       "right_expr": "wuetend"
+       "right_expr": "wuetend",
+       "story": true
       },
       {
        "left": "wendy",
        "right": "maedchen_baer",
        "speaker": "wendy",
-       "text": "Die armen Wölfe. Wenn man sie nur vertreiben könnte, ohne dass jemand verletzt wird."
+       "text": "Die armen Wölfe. Wenn man sie nur vertreiben könnte, ohne dass jemand verletzt wird.",
+       "story": true
       }
      ]
     }
@@ -95,35 +98,40 @@
        "left": "maedchen_baer",
        "right": "alphawolf",
        "speaker": "maedchen_baer",
-       "text": "Das Rudel ist in die Nacht verschwunden. Nur er ist geblieben."
+       "text": "Das Rudel ist in die Nacht verschwunden. Nur er ist geblieben.",
+       "story": true
       },
       {
        "left": "hund",
        "right": "alphawolf",
        "speaker": "alphawolf",
        "text": "*Der Alphawolf hebt den Kopf und heult einmal tief und lang. Er hat sein Rudel wegziehen lassen.*",
-       "right_expr": ""
+       "right_expr": "",
+       "story": true
       },
       {
        "left": "hund",
        "right": "alphawolf",
        "speaker": "hund",
        "text": "Er ist mutig. Er hat keine Angst vor uns. Er wollte nur sehen, wer wir sind.",
-       "left_expr": "lachend"
+       "left_expr": "lachend",
+       "story": true
       },
       {
        "left": "bienenmaedchen",
        "right": "alphawolf",
        "speaker": "bienenmaedchen",
        "text": "Und jetzt will er mit. Na wunderbar, noch ein Anhängsel.",
-       "left_expr": "wuetend"
+       "left_expr": "wuetend",
+       "story": true
       },
       {
        "left": "maedchen_baer",
        "right": "alphawolf",
        "speaker": "alphawolf",
        "text": "*Er senkt den Kopf vor Mira und stellt sich neben die Gruppe. Ein neuer Gefährte.*",
-       "right_expr": "lachend"
+       "right_expr": "lachend",
+       "story": true
       }
      ]
     },
@@ -217,6 +225,259 @@
        "speaker": "bienenmaedchen",
        "text": "Kein Wort über Wölfe. Ich will nur noch ins Warme.",
        "left_expr": "wuetend"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 2
+   },
+   "if": {
+    "present": [
+     "ritter"
+    ]
+   },
+   "note": "Fluff: ritter",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "ritter",
+       "right": "",
+       "speaker": "ritter",
+       "text": "Meine Rüstung ist eingefroren. Ich knirsche beim Gehen. Ehrenhaft, aber laut."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 3
+   },
+   "if": {
+    "present": [
+     "samurai"
+    ]
+   },
+   "note": "Fluff: samurai",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "samurai",
+       "right": "",
+       "speaker": "samurai",
+       "text": "Schnee fällt lautlos. Ein guter Lehrer. Ich lerne, leise zu frieren."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 4
+   },
+   "if": {
+    "present": [
+     "kungfu"
+    ]
+   },
+   "note": "Fluff: kungfu",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "kungfu",
+       "right": "",
+       "speaker": "kungfu",
+       "text": "Im Schnee gilt: Nichts ist schöner als heißer Tee im Schnee. Und ich habe keinen."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 5
+   },
+   "if": {
+    "present": [
+     "ninjas"
+    ]
+   },
+   "note": "Fluff: ninjas",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "ninjas",
+       "right": "",
+       "speaker": "ninjas",
+       "text": "Weiß auf weiß. – Wir sind unsichtbar. – Wir tragen Schwarz. – Dann sind wir sichtbar."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 6
+   },
+   "if": {
+    "present": [
+     "elisabeth"
+    ]
+   },
+   "note": "Fluff: elisabeth",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "elisabeth",
+       "right": "",
+       "speaker": "elisabeth",
+       "text": "Eisberg voraus! …Nein, nur ein Hügel. Mein Fehler. Aber er sah sehr frech aus."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 2
+   },
+   "if": {
+    "present": [
+     "museklaugust"
+    ]
+   },
+   "note": "Fluff: museklaugust",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "museklaugust",
+       "right": "",
+       "speaker": "museklaugust",
+       "text": "Meine Perücke ist ein Eiszapfen. Das ist Kurfürsten-Schmuck, nicht wahr?"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 3
+   },
+   "if": {
+    "present": [
+     "robo"
+    ]
+   },
+   "note": "Fluff: robo",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "robo",
+       "right": "",
+       "speaker": "robo",
+       "text": "Temperatur: minus 12. Meine Gelenke sind eingefroren. Ich knarze wie eine Tür."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 4
+   },
+   "if": {
+    "present": [
+     "braumeisterin"
+    ]
+   },
+   "note": "Fluff: braumeisterin",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "braumeisterin",
+       "right": "",
+       "speaker": "braumeisterin",
+       "text": "Ein Schneeball im Bierkrug: Das nennt man Kühlung. Das nennt man Genie."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 5
+   },
+   "if": {
+    "present": [
+     "magical_girl"
+    ]
+   },
+   "note": "Fluff: magical_girl",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "magical_girl",
+       "right": "",
+       "speaker": "magical_girl",
+       "text": "Schneeflocken sind kleine Sterne, die es eilig haben. Ich mag sie."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 6
+   },
+   "if": {
+    "present": [
+     "quacksalber"
+    ]
+   },
+   "note": "Fluff: quacksalber",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "quacksalber",
+       "right": "",
+       "speaker": "quacksalber",
+       "text": "Frostbeulen! Mein Elixier macht sie warm. Oder wenigstens lila. Das ist auch eine Farbe."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 2
+   },
+   "if": {
+    "present": [
+     "panzer"
+    ]
+   },
+   "note": "Fluff: panzer",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "panzer",
+       "right": "",
+       "speaker": "panzer",
+       "text": "Eisglätte. Ich rutsche. Ich lenke nicht. Ich bin ein Geschoss. Alle ausweichen!"
       }
      ]
     }

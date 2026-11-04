@@ -4,38 +4,44 @@
    "left": "ritter",
    "right": "maedchen_baer",
    "speaker": "ritter",
-   "text": "Das Innere der Insel. Mein Brustpanzer ist ein Backofen mit Wappen."
+   "text": "Das Innere der Insel. Mein Brustpanzer ist ein Backofen mit Wappen.",
+   "story": true
   },
   {
    "left": "ritter",
    "right": "maedchen_baer",
    "speaker": "maedchen_baer",
-   "text": "Brumm hechelt seit einer Stunde. Wir brauchen Wasser, und zwar schnell."
+   "text": "Brumm hechelt seit einer Stunde. Wir brauchen Wasser, und zwar schnell.",
+   "story": true
   },
   {
    "left": "robo",
    "right": "maedchen_baer",
    "speaker": "robo",
-   "text": "Meine Gelenke knirschen. Sand ist in jedem Zahnrad."
+   "text": "Meine Gelenke knirschen. Sand ist in jedem Zahnrad.",
+   "story": true
   },
   {
    "left": "elisabeth",
    "right": "maedchen_baer",
    "speaker": "elisabeth",
    "text": "Ich sehe eine Oase! Ostwärts, hinter den Dünen. Aber da stehen Feinde. Und eine kleine alte Dame, die mir leider sehr bekannt vorkommt.",
-   "left_expr": "lachend"
+   "left_expr": "lachend",
+   "story": true
   },
   {
    "left": "elisabeth",
    "right": "maedchen_baer",
    "speaker": "maedchen_baer",
-   "text": "Xiùlán. Die Alte mit dem Gebiss."
+   "text": "Xiùlán. Die Alte mit dem Gebiss.",
+   "story": true
   },
   {
    "left": "ritter",
    "right": "maedchen_baer",
    "speaker": "ritter",
-   "text": "Die Oase ist der einzige Weg weiter. Wir nehmen sie ein, bevor die Sonne uns in die Knie zwingt."
+   "text": "Die Oase ist der einzige Weg weiter. Wir nehmen sie ein, bevor die Sonne uns in die Knie zwingt.",
+   "story": true
   }
  ],
  "outro": [
@@ -43,46 +49,53 @@
    "left": "robo",
    "right": "panzer",
    "speaker": "robo",
-   "text": "Hat es geklappt? Bist du wieder bei Sinnen?"
+   "text": "Hat es geklappt? Bist du wieder bei Sinnen?",
+   "story": true
   },
   {
    "left": "robo",
    "right": "panzer",
    "speaker": "panzer",
    "text": "Gut gemacht, Brüderchen.",
-   "right_expr": "lachend"
+   "right_expr": "lachend",
+   "story": true
   },
   {
    "left": "robo",
    "right": "panzer",
    "speaker": "robo",
-   "text": "Du fährst jetzt mit uns?"
+   "text": "Du fährst jetzt mit uns?",
+   "story": true
   },
   {
    "left": "robo",
    "right": "panzer",
    "speaker": "panzer",
-   "text": "Es wird Zeit, dem Regenten mal eine Kanone zu zeigen."
+   "text": "Es wird Zeit, dem Regenten mal eine Kanone zu zeigen.",
+   "story": true
   },
   {
    "left": "ritter",
    "right": "panzer",
    "speaker": "ritter",
-   "text": "Willkommen in der Gruppe, Robina. Der Weg zum Regenten ist offen."
+   "text": "Willkommen in der Gruppe, Robina. Der Weg zum Regenten ist offen.",
+   "story": true
   },
   {
    "left": "elisabeth",
    "right": "panzer",
    "speaker": "elisabeth",
    "text": "Ein Panzer als große Schwester. Was für eine wilde Truppe wir doch sind.",
-   "left_expr": "lachend"
+   "left_expr": "lachend",
+   "story": true
   },
   {
    "left": "elisabeth",
    "right": "panzer",
    "speaker": "panzer",
    "text": "Ich fahre voran. Alle ausweichen.",
-   "right_expr": "lachend"
+   "right_expr": "lachend",
+   "story": true
   }
  ]
 }

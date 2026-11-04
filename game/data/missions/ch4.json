@@ -100,20 +100,23 @@
        "left": "kungfu",
        "right": "xiulan",
        "speaker": "kungfu",
-       "text": "Eine alte Dame am Teehaus. Ich verbeuge mich, Großmutter."
+       "text": "Eine alte Dame am Teehaus. Ich verbeuge mich, Großmutter.",
+       "story": true
       },
       {
        "left": "kungfu",
        "right": "xiulan",
        "speaker": "xiulan",
        "text": "Verbeug dich ruhig, Jungchen. Dann hast du die Nase auf Höhe meines Knies.",
-       "right_expr": "lachend"
+       "right_expr": "lachend",
+       "story": true
       },
       {
        "left": "kungfu",
        "right": "xiulan",
        "speaker": "kungfu",
-       "text": "Du bist eine bösartige Hexe!"
+       "text": "Du bist eine bösartige Hexe!",
+       "story": true
       }
      ]
     }
@@ -172,26 +175,30 @@
        "right": "xiulan",
        "speaker": "xiulan",
        "text": "Moment mal. Diese Frau ist ja gefesselt! Mit Baby! Das war nicht ausgemacht.",
-       "right_expr": "wuetend"
+       "right_expr": "wuetend",
+       "story": true
       },
       {
        "left": "kungfu",
        "right": "xiulan",
        "speaker": "kungfu",
-       "text": "Der Regent hat sie als Geisel genommen. Du bist seine Wache."
+       "text": "Der Regent hat sie als Geisel genommen. Du bist seine Wache.",
+       "story": true
       },
       {
        "left": "kungfu",
        "right": "xiulan",
        "speaker": "xiulan",
        "text": "Ich sollte nur auf die Kleine aufpassen! Für Geld, ja, aber nicht dafür. Der Auftrag ist beendet.",
-       "right_expr": "wuetend"
+       "right_expr": "wuetend",
+       "story": true
       },
       {
        "left": "kungfu",
        "right": "xiulan",
        "speaker": "xiulan",
-       "text": "Befreit sie, Jungchen. Wir sehen uns wieder, und dann zahlt mir jemand die Zahnarztrechnung."
+       "text": "Befreit sie, Jungchen. Wir sehen uns wieder, und dann zahlt mir jemand die Zahnarztrechnung.",
+       "story": true
       }
      ]
     },
@@ -215,20 +222,207 @@
        "right": "mutter",
        "speaker": "mutter",
        "text": "Danke, danke! Mein Kleiner ist unversehrt. Sie wollten uns zum Regenten bringen.",
-       "right_expr": "lachend"
+       "right_expr": "lachend",
+       "story": true
       },
       {
        "left": "wendy",
        "right": "mutter",
        "speaker": "wendy",
        "text": "Mäh, der Kleine hat ja eine Stimme. Die haben sie bis zum Tal gehört.",
-       "left_expr": "lachend"
+       "left_expr": "lachend",
+       "story": true
       },
       {
        "left": "wendy",
        "right": "mutter",
        "speaker": "mutter",
-       "text": "Er hat Hunger und schlechte Laune. Wie sein Vater. Lauft, ich bringe ihn in Sicherheit."
+       "text": "Er hat Hunger und schlechte Laune. Wie sein Vater. Lauft, ich bringe ihn in Sicherheit.",
+       "story": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 2
+   },
+   "if": {
+    "present": [
+     "ritter"
+    ]
+   },
+   "note": "Fluff: ritter",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "ritter",
+       "right": "",
+       "speaker": "ritter",
+       "text": "Eine Geisel mit Baby. Ritterpflicht ruft! …Und bitte hält jemand dem Kleinen die Ohren zu."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 3
+   },
+   "if": {
+    "present": [
+     "samurai"
+    ]
+   },
+   "note": "Fluff: samurai",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "samurai",
+       "right": "",
+       "speaker": "samurai",
+       "text": "Ein Teehaus ist ein Ort der Stille. Wer hier schreit, entehrt den Tee. Das Baby ist ausgenommen."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 4
+   },
+   "if": {
+    "present": [
+     "ninjas"
+    ]
+   },
+   "note": "Fluff: ninjas",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "ninjas",
+       "right": "",
+       "speaker": "ninjas",
+       "text": "Wir sind schon da. – Seit drei Runden. – Niemand hat uns bemerkt. – Ihr auch nicht."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 5
+   },
+   "if": {
+    "present": [
+     "elisabeth"
+    ]
+   },
+   "note": "Fluff: elisabeth",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "elisabeth",
+       "right": "",
+       "speaker": "elisabeth",
+       "text": "Ein Pass in den Bergen und kein Seewind. Ich fühle mich wie ein Fisch im Trockendock."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 6
+   },
+   "if": {
+    "present": [
+     "museklaugust"
+    ]
+   },
+   "note": "Fluff: museklaugust",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "museklaugust",
+       "right": "",
+       "speaker": "museklaugust",
+       "text": "Ein Baby hat mehr Stimme als ein ganzer Hofstaat. Ich bin beeindruckt. Und neidisch."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 2
+   },
+   "if": {
+    "present": [
+     "robo"
+    ]
+   },
+   "note": "Fluff: robo",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "robo",
+       "right": "",
+       "speaker": "robo",
+       "text": "Lautstärke des Säuglings: 94 Dezibel. Meine Lautsprecher schämen sich."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 3
+   },
+   "if": {
+    "present": [
+     "braumeisterin"
+    ]
+   },
+   "note": "Fluff: braumeisterin",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "braumeisterin",
+       "right": "",
+       "speaker": "braumeisterin",
+       "text": "Das Baby hat Hunger? Ich hätte da was Gutes… ach, warte. Kein Bier für Kinder. Hat jemand Milch?"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 4
+   },
+   "if": {
+    "present": [
+     "quacksalber"
+    ]
+   },
+   "note": "Fluff: quacksalber",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "quacksalber",
+       "right": "",
+       "speaker": "quacksalber",
+       "text": "Für Säuglinge habe ich ein Elixier! Hilft gegen Schreien, Zahnen und Erbschaftssteuer. Wirkung nicht garantiert."
       }
      ]
     }
@@ -242,20 +436,23 @@
     "right": "xiulan",
     "speaker": "xiulan",
     "text": "Mein Kreuz! Du Rüpel. Ich rufe meinen Enkel an!",
-    "right_expr": "wuetend"
+    "right_expr": "wuetend",
+    "story": true
    },
    {
     "left": "$hero",
     "right": "xiulan",
     "speaker": "$hero",
-    "text": "Eine Großmutter mit Gebiss-Geschoss. Das erzähle ich keinem."
+    "text": "Eine Großmutter mit Gebiss-Geschoss. Das erzähle ich keinem.",
+    "story": true
    },
    {
     "left": "$hero",
     "right": "xiulan",
     "speaker": "xiulan",
     "text": "Ich komme wieder. Mit Ersatzgebiss!",
-    "right_expr": "wuetend"
+    "right_expr": "wuetend",
+    "story": true
    }
   ]
  }

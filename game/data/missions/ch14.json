@@ -22,14 +22,16 @@
        "right": "oskar",
        "speaker": "oskar",
        "text": "Genug geredet. Fackeln her, Schwesterherz!",
-       "right_expr": "lachend"
+       "right_expr": "lachend",
+       "story": true
       },
       {
        "left": "maedchen_baer",
        "right": "maja",
        "speaker": "maja",
        "text": "Brennt es nieder. Der Meister mag keine losen Enden.",
-       "right_expr": "lachend"
+       "right_expr": "lachend",
+       "story": true
       }
      ]
     },
@@ -46,13 +48,15 @@
        "right": "hund",
        "speaker": "hund",
        "text": "Das Waisenhaus brennt! Wir haben zwei Runden, dann ist es weg!",
-       "left_expr": "wuetend"
+       "left_expr": "wuetend",
+       "story": true
       },
       {
        "left": "maedchen_baer",
        "right": "hund",
        "speaker": "maedchen_baer",
-       "text": "Löscht es! Stellt euch neben das Feuer, oder nutzt den Fasswurf!"
+       "text": "Löscht es! Stellt euch neben das Feuer, oder nutzt den Fasswurf!",
+       "story": true
       }
      ]
     }
@@ -89,27 +93,31 @@
        "right": "oskar",
        "speaker": "bienenmaedchen",
        "text": "ZWILLINGE! Das ist für meine Bienenkörbe! Ihr habt alles verbrannt, was ich hatte!",
-       "left_expr": "wuetend"
+       "left_expr": "wuetend",
+       "story": true
       },
       {
        "left": "bienenmaedchen",
        "right": "oskar",
        "speaker": "oskar",
        "text": "Die Bienenkönigin! Du lebst noch? Wie lästig.",
-       "right_expr": "lachend"
+       "right_expr": "lachend",
+       "story": true
       },
       {
        "left": "maedchen_baer",
        "right": "bienenmaedchen",
        "speaker": "maedchen_baer",
-       "text": "Stachelia?! Du hilfst uns?"
+       "text": "Stachelia?! Du hilfst uns?",
+       "story": true
       },
       {
        "left": "maedchen_baer",
        "right": "bienenmaedchen",
        "speaker": "bienenmaedchen",
        "text": "Glaubt bloß nicht, ich tue das für euch. Ich will nur diese beiden. Geht mir aus dem Weg.",
-       "right_expr": "wuetend"
+       "right_expr": "wuetend",
+       "story": true
       }
      ]
     }
@@ -172,6 +180,282 @@
      ]
     }
    ]
+  },
+  {
+   "when": {
+    "turn": 2
+   },
+   "if": {
+    "present": [
+     "ritter"
+    ]
+   },
+   "note": "Fluff: ritter",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "ritter",
+       "right": "",
+       "speaker": "ritter",
+       "text": "Feuer im Waisenhaus. Ein Ritter verteidigt die Schwachen, ein Tapferer löscht, ein Held tut beides."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 3
+   },
+   "if": {
+    "present": [
+     "samurai"
+    ]
+   },
+   "note": "Fluff: samurai",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "samurai",
+       "right": "",
+       "speaker": "samurai",
+       "text": "Kleine Hände, große Tapferkeit. Die Kinder haben mehr Ehre als manche Fürsten."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 4
+   },
+   "if": {
+    "present": [
+     "kungfu"
+    ]
+   },
+   "note": "Fluff: kungfu",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "kungfu",
+       "right": "",
+       "speaker": "kungfu",
+       "text": "Feuer ist kurz, Mut ist lang. Greift zum Eimer, nicht zum Zorn."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 5
+   },
+   "if": {
+    "present": [
+     "ninjas"
+    ]
+   },
+   "note": "Fluff: ninjas",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "ninjas",
+       "right": "",
+       "speaker": "ninjas",
+       "text": "Wir haben die Hintertür gesichert. – Und die Vordertür. – Und die Katzenklappe."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 6
+   },
+   "if": {
+    "present": [
+     "elisabeth"
+    ]
+   },
+   "note": "Fluff: elisabeth",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "elisabeth",
+       "right": "",
+       "speaker": "elisabeth",
+       "text": "Feuer an Land! Mein Albtraum – so viel Holz und kein Meer zum Löschen!"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 2
+   },
+   "if": {
+    "present": [
+     "museklaugust"
+    ]
+   },
+   "note": "Fluff: museklaugust",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "museklaugust",
+       "right": "",
+       "speaker": "museklaugust",
+       "text": "Ich trage Kinder! Zwei pro Arm! Wer will noch? Es ist Training für meinen Bizeps."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 3
+   },
+   "if": {
+    "present": [
+     "robo"
+    ]
+   },
+   "note": "Fluff: robo",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "robo",
+       "right": "",
+       "speaker": "robo",
+       "text": "Löschmodus aktiviert. Wassermenge: ein Eimer. Effizienz: erschütternd."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 4
+   },
+   "if": {
+    "present": [
+     "wendy"
+    ]
+   },
+   "note": "Fluff: wendy",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "wendy",
+       "right": "",
+       "speaker": "wendy",
+       "text": "Mäh… Wolle brennt wie Zunder. Bitte niemand mit Fackeln zu nah kommen."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 5
+   },
+   "if": {
+    "present": [
+     "braumeisterin"
+    ]
+   },
+   "note": "Fluff: braumeisterin",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "braumeisterin",
+       "right": "",
+       "speaker": "braumeisterin",
+       "text": "Ich habe Feuerlöscher dabei: dreißig Liter Bier. Nein, nicht trinken! Kippen!"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 6
+   },
+   "if": {
+    "present": [
+     "magical_girl"
+    ]
+   },
+   "note": "Fluff: magical_girl",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "magical_girl",
+       "right": "",
+       "speaker": "magical_girl",
+       "text": "Ein Regen aus Sternenstaub! Löscht nichts, sieht aber toll aus."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 2
+   },
+   "if": {
+    "present": [
+     "quacksalber"
+    ]
+   },
+   "note": "Fluff: quacksalber",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "quacksalber",
+       "right": "",
+       "speaker": "quacksalber",
+       "text": "Brandsalbe! Auf die Wunde reiben. Oder aufs Haus. Das wirkt vermutlich besser."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 3
+   },
+   "if": {
+    "present": [
+     "panzer"
+    ]
+   },
+   "note": "Fluff: panzer",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "panzer",
+       "right": "",
+       "speaker": "panzer",
+       "text": "Feuer? Ich bin aus Stahl. Ich stelle mich einfach davor. Hitze: angenehm."
+      }
+     ]
+    }
+   ]
   }
  ],
  "flee": {
@@ -181,7 +465,8 @@
     "right": "oskar",
     "speaker": "oskar",
     "text": "Das war nur der Anfang. Der Meister vergisst nicht!",
-    "right_expr": "wuetend"
+    "right_expr": "wuetend",
+    "story": true
    }
   ],
   "maja": [
@@ -190,7 +475,8 @@
     "right": "maja",
     "speaker": "maja",
     "text": "Ihr habt noch nichts gesehen. Der Meister kommt!",
-    "right_expr": "wuetend"
+    "right_expr": "wuetend",
+    "story": true
    }
   ]
  }

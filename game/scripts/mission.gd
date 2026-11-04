@@ -29,6 +29,8 @@ static func dialogue_ids(id: String) -> Array:
 	var ids := {}
 	var add_lines := func(lines: Array) -> void:
 		for l: Dictionary in lines:
+			if not l.get("story", false):      # nur Story-Gespraeche legen Figuren fest, Fluff laesst die Gruppenwahl frei
+				continue
 			for k in ["left", "right", "speaker"]:
 				if l.has(k):
 					ids[l[k]] = true

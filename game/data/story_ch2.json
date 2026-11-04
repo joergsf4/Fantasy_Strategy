@@ -5,20 +5,23 @@
    "right": "museklaugust",
    "speaker": "museklaugust",
    "right_expr": "lachend",
-   "text": "Seid gegrüßt, ihr Schwächlinge! Ich bin Muskelaugust, Kurfürst und König der Muskeln. Ich bin auf dem Weg nach Süden und der führt durch den Hohlweg. Lass uns ein Stück gemeinsam gehen."
+   "text": "Seid gegrüßt, ihr Schwächlinge! Ich bin Muskelaugust, Kurfürst und König der Muskeln. Ich bin auf dem Weg nach Süden und der führt durch den Hohlweg. Lass uns ein Stück gemeinsam gehen.",
+   "story": true
   },
   {
    "left": "maedchen_baer",
    "right": "museklaugust",
    "speaker": "maedchen_baer",
-   "text": "Der Weg ist zu. Eine Mauer, ein Tor, und dahinter lauern die Schurken des Regenten."
+   "text": "Der Weg ist zu. Eine Mauer, ein Tor, und dahinter lauern die Schurken des Regenten.",
+   "story": true
   },
   {
    "left": "maedchen_baer",
    "right": "museklaugust",
    "speaker": "museklaugust",
    "right_expr": "wuetend",
-   "text": "Eine Mauer? Ich werfe jeden darüber, den ihr nennt. Oder die Mauer gleich mit."
+   "text": "Eine Mauer? Ich werfe jeden darüber, den ihr nennt. Oder die Mauer gleich mit.",
+   "story": true
   }
  ],
  "outro": [
@@ -26,14 +29,16 @@
    "left": "maedchen_baer",
    "right": "kungfu",
    "speaker": "kungfu",
-   "text": "Der Hohlweg ist frei. Dahinter liegt die Brücke, und die ist, hört man, nicht mehr ganz."
+   "text": "Der Hohlweg ist frei. Dahinter liegt die Brücke, und die ist, hört man, nicht mehr ganz.",
+   "story": true
   },
   {
    "left": "maedchen_baer",
    "right": "kungfu",
    "speaker": "maedchen_baer",
    "left_expr": "lachend",
-   "text": "Dann springen wir eben. Brumm, ich glaube, du wirst nass."
+   "text": "Dann springen wir eben. Brumm, ich glaube, du wirst nass.",
+   "story": true
   }
  ]
 }

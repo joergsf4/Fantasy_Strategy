@@ -4,26 +4,30 @@
    "left": "maedchen_baer",
    "right": "wendy",
    "speaker": "wendy",
-   "text": "Mäh, hört ihr das Summen? Das kommt vom Waisenhaus hinter dem Hügel."
+   "text": "Mäh, hört ihr das Summen? Das kommt vom Waisenhaus hinter dem Hügel.",
+   "story": true
   },
   {
    "left": "maedchen_baer",
    "right": "wendy",
    "speaker": "maedchen_baer",
-   "text": "Und ich kenne dieses Summen. Stachelia."
+   "text": "Und ich kenne dieses Summen. Stachelia.",
+   "story": true
   },
   {
    "left": "ritter",
    "right": "wendy",
    "speaker": "ritter",
    "text": "Ein Waisenhaus im Namen zu bedrohen. Das ist selbst für dieses Gesindel nicht zu glauben.",
-   "left_expr": "wuetend"
+   "left_expr": "wuetend",
+   "story": true
   },
   {
    "left": "ritter",
    "right": "waisenkinder",
    "speaker": "waisenkinder",
-   "text": "Hilfe! Die Bienen sind überall! Bitte helft uns!"
+   "text": "Hilfe! Die Bienen sind überall! Bitte helft uns!",
+   "story": true
   }
  ],
  "outro": [
@@ -32,25 +36,29 @@
    "right": "waisenkinder",
    "speaker": "waisenkinder",
    "text": "Hundsfreund! Hundsfreund! Sie haben uns gerettet!",
-   "right_expr": "lachend"
+   "right_expr": "lachend",
+   "story": true
   },
   {
    "left": "hund",
    "right": "maedchen_baer",
    "speaker": "hund",
-   "text": "Ich war nur kurz auf dem Markt, und schon bricht die Hölle los. Ich schulde euch etwas."
+   "text": "Ich war nur kurz auf dem Markt, und schon bricht die Hölle los. Ich schulde euch etwas.",
+   "story": true
   },
   {
    "left": "hund",
    "right": "maedchen_baer",
    "speaker": "maedchen_baer",
-   "text": "Der Regent schickt Stachelia, um Kinder zu erschrecken. Wir gehen jetzt zu ihm und beenden das."
+   "text": "Der Regent schickt Stachelia, um Kinder zu erschrecken. Wir gehen jetzt zu ihm und beenden das.",
+   "story": true
   },
   {
    "left": "hund",
    "right": "maedchen_baer",
    "speaker": "hund",
-   "text": "Dann komme ich mit. Die Kinder sind bei der Nachbarin sicher. Der Regent bekommt meine Knochen zu spüren."
+   "text": "Dann komme ich mit. Die Kinder sind bei der Nachbarin sicher. Der Regent bekommt meine Knochen zu spüren.",
+   "story": true
   }
  ]
 }

@@ -36,28 +36,32 @@
        "right": "wart",
        "speaker": "wart",
        "text": "Na, wen haben wir denn da? Die Helden! Diesmal bin ich nicht allein, ich hab meine Jungs mitgebracht.",
-       "right_expr": "lachend"
+       "right_expr": "lachend",
+       "story": true
       },
       {
        "left": "ritter",
        "right": "frischlinge",
        "speaker": "frischlinge",
        "text": "Papa, dürfen wir sie hauen? Dürfen wir? Bitte!",
-       "right_expr": "wuetend"
+       "right_expr": "wuetend",
+       "story": true
       },
       {
        "left": "ritter",
        "right": "wart",
        "speaker": "ritter",
        "text": "Du hast deine kleinen Ferkel in eine Schlacht mitgebracht?",
-       "left_expr": "wuetend"
+       "left_expr": "wuetend",
+       "story": true
       },
       {
        "left": "ritter",
        "right": "frischlinge",
        "speaker": "frischlinge",
        "text": "FERKEL?! Wir sind Frischlinge!",
-       "right_expr": "wuetend"
+       "right_expr": "wuetend",
+       "story": true
       }
      ]
     }
@@ -128,34 +132,39 @@
        "right": "wart",
        "speaker": "wart",
        "text": "Ahh... es ist vorbei... Ich sehe das Licht... es riecht nach Trüffeln...",
-       "right_expr": "sterbend"
+       "right_expr": "sterbend",
+       "story": true
       },
       {
        "left": "ritter",
        "right": "wart",
        "speaker": "ritter",
-       "text": "Wart. Du hast tapfer gekämpft."
+       "text": "Wart. Du hast tapfer gekämpft.",
+       "story": true
       },
       {
        "left": "ritter",
        "right": "wart",
        "speaker": "wart",
        "text": "Sagt meiner Rakete... dass ich sie geliebt habe. Und meinen Jungs, dass sie auch ganz okay waren...",
-       "right_expr": "sterbend"
+       "right_expr": "sterbend",
+       "story": true
       },
       {
        "left": "elisabeth",
        "right": "wart",
        "speaker": "elisabeth",
        "text": "Das ist ja wie bei Shakespeare.",
-       "left_expr": "lachend"
+       "left_expr": "lachend",
+       "story": true
       },
       {
        "left": "maedchen_baer",
        "right": "wart",
        "speaker": "wart",
        "text": "Lebe wohl, grausame Welt! ...Autsch. Hey das tut ja wirklich weh! Urgsss..",
-       "right_expr": "sterbend"
+       "right_expr": "sterbend",
+       "story": true
       }
      ]
     }
@@ -179,21 +188,24 @@
        "right": "frischlinge",
        "speaker": "frischlinge",
        "text": "Papa!! Ihr habt unseren Vater umgehauen! Dafür zahlt ihr!",
-       "right_expr": "wuetend"
+       "right_expr": "wuetend",
+       "story": true
       },
       {
        "left": "ritter",
        "right": "frischlinge",
        "speaker": "frischlinge",
        "text": "Wir schwören Rache! Mit Keulen, mit Äxten, mit allem, was spitz ist!",
-       "right_expr": "wuetend"
+       "right_expr": "wuetend",
+       "story": true
       },
       {
        "left": "ritter",
        "right": "frischlinge",
        "speaker": "frischlinge",
        "text": "Merkt euch unsere Gesichter! ...Wir kommen wieder! WARTET NUR!",
-       "right_expr": "wuetend"
+       "right_expr": "wuetend",
+       "story": true
       }
      ]
     },
@@ -227,51 +239,288 @@
        "right": "fuerst",
        "speaker": "fuerst",
        "text": "Genug, genug! Hört auf, bitte! Ich ergebe mich!",
-       "right_expr": "weinerlich"
+       "right_expr": "weinerlich",
+       "story": true
       },
       {
        "left": "maedchen_baer",
        "right": "fuerst",
        "speaker": "maedchen_baer",
-       "text": "Du bist der Regent? Du siehst aus wie ein nasser Teppich."
+       "text": "Du bist der Regent? Du siehst aus wie ein nasser Teppich.",
+       "story": true
       },
       {
        "left": "maedchen_baer",
        "right": "fuerst",
        "speaker": "fuerst",
        "text": "Ich wollte das alles nie! Die Festung, die Armee, die Insel... Ich bin doch nur ein Strohmann!",
-       "right_expr": "weinerlich"
+       "right_expr": "weinerlich",
+       "story": true
       },
       {
        "left": "robo",
        "right": "fuerst",
        "speaker": "robo",
-       "text": "Ein Strohmann? Wessen?"
+       "text": "Ein Strohmann? Wessen?",
+       "story": true
       },
       {
        "left": "robo",
        "right": "fuerst",
        "speaker": "fuerst",
        "text": "Das weiß ich nicht! Ich kenne nur die Briefe mit Anweisungen. Und wer nicht gehorcht... *schnief*",
-       "right_expr": "weinerlich"
+       "right_expr": "weinerlich",
+       "story": true
       },
       {
        "left": "elisabeth",
        "right": "fuerst",
        "speaker": "elisabeth",
-       "text": "Also gibt es noch jemanden, der größer ist als du?"
+       "text": "Also gibt es noch jemanden, der größer ist als du?",
+       "story": true
       },
       {
        "left": "elisabeth",
        "right": "fuerst",
        "speaker": "fuerst",
        "text": "Viel größer. Bitte lasst mich gehen, ich will heim zu meiner Mama!",
-       "right_expr": "weinerlich"
+       "right_expr": "weinerlich",
+       "story": true
       }
      ]
     },
     {
      "retreat": "fuerst"
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 2
+   },
+   "if": {
+    "present": [
+     "samurai"
+    ]
+   },
+   "note": "Fluff: samurai",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "samurai",
+       "right": "",
+       "speaker": "samurai",
+       "text": "Eine Festung am Berg. Ehre dem Baumeister. Zerstörung dem Bewohner."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 3
+   },
+   "if": {
+    "present": [
+     "kungfu"
+    ]
+   },
+   "note": "Fluff: kungfu",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "kungfu",
+       "right": "",
+       "speaker": "kungfu",
+       "text": "Wer hoch steigt, fällt tief. Wer tief steigt, hat einen guten Aufzug."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 4
+   },
+   "if": {
+    "present": [
+     "ninjas"
+    ]
+   },
+   "note": "Fluff: ninjas",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "ninjas",
+       "right": "",
+       "speaker": "ninjas",
+       "text": "Die Mauer hat vierzehn Fenster. – Elf davon kennen wir schon. – Von innen."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 5
+   },
+   "if": {
+    "present": [
+     "museklaugust"
+    ]
+   },
+   "note": "Fluff: museklaugust",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "museklaugust",
+       "right": "",
+       "speaker": "museklaugust",
+       "text": "Ich fordere ein größeres Tor! Mit meinem Namen drauf. In Gold. Mit Ausrufezeichen."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 6
+   },
+   "if": {
+    "present": [
+     "hund"
+    ]
+   },
+   "note": "Fluff: hund",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "hund",
+       "right": "",
+       "speaker": "hund",
+       "text": "Frischlinge, Bergluft und schlechte Laune. Ich fühle mich fast heimisch."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 2
+   },
+   "if": {
+    "present": [
+     "wendy"
+    ]
+   },
+   "note": "Fluff: wendy",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "wendy",
+       "right": "",
+       "speaker": "wendy",
+       "text": "Mäh… so viele Treppen. Ich habe vier Beine und bin trotzdem müde."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 3
+   },
+   "if": {
+    "present": [
+     "braumeisterin"
+    ]
+   },
+   "note": "Fluff: braumeisterin",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "braumeisterin",
+       "right": "",
+       "speaker": "braumeisterin",
+       "text": "Für Bergluft ein Bier, für Treppen zwei. Das ist die Faustregel."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 4
+   },
+   "if": {
+    "present": [
+     "magical_girl"
+    ]
+   },
+   "note": "Fluff: magical_girl",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "magical_girl",
+       "right": "",
+       "speaker": "magical_girl",
+       "text": "Die Sterne scheinen hier ganz nah! Ich glaube, die gucken sogar zu."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 5
+   },
+   "if": {
+    "present": [
+     "quacksalber"
+    ]
+   },
+   "note": "Fluff: quacksalber",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "quacksalber",
+       "right": "",
+       "speaker": "quacksalber",
+       "text": "Höhenluft! Perfekt für mein Elixier: Je dünner die Luft, desto weniger fragt jemand nach den Zutaten."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 6
+   },
+   "if": {
+    "present": [
+     "panzer"
+    ]
+   },
+   "note": "Fluff: panzer",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "panzer",
+       "right": "",
+       "speaker": "panzer",
+       "text": "Treppen. Ich hasse Treppen. Ich rolle einfach drüber. Alle ausweichen."
+      }
+     ]
     }
    ]
   }
@@ -283,14 +532,16 @@
     "right": "frischlinge",
     "speaker": "frischlinge",
     "text": "Nich' hauen! Das tut doch weh!",
-    "right_expr": "wuetend"
+    "right_expr": "wuetend",
+    "story": true
    },
    {
     "left": "$hero",
     "right": "frischlinge",
     "speaker": "frischlinge",
     "text": "Wir kommen wieder! Drauf könnt ihr euch verlasen ihr alten Fossile!",
-    "right_expr": "wuetend"
+    "right_expr": "wuetend",
+    "story": true
    }
   ]
  }

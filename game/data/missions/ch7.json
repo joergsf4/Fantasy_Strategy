@@ -60,14 +60,16 @@
        "right": "maja",
        "speaker": "oskar",
        "text": "Schwesterherz, sieh nur: dieselbe Heldenbande, nur mit mehr Sand in den Schuhen.",
-       "left_expr": "lachend"
+       "left_expr": "lachend",
+       "story": true
       },
       {
        "left": "oskar",
        "right": "maja",
        "speaker": "maja",
        "text": "Diesmal brennt nichts, Oskar. Diesmal verdursten sie.",
-       "right_expr": "lachend"
+       "right_expr": "lachend",
+       "story": true
       }
      ]
     }
@@ -215,6 +217,219 @@
        "speaker": "oskar",
        "text": "Maja! Dafür zahlt ihr, und zwar mit Zinsen!",
        "right_expr": "wuetend"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 2
+   },
+   "if": {
+    "present": [
+     "hund"
+    ]
+   },
+   "note": "Fluff: hund",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "hund",
+       "right": "",
+       "speaker": "hund",
+       "text": "Festes Land! Und kein Schwanken mehr. Ich küsse den Sand."
+      },
+      {
+       "left": "hund",
+       "right": "",
+       "speaker": "hund",
+       "text": "…Oh. Der Sand küsst zurück. In meine Augen."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 3
+   },
+   "if": {
+    "present": [
+     "ritter"
+    ]
+   },
+   "note": "Fluff: ritter",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "ritter",
+       "right": "",
+       "speaker": "ritter",
+       "text": "Sand im Helm, Sand im Stiefel, Sand in der Ehre. Ich bin untröstlich."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 4
+   },
+   "if": {
+    "present": [
+     "samurai"
+    ]
+   },
+   "note": "Fluff: samurai",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "samurai",
+       "right": "",
+       "speaker": "samurai",
+       "text": "Sand ist ein Garten ohne Gärtner. Ich bin bereit, ihn zu harken – mit dem Schwert."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 5
+   },
+   "if": {
+    "present": [
+     "kungfu"
+    ]
+   },
+   "note": "Fluff: kungfu",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "kungfu",
+       "right": "",
+       "speaker": "kungfu",
+       "text": "Im Sand zu kämpfen stärkt die Beine. Außerdem verbirgt er jeden Fehltritt."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 6
+   },
+   "if": {
+    "present": [
+     "ninjas"
+    ]
+   },
+   "note": "Fluff: ninjas",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "ninjas",
+       "right": "",
+       "speaker": "ninjas",
+       "text": "Der Sand verrät unsere Fußspuren. – Dann gehen wir eben rückwärts. – Das verrät sie noch mehr."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 2
+   },
+   "if": {
+    "present": [
+     "museklaugust"
+    ]
+   },
+   "note": "Fluff: museklaugust",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "museklaugust",
+       "right": "",
+       "speaker": "museklaugust",
+       "text": "Sandstrand! Das ist mein Strand! Ich bin Kurfürst und König, ich darf das."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 3
+   },
+   "if": {
+    "present": [
+     "robo"
+    ]
+   },
+   "note": "Fluff: robo",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "robo",
+       "right": "",
+       "speaker": "robo",
+       "text": "Sand im Gelenk: 4,2 Kilo. Ich klinge wie ein Rasselspieler. Ich bin kein Rasselspieler."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 4
+   },
+   "if": {
+    "present": [
+     "wendy"
+    ]
+   },
+   "note": "Fluff: wendy",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "wendy",
+       "right": "",
+       "speaker": "wendy",
+       "text": "Mäh… die Sonne brät meine Wolle. Ich bin ein Schafsbraten auf vier Beinen."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 5
+   },
+   "if": {
+    "present": [
+     "braumeisterin"
+    ]
+   },
+   "note": "Fluff: braumeisterin",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "braumeisterin",
+       "right": "",
+       "speaker": "braumeisterin",
+       "text": "Sand und Sonne – ein Fass Bier kühlt keiner im Schatten. Außer meins. Ich habe es vergraben."
       }
      ]
     }
