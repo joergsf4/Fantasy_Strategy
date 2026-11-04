@@ -93,7 +93,8 @@
         11,
         6
        ],
-       "label": "Robinas Panzer rollt heran"
+       "label": "Robinas Panzer rollt heran",
+       "dust": true
       }
      ]
     },

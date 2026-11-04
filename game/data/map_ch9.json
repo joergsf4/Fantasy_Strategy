@@ -161,5 +161,9 @@
   "n",
   "e",
   "w"
+ ],
+ "weather": [
+  "ash",
+  "lightning_far"
  ]
 }

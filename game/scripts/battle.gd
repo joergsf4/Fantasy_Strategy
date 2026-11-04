@@ -461,20 +461,282 @@ func _build_snowfall() -> void:
 	add_child(p)
 
 
-## Regen: dichte Streifen, die schraeg ueber der Karte fallen (CPUParticles3D, laeuft im Compatibility-Renderer sicher).
-func _build_rain() -> void:
+## Lichtstimmungen fuer Tageszeit und Himmel (Kartenfeld "mood"): sun = {rot, color, energy}, amb = {color, energy}, fog = {color, density} oder fehlt,
+## sky = {top, horizon, ground}, grade = Farbfilter (tint, sat, contrast, haze, vignette).
+const LIGHT_PRESETS := {
+	"morgen": {"sun": [Vector3(-30, -60, 0), Color(1.0, 0.88, 0.7), 1.05], "amb": [Color(0.75, 0.8, 0.85), 0.55], "fog": [Color(0.86, 0.88, 0.9), 0.012],
+		"sky": [Color(0.45, 0.62, 0.9), Color(0.95, 0.88, 0.8), Color(0.7, 0.75, 0.6)], "grade": [Vector3(1.04, 1.0, 0.94), 1.05, 1.05, 0.06, 0.25]},
+	"bewoelkt": {"sun": [Vector3(-48, -38, 0), Color(0.86, 0.9, 1.0), 0.55], "amb": [Color(0.7, 0.75, 0.8), 0.7], "fog": [Color(0.62, 0.66, 0.7), 0.014],
+		"sky": [Color(0.5, 0.55, 0.62), Color(0.72, 0.75, 0.78), Color(0.5, 0.55, 0.5)], "grade": [Vector3(0.93, 0.97, 1.0), 0.8, 1.0, 0.02, 0.35]},
+	"daemmerung": {"sun": [Vector3(-14, -70, 0), Color(1.0, 0.5, 0.25), 1.1], "amb": [Color(0.55, 0.4, 0.45), 0.45], "fog": [Color(0.55, 0.32, 0.22), 0.012],
+		"sky": [Color(0.25, 0.22, 0.4), Color(1.0, 0.55, 0.3), Color(0.5, 0.3, 0.25)], "grade": [Vector3(1.08, 0.92, 0.82), 1.0, 1.15, 0.04, 0.5]},
+	"morgennebel": {"sun": [Vector3(-35, -50, 0), Color(0.85, 0.9, 1.0), 0.7], "amb": [Color(0.7, 0.75, 0.85), 0.6], "fog": [Color(0.75, 0.8, 0.86), 0.028],
+		"sky": [Color(0.55, 0.65, 0.8), Color(0.8, 0.85, 0.9), Color(0.65, 0.7, 0.7)], "grade": [Vector3(0.93, 0.98, 1.04), 0.85, 1.0, 0.08, 0.35]},
+	"sommer": {"sun": [Vector3(-38, -35, 0), Color(1.0, 0.86, 0.6), 1.1], "amb": [Color(0.9, 0.85, 0.7), 0.5], "fog": [],
+		"sky": [Color(0.35, 0.58, 0.9), Color(0.95, 0.9, 0.75), Color(0.6, 0.7, 0.45)], "grade": [Vector3(1.06, 1.0, 0.88), 1.1, 1.06, 0.03, 0.3]},
+	"hafen": {"sun": [Vector3(-20, -65, 0), Color(1.0, 0.72, 0.5), 0.95], "amb": [Color(0.6, 0.65, 0.8), 0.55], "fog": [Color(0.7, 0.72, 0.8), 0.016],
+		"sky": [Color(0.38, 0.52, 0.8), Color(0.95, 0.75, 0.6), Color(0.5, 0.6, 0.55)], "grade": [Vector3(1.0, 0.96, 0.96), 0.95, 1.08, 0.04, 0.4]},
+}
+
+
+func _apply_light_preset(env: Environment, sun: DirectionalLight3D, pr: Dictionary) -> void:
+	sun.rotation_degrees = pr["sun"][0]
+	sun.light_color = pr["sun"][1]
+	sun.light_energy = pr["sun"][2]
+	env.ambient_light_color = pr["amb"][0]
+	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
+	env.ambient_light_energy = pr["amb"][1]
+	var fogd: Array = pr["fog"]
+	env.fog_enabled = not fogd.is_empty()
+	if not fogd.is_empty():
+		env.fog_light_color = fogd[0]
+		env.fog_density = fogd[1]
+		env.fog_sky_affect = 0.0
+	var sk := env.sky.sky_material as ProceduralSkyMaterial
+	sk.sky_top_color = pr["sky"][0]
+	sk.sky_horizon_color = pr["sky"][1]
+	sk.ground_horizon_color = pr["sky"][2]
+	sk.ground_bottom_color = (pr["sky"][2] as Color).darkened(0.4)
+	var layer := CanvasLayer.new()
+	layer.layer = 2
+	add_child(layer)
+	var rect := ColorRect.new()
+	rect.size = Vector2(1280, 720)
+	rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var mat := ShaderMaterial.new()
+	mat.shader = load("res://shaders/grade_mexiko.gdshader")
+	var g: Array = pr["grade"]
+	mat.set_shader_parameter("tint", g[0])
+	mat.set_shader_parameter("shadow_tint", Vector3(0.0, 0.0, 0.0))
+	mat.set_shader_parameter("saturation", g[1])
+	mat.set_shader_parameter("contrast", g[2])
+	mat.set_shader_parameter("haze", g[3])
+	mat.set_shader_parameter("vignette", g[4])
+	mat.set_shader_parameter("shimmer", 0.0)
+	rect.material = mat
+	layer.add_child(rect)
+
+
+## Wetter und Partikel (Kartenfeld "weather"): pollen, petals, embers, smoke, drizzle, fog, mist, sand, sandstorm, ash, lightning_far.
+## Dichte folgt der Grafikoption "Partikel".
+func _build_weather(name: String, sun: DirectionalLight3D) -> void:
+	match name:
+		"pollen":
+			_build_motes(Color(1.0, 0.92, 0.55, 0.9), 70, Vector3(0.05, 0.05, 0.02), 0.4, 0.07, true, 9.0, 0.35)
+		"petals":
+			_build_sprite_fall("fx_flower", Color(1.0, 0.85, 0.9, 0.95), 14, 0.5, 0.25)
+		"embers":
+			_build_motes(Color(1.0, 0.55, 0.15, 1.0), 90, Vector3(0.1, 1.0, 0.05), 0.9, 0.07, true, 5.0, 0.2)
+		"smoke":
+			_build_fog_wisps(Color(0.3, 0.27, 0.25, 0.4), 26, 0.35, 4.0)
+		"fog":
+			_build_fog_wisps(Color(0.88, 0.92, 0.96, 0.27), 30, 0.2, 5.5)
+		"mist":
+			_build_fog_wisps(Color(0.85, 0.88, 0.94, 0.15), 22, 0.18, 5.0)
+		"drizzle":
+			_build_rain(0.35, Color(0.75, 0.82, 0.92, 0.26))
+		"sand":
+			_build_sand(0.6, 160)
+		"sandstorm":
+			_build_sand(1.0, 340)
+		"ash":
+			_build_motes(Color(0.55, 0.5, 0.48, 0.85), 90, Vector3(0.12, -0.5, 0.05), 0.45, 0.07, false, 8.0, 0.8)
+		"lightning_far":
+			_far_lightning_loop(sun)
+
+
+## Schwebeteilchen (Pollen, Funken, Asche): weiche Punkte, die langsam in eine Richtung treiben.
+func _soft_dot() -> GradientTexture2D:
+	var grad := Gradient.new()
+	grad.set_color(0, Color(1, 1, 1, 1.0))
+	grad.set_color(1, Color(1, 1, 1, 0.0))
+	var gt := GradientTexture2D.new()
+	gt.gradient = grad
+	gt.fill = GradientTexture2D.FILL_RADIAL
+	gt.fill_from = Vector2(0.5, 0.5)
+	gt.fill_to = Vector2(1.0, 0.5)
+	gt.width = 32
+	gt.height = 32
+	return gt
+
+
+func _build_motes(col: Color, count: int, dir: Vector3, speed: float, size: float, additive: bool, life: float, drift: float) -> void:
+	var p := CPUParticles3D.new()
+	var q := QuadMesh.new()
+	q.size = Vector2(size, size)
+	var m := StandardMaterial3D.new()
+	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	if additive:
+		m.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
+	m.albedo_texture = _soft_dot()
+	m.albedo_color = col
+	m.billboard_mode = BaseMaterial3D.BILLBOARD_PARTICLES
+	q.material = m
+	p.mesh = q
+	p.amount = maxi(4, int(count * Settings.particle_factor()))
+	p.lifetime = life
+	p.preprocess = life
+	p.emission_shape = CPUParticles3D.EMISSION_SHAPE_BOX
+	p.emission_box_extents = Vector3(grid.width * 0.5 + 1.5, 0.6, grid.height * 0.5 + 1.5)
+	p.position = Vector3((grid.width - 1) / 2.0, 0.9 if dir.y >= 0.0 else 4.5, (grid.height - 1) / 2.0)
+	p.direction = dir.normalized() if dir.length() > 0.001 else Vector3.UP
+	p.spread = 60.0
+	p.gravity = Vector3.ZERO
+	p.initial_velocity_min = speed * 0.5
+	p.initial_velocity_max = speed
+	p.scale_amount_min = 0.7
+	p.scale_amount_max = 1.7
+	p.tangential_accel_min = -drift
+	p.tangential_accel_max = drift
+	p.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	p.name = "Motes"
+	add_child(p)
+
+
+## Fallende Sprites (z. B. Blueten): drehen sich langsam und trudeln nach unten.
+func _build_sprite_fall(sprite: String, col: Color, count: int, speed: float, size: float) -> void:
+	var tex: Texture2D = load("res://assets/fx/%s.png" % sprite)
+	var p := CPUParticles3D.new()
+	var q := QuadMesh.new()
+	q.size = Vector2(size, size)
+	var m := StandardMaterial3D.new()
+	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR
+	m.alpha_scissor_threshold = 0.3
+	m.albedo_texture = tex
+	m.albedo_color = col
+	m.billboard_mode = BaseMaterial3D.BILLBOARD_PARTICLES
+	q.material = m
+	p.mesh = q
+	p.amount = maxi(4, int(count * Settings.particle_factor()))
+	p.lifetime = 9.0
+	p.preprocess = 9.0
+	p.emission_shape = CPUParticles3D.EMISSION_SHAPE_BOX
+	p.emission_box_extents = Vector3(grid.width * 0.5 + 2.0, 0.2, grid.height * 0.5 + 2.0)
+	p.position = Vector3((grid.width - 1) / 2.0, 5.0, (grid.height - 1) / 2.0)
+	p.direction = Vector3(0.3, -1.0, 0.1)
+	p.spread = 15.0
+	p.gravity = Vector3.ZERO
+	p.initial_velocity_min = speed * 0.6
+	p.initial_velocity_max = speed
+	p.angular_velocity_min = -90.0
+	p.angular_velocity_max = 90.0
+	p.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	p.name = "Petals"
+	add_child(p)
+
+
+## Weiche Dunst- oder Rauchschwaden dicht ueber dem Boden (wie im Sumpf, mit eigener Farbe).
+func _build_fog_wisps(col: Color, count: int, speed: float, life_scale: float) -> void:
+	var fog := CPUParticles3D.new()
+	var q := QuadMesh.new()
+	q.size = Vector2(6.0, 2.4)
+	var m := StandardMaterial3D.new()
+	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	m.albedo_texture = _soft_dot()
+	m.albedo_color = col
+	m.billboard_mode = BaseMaterial3D.BILLBOARD_ENABLED
+	m.cull_mode = BaseMaterial3D.CULL_DISABLED
+	q.material = m
+	fog.mesh = q
+	fog.amount = maxi(4, int(count * Settings.particle_factor()))
+	fog.lifetime = 16.0
+	fog.preprocess = 16.0
+	fog.emission_shape = CPUParticles3D.EMISSION_SHAPE_BOX
+	fog.emission_box_extents = Vector3(grid.width * 0.5 + 2.0, 0.15, grid.height * 0.5 + 1.5)
+	fog.position = Vector3((grid.width - 1) / 2.0, 0.8, (grid.height - 1) / 2.0)
+	fog.direction = Vector3(1, 0, 0.25)
+	fog.spread = 12.0
+	fog.gravity = Vector3.ZERO
+	fog.initial_velocity_min = speed * 0.6
+	fog.initial_velocity_max = speed * 1.4
+	fog.scale_amount_min = 0.9
+	fog.scale_amount_max = 1.0 + life_scale * 0.2
+	fog.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	var ramp := Curve.new()
+	ramp.add_point(Vector2(0.0, 0.0))
+	ramp.add_point(Vector2(0.2, 1.0))
+	ramp.add_point(Vector2(0.8, 1.0))
+	ramp.add_point(Vector2(1.0, 0.0))
+	fog.scale_amount_curve = ramp
+	fog.name = "Wisps"
+	add_child(fog)
+
+
+## Flugsand: lange, flache Streifen, die waagerecht ueber die Karte wehen (Wueste).
+func _build_sand(strength: float, count: int) -> void:
+	var p := CPUParticles3D.new()
+	var q := QuadMesh.new()
+	q.size = Vector2(0.55, 0.012)
+	var m := StandardMaterial3D.new()
+	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	m.albedo_color = Color(0.95, 0.8, 0.5, 0.45 * strength + 0.1)
+	m.billboard_mode = BaseMaterial3D.BILLBOARD_PARTICLES
+	m.billboard_keep_scale = true
+	q.material = m
+	p.mesh = q
+	p.amount = maxi(10, int(count * Settings.particle_factor()))
+	p.lifetime = 2.6
+	p.preprocess = 2.6
+	p.emission_shape = CPUParticles3D.EMISSION_SHAPE_BOX
+	p.emission_box_extents = Vector3(grid.width * 0.5 + 6.0, 0.9, grid.height * 0.5 + 3.0)
+	p.position = Vector3(-3.0, 0.9, (grid.height - 1) / 2.0)
+	p.direction = Vector3(1.0, 0.0, 0.12)
+	p.spread = 4.0
+	p.gravity = Vector3.ZERO
+	p.initial_velocity_min = 3.5 + 4.0 * strength
+	p.initial_velocity_max = 6.0 + 6.0 * strength
+	p.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	p.name = "Sand"
+	add_child(p)
+
+
+## Fernes Wetterleuchten (kein Regen, kein Donnerschlag): ab und zu hellt der ganze Himmel kurz auf, leises Grollen hinterher.
+func _far_lightning_loop(sun: DirectionalLight3D) -> void:
+	var layer := CanvasLayer.new()
+	layer.layer = 3
+	add_child(layer)
+	var flash := ColorRect.new()
+	flash.color = Color(1.0, 0.85, 0.7, 1.0)
+	flash.size = Vector2(1280, 720)
+	flash.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	flash.modulate.a = 0.0
+	layer.add_child(flash)
+	var base_energy := sun.light_energy
+	var rng2 := RandomNumberGenerator.new()
+	rng2.randomize()
+	while is_inside_tree():
+		await get_tree().create_timer(0.8 if OS.get_environment("SHOT_STORM") != "" else rng2.randf_range(7.0, 15.0)).timeout
+		if not is_inside_tree() or state == State.OVER:
+			return
+		var tw := create_tween()
+		tw.tween_property(flash, "modulate:a", 0.22, 0.05)
+		tw.parallel().tween_property(sun, "light_energy", base_energy * 1.5, 0.05)
+		tw.tween_property(flash, "modulate:a", 0.05, 0.1)
+		tw.tween_property(flash, "modulate:a", 0.16, 0.05)
+		tw.tween_property(flash, "modulate:a", 0.0, 0.6)
+		tw.parallel().tween_property(sun, "light_energy", base_energy, 0.6)
+		await get_tree().create_timer(rng2.randf_range(1.0, 2.2)).timeout
+		Sfx.event("thunder_far")
+
+
+## Regen: dichte Streifen, die schraeg ueber der Karte fallen (CPUParticles3D, laeuft im Compatibility-Renderer sicher). amount_factor/col: Niesel statt Platzregen.
+func _build_rain(amount_factor := 1.0, col := Color(0.75, 0.85, 1.0, 0.38)) -> void:
 	var p := CPUParticles3D.new()
 	var q := QuadMesh.new()
 	q.size = Vector2(0.018, 0.5)
 	var m := StandardMaterial3D.new()
 	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	m.albedo_color = Color(0.75, 0.85, 1.0, 0.38)
+	m.albedo_color = col
 	m.billboard_mode = BaseMaterial3D.BILLBOARD_PARTICLES
 	m.billboard_keep_scale = true
 	q.material = m
 	p.mesh = q
-	p.amount = int(1600 * Settings.particle_factor())
+	p.amount = int(1600 * amount_factor * Settings.particle_factor())
 	p.lifetime = 0.8
 	p.preprocess = 1.0
 	p.emission_shape = CPUParticles3D.EMISSION_SHAPE_BOX
@@ -557,10 +819,14 @@ func _build_environment() -> void:
 	add_child(sun)
 	if map_data.get("biome", "") == "wueste" and map_data.get("grade", "mexiko") != "none":
 		_apply_desert_light(env, sun)
+	if LIGHT_PRESETS.has(map_data.get("mood", "")):
+		_apply_light_preset(env, sun, LIGHT_PRESETS[map_data["mood"]])
 	if map_data.get("mood", "") == "sumpf":
 		_apply_swamp(env, sun)
 	if map_data.get("mood", "") in ["nacht_regen", "nacht", "gewitter", "nacht_schnee"]:
 		_apply_night_rain(env, sun)
+	for wname: String in map_data.get("weather", []):      # Kartenfeld "weather": ["pollen", "drizzle", ...]
+		_build_weather(wname, sun)
 	var center := Vector3((grid.width - 1) / 2.0, 0, (grid.height - 1) / 2.0)
 	cam = Camera3D.new()
 	cam.fov = 40
@@ -3107,6 +3373,12 @@ func _fire(t: Dictionary, who := {}) -> void:
 				_spawn(e["id"], e.get("team", "e"), pos, {"carry": e.get("carry", {})})
 				var u: Dictionary = units.back()
 				Sfx.event("buzz" if e["id"] == "bienenkrieger" else "")
+				if e.get("dust", false):      # Auftritt mit Staubwolke (z. B. Robinas Panzer rollt heran)
+					var dp := to_world(pos) + Vector3(0, 0.3, 0)
+					fx.particles("fx_smoke", dp, 22, 2.4, 0.9, 1.6, -0.3, Color(0.85, 0.72, 0.5, 0.9), false, 140.0)
+					fx.particles("fx_smoke", dp + Vector3(-1.2, 0, 0), 12, 1.8, 0.7, 1.4, -0.2, Color(0.8, 0.68, 0.48, 0.8), false, 120.0)
+					fx.shake(0.1, 0.5)
+					Sfx.event("gate_open")
 				await _popup(u, e.get("label", "Verstärkung"), Color(0.6, 1.0, 0.6) if e.get("team", "e") == "p" else Color(1.0, 0.6, 0.4))
 	_update_status()
 

@@ -286,5 +286,9 @@
     }
    }
   }
+ ],
+ "mood": "bewoelkt",
+ "weather": [
+  "drizzle"
  ]
 }

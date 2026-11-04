@@ -198,5 +198,8 @@
     }
    }
   }
+ ],
+ "weather": [
+  "sandstorm"
  ]
 }

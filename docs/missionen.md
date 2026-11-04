@@ -342,3 +342,20 @@ Das Waisenhaus ist endgültig gerettet, die Gruppe berät. **Stachelia** gibt z�
 - **Alphawolf als Held:** Figur mit `recruit_only: true`, erst ab Mission 18 und nur wählbar, wenn er sich angeschlossen hat (`Party.roster`). Zwei Fähigkeiten: **Kehlbiss** (×1,6 und Gift 3 Runden) und **Heulen** (Verbündete +2 Angriff, Feinde im Umkreis 3 kurz Angst). Porträts neutral, lachend, wütend und Karten-Figur von Gemini.
 - **Bonus:** „Kein Held fällt“ (110 Gold), „Das Rudel friedlich vertrieben“ (2 Heilhonig).
 - **Test:** `tests/test_woelfe.gd`.
+
+## Wetter und Stimmung der Missionen 1 bis 9 (2026-11-04)
+Alle frühen Karten haben jetzt Tageszeit, Licht und Wetter. Neue Karten-Felder: `mood` (Lichtstimmung, Presets in `Battle.LIGHT_PRESETS`) und **`weather`** (Liste, `Battle._build_weather`). Die Dichte aller Partikel folgt der Grafikoption „Partikel und Regen“.
+
+| Mission | Stimmung (`mood`) | Wetter (`weather`) |
+|---|---|---|
+| 1 Eichenfurt | `morgen`: warmes Morgenlicht, leichter Dunst | `pollen` (goldene Schwebeteilchen) |
+| 2 Hohlweg | `bewoelkt`: grau, gedämpft | `drizzle` (feiner Nieselregen) |
+| 3 Mühlbach | `daemmerung`: Abendrot in Orange | `embers` (Funkenflug), `smoke` (Rauchschwaden) |
+| 4 Teehaus am Pass | `morgennebel`: kühle Morgenstimmung | `fog` (Nebelschwaden) |
+| 5 Stachelias Rückkehr | `sommer`: goldener Nachmittag | `pollen`, `petals` (Blütenblätter) |
+| 6 Möwenbucht | `hafen`: früher Abend am Meer | `mist` (Meeresdunst) |
+| 7 Sandhafen | Wüsten-Filter | `sand` (Flugsand in Streifen) |
+| 8 Oase | Wüsten-Filter | `sandstorm` (dichter Flugsand), Staubwolke bei Robinas Auftritt (`dust: true` im `spawn`) |
+| 9 Festung | `duester` | `ash` (Ascheflocken), `lightning_far` (fernes Wetterleuchten mit leisem Grollen) |
+
+Weitere Wetter-Namen für neue Karten: `pollen`, `petals`, `embers`, `smoke`, `drizzle`, `fog`, `mist`, `sand`, `sandstorm`, `ash`, `lightning_far`; Stimmungen: `morgen`, `bewoelkt`, `daemmerung`, `morgennebel`, `sommer`, `hafen` (dazu die älteren `sumpf`, `nacht`, `nacht_regen`, `gewitter`, `nacht_schnee`, `duester`). Alles lässt sich an der Karte kombinieren, ohne Code.

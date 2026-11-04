@@ -217,5 +217,10 @@
     "gold": 40
    }
   }
+ ],
+ "mood": "daemmerung",
+ "weather": [
+  "embers",
+  "smoke"
  ]
 }

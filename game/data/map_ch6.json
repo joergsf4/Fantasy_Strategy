@@ -256,5 +256,9 @@
     }
    }
   }
+ ],
+ "mood": "hafen",
+ "weather": [
+  "mist"
  ]
 }

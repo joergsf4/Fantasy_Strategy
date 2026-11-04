@@ -197,5 +197,10 @@
     }
    }
   }
+ ],
+ "mood": "sommer",
+ "weather": [
+  "pollen",
+  "petals"
  ]
 }

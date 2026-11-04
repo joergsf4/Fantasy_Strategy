@@ -145,7 +145,7 @@
  "objectives": [
   {
    "id": "alle_leben",
-   "text": "Kein Held f\u00e4llt",
+   "text": "Kein Held fällt",
    "reward": {
     "gold": 60
    }
@@ -160,5 +160,9 @@
     }
    }
   }
+ ],
+ "mood": "morgen",
+ "weather": [
+  "pollen"
  ]
 }
