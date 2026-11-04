@@ -171,7 +171,7 @@ func _choose_level() -> Array:
 			ls.lab_heroes.append({"id": hid, "name": units[hid]["name"]})
 	for sec: Dictionary in Secrets.all():
 		var t: Dictionary = sec["trigger"]
-		var other: String = str(t.get("target", t.get("via", t.get("near", t.get("owner", "")))))
+		var other: String = Secrets.partner(t)
 		if units.has(other) and units.has(t["by"]):
 			ls.lab_secrets.append({"id": sec["id"], "name": sec["name"], "heroes": [t["by"], other]})
 	ls.lab_foes = [{"id": "soldat_infanterie", "name": "3 Büttel"}]
@@ -914,7 +914,7 @@ func _screenshot_mode() -> void:
 		var tl_secs: Array = []
 		for sec: Dictionary in Secrets.all():
 			var tt: Dictionary = sec["trigger"]
-			tl_secs.append({"id": sec["id"], "name": sec["name"], "heroes": [tt["by"], str(tt.get("target", tt.get("via", tt.get("near", tt.get("owner", "")))))]})
+			tl_secs.append({"id": sec["id"], "name": sec["name"], "heroes": [tt["by"], Secrets.partner(tt)]})
 		var tl_layer := CanvasLayer.new()
 		tl_layer.layer = 6
 		add_child(tl_layer)
@@ -923,6 +923,10 @@ func _screenshot_mode() -> void:
 		tl_layer.add_child(tl)
 		for i in 30:
 			await get_tree().process_frame
+		if OS.get_environment("SHOT_OPEN") == "1":      # Geheimnis-Dropdown aufklappen (Passt die Liste auf den Bildschirm?)
+			tl._sec.show_popup()
+			for i in 20:
+				await get_tree().process_frame
 		get_viewport().get_texture().get_image().save_png(OS.get_environment("SHOT_OUT"))
 		get_tree().quit()
 		return

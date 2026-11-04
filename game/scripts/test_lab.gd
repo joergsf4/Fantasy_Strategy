@@ -68,6 +68,9 @@ func _ready() -> void:
 	_sec.add_item("Geheimnis wählen (setzt die Helden) …", 0)
 	for i in secrets.size():
 		_sec.add_item("%s (%s)" % [secrets[i]["name"], " + ".join(secrets[i]["heroes"].map(func(h: String) -> String: return _hero_name(h)))], i + 1)
+	var pop := _sec.get_popup()      # Liste darf nie ueber den Bildschirm laufen: kleinere Schrift, hoechstens 560 Pixel hoch (dann scrollbar)
+	pop.add_theme_font_size_override("font_size", 16)
+	pop.max_size = Vector2i(900, 560)
 	_sec.item_selected.connect(_pick_secret)
 	col.add_child(_sec)
 	for k in 3:

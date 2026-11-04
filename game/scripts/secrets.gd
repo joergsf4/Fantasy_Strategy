@@ -100,6 +100,14 @@ static func find_protect(by: String, unit: String) -> Dictionary:
 	return {}
 
 
+## Die zweite beteiligte Figur eines Geheimnisses (je nach Typ target, via, near, owner, ally oder unit).
+static func partner(trigger: Dictionary) -> String:
+	for k in ["target", "via", "near", "owner", "ally", "unit"]:
+		if trigger.has(k):
+			return str(trigger[k])
+	return ""
+
+
 static func by_id(id: String) -> Dictionary:
 	for s: Dictionary in all():
 		if s["id"] == id:

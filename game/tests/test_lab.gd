@@ -19,8 +19,10 @@ func _initialize() -> void:
 	var secs: Array = []
 	for s: Dictionary in Secrets.all():
 		var t: Dictionary = s["trigger"]
-		secs.append({"id": s["id"], "name": s["name"], "heroes": [t["by"], str(t.get("target", t.get("via", t.get("near", t.get("owner", "")))))]})
-	check(secs.size() >= 8, "alle aktiven Geheimnisse sind im Labor waehlbar: %d" % secs.size())
+		secs.append({"id": s["id"], "name": s["name"], "heroes": [t["by"], Secrets.partner(t)]})
+	for sc: Dictionary in secs:
+		check(sc["heroes"][1] != "" and defs.has(sc["heroes"][1]), "Geheimnis %s hat einen zweiten Helden im Labor" % sc["id"])
+	check(secs.size() == Secrets.all().size() and secs.size() >= 8, "alle aktiven Geheimnisse sind im Labor waehlbar: %d" % secs.size())
 	var lab := TestLab.new()
 	lab.setup(heroes, [{"id": "soldat_infanterie", "name": "3 Büttel"}], secs)
 	root.add_child(lab)
