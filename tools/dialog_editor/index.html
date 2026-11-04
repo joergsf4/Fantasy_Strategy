@@ -47,6 +47,14 @@ body.view-char nav.chapters, body.view-char aside.pal, body.view-char #q, body.v
 .chip2 small { color: var(--muted); margin-left: 4px; }
 .cnote { background: var(--panel); border: 1px dashed var(--gold-d); border-radius: var(--r); padding: 10px 14px; margin-bottom: 14px; font-size: 13.5px; color: var(--muted); }
 .cnote b { color: var(--text); }
+.mwrap { overflow-x: auto; margin-top: 8px; }
+.smatrix { border-collapse: collapse; font-size: 12px; }
+.smatrix th, .smatrix td { border: 1px solid var(--line); text-align: center; min-width: 38px; height: 34px; padding: 2px; }
+.smatrix .mh, .smatrix .rh { display: flex; flex-direction: column; align-items: center; gap: 2px; font-weight: 500; color: var(--text); }
+.smatrix .rh { flex-direction: row; justify-content: flex-start; gap: 6px; padding: 2px 8px; min-width: 120px; }
+.mact { background: #1d3b27; color: #7be39a; cursor: pointer; } .midea { background: #3b2f12; cursor: pointer; }
+.mact:hover, .midea:hover { outline: 2px solid var(--gold); }
+.mdiag { background: #181826; color: var(--muted); } .mtot { font-weight: 700; color: var(--text); }
 .cwrap { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; align-items: start; }
 .cwrap.sel { grid-template-columns: minmax(0, 1fr) 450px; }
 .cgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px; }
@@ -885,9 +893,32 @@ async function renderSec() {
   setTimeout(updateStatus, 0);
   if (!SEC) { $("#main").innerHTML = '<p class="hint">Lade Geheimnisse …</p>'; SEC = await (await fetch("/api/secrets")).json(); sec = JSON.parse(JSON.stringify(SEC.secrets)); secSaved = JSON.stringify(sec); }
   $("#main").innerHTML = `<div class="cnote">Geheime Interaktionen: Beschreibe die Idee frei im <b>Prompt</b> und wähle die beteiligten Figuren. Die technische Umsetzung (Auslöser, Wirkung, Szene) ist <b>optional</b>: Ohne sie bleibt das Geheimnis eine Idee, die Claude später umsetzen kann; mit ihr ist es sofort im Spiel aktiv. Gespeichert wird in <code>game/data/secrets.json</code> mit „Speichern“ oben.</div>
+    ${secOverview()}
     ${sec.map(secCard).join("") || '<p class="hint">Noch keine Geheimnisse.</p>'}
     <button class="btn primary" data-sact="new">+ Neue Idee</button>`;
   document.querySelectorAll(".sform textarea").forEach(fit);
+}
+// Überblick: wer hat mit wem ein Geheimnis (grün = im Spiel, gelb = nur Idee)
+function secOverview() {
+  const U2 = SEC.units, heroes = Object.keys(U2).filter(k => U2[k].hero && k !== "claude");
+  const cell = {}, count = Object.fromEntries(heroes.map(k => [k, { act: 0, idea: 0 }]));
+  sec.forEach((x, i) => {
+    const st = x.trigger ? "act" : "idea", ch = [...new Set(x.characters || [])].filter(c => heroes.includes(c));
+    ch.forEach(a => { count[a][st]++; ch.forEach(b => { const k = a + "|" + b; (cell[k] ||= []).push({ i, st, name: x.name }); }); });
+  });
+  const short = k => U2[k].name.replace(/^(Ser|Dr\.|Käpt’n|Meister|Blauer|Die)\s+/, "").split(" ")[0];
+  const none = heroes.filter(k => !count[k].act && !count[k].idea), onlyIdea = heroes.filter(k => !count[k].act && count[k].idea);
+  const head = heroes.map(k => `<th title="${esc(U2[k].name)}"><div class="mh">${avatar(k, "", "sm")}<span>${esc(short(k))}</span></div></th>`).join("");
+  const rows = heroes.map(a => `<tr><th class="rh" title="${esc(U2[a].name)}">${avatar(a, "", "sm")}<span>${esc(short(a))}</span></th>${heroes.map(b => {
+    if (a === b) return `<td class="mdiag" title="${count[a].act} im Spiel, ${count[a].idea} Ideen">${count[a].act + count[a].idea || ""}</td>`;
+    const cs = cell[a + "|" + b] || [];
+    if (!cs.length) return `<td class="mnone"></td>`;
+    const st = cs.some(c => c.st === "act") ? "act" : "idea";
+    return `<td class="m${st}" data-sact="goto" data-i="${cs[0].i}" title="${esc(cs.map(c => c.name).join(", "))}" tabindex="0" role="button">${st === "act" ? "●" : "💡"}</td>`;
+  }).join("")}<td class="mtot">${count[a].act + count[a].idea}</td></tr>`).join("");
+  return `<div class="cnote"><b>Überblick:</b> ${sec.filter(x => x.trigger).length} Geheimnisse im Spiel, ${sec.filter(x => !x.trigger).length} Ideen. <b>●</b> = im Spiel, <b>💡</b> = nur Idee, Zahl in der Diagonale = Geheimnisse der Figur. Klick auf ein Feld springt zur Karte.
+    <div class="mwrap"><table class="smatrix"><thead><tr><th></th>${head}<th title="Geheimnisse insgesamt">Σ</th></tr></thead><tbody>${rows}</tbody></table></div>
+    <p style="margin:8px 0 0"><b>Noch ohne Geheimnis (${none.length}):</b> ${none.map(k => esc(U2[k].name)).join(", ") || "niemand"}.<br><b>Nur Ideen, nichts im Spiel (${onlyIdea.length}):</b> ${onlyIdea.map(k => esc(U2[k].name)).join(", ") || "niemand"}.</p></div>`;
 }
 function secNew() {
   let n = 1; while (sec.some(x => x.id === "geheimnis_" + n)) n++;
@@ -968,6 +999,7 @@ document.addEventListener("change", e => {
 document.addEventListener("click", e => {
   const b = e.target.closest?.("[data-sact]"); if (!b || view !== "sec") return;
   const card = b.closest(".scard"), x = card ? sec[+card.dataset.sec] : null, a = b.dataset.sact;
+  if (a === "goto") { const t = document.querySelector(`.scard[data-sec="${b.dataset.i}"]`); t?.scrollIntoView({ behavior: "smooth", block: "start" }); t?.animate([{ outline: "3px solid #e8c15a" }, { outline: "3px solid transparent" }], 1600); return; }
   if (a === "new") secNew();
   else if (a === "addtech") secAddTech(x);
   else if (a === "rmtech") { if (!confirm("Auslöser, Wirkung und Szene entfernen? Der Prompt bleibt.")) return; delete x.trigger; delete x.effects; delete x.scene; }
