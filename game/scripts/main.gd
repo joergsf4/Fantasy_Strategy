@@ -48,7 +48,7 @@ func _names() -> Dictionary:
 		n[id] = units[id]["name"]
 	n["waisenkinder"] = "Die Waisenkinder"
 	n["haendler"] = "Sack"          # Haendler im Lager, keine Kampfeinheit
-	n["mutter"] = "Lieselotte"     # Geisel aus Mission 4 (Platzhaltername), keine Kampfeinheit
+	n["mutter"] = "Bianca"     # Geisel aus Mission 4 (Platzhaltername), keine Kampfeinheit
 	return n
 
 

@@ -130,7 +130,7 @@ for (const [vid, d] of Object.entries(VILLAINS)) {
       `Redraw exactly this character in the identical pixel-art style, outfit, colors, size and framing: character on the left side of the image, facing right, nothing on the right half, solid bright green background like the reference. Change ONLY the facial expression and body language to: ${t}. Any glow stays inside the head: no light beams, streaks or glow extending outside the face. No text, no border.` });
 }
 
-// Mission 4 (Teehaus): Mutter mit Baby (Geisel, Platzhalter "Lieselotte") und Xiulans Wurf-Gebiss als Effekt-Sprite.
+// Mission 4 (Teehaus): Mutter mit Baby (Geisel, Platzhalter "Bianca") und Xiulans Wurf-Gebiss als Effekt-Sprite.
 const MOTHER = 'a young village mother: warm brown hair in a loose braid with a headscarf, a worn green-and-cream peasant dress with an apron, soft kind face, carrying a tiny baby wrapped in a cream blanket in her arms (the baby has a little tuft of hair and big round eyes)';
 const MOTHER_EMO = { '': 'frightened and worried, eyes wide, protectively hugging the baby', lachend: 'beaming with relief and gratitude, tears of joy, hugging the baby', wuetend: 'fierce mother-bear anger, glaring and scolding, shielding the baby' };
 for (const [e, t] of Object.entries(MOTHER_EMO))

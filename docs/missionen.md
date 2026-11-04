@@ -194,7 +194,7 @@ Benannte Gegner (`"flees": true` in `units.json`: Wart, Oskar, Maja) sterben nic
 
 ## Mission 4: Das Teehaus am Pass (Geisel)
 
-- **Ziel (Pflicht):** Geisel befreien (`goal: free`). Ein Held auf einem Nachbarfeld wählt „Befreien“, die Mutter (Lieselotte, Platzhalter) rennt davon. Geisel und Teehaus sind Weltobjekte (`hostage`, `teahouse`) und sperren ihr Feld.
+- **Ziel (Pflicht):** Geisel befreien (`goal: free`). Ein Held auf einem Nachbarfeld wählt „Befreien“, die Mutter (Bianca, Platzhalter) rennt davon. Geisel und Teehaus sind Weltobjekte (`hostage`, `teahouse`) und sperren ihr Feld.
 - **Lärm-Uhr:** Das Baby schreit, in Runde 2, 4 und 6 kommt Verstärkung vom Kartenrand (`turn`-Auslöser mit `spawn`). Keine harte Frist.
 - **Xiùlán:** Wache an der Tür, wirft ihr Gebiss (Fernangriff, Abklingzeit 3). Fällt sie unter 50 % Leben, solange die Geisel gefesselt ist, bricht sie ab (`retreat`-Schritt, Bonusziel „überzeugt“) und merkt sich als Entkommene. Wird sie besiegt, flieht sie wie die anderen Benannten.
 - **Bonus:** Alle Wachen besiegt (60 Gold), Xiùlán überzeugt (Äther).
@@ -307,8 +307,8 @@ Fällt die Gesundheit der Frischlinge nie unter 50 %, platzt der Glasbehälter t
 
 - **Nachgestellt (2026-11-03, Spieltest mit üblicher Ausstattung):** Mit Talenten und Ausrüstung der Zielkurve war Mission 13 bei ×1,3 zu leicht: Gegnerfaktor wieder **×1,7** (der Maschinenschock bleibt bei 3), Mission 14 von ×1,4 auf **×1,6**.
 
-## Mission 14, Abschluss: Beratung und Lieselotte (2026-11-03)
-Das Waisenhaus ist endgültig gerettet, die Gruppe berät. **Stachelia** gibt zähneknirschend zu, dass sie den Meister auch nicht kennt, aber **ihn vernichten muss**, wenn sie in Ruhe mit ihren Bienen leben will. Dann taucht **Lieselotte** (die Mutter mit dem Baby) auf: Sie sollte entführt werden, weil sie das Geheimnis kennt, hatte aber Angst zu sprechen. **Der Meister versteckt sich in den Bergen im hohen Norden.** Die Gruppe bricht auf, Lieselotte warnt vor dem Sumpf. (Text im Texteditor unter dem Abschluss von Kapitel 14.)
+## Mission 14, Abschluss: Beratung und Bianca (2026-11-03)
+Das Waisenhaus ist endgültig gerettet, die Gruppe berät. **Stachelia** gibt zähneknirschend zu, dass sie den Meister auch nicht kennt, aber **ihn vernichten muss**, wenn sie in Ruhe mit ihren Bienen leben will. Dann taucht **Bianca** (die Mutter mit dem Baby) auf: Sie sollte entführt werden, weil sie das Geheimnis kennt, hatte aber Angst zu sprechen. **Der Meister versteckt sich in den Bergen im hohen Norden.** Die Gruppe bricht auf, Bianca warnt vor dem Sumpf. (Text im Texteditor unter dem Abschluss von Kapitel 14.)
 
 ## Mission 15: Der Sumpf vor den Bergen (`ch15`, neues Biom Sumpf)
 - **Neues Biom Sumpf** (Kartenfeld `biome: "sumpf"`, `mood: "sumpf"`): Gelände **`S` Sumpf** (Bewegung 2), mooriges Olivgrün im Bodenshader, trübes Grünbraun im Wasser, gelbgrüner Dunst mit fahlem Licht (`Battle._apply_swamp`). Streuobjekte als Sprites: **toter Baum** (`fx_totbaum`), **Schilf** (`fx_schilf`) und **leuchtende Sumpfpilze** (`fx_sumpfpilz`, als `decor`), alle von Gemini. Sumpffelder sind als **weicher, ausgefranster Schlamm** im Bodenshader dargestellt (`swamp_mask`: eine Maske je Kachel, weich gefiltert und durch Rauschen verformt, ohne harte Kachelkanten wie beim Wasser-Ufer; dazu Algen- und Mooreinschlüsse), damit man sie vom festen Boden unterscheidet. Die früheren eckigen Overlay-Quadrate (`_build_swamp_overlay`) sind weg.

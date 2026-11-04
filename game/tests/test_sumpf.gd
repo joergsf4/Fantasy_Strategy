@@ -1,6 +1,6 @@
 extends SceneTree
 ## godot --headless --path game --script tests/test_sumpf.gd
-## Mission 15: Sumpf-Biom (Gelaende S: Bewegung 2, Sumpfgas), Stachelia in der Gruppe, Cyborg-Wart und Frischlinge. Mission 14: Abschlussszene mit Lieselotte.
+## Mission 15: Sumpf-Biom (Gelaende S: Bewegung 2, Sumpfgas), Stachelia in der Gruppe, Cyborg-Wart und Frischlinge. Mission 14: Abschlussszene mit Bianca.
 
 var fails := 0
 var said: Array = []

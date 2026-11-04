@@ -97,7 +97,7 @@
    "left": "hund",
    "right": "mutter",
    "speaker": "hund",
-   "text": "Lieselotte! Du bist hier, und das Baby auch!",
+   "text": "Bianca! Du bist hier, und das Baby auch!",
    "left_expr": "lachend",
    "story": true
   },
@@ -150,7 +150,7 @@
    "left": "maedchen_baer",
    "right": "mutter",
    "speaker": "maedchen_baer",
-   "text": "Wir brechen sofort auf. Lieselotte, bleib bei den Kindern, hier seid ihr jetzt sicher.",
+   "text": "Wir brechen sofort auf. Bianca, bleib bei den Kindern, hier seid ihr jetzt sicher.",
    "story": true
   },
   {
