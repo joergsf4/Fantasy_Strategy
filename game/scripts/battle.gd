@@ -464,18 +464,18 @@ func _build_snowfall() -> void:
 ## Lichtstimmungen fuer Tageszeit und Himmel (Kartenfeld "mood"): sun = {rot, color, energy}, amb = {color, energy}, fog = {color, density} oder fehlt,
 ## sky = {top, horizon, ground}, grade = Farbfilter (tint, sat, contrast, haze, vignette).
 const LIGHT_PRESETS := {
-	"morgen": {"sun": [Vector3(-30, -60, 0), Color(1.0, 0.88, 0.7), 1.05], "amb": [Color(0.75, 0.8, 0.85), 0.55], "fog": [Color(0.86, 0.88, 0.9), 0.012],
-		"sky": [Color(0.45, 0.62, 0.9), Color(0.95, 0.88, 0.8), Color(0.7, 0.75, 0.6)], "grade": [Vector3(1.04, 1.0, 0.94), 1.05, 1.05, 0.06, 0.25]},
-	"bewoelkt": {"sun": [Vector3(-48, -38, 0), Color(0.86, 0.9, 1.0), 0.55], "amb": [Color(0.7, 0.75, 0.8), 0.7], "fog": [Color(0.62, 0.66, 0.7), 0.014],
+	"morgen": {"sun": [Vector3(-30, -60, 0), Color(1.0, 0.88, 0.7), 1.05], "amb": [Color(0.75, 0.8, 0.85), 0.55], "fog": [],
+		"sky": [Color(0.45, 0.62, 0.9), Color(0.95, 0.88, 0.8), Color(0.7, 0.75, 0.6)], "grade": [Vector3(1.04, 1.0, 0.94), 1.05, 1.05, 0.0, 0.25]},
+	"bewoelkt": {"sun": [Vector3(-48, -38, 0), Color(0.86, 0.9, 1.0), 0.55], "amb": [Color(0.7, 0.75, 0.8), 0.7], "fog": [Color(0.62, 0.66, 0.7), 0.006],
 		"sky": [Color(0.5, 0.55, 0.62), Color(0.72, 0.75, 0.78), Color(0.5, 0.55, 0.5)], "grade": [Vector3(0.93, 0.97, 1.0), 0.8, 1.0, 0.02, 0.35]},
-	"daemmerung": {"sun": [Vector3(-14, -70, 0), Color(1.0, 0.5, 0.25), 1.1], "amb": [Color(0.55, 0.4, 0.45), 0.45], "fog": [Color(0.55, 0.32, 0.22), 0.012],
+	"daemmerung": {"sun": [Vector3(-14, -70, 0), Color(1.0, 0.5, 0.25), 1.1], "amb": [Color(0.55, 0.4, 0.45), 0.45], "fog": [Color(0.55, 0.32, 0.22), 0.006],
 		"sky": [Color(0.25, 0.22, 0.4), Color(1.0, 0.55, 0.3), Color(0.5, 0.3, 0.25)], "grade": [Vector3(1.08, 0.92, 0.82), 1.0, 1.15, 0.04, 0.5]},
 	"morgennebel": {"sun": [Vector3(-35, -50, 0), Color(0.85, 0.9, 1.0), 0.7], "amb": [Color(0.7, 0.75, 0.85), 0.6], "fog": [Color(0.75, 0.8, 0.86), 0.028],
 		"sky": [Color(0.55, 0.65, 0.8), Color(0.8, 0.85, 0.9), Color(0.65, 0.7, 0.7)], "grade": [Vector3(0.93, 0.98, 1.04), 0.85, 1.0, 0.08, 0.35]},
 	"sommer": {"sun": [Vector3(-38, -35, 0), Color(1.0, 0.86, 0.6), 1.1], "amb": [Color(0.9, 0.85, 0.7), 0.5], "fog": [],
 		"sky": [Color(0.35, 0.58, 0.9), Color(0.95, 0.9, 0.75), Color(0.6, 0.7, 0.45)], "grade": [Vector3(1.06, 1.0, 0.88), 1.1, 1.06, 0.03, 0.3]},
-	"hafen": {"sun": [Vector3(-20, -65, 0), Color(1.0, 0.72, 0.5), 0.95], "amb": [Color(0.6, 0.65, 0.8), 0.55], "fog": [Color(0.7, 0.72, 0.8), 0.016],
-		"sky": [Color(0.38, 0.52, 0.8), Color(0.95, 0.75, 0.6), Color(0.5, 0.6, 0.55)], "grade": [Vector3(1.0, 0.96, 0.96), 0.95, 1.08, 0.04, 0.4]},
+	"hafen": {"sun": [Vector3(-20, -65, 0), Color(1.0, 0.72, 0.5), 0.95], "amb": [Color(0.6, 0.65, 0.8), 0.55], "fog": [],
+		"sky": [Color(0.38, 0.52, 0.8), Color(0.95, 0.75, 0.6), Color(0.5, 0.6, 0.55)], "grade": [Vector3(0.98, 0.96, 0.98), 0.92, 1.08, 0.0, 0.4]},
 }
 
 
@@ -535,6 +535,8 @@ func _build_weather(name: String, sun: DirectionalLight3D) -> void:
 			_build_fog_wisps(Color(0.85, 0.88, 0.94, 0.15), 22, 0.18, 5.0)
 		"drizzle":
 			_build_rain(0.35, Color(0.75, 0.82, 0.92, 0.26))
+		"rain":
+			_build_rain(0.6, Color(0.78, 0.86, 0.96, 0.3))      # leichter Regen bei klarer Sicht (Moewenbucht)
 		"sand":
 			_build_sand(0.6, 160)
 		"sandstorm":

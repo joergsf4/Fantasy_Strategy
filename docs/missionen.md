@@ -348,14 +348,16 @@ Alle frühen Karten haben jetzt Tageszeit, Licht und Wetter. Neue Karten-Felder:
 
 | Mission | Stimmung (`mood`) | Wetter (`weather`) |
 |---|---|---|
-| 1 Eichenfurt | `morgen`: warmes Morgenlicht, leichter Dunst | `pollen` (goldene Schwebeteilchen) |
+| 1 Eichenfurt | `morgen`: warmes Morgenlicht (ohne Dunstfilter) | `pollen` (goldene Schwebeteilchen) |
 | 2 Hohlweg | `bewoelkt`: grau, gedämpft | `drizzle` (feiner Nieselregen) |
 | 3 Mühlbach | `daemmerung`: Abendrot in Orange | `embers` (Funkenflug), `smoke` (Rauchschwaden) |
 | 4 Teehaus am Pass | `morgennebel`: kühle Morgenstimmung | `fog` (Nebelschwaden) |
 | 5 Stachelias Rückkehr | `sommer`: goldener Nachmittag | `pollen`, `petals` (Blütenblätter) |
-| 6 Möwenbucht | `hafen`: früher Abend am Meer | `mist` (Meeresdunst) |
+| 6 Möwenbucht | `hafen`: früher Abend am Meer (klare Sicht) | `rain` (leichter Regen, kein Nebel) |
 | 7 Sandhafen | Wüsten-Filter | `sand` (Flugsand in Streifen) |
 | 8 Oase | Wüsten-Filter | `sandstorm` (dichter Flugsand), Staubwolke bei Robinas Auftritt (`dust: true` im `spawn`) |
 | 9 Festung | `duester` | `ash` (Ascheflocken), `lightning_far` (fernes Wetterleuchten mit leisem Grollen) |
 
-Weitere Wetter-Namen für neue Karten: `pollen`, `petals`, `embers`, `smoke`, `drizzle`, `fog`, `mist`, `sand`, `sandstorm`, `ash`, `lightning_far`; Stimmungen: `morgen`, `bewoelkt`, `daemmerung`, `morgennebel`, `sommer`, `hafen` (dazu die älteren `sumpf`, `nacht`, `nacht_regen`, `gewitter`, `nacht_schnee`, `duester`). Alles lässt sich an der Karte kombinieren, ohne Code.
+Weitere Wetter-Namen für neue Karten: `rain`, `pollen`, `petals`, `embers`, `smoke`, `drizzle`, `fog`, `mist`, `sand`, `sandstorm`, `ash`, `lightning_far`; Stimmungen: `morgen`, `bewoelkt`, `daemmerung`, `morgennebel`, `sommer`, `hafen` (dazu die älteren `sumpf`, `nacht`, `nacht_regen`, `gewitter`, `nacht_schnee`, `duester`). Alles lässt sich an der Karte kombinieren, ohne Code.
+
+- **Weniger Dunst (Spieltest 2026-11-04):** Mission 1 ohne Dunstfilter, Mission 6 mit Regen statt Nebel bei klarer Sicht; der Umgebungsnebel der Presets `bewoelkt` und `daemmerung` wurde halbiert, nur Mission 4 (Morgennebel) und der Sumpf bleiben bewusst neblig.
