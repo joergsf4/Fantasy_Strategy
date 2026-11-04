@@ -92,7 +92,7 @@ func _play_intro() -> void:
 	banner.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	banner.modulate.a = 0.0
 	add_child(banner)
-	var l1 := _banner_label("✦  GEHEIME INTERAKTION  ✦", 24, Color(1.0, 0.85, 0.5))
+	var l1 := _banner_label("✦  %s  ✦" % str((secret.get("scene", {}) as Dictionary).get("banner", "GEHEIME INTERAKTION")), 24, Color(1.0, 0.85, 0.5))
 	var l2 := _banner_label(str(secret["name"]), 54, Color(1.0, 0.96, 0.82))
 	banner.add_child(l1)
 	banner.add_child(l2)

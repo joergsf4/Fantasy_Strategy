@@ -870,7 +870,8 @@ function secTech(x, i) {
       <div class="sbox"><h4>Szene (läuft beim ersten Mal)</h4><div class="row">
         Links <select data-f="left">${secOpts(pt(o.portraits), sc.left)}</select>
         Rechts <select data-f="right">${secOpts(pt(o.portraits), sc.right)}</select>
-        Fliegt durchs Bild <select data-f="fly">${secOpts(pt(o.fly_sprites || []), sc.fly || "", "nichts")}</select></div>
+        Fliegt durchs Bild <select data-f="fly">${secOpts(pt(o.fly_sprites || []), sc.fly || "", "nichts")}</select>
+        · Banner <input type="text" data-f="banner" maxlength="40" value="${esc(sc.banner || "")}" placeholder="GEHEIME INTERAKTION" style="width:200px" aria-label="Banner-Text vor der Szene"></div>
         ${sc.lines.map((l, j) => `<div class="sline"><select data-f="speaker" data-j="${j}" aria-label="Sprecher">${secOpts(who, l.speaker)}</select>
           <textarea data-f="text" data-j="${j}" rows="2" aria-label="Text der Zeile ${j + 1}">${esc(l.text)}</textarea>
           <button class="btn ghost" data-sact="rmline" data-j="${j}" aria-label="Zeile entfernen" title="Zeile entfernen">✕</button></div>`).join("")}
@@ -963,6 +964,7 @@ document.addEventListener("input", e => {
   const el = e.target, card = el.closest?.(".scard"); if (!card || view !== "sec" || el.matches("select, input[type=checkbox]")) return;
   const x = sec[+card.dataset.sec], f = el.dataset.f;
   if (f === "text") { x.scene.lines[+el.dataset.j].text = el.value; fit(el); }
+  else if (f === "banner") { if (el.value.trim()) x.scene.banner = el.value; else delete x.scene.banner; }
   else if (f === "prompt") { x.prompt = el.value; fit(el); }
   else if (f === "name") { x.name = el.value; const tg = card.querySelector(".tag"); if (tg) tg.textContent = "✦ GEHEIME INTERAKTION ✦ " + el.value; }
   else if (f === "atk_pct") x.effects.atk_pct = Math.max(0, Math.min(100, parseInt(el.value || "0", 10) || 0));

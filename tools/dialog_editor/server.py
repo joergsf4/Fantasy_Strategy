@@ -519,6 +519,11 @@ def save_secrets(body: dict) -> None:
             entry["scene"] = {"left": sc["left"], "right": sc["right"], "lines": lines}
             if fly:
                 entry["scene"]["fly"] = fly
+            banner = str(sc.get("banner", "")).strip()
+            if len(banner) > 40:
+                raise ValueError(f"{name}: der Banner-Text darf hoechstens 40 Zeichen haben")
+            if banner:
+                entry["scene"]["banner"] = banner
         out.append(entry)
     path = DATA / "secrets.json"
     cur = read(path)
