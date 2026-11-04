@@ -87,6 +87,10 @@ static func goal_text(goal: Dictionary, enemies_left: int, turn: int, extra := {
 			return str(goal.get("text", "Ziel: Befreit alle Gefangenen"))
 		"defeat":
 			return str(goal.get("text", "Ziel: Besiegt den Anführer"))
+		"rout_spawned":
+			if enemies_left == 0 and not extra.get("spawned", false):
+				return str(goal.get("wait_text", "Ziel: Seht nach, wer dort wohnt"))
+			return str(goal.get("text", "Ziel: Besiegt alle Gegner (%d übrig)" % enemies_left)).replace("%d", str(enemies_left))
 		"survive":
 			return "Ziel: Haltet durch (Runde %d von %d)" % [mini(turn, int(goal["turns"])), int(goal["turns"])]
 		"free":

@@ -5,7 +5,7 @@ const TITLE_MUSIC := "res://assets/audio/title_theme.mp3"
 const BATTLE_MUSIC := "res://assets/audio/battle_theme.mp3"
 const WIN_MUSIC := "res://assets/audio/sieg_statistik.mp3"
 const DEFEAT_MUSIC := "res://assets/audio/niederlage_statistik.mp3"
-const CHAPTERS := ["ch1", "ch2", "ch3", "ch4", "ch5", "ch6", "ch7", "ch8", "ch9", "ch10", "ch11", "ch12", "ch13", "ch14", "ch15", "ch16", "ch17"]
+const CHAPTERS := ["ch1", "ch2", "ch3", "ch4", "ch5", "ch6", "ch7", "ch8", "ch9", "ch10", "ch11", "ch12", "ch13", "ch14", "ch15", "ch16", "ch17", "ch18"]
 const MUSIC_DB := -6.0
 
 var units: Dictionary
@@ -386,7 +386,10 @@ func _chapter(cid: String, skip_intro := false, next_cid := "") -> void:
 	var m := _mission_with_squad(cid)
 	var story_c := _load_json("res://data/story_%s.json" % cid)
 	if m.has("interlude_before") and not skip_intro:      # Reise vor der Mission (z. B. Ueberfahrt), ohne Text
-		await _play_interlude(m["interlude_before"])
+		var ib: Dictionary = (m["interlude_before"] as Dictionary).duplicate()
+		if ib.get("scene", "") == "snow":
+			ib["party"] = _squad_ids(m)          # die gewaehlte Truppe stapft durch den Sturm
+		await _play_interlude(ib)
 	if stage.map_data.get("id", "") != cid:
 		stage.map_data = m
 		stage.new_battle()
@@ -634,6 +637,13 @@ func _play_interlude(data: Dictionary) -> void:
 	var layer := CanvasLayer.new()
 	layer.layer = 8
 	add_child(layer)
+	if data.get("scene", "") == "snow":        # Zwischensequenz im Schneesturm (SnowTrek, alles in 3D mit den Chibi-Sprites)
+		var trek := SnowTrek.new()
+		trek.setup(data)
+		layer.add_child(trek)
+		await trek.finished
+		layer.queue_free()
+		return
 	var it := Interlude.new()
 	it.setup(data)
 	layer.add_child(it)

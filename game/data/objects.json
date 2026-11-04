@@ -188,5 +188,15 @@
   ],
   "hp": 0,
   "solutions": {}
+ },
+ "huette": {
+  "name": "Hütte",
+  "start": "standing",
+  "active": "",
+  "blocks": [
+   "standing"
+  ],
+  "hp": 0,
+  "solutions": {}
  }
 }

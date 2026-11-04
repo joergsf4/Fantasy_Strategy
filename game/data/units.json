@@ -695,5 +695,24 @@
   "hero": true,
   "from": 18,
   "intro": 17
+ },
+ "fuerst_lumpen": {
+  "name": "Regent Morgrim",
+  "hp": 30,
+  "atk": 3,
+  "def": 2,
+  "res": 1,
+  "move": 3,
+  "range_min": 1,
+  "range": 1,
+  "role": "damage",
+  "dmg_type": "body",
+  "tags": [
+   "vip"
+  ],
+  "abilities": [],
+  "weapon": "fist",
+  "body": "flesh",
+  "size": 1.6
  }
 }

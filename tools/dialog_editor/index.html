@@ -375,6 +375,7 @@ function describeWhen(w) {
   if (w.hp_below) return `${U(w.hp_below.id)} hat weniger als ${Math.round(w.hp_below.ratio * 100)} % Leben`;
   if (w.near) return `${U(w.near.a)} und ${U(w.near.b)} sind höchstens ${w.near.dist} Felder entfernt`;
   if (w.victory) return "Das Missionsziel ist erreicht (Abschlussszene vor dem Sieg)";
+  if (w.near_object) return `Ein Held ist höchstens ${w.near_object.dist} Felder von „${w.near_object.id}“ entfernt`;
   if ("chests_open" in w) return `Mindestens ${w.chests_open} Truhen geöffnet`;
   if ("enemies_left" in w) return `Höchstens ${w.enemies_left} Gegner übrig`;
   return JSON.stringify(w);
@@ -400,6 +401,7 @@ const WHEN = {
   fall: { label: "Ein Held fällt", f: [{ p: ["fall", "id"], l: "Held (leer = irgendeiner)", t: "unit?", d: "" }], make: () => ({ fall: {} }) },
   hp_below: { label: "Eine Figur hat wenig Leben", f: [{ p: ["hp_below", "id"], l: "Figur", t: "unit", d: "ritter" }, { p: ["hp_below", "ratio"], l: "Anteil (0–1)", t: "float", d: 0.5 }] },
   object: { label: "Ein Objekt ändert sich (Tor, Geisel …)", f: [{ p: ["object", "id"], l: "Objekt", t: "obj", d: "" }, { p: ["object", "state"], l: "Zustand", t: "state", d: "" }] },
+  near_object: { label: "Die Gruppe nähert sich einem Objekt (Hütte …)", f: [{ p: ["near_object", "id"], l: "Objekt", t: "obj", d: "" }, { p: ["near_object", "dist"], l: "höchstens … Felder", t: "int", d: 3 }] },
   enter: { label: "Eine Figur betritt ein Feld", f: [{ p: ["enter", 0], l: "x", t: "int", d: 5 }, { p: ["enter", 1], l: "y", t: "int", d: 3 }] },
   manual: { label: "Von einem anderen Gespräch verzögert ausgelöst", f: [], make: () => ({ manual: true }) },
   victory: { label: "Abschlussszene: Ziel erreicht, vor dem Sieg", f: [], make: () => ({ victory: true }) },

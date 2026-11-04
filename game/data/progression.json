@@ -120,6 +120,13 @@
    "target_win": 0.85,
    "enemy_hp": 1.7,
    "enemy_atk": 1.7
+  },
+  "ch18": {
+   "points": 6,
+   "gear_tier": 3.5,
+   "target_win": 0.85,
+   "enemy_hp": 1.5,
+   "enemy_atk": 1.5
   }
  },
  "talents": {

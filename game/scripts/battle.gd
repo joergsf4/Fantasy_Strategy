@@ -2075,7 +2075,7 @@ func _make_object(o: Dictionary) -> void:
 	if o["type"] == "bridge":
 		_make_bridge(o)
 		return
-	if o["type"] in ["zylinder", "maschine", "hive", "hive_p", "bell", "orphanage", "ship", "crate", "teahouse", "tent", "switch"]:
+	if o["type"] in ["zylinder", "maschine", "hive", "hive_p", "bell", "orphanage", "ship", "crate", "teahouse", "tent", "switch", "huette"]:
 		_make_ch5_object(o)
 		return
 	var stone := Color(0.52, 0.5, 0.54)
@@ -2256,7 +2256,7 @@ const WATER_Y := 0.02
 
 ## Karten-Objekte als Pixel-Sprites (Gemini, freigestellt): Bienenstock, Glocke, Waisenhaus, Teehaus, Schiff, Hafen-Hindernisse.
 ## Die Spiellogik (Sperren, Zustaende) steckt in World, hier nur die Optik.
-const OBJ_SPRITE := {"hive": ["fx_bienenstock", 1.0], "hive_p": ["fx_bienenstock", 0.9], "bell": ["fx_glocke", 1.6], "orphanage": ["fx_waisenhaus", 1.9], "teahouse": ["fx_teehaus", 1.7], "tent": ["fx_zelt", 1.25], "switch": ["fx_hebel", 0.7], "maschine": ["fx_maschine", 2.3], "zylinder": ["fx_glaszylinder", 1.7]}
+const OBJ_SPRITE := {"hive": ["fx_bienenstock", 1.0], "hive_p": ["fx_bienenstock", 0.9], "bell": ["fx_glocke", 1.6], "orphanage": ["fx_waisenhaus", 1.9], "teahouse": ["fx_teehaus", 1.7], "tent": ["fx_zelt", 1.25], "huette": ["fx_huette", 1.7], "switch": ["fx_hebel", 0.7], "maschine": ["fx_maschine", 2.3], "zylinder": ["fx_glaszylinder", 1.7]}
 const CRATE_SPRITES := [["fx_kiste", 1.0], ["fx_fass", 1.05], ["fx_saecke", 1.0]]
 
 
@@ -3130,11 +3130,14 @@ func goal_met() -> bool:
 				if u["team"] == "p" and u["pos"] == t:
 					return true
 			return false
+		"rout_spawned":     # wie rout, aber erst, wenn irgendwann Gegner aufgetaucht sind (Mission beginnt ohne Feinde)
+			return enemy_spawned and _count_team("e") == 0
 		_:
 			return _count_team("e") == 0
 
 
 var goal_then_done := false
+var enemy_spawned := false         # Schritt "spawn" mit team "e" ist gelaufen (Ziel "rout_spawned")
 var peace_win := false             # Schritt {"win": true}: friedlicher Sieg
 var recruited: Array = []           # Schritt {"recruit": id}: gewonnene Verbuendete
 
@@ -3145,6 +3148,9 @@ func _check_end() -> void:
 	var lost := _count_team("p") == 0
 	var guard_id := str(map_data.get("lose_if_ruin", ""))      # Kartenfeld "lose_if_ruin": brennt dieses Haus ab, ist die Mission verloren
 	if guard_id != "" and world.by_id(guard_id).get("state", "") == "ruin":
+		lost = true
+	var vip := str(map_data.get("lose_if_fallen", ""))        # Kartenfeld "lose_if_fallen": faellt diese Figur (z. B. der zu schuetzende Regent), ist die Mission verloren
+	if vip != "" and fallen.has(vip):
 		lost = true
 	var won := not lost and (goal_met() or peace_win)
 	if story_lost:
@@ -3264,6 +3270,13 @@ func _match_state(w: Dictionary) -> Dictionary:
 				var okb: bool = (c2["b"] == "any_enemy" and o["team"] != a["team"]) or o["id"] == c2["b"]
 				if okb and o != a and Grid.dist(a["pos"], o["pos"]) <= int(c2.get("dist", 3)):
 					return a
+	if w.has("near_object"):       # {"id": Objekt, "dist": n}: ein Held steht hoechstens n Felder vom Objekt entfernt
+		var c3: Dictionary = w["near_object"]
+		var wo := world.by_id(str(c3["id"]))
+		if not wo.is_empty():
+			for pu in units:
+				if pu["team"] == "p" and Grid.dist(pu["pos"], wo["pos"]) <= int(c3.get("dist", 3)):
+					return pu
 	if w.has("all_frightened"):    # alle lebenden Figuren dieser Arten wurden schon einmal erschreckt (und mindestens eine ist da)
 		var ids: Array = w["all_frightened"]
 		var seen := 0
@@ -3388,6 +3401,8 @@ func _fire(t: Dictionary, who := {}) -> void:
 				var pos := _free_tile_near(Vector2i(e["pos"][0], e["pos"][1]), {"flying": false})
 				_spawn(e["id"], e.get("team", "e"), pos, {"carry": e.get("carry", {})})
 				var u: Dictionary = units.back()
+				if e.get("team", "e") == "e":
+					enemy_spawned = true
 				Sfx.event("buzz" if e["id"] == "bienenkrieger" else "")
 				if e.get("dust", false):      # Auftritt mit Staubwolke (z. B. Robinas Panzer rollt heran)
 					var dp := to_world(pos) + Vector3(0, 0.3, 0)
@@ -3551,6 +3566,8 @@ var capture_progress := 0           # aufeinanderfolgende Spielerphasen mit eine
 
 
 func _capture_info() -> Dictionary:
+	if goal.get("type", "") == "rout_spawned":
+		return {"spawned": enemy_spawned}
 	if goal.get("type", "") != "capture":
 		return {}
 	var cu := _find(str(goal["unit"]))

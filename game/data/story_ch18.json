@@ -1,0 +1,67 @@
+{
+ "intro": [
+  {
+   "left": "maedchen_baer",
+   "right": "",
+   "speaker": "maedchen_baer",
+   "text": "Der Sturm lässt nach, wenigstens ein bisschen. Seht mal, da vorn am linken Rand: eine Hütte!",
+   "story": true,
+   "voices": [
+    {
+     "id": "wendy",
+     "text": "Mäh! Seht ihr das? Da vorn, am linken Rand, eine Hütte! Vielleicht gibt es dort Tee!"
+    },
+    {
+     "id": "elisabeth",
+     "text": "Land in Sicht! Na ja, Hütte in Sicht. Das ist fast dasselbe."
+    }
+   ]
+  },
+  {
+   "left": "hund",
+   "right": "",
+   "speaker": "hund",
+   "text": "Keine Spuren, keine Wachen. Nur ein dünner Rauchfaden. Wer wohnt in so einer Gegend?",
+   "story": true
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "",
+   "speaker": "maedchen_baer",
+   "text": "Finden wir es heraus. Aber vorsichtig, und Waffen bereit.",
+   "story": true
+  }
+ ],
+ "outro": [
+  {
+   "left": "fuerst_lumpen",
+   "right": "",
+   "speaker": "fuerst_lumpen",
+   "text": "Ich lebe… ich lebe wirklich noch! Danke. Danke! Bitte nehmt mich mit, ich verspreche, nicht zu stören.",
+   "story": true,
+   "left_expr": "weinerlich"
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "fuerst_lumpen",
+   "speaker": "maedchen_baer",
+   "text": "Erst bekommst du eine Decke. Und dann erzählst du uns alles über den Meister.",
+   "story": true,
+   "voices": [
+    {
+     "id": "wendy",
+     "text": "Mäh! Ich habe einen Pullover in Regentengröße. Mit Flügellöchern, aber das merkt keiner.",
+     "expr": "lachend"
+    }
+   ]
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "fuerst_lumpen",
+   "speaker": "fuerst_lumpen",
+   "text": "Alles? Äh… ich kenne nur Briefe. Aber in den Briefen stand viel. Und einiges davon wird euch nicht gefallen.",
+   "story": true,
+   "right_expr": "weinerlich"
+  }
+ ]
+}

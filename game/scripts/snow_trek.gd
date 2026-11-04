@@ -14,6 +14,7 @@ const WIND := Vector3(-1.0, -0.10, 0.28)       # Richtung der Schneeflocken (von
 var duration := 24.0
 var kicker := "Kapitel 3"
 var title := "Der Pass im Schneesturm"
+var party_ids: Array = PARTY.duplicate()       # wer mitlaeuft (Standard: feste Liste, im Spiel die gewaehlte Truppe)
 var _vp: SubViewport
 var _cam: Camera3D
 var _env: Environment
@@ -40,6 +41,8 @@ func setup(data := {}) -> void:
 	duration = float(data.get("duration", duration))
 	kicker = str(data.get("kicker", kicker))
 	title = str(data.get("title", title))
+	if data.has("party"):
+		party_ids = (data["party"] as Array).duplicate()
 
 
 func _ready() -> void:
@@ -198,9 +201,9 @@ func _terrain_mesh() -> ArrayMesh:
 
 
 func _build_party() -> void:
-	var n := PARTY.size()
+	var n := party_ids.size()
 	for i in n:
-		var id: String = PARTY[i]
+		var id: String = party_ids[i]
 		var path := "res://assets/tokens/%s.png" % id
 		if not ResourceLoader.exists(path):
 			continue
