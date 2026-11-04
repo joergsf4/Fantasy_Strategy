@@ -191,7 +191,7 @@ func _build_party() -> void:
 		var sp := Sprite3D.new()
 		sp.texture = tex
 		sp.pixel_size = 1.45 / maxf(tex.get_width(), tex.get_height())
-		sp.billboard = BaseMaterial3D.BILLBOARD_FIXED_Y
+		sp.billboard = BaseMaterial3D.BILLBOARD_FIXED_Y if id != "bienenmaedchen" else BaseMaterial3D.BILLBOARD_DISABLED
 		sp.shaded = false
 		sp.alpha_cut = SpriteBase3D.ALPHA_CUT_OPAQUE_PREPASS
 		sp.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
@@ -384,6 +384,11 @@ func _step(delta: float) -> void:
 		root.position = Vector3(x, _height(x, z) - (SINK if not fly else -0.45 - sin(_t * 2.2) * 0.1) + (0.0 if fly else bob), z)
 		var sp: Sprite3D = f["sprite"]
 		sp.scale = Vector3(1.0, 1.0 - bob * 0.5, 1.0)
+		if fly:        # Stachelia fliegt: leicht nach vorn geneigt (Billboard aus, selbst zur Kamera gedreht, dann um die Blickachse gekippt)
+			var to_cam := _cam.position - root.position
+			var yaw := atan2(to_cam.x, to_cam.z)
+			var lean := -0.19 + sin(_t * 1.7) * 0.035          # etwa 11 Grad nach vorn, leichtes Schwanken
+			sp.basis = Basis(Vector3.UP, yaw) * Basis(Vector3(0, 0, 1), lean)
 		sp.flip_h = false
 	# Kamera: flach, erst seitlich dicht am Zug, dann nach vorn wandernd und schliesslich schraeg von vorn
 	var k := clampf(_t / duration, 0.0, 1.0)
