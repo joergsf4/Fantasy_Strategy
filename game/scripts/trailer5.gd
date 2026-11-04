@@ -16,9 +16,6 @@ const T5_BATTLE_SNOW := {"map": "ch17", "fire": false, "cam": [0.0, 6.0, 6.2], "
 	"e": [["wolf", "e", [7, 6]], ["wolf", "e", [7, 7]], ["wolf", "e", [8, 6]], ["wolf", "e", [8, 7]], ["soldat_infanterie", "e", [8, 5]]]}
 const T5_RAIN := {"throw": true, "u": ["museklaugust", "p", [2, 7]], "t": ["ninjas", "p", [3, 7]], "dest": [6, 7],
 	"more": [["soldat_infanterie", "e", [7, 7]], ["soldat_beritten", "e", [7, 8]], ["soldat_bogenschuetze", "e", [8, 6]], ["soldat_infanterie", "e", [6, 5]]], "cam": [3.0, 8.0, 5.0], "fov": 46}
-const T5_WIRBEL := {"ab": "todeswirbel", "u": ["samurai", "p", [5, 7]], "t": "self",
-	"more": [["ninjas", "p", [4, 7]], ["soldat_infanterie", "e", [6, 7]], ["soldat_infanterie", "e", [7, 7]], ["soldat_beritten", "e", [5, 5]], ["soldat_infanterie", "e", [3, 9]], ["soldat_bogenschuetze", "e", [7, 5]]],
-	"cam": [2.4, 5.0, 4.4], "fov": 38}
 
 var _bar_top: ColorRect
 var _bar_bot: ColorRect
@@ -64,13 +61,11 @@ func _run() -> void:
 	await _bars(true)
 	await _throw_scene()
 	await _card("… kein Meer zu weit.", 1.6)
-	await _sea_gag()
+	await _sea_gag()      # blendet Bild und Musik am Ende selbst aus
 
 	# ================= Akt 3: Stille und Wendung =================
-	await _fade_to(1.0, 0.2)
-	_fade_out_music(0.35)
-	await _wait(1.0)
-	await _bars(true)
+	await _wait(1.6)
+	await _bars(true, 0.01)
 	await _lab_shot()
 
 	# ================= Akt 4: Schnittgewitter =================
@@ -78,7 +73,7 @@ func _run() -> void:
 	await _flash()
 	_play_music(BATTLE_MUSIC, -2.5)
 	Engine.time_scale = 1.0
-	await _card("Verbünde dich.", 1.1)
+	await _card("Verrückte Spezialfähigkeiten.", 1.4)
 	stage.map_data = Mission.load_mission("ch1")
 	stage.new_battle()
 	stage.set_mode("battle")
@@ -88,7 +83,7 @@ func _run() -> void:
 		await _scene(sc)
 	Engine.time_scale = 1.0
 	await _battle(T4_BATTLE_DESERT)
-	await _card("Entdecke Geheimnisse.", 1.1)
+	await _card("Taktik an jedem Ort.", 1.4)
 	stage.map_data = Mission.load_mission("ch1")
 	stage.new_battle()
 	stage.set_mode("battle")
@@ -101,15 +96,13 @@ func _run() -> void:
 
 	# ================= Akt 5: Hoehepunkt =================
 	await _fade_to(1.0, 0.15)
-	await _card("Manche Geheimnisse entdeckt man nur zu zweit.", 2.2)
+	await _card("Manche Geheimnisse entdeckt man nur zu zweit.", 2.4)
 	stage.map_data = Mission.load_mission("ch7")
 	stage.new_battle()
 	stage.set_mode("battle")
 	_prep_battle()
 	stage.battle.super_music = _duck
 	Engine.time_scale = 1.0
-	await _scene(T5_WIRBEL)
-	stage.battle.super_music = _duck
 	await _scene(T5_RAIN)
 	Engine.time_scale = 1.0
 
@@ -258,12 +251,13 @@ func _sea_gag() -> void:
 	for i in T5_SEA_TALK.size():
 		await _wait(0.5 + String(T5_SEA_TALK[i]["text"]).length() * 0.04 + 0.2)
 		d._advance()
-	await _fade_to(1.0, 0.15)
+	_fade_out_music(2.8)                  # Musik und Bild blenden langsam aus
+	await _fade_to(1.0, 1.3)
 	layer.queue_free()
 	sea_layer.queue_free()
 
 
-## Labor im Gewitter: langsame Fahrt auf den Glaszylinder zu, darin nur ein Umriss. Stille, nur Regen/Donner. Dann Riss im Glas.
+## Labor im Gewitter: langsame Fahrt auf den gruenen Glasbehaelter zu. Stille, nur Regen und Donner. Zum Schluss birst das Glas.
 func _lab_shot() -> void:
 	var m := Mission.load_mission("ch13")
 	stage.map_data = m
@@ -276,25 +270,28 @@ func _lab_shot() -> void:
 	b.units.clear()
 	b._away.clear()
 	b._enter_close_view()
-	var cy := _spawn(b, ["cyborg_wart", "e", [10, 2]])
-	(cy["sprite"] as Sprite3D).modulate = Color(0.03, 0.06, 0.04)       # nur der Umriss, kein Gesicht
 	var at := b.to_world(Vector2i(10, 2))
 	b.cam.fov = 30.0
-	b.cam.position = at + Vector3(1.6, 2.2, 5.6)
-	b.cam.look_at(at + Vector3(0.55, 0.8, 0))
+	b.cam.position = at + Vector3(1.3, 3.6, 4.0)
+	b.cam.look_at(at + Vector3(0.8, 0.55, 0))
 	var push := create_tween()
-	push.tween_property(b.cam, "position", at + Vector3(0.95, 1.3, 2.9), 7.0).set_trans(Tween.TRANS_SINE)
+	push.tween_property(b.cam, "position", at + Vector3(1.0, 2.5, 2.7), 7.0).set_trans(Tween.TRANS_SINE)
 	await _fade_to(0.0, 1.2)
 	await _wait(1.8)
 	Sfx.event("thunder_far")
 	await _card("Manche Gegner kehren zurück.", 2.0, 40, true)
 	await _wait(0.3)
+	for o in b.world.objects:           # das Glas birst (Explosion, Scherben), danach Blitz und Schwarz
+		if o["type"] == "zylinder":
+			o["state"] = "broken"
+			b._refresh_object(o, true)
 	Sfx.play("glass", 3.0, 0.8)
 	Sfx.event("thunder")
 	await _flash()
-	await _fade_to(1.0, 0.1)
+	await _wait(0.5)
+	await _fade_to(1.0, 0.5)
 	push.kill()
-	await _wait(0.9)
+	await _wait(0.6)
 
 
 ## Titelkarte: japanische Schrift (wie im Spiel), lateinischer Titel, Slogan, Plattformen. Trommelschlag beim Einblenden.
