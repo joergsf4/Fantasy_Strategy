@@ -179,7 +179,8 @@
   "body": "flesh",
   "hero": true,
   "from": 6,
-  "intro": 5
+  "intro": 5,
+  "size": 1.62
  },
  "wendy": {
   "name": "Wendy Wolle",

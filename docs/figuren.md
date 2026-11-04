@@ -347,3 +347,5 @@ Gegnerin in Mission 8 „Die bewachte Oase“ (unantastbar, bis man sie nach dre
 
 ## Größen der Karten-Figuren (2026-11-03)
 Alle Standardfiguren sind auf die gleiche Bildhöhe (`size` 1,35 Felder) skaliert, wirken aber je nach Körperproportionen verschieden groß (Breite und Kopfgröße). Gemessen an der sichtbaren Fläche: Oskar 86 %, Xiùlán 75 %, Büttel und Bogenschützen 77 bis 79 %, Takeda 85 % des Mittelwerts; Ninja-Schwestern, Stachelia und Lumi 124 bis 133 %. **Oskar** war mit Abstand der kleinste Anführer (schmal, kleinerer Kopf, wirkte neben Maja klein): `size` auf **1,6**. Xiùlán (alte Frau) und die Soldaten sind absichtlich klein geblieben.
+
+- **Hundsfreund größer (2026-11-04):** Das Chibi-Bild ist breit (Hund in Pose), bei gleicher Bildkante wirkte er mit 1,2 Feldern Höhe klein. `size` von 1,35 auf **1,62** (Höhe jetzt etwa 1,44, auf Augenhöhe mit Albrecht und Mira).
