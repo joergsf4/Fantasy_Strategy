@@ -413,6 +413,19 @@ func shuriken_rain(from_unit: Dictionary, dest: Vector2i, victims: Array[Diction
 	await _wait(0.34 + minf(float(spots.size()) * 0.07, 1.1) + 0.1)
 
 
+## Turbo-Treibstoff: Dr. Humbug reicht Robina eine Flasche, sie trinkt, Dampf und Funken schiessen aus dem Auspuff.
+func fuel(giver: Dictionary, v: Dictionary) -> void:
+	Sfx.play("chime", -4.0, 0.7)
+	await fx.projectile("fx_flasche", fx.chest(giver, 0.8), fx.chest(v, 0.9), 0.35, 0.7, 0.5, 6.0)
+	await fx.squash(v, 1.2, 0.85, 0.2)
+	fx.particles("fx_dampf", fx.chest(v, 0.6), 12, 2.2, 0.3, 0.9, 1.4, Color(1.0, 0.95, 0.9, 0.9), true, 120.0)
+	fx.particles("fx_star", fx.chest(v, 0.5), 14, 3.2, 0.15, 0.6, 2.0, Color(1.0, 0.65, 0.2), true, 160.0)
+	fx.light_flash(fx.chest(v, 0.9), Color(1.0, 0.6, 0.2), 3.0, 4.5, 0.5)
+	fx.flash_unit(v, Color(2.0, 1.4, 0.8), 0.4)
+	fx.hop(v, 0.3, 0.3)
+	await _wait(0.4)
+
+
 ## Inspiration von oben: Sternenstaub rieselt aus der Hoehe auf die Figur, goldenes Leuchten und ein Aufschwung.
 func inspire(v: Dictionary) -> void:
 	Sfx.play("chime", -2.0, 1.1)
@@ -604,6 +617,8 @@ func status_holder(id: String, root: Node3D) -> bool:
 			var twi := root.create_tween().set_loops()
 			twi.tween_property(ist, "scale", ist.scale * 1.25, 0.5).set_trans(Tween.TRANS_SINE)
 			twi.tween_property(ist, "scale", ist.scale, 0.5).set_trans(Tween.TRANS_SINE)
+		"treibstoff":  # kleine Flasche als Symbol
+			fx.make_sprite("fx_flasche", Vector3.ZERO, 0.3, false, Color.WHITE, 1, fx.icon_node(root))
 		"satt":        # kleiner Knochen als Symbol (Restdauer-Zahl daneben)
 			fx.make_sprite("fx_bone", Vector3.ZERO, 0.28, false, Color.WHITE, 1, fx.icon_node(root))
 		"angst":

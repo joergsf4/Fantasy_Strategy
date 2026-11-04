@@ -3688,9 +3688,10 @@ func _near_reactions(u: Dictionary, id: String) -> void:
 		var sec := Secrets.find_near(u["id"], id, o["id"])
 		if sec.is_empty():
 			continue
-		var rid: String = sec["effects"]["react_ability"]
-		if not (o["abilities"] as Array).has(rid) or int(o["cd"].get(rid, 0)) > 0:
-			continue
+		if not (sec["effects"] as Dictionary).has("boost"):
+			var rid: String = sec["effects"]["react_ability"]
+			if not (o["abilities"] as Array).has(rid) or int(o["cd"].get(rid, 0)) > 0:
+				continue
 		await _run_near(u, o, sec)
 		return
 
@@ -3748,8 +3749,33 @@ func _object_apply(u: Dictionary, sec: Dictionary, target: Dictionary) -> void:
 	await get_tree().create_timer(0.3).timeout
 
 
+## Geheimnis "Turbo-Treibstoff" (ability_near_ally mit effects.boost): u setzt die Faehigkeit ein, o steht daneben, und o bekommt einen
+## Angriffsbonus (z. B. +50 % = x1,5 fuer 3 Runden). Die eigentliche Faehigkeit von u bleibt unveraendert. Beim ersten Mal Szene und Polarlicht.
+func _run_boost(u: Dictionary, o: Dictionary, sec: Dictionary) -> void:
+	var ef: Dictionary = sec["effects"]
+	var bo: Dictionary = ef["boost"]
+	if not secrets_seen.has(sec["id"]):
+		secrets_seen.append(sec["id"])
+		if secret_runner.is_valid():
+			await secret_runner.call(sec)
+		var ci: Dictionary = ef.get("cutin", {})
+		if not ci.is_empty():
+			await _super_cutin(o, {}, str(ci.get("title", sec["name"])), str(ci.get("sub", "")))
+			_super_music_stop()
+	_turn_towards(u, o["pos"])
+	await fx.fuel(u, o)
+	var mods := {"atk": maxi(1, roundi(float(o["atk"]) * float(bo.get("atk_pct", 50)) / 100.0))}
+	Status.add(o, str(bo.get("id", "treibstoff")), int(bo.get("turns", 3)), mods)
+	_refresh_unit(o)
+	_popup(o, "Turbo!", Color(1.0, 0.7, 0.3))
+	await get_tree().create_timer(0.4).timeout
+
+
 func _run_near(u: Dictionary, o: Dictionary, sec: Dictionary) -> void:
 	var ef: Dictionary = sec["effects"]
+	if ef.has("boost"):
+		await _run_boost(u, o, sec)
+		return
 	var rid: String = ef["react_ability"]
 	var rab: Dictionary = abilities[rid]
 	if not secrets_seen.has(sec["id"]):

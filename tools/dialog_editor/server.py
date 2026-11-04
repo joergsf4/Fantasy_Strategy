@@ -403,13 +403,21 @@ def save_secrets(body: dict) -> None:
                     raise ValueError(f"{name}: dieser Ausloeser kommt zweimal vor")
                 triples.add((by, ab, on))
                 ef = sec["effects"]
-                rid, rad = ef.get("react_ability", ""), ef.get("radius", 2)
-                if rid not in units[on].get("abilities", []) or not any(e.get("type") == "status" for e in abilities.get(rid, {}).get("effects", [])):
-                    raise ValueError(f"{name}: {units[on]['name']} braucht eine Faehigkeit mit Statuswirkung als Reaktion")
-                if not isinstance(rad, int) or isinstance(rad, bool) or not 1 <= rad <= 4:
-                    raise ValueError(f"{name}: der Umkreis muss 1 bis 4 Felder sein")
                 new_trigger = {"type": "ability_near_ally", "by": by, "ability": ab, "near": on}
-                new_effects = {"react_ability": rid, "radius": rad}
+                if ef.get("boost"):       # Verstaerkung: die Figur in der Naehe bekommt einen Angriffsbonus
+                    bo = ef["boost"]
+                    bid, pct, turns = str(bo.get("id", "")), bo.get("atk_pct", 0), bo.get("turns", 3)
+                    if not re.match(r"^[a-z_]{1,20}$", bid) or not isinstance(pct, int) or isinstance(pct, bool) or not 1 <= pct <= 200 \
+                            or not isinstance(turns, int) or isinstance(turns, bool) or not 1 <= turns <= 9:
+                        raise ValueError(f"{name}: Verstaerkung braucht eine Kennung, 1 bis 200 Prozent mehr Angriff und 1 bis 9 Runden")
+                    new_effects = {"boost": {"id": bid, "turns": turns, "atk_pct": pct}}
+                else:
+                    rid, rad = ef.get("react_ability", ""), ef.get("radius", 2)
+                    if rid not in units[on].get("abilities", []) or not any(e.get("type") == "status" for e in abilities.get(rid, {}).get("effects", [])):
+                        raise ValueError(f"{name}: {units[on]['name']} braucht eine Faehigkeit mit Statuswirkung als Reaktion")
+                    if not isinstance(rad, int) or isinstance(rad, bool) or not 1 <= rad <= 4:
+                        raise ValueError(f"{name}: der Umkreis muss 1 bis 4 Felder sein")
+                    new_effects = {"react_ability": rid, "radius": rad}
             elif ttype == "ability_near_object":
                 ab = t["ability"]
                 if ab not in units[by].get("abilities", []):

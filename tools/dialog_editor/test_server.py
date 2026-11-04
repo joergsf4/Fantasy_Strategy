@@ -279,6 +279,19 @@ class EditorTest(unittest.TestCase):
             with self.assertRaises(ValueError):
                 server.save_secrets({"secrets": sl})
 
+    def test_geheimnis_verstaerkung_in_der_naehe(self):
+        import copy
+        d = server.secrets()
+        tf = next(x for x in d["secrets"] if x["id"] == "turbo_treibstoff")
+        self.assertEqual((tf["trigger"]["by"], tf["trigger"]["near"], tf["effects"]["boost"]["atk_pct"]), ("quacksalber", "panzer", 50))
+        server.save_secrets({"secrets": d["secrets"]})
+        for mutate in (lambda s: s["effects"]["boost"].update(atk_pct=0), lambda s: s["effects"]["boost"].update(turns=0), lambda s: s["effects"]["boost"].update(id="Gross Schrift"),
+                       lambda s: s["trigger"].update(ability="gibtsnicht")):
+            sl = copy.deepcopy(d["secrets"])
+            mutate(next(x for x in sl if x["id"] == "turbo_treibstoff"))
+            with self.assertRaises(ValueError):
+                server.save_secrets({"secrets": sl})
+
     def test_geheimnis_treffer_neben_verbuendetem(self):
         import copy
         d = server.secrets()

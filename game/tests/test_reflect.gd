@@ -239,6 +239,23 @@ func _initialize() -> void:
 	await b._run_ability(wo_e4, "kanone", wo_z4)
 	check(Status.has(wo_w4, "schild") and scenes.is_empty(), "spaeter ohne Szene, Wollmantel weiterhin")
 
+	# --- Turbo-Treibstoff: Robina steht neben Dr. Humbug, wenn er sein Tonikum wirft
+	clear()
+	scenes.clear()
+	var hum := spawn("quacksalber", "p", Vector2i(3, 5))
+	var rob := spawn("panzer", "p", Vector2i(3, 6))
+	var tf_z := spawn("soldat_infanterie", "e", Vector2i(5, 5))
+	var atk0: int = rob["atk"]
+	await b._run_ability(hum, "tonikum", {"pos": Vector2i(5, 5), "tile": true})
+	check(Status.has(rob, "treibstoff") and int(Status.get_status(rob, "treibstoff")["mods"]["atk"]) == maxi(1, roundi(float(atk0) * 0.5)), "Robina bekommt Turbo-Treibstoff: Angriff x1,5")
+	check(scenes == ["turbo_treibstoff"], "Szene beim ersten Mal")
+	check(int(hum["cd"].get("tonikum", 0)) > 0 and Status.has(tf_z, "uebel"), "Humbugs Tonikum wirkt unveraendert")
+	clear()
+	var hum2 := spawn("quacksalber", "p", Vector2i(3, 5))
+	var rob2 := spawn("panzer", "p", Vector2i(3, 8))
+	await b._run_ability(hum2, "tonikum", {"pos": Vector2i(5, 5), "tile": true})
+	check(not Status.has(rob2, "treibstoff"), "Robina nicht daneben: kein Treibstoff")
+
 	# --- Inspiration von oben: Albrecht steht neben dem Gegner, den Lumis Sternschnuppe trifft
 	clear()
 	scenes.clear()
