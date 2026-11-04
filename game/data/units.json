@@ -659,7 +659,8 @@
   "dmg_type": "body",
   "tags": [
    "standard",
-   "rudel"
+   "rudel",
+   "scheu"
   ],
   "abilities": [],
   "weapon": "fist",
@@ -679,7 +680,8 @@
   "dmg_type": "body",
   "tags": [
    "boss",
-   "rudel"
+   "rudel",
+   "mutig"
   ],
   "abilities": [
    "kehlbiss",

@@ -2,7 +2,7 @@
  "id": "ch17",
  "title": "Die Wölfe der Nacht",
  "map": "res://data/map_ch17.json",
- "briefing": "Im verschneiten Gebirge wird die Gruppe nachts von einem Wolfsrudel überfallen. Der Anführer ist ein schneeweißer Alphawolf, größer als die anderen. Wölfe sind schnell und beißen hart. Es gibt zwei Wege: Besiegt das Rudel im Kampf, oder jagt allen Wölfen einmal Angst ein (Bellen, Bärengebrüll …), bevor einer fällt: Dann ziehen sie ab, und der Alphawolf schließt sich euch an. Das müsst ihr durch Probieren herausfinden.",
+ "briefing": "Im verschneiten Gebirge wird die Gruppe nachts von einem Wolfsrudel überfallen. Der Anführer ist ein schneeweißer Alphawolf, größer als die anderen. Wölfe sind schnell und beißen hart. Vielleicht muss nicht jeder Kampf bis zum letzten Biss ausgefochten werden.",
  "goals": [
   {
    "type": "rout"
@@ -41,17 +41,10 @@
        "right_expr": "wuetend"
       },
       {
-       "left": "hund",
+       "left": "wendy",
        "right": "maedchen_baer",
-       "speaker": "hund",
-       "text": "Sie sind nur Tiere. Wir müssen ihnen nicht wehtun, wenn es anders geht.",
-       "left_expr": "wuetend"
-      },
-      {
-       "left": "hund",
-       "right": "maedchen_baer",
-       "speaker": "maedchen_baer",
-       "text": "Brumm sagt, sie haben Angst vor etwas. Vielleicht kann man ihnen Angst machen."
+       "speaker": "wendy",
+       "text": "Die armen Wölfe. Wenn man sie nur vertreiben könnte, ohne dass jemand verletzt wird."
       }
      ]
     }
@@ -59,33 +52,23 @@
   },
   {
    "when": {
-    "ability": {
-     "id": "bellen",
-     "by": "hund"
-    }
+    "enemies_left": 5
    },
    "if": {
     "present": [
-     "wolf"
+     "alphawolf"
     ],
     "kills_max": 0
    },
-   "note": "Hinweis: Wölfe fürchten sich",
+   "note": "Ein Wolf läuft davon",
    "do": [
     {
      "dialogue": [
       {
        "left": "hund",
-       "right": "maedchen_baer",
+       "right": "wendy",
        "speaker": "hund",
-       "text": "Die Wölfe zucken zusammen! Sie weichen zurück, wenn ich belle!",
-       "left_expr": "lachend"
-      },
-      {
-       "left": "hund",
-       "right": "maedchen_baer",
-       "speaker": "maedchen_baer",
-       "text": "Dann macht ihnen allen Angst, bevor einer fällt. Vielleicht verziehen sie sich."
+       "text": "Der hat sich ja davongemacht. Interessant."
       }
      ]
     }
@@ -93,18 +76,18 @@
   },
   {
    "when": {
-    "all_frightened": [
-     "wolf",
-     "alphawolf"
-    ]
+    "enemies_left": 1
    },
    "if": {
     "present": [
      "alphawolf"
     ],
+    "absent": [
+     "wolf"
+    ],
     "kills_max": 0
    },
-   "note": "Das Rudel zieht ab, der Alphawolf schließt sich an",
+   "note": "Das Rudel ist weg, der Alphawolf schließt sich an",
    "do": [
     {
      "dialogue": [
@@ -112,27 +95,27 @@
        "left": "maedchen_baer",
        "right": "alphawolf",
        "speaker": "maedchen_baer",
-       "text": "Sie fürchten sich alle! Seht, wie sie zittern!"
+       "text": "Das Rudel ist in die Nacht verschwunden. Nur er ist geblieben."
       },
       {
        "left": "hund",
        "right": "alphawolf",
        "speaker": "alphawolf",
-       "text": "*Der Alphawolf hebt den Kopf, heult einmal tief und lang. Das Rudel weicht in die Nacht zurück.*",
+       "text": "*Der Alphawolf hebt den Kopf und heult einmal tief und lang. Er hat sein Rudel wegziehen lassen.*",
        "right_expr": ""
       },
       {
        "left": "hund",
        "right": "alphawolf",
        "speaker": "hund",
-       "text": "Er ruft sie ab. Er hat verstanden, dass wir keine Beute sind.",
+       "text": "Er ist mutig. Er hat keine Angst vor uns. Er wollte nur sehen, wer wir sind.",
        "left_expr": "lachend"
       },
       {
        "left": "bienenmaedchen",
        "right": "alphawolf",
        "speaker": "bienenmaedchen",
-       "text": "Und er bleibt. Als einziger. Na wunderbar, noch ein Anhängsel.",
+       "text": "Und jetzt will er mit. Na wunderbar, noch ein Anhängsel.",
        "left_expr": "wuetend"
       },
       {
@@ -145,15 +128,10 @@
      ]
     },
     {
-     "retreat_all": [
-      "wolf"
-     ]
+     "retreat": "alphawolf"
     },
     {
      "recruit": "alphawolf"
-    },
-    {
-     "retreat": "alphawolf"
     },
     {
      "win": true

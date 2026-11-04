@@ -1521,6 +1521,20 @@ func _down(def: Dictionary) -> void:
 		fx.death(def)
 
 
+## Scheue Figuren (Tag "scheu", z. B. Woelfe) verschwinden bei Angst auf der Stelle: kein Tod, kein Nemesis, zaehlt nicht als besiegt.
+func _scare_flee(v: Dictionary) -> void:
+	if not units.has(v):
+		return
+	await _popup(v, "Angst!", Color(0.7, 0.85, 1.0))
+	units.erase(v)
+	retreated.append(v["id"])
+	var had_fled := fled.has(v["id"])
+	await _flee(v, false)
+	if not had_fled:
+		fled.erase(v["id"])     # Woelfe kehren nicht als Rueckkehrer-Gegner wieder
+	_check_end()
+
+
 ## Wuetender Rueckzug: Beute faellt, Dialog (mission "flee": {id: [Zeilen]}), dann rennt die Figur zum naechsten Kartenrand.
 func _flee(def: Dictionary, talk := true) -> void:
 	fled.append(def["id"])
@@ -3851,8 +3865,15 @@ func _apply_effect(u: Dictionary, ab: Dictionary, target: Dictionary, ef: Dictio
 			for v in victims:
 				var src: String = u["uid"] if ef["id"] == "taunt" else ""
 				Status.add(v, ef["id"], ef["turns"], ef.get("mods", {}), src)
-				if ef["id"] == "scared" or ef["id"] == "angst":
-					v["fright"] = true      # merkt sich: diese Figur wurde einmal erschreckt (Wolfsrudel in Mission 17)
+				if (ef["id"] == "scared" or ef["id"] == "angst") and v["team"] != u["team"]:
+					if (v["tags"] as Array).has("mutig"):      # furchtlose Figuren (Alphawolf) lassen sich nicht erschrecken
+						Status.remove(v, str(ef["id"]))
+						_refresh_unit(v)
+						await _popup(v, "Furchtlos", Color(0.8, 0.9, 1.0))
+						continue
+					if (v["tags"] as Array).has("scheu"):      # scheue Figuren (Woelfe) ergreifen bei Angst sofort die Flucht
+						await _scare_flee(v)
+						continue
 				_refresh_unit(v)
 				var good: bool = Status.GOOD.has(ef["id"])
 				if fx.has_fx(ab["id"]):

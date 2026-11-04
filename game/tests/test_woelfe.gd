@@ -46,14 +46,27 @@ func _initialize() -> void:
 	check(wolves.size() == 6 and not b._find("alphawolf").is_empty(), "fuenf Woelfe und der Alphawolf")
 	var got := []
 	b.finished.connect(func(w: bool) -> void: got.append(w))
-	for i in wolves.size() - 1:
-		Status.add(wolves[i], "angst", 2)
-		wolves[i]["fright"] = true
+	var mira := b._find("maedchen_baer")
+	var alpha := b._find("alphawolf")
+	var normal := wolves.filter(func(u: Dictionary) -> bool: return u["id"] == "wolf")
+	# Bellen/Gebruell auf den Alphawolf: furchtlos, er bleibt
+	mira["pos"] = Vector2i(5, 4)
+	alpha["pos"] = Vector2i(5, 2)
+	await b._run_ability(mira, "baerengebruell", alpha)
+	check(not b._find("alphawolf").is_empty() and not Status.has(alpha, "angst"), "Alphawolf ist furchtlos")
+	# Ein Wolf bekommt Angst: er verschwindet sofort, zaehlt nicht als besiegt, kein Nemesis
+	for i in normal.size() - 1:
+		normal[i]["pos"] = Vector2i(5, 2)
+		mira["cd"] = {}
+		await b._run_ability(mira, "baerengebruell", normal[i])
+		check(not b.units.has(normal[i]) and b.kills_total == 0, "Wolf %d verschwindet bei Angst" % i)
+	check(not b._find("alphawolf").is_empty() and b.recruited.is_empty(), "Noch ein Wolf uebrig: Alphawolf bleibt, noch nicht gewonnen")
+	check(not b.fled.has("wolf"), "Woelfe werden keine Rueckkehrer-Gegner")
+	normal[normal.size() - 1]["pos"] = Vector2i(5, 2)
+	mira["cd"] = {}
+	await b._run_ability(mira, "baerengebruell", normal[normal.size() - 1])
 	await b._flush_events()
-	check(not b._find("alphawolf").is_empty() and b.recruited.is_empty(), "Noch nicht alle erschreckt: Kampf geht weiter")
-	wolves[wolves.size() - 1]["fright"] = true
-	await b._flush_events()
-	check(b.recruited == ["alphawolf"] and b.peace_win, "Alle erschreckt: Alphawolf schliesst sich an, friedlicher Sieg")
+	check(b.recruited == ["alphawolf"] and b.peace_win, "Alle Woelfe weg: Alphawolf schliesst sich an, friedlicher Sieg")
 	check(b._find("wolf").is_empty() and b._find("alphawolf").is_empty(), "das Rudel ist weg")
 	await b._check_end()
 	check(got == [true], "Mission gewonnen: %s" % [got])
@@ -70,11 +83,11 @@ func _initialize() -> void:
 	b2.kills_total = 1
 	w2[0]["hp"] = 0
 	b2.units.erase(w2[0])
-	for u in b2.units:
-		if u["team"] == "e":
-			u["fright"] = true
+	for u in b2.units.duplicate():
+		if u["id"] == "wolf":
+			b2.units.erase(u)       # die uebrigen Woelfe laufen weg (wie bei Angst)
 	await b2._flush_events()
-	check(b2.recruited.is_empty() and not b2.peace_win and not b2._find("alphawolf").is_empty(), "Nach einem Todesfall zieht das Rudel nicht mehr friedlich ab")
+	check(b2.recruited.is_empty() and not b2.peace_win and not b2._find("alphawolf").is_empty(), "Nach einem Todesfall schliesst sich der Alphawolf nicht mehr an")
 	# --- Klebekanone
 	var sec := Secrets.find_object("elisabeth", "kanone")
 	check(not sec.is_empty() and sec["trigger"]["owner"] == "bienenmaedchen", "Geheimnis Klebekanone ist aktiv")
