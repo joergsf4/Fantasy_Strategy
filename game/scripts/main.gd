@@ -893,6 +893,30 @@ func _screenshot_mode() -> void:
 		get_viewport().get_texture().get_image().save_png(OS.get_environment("SHOT_OUT"))
 		get_tree().quit()
 		return
+	if mode == "testlab":   # das Testlabor-Menue selbst (Layout pruefen)
+		stage = Stage.new()
+		stage.setup(map, units)
+		add_child(stage)
+		stage.set_mode("dialog")
+		var tl_heroes: Array = []
+		for hid: String in units:
+			if units[hid].get("hero", false):
+				tl_heroes.append({"id": hid, "name": units[hid]["name"]})
+		var tl_secs: Array = []
+		for sec: Dictionary in Secrets.all():
+			var tt: Dictionary = sec["trigger"]
+			tl_secs.append({"id": sec["id"], "name": sec["name"], "heroes": [tt["by"], str(tt.get("target", tt.get("via", tt.get("near", tt.get("owner", "")))))]})
+		var tl_layer := CanvasLayer.new()
+		tl_layer.layer = 6
+		add_child(tl_layer)
+		var tl := TestLab.new()
+		tl.setup(tl_heroes, [{"id": "soldat_infanterie", "name": "3 Büttel"}], tl_secs)
+		tl_layer.add_child(tl)
+		for i in 30:
+			await get_tree().process_frame
+		get_viewport().get_texture().get_image().save_png(OS.get_environment("SHOT_OUT"))
+		get_tree().quit()
+		return
 	if mode == "lab":   # Testlabor-Sprung: SHOT_PART=arena|aufstieg|lager|belohnung|reise, SHOT_CH=Held, SHOT_PICK=Gegner, SHOT_GOLD=1 fuer volle Talente
 		stage = Stage.new()
 		stage.setup(map, units)

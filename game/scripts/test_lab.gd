@@ -31,13 +31,25 @@ func _ready() -> void:
 	add_child(dim)
 	var panel := PanelContainer.new()
 	panel.add_theme_stylebox_override("panel", UiTheme.box("panel_dark_s.png", 24, Vector4(34, 24, 34, 24), 0.97))
-	panel.position = Vector2(330, 90)
-	add_child(panel)
+	var center := CenterContainer.new()      # mittig, egal wie breit die Spalten werden
+	center.set_anchors_preset(Control.PRESET_FULL_RECT)
+	center.size = get_viewport_rect().size
+	add_child(center)
+	center.add_child(panel)
+	var outer := VBoxContainer.new()
+	outer.add_theme_constant_override("separation", 6)
+	panel.add_child(outer)
+	outer.add_child(_label("Testlabor", UiTheme.F_TITLE, 32, UiTheme.GOLD))
+	outer.add_child(_label("Direkt zu einer Stelle springen, ohne Missionen zu spielen", UiTheme.F_BODY, 16, Color(0.75, 0.8, 0.7)))
+	var cols := HBoxContainer.new()      # zwei Spalten, damit alles auf den Bildschirm passt
+	cols.add_theme_constant_override("separation", 34)
+	outer.add_child(cols)
 	var col := VBoxContainer.new()
-	col.add_theme_constant_override("separation", 9)
-	panel.add_child(col)
-	col.add_child(_label("Testlabor", UiTheme.F_TITLE, 34, UiTheme.GOLD))
-	col.add_child(_label("Direkt zu einer Stelle springen, ohne Missionen zu spielen", UiTheme.F_BODY, 17, Color(0.75, 0.8, 0.7)))
+	col.add_theme_constant_override("separation", 7)
+	cols.add_child(col)
+	var col2 := VBoxContainer.new()
+	col2.add_theme_constant_override("separation", 7)
+	cols.add_child(col2)
 	col.add_child(_label("Arena: Held gegen Gegner", UiTheme.F_HEAD, 20, UiTheme.CREAM))
 	_hero = _drop(heroes)
 	col.add_child(_hero)
@@ -60,6 +72,8 @@ func _ready() -> void:
 	col.add_child(_sec)
 	for k in 3:
 		var d := _drop(heroes if k < 2 else [{"id": "", "name": "– kein dritter Held –"}] + heroes)
+		if k == 1 and heroes.size() > 1:
+			d.select(1)
 		_sh.append(d)
 		col.add_child(d)
 	col.add_child(_button("Geheimnis-Arena starten (Helden nebeneinander, 3 Büttel)", func() -> void:
@@ -69,12 +83,12 @@ func _ready() -> void:
 			if id != "" and not ids.has(id):
 				ids.append(id)
 		run.emit("geheimnis", ",".join(ids), "soldat_infanterie", false)))
-	col.add_child(_label("Bildschirme", UiTheme.F_HEAD, 20, UiTheme.CREAM))
-	col.add_child(_button("Aufstiegsbildschirm (Stufe 4, ein Punkt)", func() -> void: run.emit("aufstieg", _hero_id(), _foe_id(), false)))
-	col.add_child(_button("Lager (Kapitel 8, 999 Gold)", func() -> void: run.emit("lager", _hero_id(), _foe_id(), false)))
-	col.add_child(_button("Belohnungs- und Statistikbildschirm", func() -> void: run.emit("belohnung", _hero_id(), _foe_id(), false)))
-	col.add_child(_button("Reisebild Kapitel 2 (Schiff)", func() -> void: run.emit("reise", _hero_id(), _foe_id(), false)))
-	col.add_child(_button("Zurück", func() -> void:
+	col2.add_child(_label("Bildschirme", UiTheme.F_HEAD, 20, UiTheme.CREAM))
+	col2.add_child(_button("Aufstiegsbildschirm (Stufe 4, ein Punkt)", func() -> void: run.emit("aufstieg", _hero_id(), _foe_id(), false)))
+	col2.add_child(_button("Lager (Kapitel 8, 999 Gold)", func() -> void: run.emit("lager", _hero_id(), _foe_id(), false)))
+	col2.add_child(_button("Belohnungs- und Statistikbildschirm", func() -> void: run.emit("belohnung", _hero_id(), _foe_id(), false)))
+	col2.add_child(_button("Reisebild Kapitel 2 (Schiff)", func() -> void: run.emit("reise", _hero_id(), _foe_id(), false)))
+	col2.add_child(_button("Zurück", func() -> void:
 		closed.emit()
 		queue_free()))
 
