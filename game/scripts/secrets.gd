@@ -108,6 +108,16 @@ static func partner(trigger: Dictionary) -> String:
 	return ""
 
 
+## Alle Geheimnisse, bei denen "by" die gefallene Figur "unit" ins Leben zurueckholt (Typ ally_fallen_near).
+static func find_revives(unit: String) -> Array:
+	var out: Array = []
+	for s: Dictionary in all():
+		var t: Dictionary = s["trigger"]
+		if t.get("type", "") == "ally_fallen_near" and t["unit"] == unit:
+			out.append(s)
+	return out
+
+
 static func by_id(id: String) -> Dictionary:
 	for s: Dictionary in all():
 		if s["id"] == id:

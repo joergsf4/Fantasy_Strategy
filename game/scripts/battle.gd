@@ -1779,6 +1779,8 @@ func _on_death(def: Dictionary) -> void:
 ## Eine Figur faellt (Leben 0, schon aus `units` entfernt): Gegner mit "flees" fliehen wuetend und kehren spaeter
 ## zurueck, alle anderen sterben.
 func _down(def: Dictionary) -> void:
+	if await _revive_secret(def):
+		return
 	_on_death(def)
 	if def["team"] == "p" and map_data.get("story_loss", "") == def["id"]:     # erzaehlte Niederlage: sie flieht statt zu fallen
 		fallen.erase(def["id"])
@@ -3756,6 +3758,47 @@ func _object_apply(u: Dictionary, sec: Dictionary, target: Dictionary) -> void:
 			fx.flash_unit(v, Color(1.6, 1.3, 0.5), 0.3)
 			await _popup(v, "Festgeklebt!", Color(1.0, 0.85, 0.3))
 	await get_tree().create_timer(0.3).timeout
+
+
+## Geheimnis "Heiliges Licht" (Typ ally_fallen_near): Faellt die Figur "unit" (Leben 0, schon aus `units` entfernt), waehrend "by" hoechstens "dist" Felder
+## entfernt steht, wird "by" von heiligem Licht erfuellt, schwebt auf, und "unit" kehrt mit einem Anteil der Leben zurueck. Rueckgabe: true, wenn wiederbelebt.
+func _revive_secret(def: Dictionary) -> bool:
+	if def["team"] != "p":
+		return false
+	for sec: Dictionary in Secrets.find_revives(def["id"]):
+		var t: Dictionary = sec["trigger"]
+		var by := _find(t["by"])
+		if by.is_empty() or not units.has(by) or by["team"] != "p" or by["hp"] <= 0 or Grid.dist(by["pos"], def["pos"]) > int(t.get("dist", 2)):
+			continue
+		await _run_revive(by, def, sec)
+		return true
+	return false
+
+
+func _run_revive(by: Dictionary, def: Dictionary, sec: Dictionary) -> void:
+	Secrets.fire(sec["id"])
+	var ef: Dictionary = sec["effects"]
+	_actor = by
+	var ci: Dictionary = ef.get("cutin", {})
+	if not ci.is_empty():
+		await _super_cutin(by, {}, str(ci.get("title", sec["name"])), str(ci.get("sub", "")))
+		_super_music_stop()
+	await fx.holy_revive(by, def)
+	units.append(def)
+	def["hp"] = maxi(1, int(ceili(float(def["maxhp"]) * float(ef.get("revive_pct", 75)) / 100.0)))
+	Status.cleanse(def)
+	fallen.erase(def["id"])
+	_refresh_unit(def)
+	by["st"]["healed"] += int(def["hp"])
+	Sfx.event("heal")
+	_popup(def, "Zurück im Leben!", Color(1.0, 0.95, 0.6))
+	_popup(by, "+%d" % int(def["hp"]), Color(0.5, 1.0, 0.6))
+	fx.flash_unit(def, Color(2.0, 1.9, 1.4), 0.6)
+	await get_tree().create_timer(0.7).timeout
+	if not secrets_seen.has(sec["id"]) and secret_runner.is_valid():
+		secrets_seen.append(sec["id"])
+		await secret_runner.call(sec)
+	_check_end()
 
 
 ## Geheimnis "Lasst meinen Lin in Ruhe" (Typ hp_below_near): Faellt der Schuetzling unter die Lebensgrenze, waehrend die Beschuetzerin auf einem Nachbarfeld steht,

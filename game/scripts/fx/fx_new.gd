@@ -413,6 +413,41 @@ func shuriken_rain(from_unit: Dictionary, dest: Vector2i, victims: Array[Diction
 	await _wait(0.34 + minf(float(spots.size()) * 0.07, 1.1) + 0.1)
 
 
+## Heiliges Licht: Die Retterin steigt auf und schwebt, weissgelbes Licht fuellt die Gegend (Lichtkegel, Ringe, aufsteigende Sterne), die Gefallene
+## erscheint im Licht wieder. Danach sinkt die Retterin zurueck.
+func holy_revive(by: Dictionary, down: Dictionary) -> void:
+	var n := by["node"] as Node3D
+	var base := n.position
+	Sfx.play("chime", 0.0, 0.8)
+	Sfx.play("chime", -3.0, 1.2, 0.25)
+	var glow := fx.make_sprite("soft", fx.chest(by, 0.9), 2.0, true, Color(1.0, 0.95, 0.65, 0.0), 3)
+	var rise := fx.create_tween()
+	rise.tween_property(n, "position:y", base.y + 0.95, 0.9).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	rise.parallel().tween_property(glow, "scale", Vector3(14.0, 14.0, 1.0), 1.6).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	var fade := fx.create_tween()
+	fade.tween_method(func(a: float) -> void:
+		if is_instance_valid(glow):
+			fx._sp(glow, "tint", Color(1.0, 0.95, 0.65, a)), 0.0, 0.75, 0.8)
+	await _wait(0.5)
+	fx.light_flash(fx.chest(by, 1.2), Color(1.0, 0.97, 0.7), 8.0, 12.0, 1.7)
+	for i in 4:
+		fx.shockwave(_pos(by), 2.0 + float(i) * 1.6, Color(1.0, 0.95, 0.6, 0.8), 0.9)
+		await _wait(0.18)
+	fx.particles("fx_star", fx.chest(by, 0.4), 28, 3.0, 0.22, 1.4, -1.2, Color(1.0, 0.95, 0.65), true, 180.0)
+	fx.particles("fx_star", fx.chest(down, 0.2), 18, 2.2, 0.2, 1.2, -1.5, Color(1.0, 0.97, 0.75), true, 120.0)
+	fx.shake(0.04, 0.5)
+	await _wait(1.0)
+	var sink := fx.create_tween()
+	sink.tween_property(n, "position:y", base.y, 0.6).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+	var out := fx.create_tween()
+	out.tween_method(func(a: float) -> void:
+		if is_instance_valid(glow):
+			fx._sp(glow, "tint", Color(1.0, 0.95, 0.65, a)), 0.75, 0.0, 0.7)
+	await _wait(0.7)
+	if is_instance_valid(glow):
+		glow.queue_free()
+
+
 ## Beschuetzer-Energie: Sterne und ein Lichtkranz um die Beschuetzerin, Strahlen zu allen angrenzenden Gegnern.
 func protect_burst(by: Dictionary, ward: Dictionary, victims: Array) -> void:
 	Sfx.play("chime", 0.0, 1.3)

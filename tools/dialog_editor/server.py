@@ -336,11 +336,11 @@ def save_secrets(body: dict) -> None:
         if sec.get("trigger"):
             t = sec["trigger"]
             ttype = t.get("type", "ability_on_ally")
-            if ttype not in ("ability_on_ally", "beam_via_ally", "throw_ally", "ability_near_ally", "hit_near_ally", "ability_near_object", "ability_area_ally", "hp_below_near"):
+            if ttype not in ("ability_on_ally", "beam_via_ally", "throw_ally", "ability_near_ally", "hit_near_ally", "ability_near_object", "ability_area_ally", "hp_below_near", "ally_fallen_near"):
                 raise ValueError(f"{name}: unbekannter Ausloeser-Typ '{ttype}'")
             beam = ttype == "beam_via_ally"
             by = t["by"]
-            on = t["via"] if beam else (t["owner"] if ttype == "ability_near_object" else (t["unit"] if ttype == "hp_below_near" else t["ally"] if ttype == "ability_area_ally" else (t["near"] if ttype in ("ability_near_ally", "hit_near_ally") else t["target"])))
+            on = t["via"] if beam else (t["owner"] if ttype == "ability_near_object" else (t["unit"] if ttype in ("hp_below_near", "ally_fallen_near") else t["ally"] if ttype == "ability_area_ally" else (t["near"] if ttype in ("ability_near_ally", "hit_near_ally") else t["target"])))
             if by not in units or "name" not in units[by] or on not in units or "name" not in units[on]:
                 raise ValueError(f"{name}: unbekannte Figur im Ausloeser")
             if by == on:
@@ -381,6 +381,18 @@ def save_secrets(body: dict) -> None:
                                 or not isinstance(turns, int) or isinstance(turns, bool) or not 1 <= turns <= 9:
                             raise ValueError(f"{name}: Status braucht eine Kennung, Schadensminderung 0 bis 90 Prozent und 1 bis 9 Runden")
                         new_effects["status"] = {"id": sid_, "turns": turns, "reduce_pct": red}
+            elif ttype == "ally_fallen_near":
+                dist = t.get("dist", 2)
+                if not isinstance(dist, int) or isinstance(dist, bool) or not 1 <= dist <= 4:
+                    raise ValueError(f"{name}: die Entfernung muss 1 bis 4 Felder sein")
+                if (by, "ally_fallen_near", on) in triples:
+                    raise ValueError(f"{name}: dieser Ausloeser kommt zweimal vor")
+                triples.add((by, "ally_fallen_near", on))
+                pct = sec["effects"].get("revive_pct", 75)
+                if not isinstance(pct, int) or isinstance(pct, bool) or not 1 <= pct <= 100:
+                    raise ValueError(f"{name}: die Wiederbelebung muss 1 bis 100 Prozent der Leben sein")
+                new_trigger = {"type": "ally_fallen_near", "by": by, "unit": on, "dist": dist}
+                new_effects = {"revive_pct": pct}
             elif ttype == "hp_below_near":
                 ratio = t.get("ratio", 0.5)
                 if not isinstance(ratio, (int, float)) or isinstance(ratio, bool) or not 0.05 <= ratio <= 0.95:

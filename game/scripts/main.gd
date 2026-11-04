@@ -902,6 +902,34 @@ func _screenshot_mode() -> void:
 		get_viewport().get_texture().get_image().save_png(OS.get_environment("SHOT_OUT"))
 		get_tree().quit()
 		return
+	if mode == "revive":   # Geheimnis Heiliges Licht: SHOT_DELAY = Sekunden nach dem Fall bis zum Bild (SHOT_OUT, optional SHOT_OUT2 nach +1,2 s)
+		stage = Stage.new()
+		stage.setup(map, units)
+		add_child(stage)
+		stage.start_battle()
+		await get_tree().process_frame
+		var rb := stage.battle
+		rb.secret_runner = func(_sec: Dictionary) -> void: await get_tree().create_timer(0.1).timeout
+		rb.super_music = func(_on: bool) -> void: pass
+		for ru in rb.units.duplicate():
+			(ru["node"] as Node3D).queue_free()
+		rb.units.clear()
+		rb._enter_close_view()
+		rb._spawn("maedchen_baer", "p", Vector2i(5, 7))
+		var rmira: Dictionary = rb.units.back()
+		rb._spawn("wendy", "p", Vector2i(6, 8))
+		rb._spawn("soldat_infanterie", "e", Vector2i(6, 7))
+		rb._spawn("soldat_beritten", "e", Vector2i(4, 7))
+		var rmid := rb.to_world(Vector2i(5, 7))
+		rb.cam.fov = 38.0
+		rb.cam.position = rmid + Vector3(0.4, 3.4, 4.6)
+		rb.cam.look_at(rmid + Vector3(0, 0.6, 0))
+		rmira["hp"] = 2
+		rb._deal(rmira, 40, "")
+		await get_tree().create_timer(float(OS.get_environment("SHOT_DELAY")) if OS.get_environment("SHOT_DELAY") != "" else 3.0).timeout
+		get_viewport().get_texture().get_image().save_png(OS.get_environment("SHOT_OUT"))
+		get_tree().quit()
+		return
 	if mode == "testlab":   # das Testlabor-Menue selbst (Layout pruefen)
 		stage = Stage.new()
 		stage.setup(map, units)

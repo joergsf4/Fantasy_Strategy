@@ -717,6 +717,10 @@ func inspire(v: Dictionary) -> void:
 	await nw.inspire(v)
 
 
+func holy_revive(by: Dictionary, down: Dictionary) -> void:
+	await nw.holy_revive(by, down)
+
+
 func protect_burst(by: Dictionary, ward: Dictionary, victims: Array) -> void:
 	await nw.protect_burst(by, ward, victims)
 

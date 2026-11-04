@@ -290,6 +290,31 @@ func _initialize() -> void:
 	await b._run_ability(o_hum, "tonikum", {"pos": Vector2i(5, 5), "tile": true})
 	check(not Status.has(o_rob, "treibstoff"), "zweites Mal im selben Kampf: kein Treibstoff mehr")
 
+	# --- Heiliges Licht: Mira faellt, Wendy steht hoechstens 2 Felder entfernt
+	clear()
+	scenes.clear()
+	var hl_mira := spawn("maedchen_baer", "p", Vector2i(5, 5))
+	var hl_wen := spawn("wendy", "p", Vector2i(5, 7))
+	var hl_foe := spawn("soldat_infanterie", "e", Vector2i(6, 5))
+	hl_mira["hp"] = 3
+	await b._deal(hl_mira, 50, "")
+	check(b.units.has(hl_mira) and hl_mira["hp"] == int(ceili(float(hl_mira["maxhp"]) * 0.75)), "Mira kehrt mit 75 %% zurueck (%d von %d)" % [hl_mira["hp"], hl_mira["maxhp"]])
+	check(scenes == ["heiliges_licht"] and not b.fallen.has("maedchen_baer") and b.units.has(hl_wen), "Szene beim ersten Mal, Mira zaehlt nicht als gefallen")
+	hl_mira["hp"] = 2
+	await b._deal(hl_mira, 50, "")
+	check(not b.units.has(hl_mira), "pro Level nur einmal: zweites Mal faellt Mira")
+	clear()
+	var hl2_mira := spawn("maedchen_baer", "p", Vector2i(5, 5))
+	spawn("wendy", "p", Vector2i(5, 8))          # 3 Felder: zu weit
+	hl2_mira["hp"] = 3
+	await b._deal(hl2_mira, 50, "")
+	check(not b.units.has(hl2_mira), "Wendy zu weit weg: Mira faellt")
+	clear()
+	var hl3_mira := spawn("maedchen_baer", "p", Vector2i(5, 5))
+	hl3_mira["hp"] = 3
+	await b._deal(hl3_mira, 50, "")
+	check(not b.units.has(hl3_mira), "ohne Wendy: Mira faellt")
+
 	# --- Lasst meinen Lin in Ruhe: Lin faellt unter 50 %, Lumi steht daneben
 	clear()
 	scenes.clear()
