@@ -25,6 +25,8 @@ func setup_secret(sec: Dictionary, unit_names: Dictionary) -> void:
 	var out: Array = []
 	for l: Dictionary in sc["lines"]:
 		var line := {"speaker": sc["left"] if l["speaker"] == by else sc["right"], "left": sc["left"], "right": sc["right"], "text": l["text"]}
+		if str(l.get("expr", "")) != "":          # Gesichtsausdruck des Sprechers (lachend, wuetend)
+			line[("left_expr" if l["speaker"] == by else "right_expr")] = str(l["expr"])
 		if l.has("blush"):
 			line["blush"] = sc["left"] if l["blush"] == by else sc["right"]
 		out.append(line)
@@ -115,7 +117,7 @@ func _play_intro() -> void:
 	bt.tween_callback(func() -> void:
 		banner.queue_free()
 		_intro_done = true
-		super._advance())
+		_advance())
 
 
 func _banner_label(text: String, size: int, col: Color) -> Label:

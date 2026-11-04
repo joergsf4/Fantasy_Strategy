@@ -546,6 +546,8 @@ def save_secrets(body: dict) -> None:
                 if len(txt) > 400:
                     raise ValueError(f"{name}: Zeile {n} ist zu lang (hoechstens 400 Zeichen)")
                 line = {"speaker": l["speaker"], "text": txt}
+                if l.get("expr") in ("lachend", "wuetend") and (ASSETS / "portraits" / f"{l['speaker']}_{l['expr']}.png").exists():
+                    line["expr"] = l["expr"]
                 if l.get("blush") in (by, on):
                     line["blush"] = l["blush"]
                 lines.append(line)

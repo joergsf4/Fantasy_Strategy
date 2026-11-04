@@ -109,7 +109,7 @@ body.view-sec nav.chapters, body.view-sec aside.pal, body.view-sec #q, body.view
 .sform select, .sform input[type=text], .sform input[type=number], .sform textarea { background: var(--panel2); color: var(--text); border: 1px solid var(--line); border-radius: 6px; padding: 5px 8px; font: inherit; }
 .sform input[type=text].wide { width: 100%; }
 .sform input[type=number] { width: 70px; }
-.sline { display: grid; grid-template-columns: 150px 1fr 150px auto; gap: 6px; margin: 5px 0; align-items: start; }
+.sline { display: grid; grid-template-columns: 150px 1fr 120px 150px auto; gap: 6px; margin: 5px 0; align-items: start; }
 .sline textarea { width: 100%; min-height: 40px; resize: vertical; }
 .sbox { background: var(--panel2); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; margin-top: 8px; }
 .sbox h4 { font-size: 13px; color: var(--gold); margin-bottom: 4px; }
@@ -891,6 +891,7 @@ function secTech(x, i) {
         · Banner <input type="text" data-f="banner" maxlength="40" value="${esc(sc.banner || "")}" placeholder="GEHEIME INTERAKTION" style="width:200px" aria-label="Banner-Text vor der Szene"></div>
         ${sc.lines.map((l, j) => `<div class="sline"><select data-f="speaker" data-j="${j}" aria-label="Sprecher">${secOpts(who, l.speaker)}</select>
           <textarea data-f="text" data-j="${j}" rows="2" aria-label="Text der Zeile ${j + 1}">${esc(l.text)}</textarea>
+          <select data-f="expr" data-j="${j}" aria-label="Gesichtsausdruck des Sprechers" title="Gesichtsausdruck des Sprechers">${secOpts([["lachend", "lachend"], ["wuetend", "wütend"]], l.expr || "", "Gesicht normal")}</select>
           <select data-f="blush" data-j="${j}" aria-label="Wer läuft rot an?" title="Wer läuft ab dieser Zeile rot an?">${secOpts(who, l.blush || "", "– niemand rot –")}</select>
           <button class="btn ghost" data-sact="rmline" data-j="${j}" aria-label="Zeile entfernen" title="Zeile entfernen">✕</button></div>`).join("")}
         <button class="btn" data-sact="addline">+ Zeile</button></div>
@@ -1023,6 +1024,7 @@ document.addEventListener("change", e => {
   const x = sec[+card.dataset.sec], f = el.dataset.f;
   if (f === "addchar") { if (el.value) (x.characters ||= []).push(el.value); }
   else if (f === "ttype") secSwitchType(x, el.value);
+  else if (f === "expr") { const l = x.scene.lines[+el.dataset.j]; if (el.value) l.expr = el.value; else delete l.expr; }
   else if (f === "blush") { const l = x.scene.lines[+el.dataset.j]; if (el.value) l.blush = el.value; else delete l.blush; }
   else if (f === "near") { x.trigger.near = el.value; if (x.trigger.type === "ability_near_ally" && !x.effects.boost && !x.effects.enlarge) x.effects.react_ability = SEC.units[el.value]?.all_abilities?.[0] || ""; x.scene.lines.forEach(l => { if (l.speaker !== x.trigger.by) l.speaker = el.value; }); }
   else if (f === "unit") { x.trigger.unit = el.value; x.scene.lines.forEach(l => { if (l.speaker !== x.trigger.by) l.speaker = el.value; }); }
