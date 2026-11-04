@@ -32,6 +32,7 @@ var _noise := FastNoiseLite.new()
 var _next_gust := 2.0
 var _gust_k := 0.0              # 0 bis 1: wie stark die aktuelle Boee ist
 var _cam_shake := 0.0
+var _lead := 0.0              # bisher zurueckgelegter Weg der Spitze
 var _wind: AudioStreamPlayer
 
 
@@ -408,7 +409,8 @@ func _finish() -> void:
 ## Gruppe, Kamera, Schnee und Boeen zum Zeitpunkt _t. delta = 0 fuer den Aufbau.
 func _step(delta: float) -> void:
 	var speed := 1.25 * (1.0 - 0.35 * _gust_k)          # in der Boee wird langsamer gestapft
-	var lead_x := -4.0 + _t * speed
+	_lead += speed * delta                              # Weg wird aufsummiert (nicht Zeit mal Tempo), sonst springt die Gruppe bei jeder Boee rueckwaerts
+	var lead_x := -4.0 + _lead
 	# Gruppe im Gaensemarsch: Anfuehrerin vorn, Abstand 1,35 Felder, leichte Schlangenlinie der Spur
 	for f in _figs:
 		var i: int = f["slot"]
