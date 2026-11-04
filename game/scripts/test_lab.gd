@@ -11,11 +11,15 @@ var foes: Array = []          # [{id, name}]
 var _hero: OptionButton
 var _foe: OptionButton
 var _maxed: CheckBox
+var secrets: Array = []       # [{id, name, heroes}]
+var _sec: OptionButton
+var _sh: Array[OptionButton] = []     # drei Helden fuer die Geheimnis-Arena (der dritte ist optional)
 
 
-func setup(hero_list: Array, foe_list: Array) -> void:
+func setup(hero_list: Array, foe_list: Array, secret_list: Array = []) -> void:
 	heroes = hero_list
 	foes = foe_list
+	secrets = secret_list
 
 
 func _ready() -> void:
@@ -44,6 +48,27 @@ func _ready() -> void:
 	_maxed.add_theme_font_size_override("font_size", 17)
 	col.add_child(_maxed)
 	col.add_child(_button("Arena starten", func() -> void: run.emit("arena", _hero_id(), _foe_id(), _maxed.button_pressed)))
+	col.add_child(_label("Geheimnisse: Heldenkombination testen", UiTheme.F_HEAD, 20, UiTheme.CREAM))
+	_sec = OptionButton.new()
+	_sec.focus_mode = Control.FOCUS_NONE
+	_sec.custom_minimum_size = Vector2(420, 34)
+	_sec.add_theme_font_size_override("font_size", 19)
+	_sec.add_item("Geheimnis wählen (setzt die Helden) …", 0)
+	for i in secrets.size():
+		_sec.add_item("%s (%s)" % [secrets[i]["name"], " + ".join(secrets[i]["heroes"].map(func(h: String) -> String: return _hero_name(h)))], i + 1)
+	_sec.item_selected.connect(_pick_secret)
+	col.add_child(_sec)
+	for k in 3:
+		var d := _drop(heroes if k < 2 else [{"id": "", "name": "– kein dritter Held –"}] + heroes)
+		_sh.append(d)
+		col.add_child(d)
+	col.add_child(_button("Geheimnis-Arena starten (Helden nebeneinander, 3 Büttel)", func() -> void:
+		var ids: Array[String] = []
+		for k in 3:
+			var id: String = (heroes if k < 2 else [{"id": ""}] + heroes)[_sh[k].selected]["id"]
+			if id != "" and not ids.has(id):
+				ids.append(id)
+		run.emit("geheimnis", ",".join(ids), "soldat_infanterie", false)))
 	col.add_child(_label("Bildschirme", UiTheme.F_HEAD, 20, UiTheme.CREAM))
 	col.add_child(_button("Aufstiegsbildschirm (Stufe 4, ein Punkt)", func() -> void: run.emit("aufstieg", _hero_id(), _foe_id(), false)))
 	col.add_child(_button("Lager (Kapitel 8, 999 Gold)", func() -> void: run.emit("lager", _hero_id(), _foe_id(), false)))
@@ -52,6 +77,24 @@ func _ready() -> void:
 	col.add_child(_button("Zurück", func() -> void:
 		closed.emit()
 		queue_free()))
+
+
+func _hero_name(id: String) -> String:
+	for h: Dictionary in heroes:
+		if h["id"] == id:
+			return h["name"]
+	return id
+
+
+func _pick_secret(i: int) -> void:
+	if i <= 0:
+		return
+	var hs: Array = secrets[i - 1]["heroes"]
+	for k in 2:
+		for j in heroes.size():
+			if heroes[j]["id"] == hs[k]:
+				_sh[k].select(j)
+	_sh[2].select(0)
 
 
 func _hero_id() -> String:

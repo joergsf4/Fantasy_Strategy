@@ -169,6 +169,11 @@ func _choose_level() -> Array:
 	for hid: String in units:
 		if units[hid].get("hero", false):
 			ls.lab_heroes.append({"id": hid, "name": units[hid]["name"]})
+	for sec: Dictionary in Secrets.all():
+		var t: Dictionary = sec["trigger"]
+		var other: String = str(t.get("target", t.get("via", t.get("near", t.get("owner", "")))))
+		if units.has(other) and units.has(t["by"]):
+			ls.lab_secrets.append({"id": sec["id"], "name": sec["name"], "heroes": [t["by"], other]})
 	ls.lab_foes = [{"id": "soldat_infanterie", "name": "3 Büttel"}]
 	for fid in ["wolf", "alphawolf", "wart", "cyborg_wart", "kugelblitz", "fuerst", "oskar", "maja", "xiulan", "frischlinge", "bienenmaedchen", "panzer"]:
 		if units.has(fid):
@@ -187,6 +192,10 @@ func _choose_level() -> Array:
 
 ## Testlabor: springt direkt zu einer Stelle (Arena mit gewaehltem Helden und Gegner, Aufstiegs-, Lager-, Belohnungs- oder Reisebild).
 func _lab_run(kind: String, hero: String, foe: String, maxed: bool) -> void:
+	var hero_ids: Array = hero.split(",", false)
+	if kind == "geheimnis":
+		await _lab_secret_arena(hero_ids)
+		return
 	var lab_party := Party.new_game()
 	lab_party.earned = 21 if maxed else 3                 # Stufe 22 (7 Punkte) bzw. Stufe 4
 	lab_party.gold = 999
@@ -255,6 +264,34 @@ func _lab_run(kind: String, hero: String, foe: String, maxed: bool) -> void:
 		"reise":
 			await _play_interlude(Mission.load_mission("ch10").get("interlude", {}))
 			await _cover_out(0.4)
+
+
+## Geheimnis-Arena: die gewaehlten Helden stehen nebeneinander, drei Buettel in Reichweite. Geheimnisse laufen wie im Kampf (Szene beim ersten Mal).
+func _lab_secret_arena(ids: Array) -> void:
+	if ids.is_empty():
+		return
+	var lab_party := Party.new_game()
+	lab_party.gold = 999
+	var m := Mission.load_mission("ch1")
+	var spots := [[3, 7], [3, 8], [4, 7]]
+	var pl: Array = []
+	for i in ids.size():
+		pl.append({"id": ids[i], "pos": spots[i]})
+	m["players"] = pl
+	m["enemies"] = [{"id": "soldat_infanterie", "pos": [7, 6]}, {"id": "soldat_infanterie", "pos": [7, 8]}, {"id": "soldat_infanterie", "pos": [8, 7]}]
+	m["triggers"] = []
+	m["goals"] = [{"type": "rout"}]
+	stage.map_data = m
+	stage.party = lab_party
+	stage.new_battle()
+	_play_music(BATTLE_MUSIC, 1.0)
+	await stage.start_battle()
+	await stage.battle.finished
+	_fade_music(1.0)
+	stage.party = party
+	stage.map_data = Mission.load_mission("ch1")
+	stage.new_battle()
+	stage.set_mode("dialog")
 
 
 ## Mission laden und die vom Spieler gewaehlte Gruppe einsetzen (Plaetze der Karte bleiben, nur die Helden wechseln).

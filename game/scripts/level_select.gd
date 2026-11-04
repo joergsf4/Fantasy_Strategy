@@ -8,6 +8,7 @@ signal new_game_requested
 var lab_runner := Callable()      # Main: func(kind, hero, foe, maxed) -> Coroutine (Testlabor)
 var lab_heroes: Array = []
 var lab_foes: Array = []
+var lab_secrets: Array = []      # [{id, name, heroes: [id, id]}]
 
 var chapters: Array = []     # [{id, title}]
 var save_info := ""
@@ -63,7 +64,7 @@ func refresh_info() -> void:
 
 func _open_test_lab() -> void:
 	var tl := TestLab.new()
-	tl.setup(lab_heroes, lab_foes)
+	tl.setup(lab_heroes, lab_foes, lab_secrets)
 	tl.run.connect(func(kind: String, hero: String, foe: String, maxed: bool) -> void:
 		visible = false
 		await lab_runner.call(kind, hero, foe, maxed)

@@ -75,3 +75,6 @@ Geheimnisse fließen **nicht** in Balancing, Simulator oder Gegnerwerte ein: Man
 - Code: `Battle._run_boost`, `FxNew.fuel`. Tests: `tests/test_reflect.gd`, `test_geheimnis_verstaerkung_in_der_naehe`.
 
 **Schmiermittel** (Dr. Humbug und Robina), gleiche Wirkungsart: Setzt Humbug seine **Wundersalbe** ein, während Robina auf einem Nachbarfeld steht, erkennt sie ein ausgezeichnetes Schmiermittel: **4 Runden +1 Bewegung** (Status `geschmiert`, Tropfen-Symbol). Die Salbe heilt wie sonst. `effects.boost` kennt dafür `move` (neben `atk_pct`), optional `popup`.
+
+## Testlabor: Heldenkombination testen
+Im Testlabor (Kapitelmenü, „brumm“) gibt es den Abschnitt **Geheimnisse**: Ein Geheimnis in der Liste setzt die beiden Helden, oder man wählt drei Helden frei (der dritte ist optional). **Geheimnis-Arena** startet einen Kampf, in dem die Helden nebeneinander stehen und drei Büttel in Reichweite warten. Geheimnisse laufen wie im Spiel (Szene und Polarlicht beim ersten Mal). So lassen sich auch Paare ausprobieren, für die es noch kein Geheimnis gibt. Test: `tests/test_lab.gd`; Screenshot: `SHOT=lab SHOT_PART=geheimnis SHOT_CH=quacksalber,panzer`.
