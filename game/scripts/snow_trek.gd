@@ -72,7 +72,7 @@ func _ready() -> void:
 
 # ------------------------------------------------------------------ Aufbau
 
-## Sturmgeheul (synthetisch erzeugt, `game/assets/audio/wind_sturm.wav`): blendet ein, schwillt mit den Boeen an, blendet am Ende aus.
+## Windrauschen (synthetisch erzeugt, `game/assets/audio/wind_sturm.wav`): blendet ein, schwillt mit den Boeen an, blendet am Ende aus.
 func _start_wind() -> void:
 	var st: AudioStreamWAV = load("res://assets/audio/wind_sturm.wav")
 	st.loop_mode = AudioStreamWAV.LOOP_FORWARD
