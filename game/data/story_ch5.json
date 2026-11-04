@@ -1,29 +1,41 @@
 {
  "intro": [
   {
-   "left": "maedchen_baer",
-   "right": "wendy",
-   "speaker": "wendy",
-   "text": "Mäh, hört ihr das Summen? Das kommt vom Waisenhaus hinter dem Hügel.",
-   "story": true
+   "left": "",
+   "right": "maedchen_baer",
+   "speaker": "maedchen_baer",
+   "text": "Hört ihr das Summen? Das kommt vom Waisenhaus hinter dem Hügel.",
+   "story": true,
+   "voices": [
+    {
+     "id": "wendy",
+     "text": "Mäh, hört ihr das Summen? Das kommt vom Waisenhaus hinter dem Hügel."
+    }
+   ]
   },
   {
    "left": "maedchen_baer",
-   "right": "wendy",
+   "right": "",
    "speaker": "maedchen_baer",
    "text": "Und ich kenne dieses Summen. Stachelia.",
    "story": true
   },
   {
-   "left": "ritter",
-   "right": "wendy",
-   "speaker": "ritter",
-   "text": "Ein Waisenhaus im Namen zu bedrohen. Das ist selbst für dieses Gesindel nicht zu glauben.",
-   "left_expr": "wuetend",
-   "story": true
+   "left": "maedchen_baer",
+   "right": "",
+   "speaker": "maedchen_baer",
+   "text": "Ein Waisenhaus zu bedrohen. Das ist selbst für dieses Gesindel nicht zu glauben.",
+   "story": true,
+   "voices": [
+    {
+     "id": "ritter",
+     "text": "Ein Waisenhaus im Namen zu bedrohen. Das ist selbst für dieses Gesindel nicht zu glauben.",
+     "expr": "wuetend"
+    }
+   ]
   },
   {
-   "left": "ritter",
+   "left": "",
    "right": "waisenkinder",
    "speaker": "waisenkinder",
    "text": "Hilfe! Die Bienen sind überall! Bitte helft uns!",

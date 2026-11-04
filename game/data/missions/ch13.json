@@ -114,11 +114,17 @@
      "dialogue": [
       {
        "left": "hund",
-       "right": "kugelblitz",
-       "speaker": "kugelblitz",
-       "text": "Die Schweinchen schwächeln! Zeit für Plan B. Behälter Sieben, öffnen!",
-       "right_expr": "lachend",
-       "story": true
+       "right": "maedchen_baer",
+       "speaker": "maedchen_baer",
+       "text": "Das ist… Wart. Aber das Ding ist halb Maschine.",
+       "story": true,
+       "voices": [
+        {
+         "id": "kugelblitz",
+         "text": "Die Schweinchen schwächeln! Zeit für Plan B. Behälter Sieben, öffnen!",
+         "expr": "lachend"
+        }
+       ]
       },
       {
        "left": "hund",
@@ -151,11 +157,17 @@
     {
      "dialogue": [
       {
-       "left": "robo",
+       "left": "maedchen_baer",
        "right": "cyborg_wart",
-       "speaker": "robo",
-       "text": "Scan: kybernetischer Organismus. Wutlevel kritisch. Identifikation: ...Wart.",
-       "story": true
+       "speaker": "maedchen_baer",
+       "text": "Das ist… Wart. Aber das Ding ist halb Maschine.",
+       "story": true,
+       "voices": [
+        {
+         "id": "robo",
+         "text": "Scan: kybernetischer Organismus. Wutlevel kritisch. Identifikation: ...Wart."
+        }
+       ]
       },
       {
        "left": "hund",

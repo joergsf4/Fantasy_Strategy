@@ -2,25 +2,37 @@
  "intro": [
   {
    "left": "hund",
-   "right": "robo",
+   "right": "",
    "speaker": "hund",
    "text": "Die Spuren führen hierher. Metallspuren, Brandflecken und ein seltsames Summen.",
    "story": true
   },
   {
    "left": "hund",
-   "right": "robo",
-   "speaker": "robo",
-   "text": "Meine Sensoren messen eine große Energiequelle im Zentrum. Und kleine Lebenszeichen, ganz nah daran.",
+   "right": "maedchen_baer",
+   "speaker": "maedchen_baer",
+   "text": "Im Zentrum surrt etwas Großes. Und ganz nah daran… hört ihr das? Kinder.",
    "left_expr": "wuetend",
-   "story": true
+   "story": true,
+   "voices": [
+    {
+     "id": "robo",
+     "text": "Meine Sensoren messen eine große Energiequelle im Zentrum. Und kleine Lebenszeichen, ganz nah daran."
+    }
+   ]
   },
   {
-   "left": "elisabeth",
-   "right": "robo",
-   "speaker": "elisabeth",
+   "left": "maedchen_baer",
+   "right": "",
+   "speaker": "maedchen_baer",
    "text": "Dann sind die Kinder dort. Los, ehe die Maschine sie aufbraucht!",
-   "story": true
+   "story": true,
+   "voices": [
+    {
+     "id": "elisabeth",
+     "text": "Dann sind die Kinder dort. Los, ehe die Maschine sie aufbraucht!"
+    }
+   ]
   }
  ],
  "outro": [

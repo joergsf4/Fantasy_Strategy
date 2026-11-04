@@ -50,7 +50,7 @@ func _initialize() -> void:
 	check(hero["hp"] == 19 and not Status.has(hero, "poison") and Status.has(hero, "tired"), "Wundersalbe heilt 14, entgiftet, macht erschoepft")
 	# Gruppe: Sprecher fest, einer tauschbar, Heiler waehlbar ab Kapitel 7
 	var fixed := Mission.dialogue_ids("ch7")
-	check(fixed.has("magical_girl") and fixed.has("quacksalber") and not fixed.has("ritter"), "Heiler sprechen, Albrecht ist tauschbar: %s" % [fixed])
+	check(fixed.has("magical_girl") and not fixed.has("quacksalber") and not fixed.has("ritter"), "Lumi ist fest (Beitritt), Dr. Humbug und Albrecht sind tauschbar: %s" % [fixed])
 	check(Party.roster(defs, 6).find("magical_girl") < 0 and Party.roster(defs, 7).has("magical_girl"), "neue Heiler ab Kapitel 7 waehlbar")
 	# Simulator
 	var sb := SimSetup.build({"map": "ch7", "players": [], "enemies": []}, 3)

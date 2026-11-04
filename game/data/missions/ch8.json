@@ -142,14 +142,20 @@
        "story": true
       },
       {
-       "left": "ritter",
+       "left": "maedchen_baer",
        "right": "robo",
-       "speaker": "ritter",
-       "text": "Ihre Panzerung hält jeden Angriff aus. Das ist keine Mission für Schwerter.",
-       "story": true
+       "speaker": "maedchen_baer",
+       "text": "Ihre Panzerung hält jeden Angriff aus. Hier helfen keine Schwerter.",
+       "story": true,
+       "voices": [
+        {
+         "id": "ritter",
+         "text": "Ihre Panzerung hält jeden Angriff aus. Das ist keine Mission für Schwerter."
+        }
+       ]
       },
       {
-       "left": "ritter",
+       "left": "",
        "right": "robo",
        "speaker": "robo",
        "text": "Sie ist stur, aber nicht böse. Bleibt drei Runden in Folge bei ihr, dann öffne ich den Zugang und übernehme die Steuerung.",

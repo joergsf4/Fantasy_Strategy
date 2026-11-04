@@ -2,14 +2,14 @@
  "intro": [
   {
    "left": "maedchen_baer",
-   "right": "wendy",
+   "right": "",
    "speaker": "maedchen_baer",
    "text": "Der Sumpf liegt hinter uns, vor uns beginnt das Gebirge. Hier oben liegt Schnee, so weit man sehen kann.",
    "story": true
   },
   {
    "left": "bienenmaedchen",
-   "right": "wendy",
+   "right": "",
    "speaker": "bienenmaedchen",
    "text": "Es ist eiskalt. Meine Flügel sind steif, meine Fühler gefroren. Wer hatte die Idee, in die Berge zu gehen?",
    "left_expr": "wuetend",
@@ -17,29 +17,41 @@
   },
   {
    "left": "hund",
-   "right": "wendy",
+   "right": "",
    "speaker": "hund",
    "text": "Der Meister versteckt sich im Norden, Stachelia. Das war der Plan, und du warst dabei.",
    "story": true
   },
   {
-   "left": "wendy",
-   "right": "maedchen_baer",
-   "speaker": "wendy",
-   "text": "Keine Sorge, ich habe vorgesorgt! Für jeden ein dicker Mantel, Mütze und Handschuhe. Ich habe einfach alles gestrickt, was ich hatte.",
-   "left_expr": "lachend",
-   "story": true
+   "left": "maedchen_baer",
+   "right": "",
+   "speaker": "maedchen_baer",
+   "text": "Keine Sorge, ich habe vorgesorgt! Für jeden ein dicker Mantel, Mütze und Handschuhe. Aus dem Waisenhaus geborgt.",
+   "story": true,
+   "voices": [
+    {
+     "id": "wendy",
+     "text": "Keine Sorge, ich habe vorgesorgt! Für jeden ein dicker Mantel, Mütze und Handschuhe. Ich habe einfach alles gestrickt, was ich hatte.",
+     "expr": "lachend"
+    }
+   ]
   },
   {
-   "left": "wendy",
+   "left": "maedchen_baer",
    "right": "bienenmaedchen",
-   "speaker": "wendy",
+   "speaker": "maedchen_baer",
    "text": "Für dich gibt es auch einen Pullover, Stachelia. Mit Flügellöchern!",
-   "left_expr": "lachend",
-   "story": true
+   "story": true,
+   "voices": [
+    {
+     "id": "wendy",
+     "text": "Für dich gibt es auch einen Pullover, Stachelia. Mit Flügellöchern!",
+     "expr": "lachend"
+    }
+   ]
   },
   {
-   "left": "wendy",
+   "left": "",
    "right": "bienenmaedchen",
    "speaker": "bienenmaedchen",
    "text": "Ich trage keine Wolle. ...Doch. Gib her. Aber nur, weil mir kalt ist.",
@@ -48,7 +60,7 @@
   },
   {
    "left": "maedchen_baer",
-   "right": "wendy",
+   "right": "",
    "speaker": "maedchen_baer",
    "text": "Nach einem langen, beschwerlichen Aufstieg bricht die Nacht herein. Der Mond steht hell über dem Schnee.",
    "story": true
@@ -65,18 +77,24 @@
  "outro": [
   {
    "left": "maedchen_baer",
-   "right": "wendy",
+   "right": "",
    "speaker": "maedchen_baer",
    "text": "Die Nacht ist überstanden. Weiter über den Pass, der Meister ist nicht mehr weit.",
    "story": true
   },
   {
-   "left": "wendy",
+   "left": "hund",
    "right": "maedchen_baer",
-   "speaker": "wendy",
-   "text": "Gut, dass ich genug Wolle hatte.",
-   "left_expr": "lachend",
-   "story": true
+   "speaker": "hund",
+   "text": "Gut, dass wir die Mäntel hatten.",
+   "story": true,
+   "voices": [
+    {
+     "id": "wendy",
+     "text": "Gut, dass ich genug Wolle hatte.",
+     "expr": "lachend"
+    }
+   ]
   }
  ]
 }

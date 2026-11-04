@@ -15,7 +15,7 @@ func _initialize() -> void:
 	var defs: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/units.json"))
 	var m := Mission.load_mission("ch5")
 	var fixed := Mission.dialogue_ids("ch5")
-	check(fixed.has("maedchen_baer") and fixed.has("wendy") and fixed.has("ritter") and not fixed.has("$hero"), "Sprecher der Mission sind fest: %s" % [fixed])
+	check(fixed.has("maedchen_baer") and not fixed.has("wendy") and not fixed.has("ritter") and not fixed.has("$hero"), "nur Mira ist fest (Stimmen fuer den Rest): %s" % [fixed])
 	var party := Party.new_game()
 	var base: Array = (m["players"] as Array).map(func(e: Dictionary) -> String: return e["id"])
 	check(party.squad_for(m) == base, "ohne Auswahl gilt die Vorgabe der Karte")
@@ -28,7 +28,7 @@ func _initialize() -> void:
 	var old: String = base[free_i]
 	party.equipment[old] = ["eisenschwert"]
 	var f6 := Mission.dialogue_ids("ch6")
-	check(f6.has("hund") and f6.has("elisabeth") and not f6.has("ritter") and not f6.has("robo"), "nur Story-Gespraeche legen fest, Fluff nicht: %s" % [f6])
+	check(f6.has("hund") and f6.has("maedchen_baer") and not f6.has("elisabeth") and not f6.has("ritter") and not f6.has("robo"), "nur Story-Gespraeche legen fest, Fluff nicht: %s" % [f6])
 	var f3 := Mission.dialogue_ids("ch3")
 	check(f3.has("maedchen_baer") and f3.has("quacksalber") and not f3.has("wendy") and not f3.has("braumeisterin") and not f3.has("ritter"), "Kapitel 3: nur Mira und Dr. Humbug fest: %s" % [f3])
 	var vl := Mission.voiced([{"left": "maedchen_baer", "right": "", "speaker": "maedchen_baer", "text": "Mira", "voices": [{"id": "wendy", "text": "Wendy", "expr": "lachend"}, {"id": "ritter", "text": "Ritter"}]}], ["maedchen_baer", "ritter", "wendy"])

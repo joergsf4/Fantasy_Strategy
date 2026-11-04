@@ -1,15 +1,21 @@
 {
  "intro": [
   {
-   "left": "ritter",
+   "left": "maedchen_baer",
    "right": "hund",
-   "speaker": "ritter",
+   "speaker": "maedchen_baer",
    "text": "Der Weg nach Westen führt über diesen Fluss. Lotte sagte, die Kinder seien in den Wald gebracht worden.",
-   "story": true
+   "story": true,
+   "voices": [
+    {
+     "id": "ritter",
+     "text": "Der Weg nach Westen führt über diesen Fluss. Lotte sagte, die Kinder seien in den Wald gebracht worden."
+    }
+   ]
   },
   {
    "left": "hund",
-   "right": "ritter",
+   "right": "",
    "speaker": "hund",
    "text": "Dann los! Jede Stunde zählt.",
    "left_expr": "wuetend",
@@ -17,13 +23,19 @@
   },
   {
    "left": "hund",
-   "right": "elisabeth",
-   "speaker": "elisabeth",
+   "right": "maedchen_baer",
+   "speaker": "maedchen_baer",
    "text": "Die Zugbrücke ist hochgezogen. Und drüben stehen Schweine, die sehr zufrieden aussehen.",
-   "story": true
+   "story": true,
+   "voices": [
+    {
+     "id": "elisabeth",
+     "text": "Die Zugbrücke ist hochgezogen. Und drüben stehen Schweine, die sehr zufrieden aussehen."
+    }
+   ]
   },
   {
-   "left": "ritter",
+   "left": "",
    "right": "frischlinge",
    "speaker": "frischlinge",
    "text": "Hehehe! Wir haben die Zugbrücke hochgezogen! Ihr kommt nicht rüber!",
@@ -31,12 +43,18 @@
    "story": true
   },
   {
-   "left": "ritter",
+   "left": "maedchen_baer",
    "right": "frischlinge",
-   "speaker": "ritter",
+   "speaker": "maedchen_baer",
    "text": "Ihr kleinen Plagegeister. Zieht die Brücke sofort wieder herunter!",
-   "left_expr": "wuetend",
-   "story": true
+   "story": true,
+   "voices": [
+    {
+     "id": "ritter",
+     "text": "Ihr kleinen Plagegeister. Zieht die Brücke sofort wieder herunter!",
+     "expr": "wuetend"
+    }
+   ]
   },
   {
    "left": "hund",
@@ -50,7 +68,7 @@
  "outro": [
   {
    "left": "hund",
-   "right": "robo",
+   "right": "",
    "speaker": "hund",
    "text": "Der Weg ist frei. Weiter in den Wald, zu den Kindern!",
    "left_expr": "wuetend",
@@ -58,10 +76,16 @@
   },
   {
    "left": "hund",
-   "right": "robo",
-   "speaker": "robo",
-   "text": "Die Frischlinge sind geflohen. Auf ihrer Spur sehe ich frische Reifenspuren. Metallisch.",
-   "story": true
+   "right": "maedchen_baer",
+   "speaker": "maedchen_baer",
+   "text": "Die Frischlinge sind geflohen. Seht ihr die Reifenspuren? Metallisch.",
+   "story": true,
+   "voices": [
+    {
+     "id": "robo",
+     "text": "Die Frischlinge sind geflohen. Auf ihrer Spur sehe ich frische Reifenspuren. Metallisch."
+    }
+   ]
   }
  ]
 }

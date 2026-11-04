@@ -43,11 +43,17 @@
        "story": true
       },
       {
-       "left": "wendy",
+       "left": "hund",
        "right": "maedchen_baer",
-       "speaker": "wendy",
+       "speaker": "hund",
        "text": "Die armen Wölfe. Wenn man sie nur vertreiben könnte, ohne dass jemand verletzt wird.",
-       "story": true
+       "story": true,
+       "voices": [
+        {
+         "id": "wendy",
+         "text": "Die armen Wölfe. Wenn man sie nur vertreiben könnte, ohne dass jemand verletzt wird."
+        }
+       ]
       }
      ]
     }

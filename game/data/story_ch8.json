@@ -1,14 +1,20 @@
 {
  "intro": [
   {
-   "left": "ritter",
-   "right": "maedchen_baer",
-   "speaker": "ritter",
-   "text": "Das Innere der Insel. Mein Brustpanzer ist ein Backofen mit Wappen.",
-   "story": true
+   "left": "maedchen_baer",
+   "right": "",
+   "speaker": "maedchen_baer",
+   "text": "Das Innere der Insel. Hier ist es heiß wie in einem Backofen!",
+   "story": true,
+   "voices": [
+    {
+     "id": "ritter",
+     "text": "Das Innere der Insel. Mein Brustpanzer ist ein Backofen mit Wappen."
+    }
+   ]
   },
   {
-   "left": "ritter",
+   "left": "",
    "right": "maedchen_baer",
    "speaker": "maedchen_baer",
    "text": "Brumm hechelt seit einer Stunde. Wir brauchen Wasser, und zwar schnell.",
@@ -22,26 +28,38 @@
    "story": true
   },
   {
-   "left": "elisabeth",
-   "right": "maedchen_baer",
-   "speaker": "elisabeth",
-   "text": "Ich sehe eine Oase! Ostwärts, hinter den Dünen. Aber da stehen Feinde. Und eine kleine alte Dame, die mir leider sehr bekannt vorkommt.",
-   "left_expr": "lachend",
-   "story": true
+   "left": "maedchen_baer",
+   "right": "",
+   "speaker": "maedchen_baer",
+   "text": "Ich sehe eine Oase! Ostwärts, hinter den Dünen. Aber da stehen Feinde.",
+   "story": true,
+   "voices": [
+    {
+     "id": "elisabeth",
+     "text": "Ich sehe eine Oase! Ostwärts, hinter den Dünen. Aber da stehen Feinde. Und eine kleine alte Dame, die mir leider sehr bekannt vorkommt.",
+     "expr": "lachend"
+    }
+   ]
   },
   {
-   "left": "elisabeth",
+   "left": "",
    "right": "maedchen_baer",
    "speaker": "maedchen_baer",
    "text": "Xiùlán. Die Alte mit dem Gebiss.",
    "story": true
   },
   {
-   "left": "ritter",
-   "right": "maedchen_baer",
-   "speaker": "ritter",
-   "text": "Die Oase ist der einzige Weg weiter. Wir nehmen sie ein, bevor die Sonne uns in die Knie zwingt.",
-   "story": true
+   "left": "maedchen_baer",
+   "right": "",
+   "speaker": "maedchen_baer",
+   "text": "Die Oase ist der einzige Weg weiter. Wir nehmen sie ein, bevor uns die Sonne in die Knie zwingt.",
+   "story": true,
+   "voices": [
+    {
+     "id": "ritter",
+     "text": "Die Oase ist der einzige Weg weiter. Wir nehmen sie ein, bevor die Sonne uns in die Knie zwingt."
+    }
+   ]
   }
  ],
  "outro": [
@@ -75,22 +93,34 @@
    "story": true
   },
   {
-   "left": "ritter",
+   "left": "maedchen_baer",
    "right": "panzer",
-   "speaker": "ritter",
+   "speaker": "maedchen_baer",
    "text": "Willkommen in der Gruppe, Robina. Der Weg zum Regenten ist offen.",
-   "story": true
+   "story": true,
+   "voices": [
+    {
+     "id": "ritter",
+     "text": "Willkommen in der Gruppe, Robina. Der Weg zum Regenten ist offen."
+    }
+   ]
   },
   {
-   "left": "elisabeth",
+   "left": "maedchen_baer",
    "right": "panzer",
-   "speaker": "elisabeth",
+   "speaker": "maedchen_baer",
    "text": "Ein Panzer als große Schwester. Was für eine wilde Truppe wir doch sind.",
-   "left_expr": "lachend",
-   "story": true
+   "story": true,
+   "voices": [
+    {
+     "id": "elisabeth",
+     "text": "Ein Panzer als große Schwester. Was für eine wilde Truppe wir doch sind.",
+     "expr": "lachend"
+    }
+   ]
   },
   {
-   "left": "elisabeth",
+   "left": "",
    "right": "panzer",
    "speaker": "panzer",
    "text": "Ich fahre voran. Alle ausweichen.",

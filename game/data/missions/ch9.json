@@ -32,7 +32,7 @@
     {
      "dialogue": [
       {
-       "left": "ritter",
+       "left": "",
        "right": "wart",
        "speaker": "wart",
        "text": "Na, wen haben wir denn da? Die Helden! Diesmal bin ich nicht allein, ich hab meine Jungs mitgebracht.",
@@ -40,7 +40,7 @@
        "story": true
       },
       {
-       "left": "ritter",
+       "left": "",
        "right": "frischlinge",
        "speaker": "frischlinge",
        "text": "Papa, dürfen wir sie hauen? Dürfen wir? Bitte!",
@@ -48,15 +48,21 @@
        "story": true
       },
       {
-       "left": "ritter",
+       "left": "maedchen_baer",
        "right": "wart",
-       "speaker": "ritter",
+       "speaker": "maedchen_baer",
        "text": "Du hast deine kleinen Ferkel in eine Schlacht mitgebracht?",
-       "left_expr": "wuetend",
-       "story": true
+       "story": true,
+       "voices": [
+        {
+         "id": "ritter",
+         "text": "Du hast deine kleinen Ferkel in eine Schlacht mitgebracht?",
+         "expr": "wuetend"
+        }
+       ]
       },
       {
-       "left": "ritter",
+       "left": "",
        "right": "frischlinge",
        "speaker": "frischlinge",
        "text": "FERKEL?! Wir sind Frischlinge!",
@@ -128,7 +134,7 @@
     {
      "dialogue": [
       {
-       "left": "ritter",
+       "left": "",
        "right": "wart",
        "speaker": "wart",
        "text": "Ahh... es ist vorbei... Ich sehe das Licht... es riecht nach Trüffeln...",
@@ -136,14 +142,20 @@
        "story": true
       },
       {
-       "left": "ritter",
+       "left": "maedchen_baer",
        "right": "wart",
-       "speaker": "ritter",
+       "speaker": "maedchen_baer",
        "text": "Wart. Du hast tapfer gekämpft.",
-       "story": true
+       "story": true,
+       "voices": [
+        {
+         "id": "ritter",
+         "text": "Wart. Du hast tapfer gekämpft."
+        }
+       ]
       },
       {
-       "left": "ritter",
+       "left": "",
        "right": "wart",
        "speaker": "wart",
        "text": "Sagt meiner Rakete... dass ich sie geliebt habe. Und meinen Jungs, dass sie auch ganz okay waren...",
@@ -151,12 +163,18 @@
        "story": true
       },
       {
-       "left": "elisabeth",
+       "left": "maedchen_baer",
        "right": "wart",
-       "speaker": "elisabeth",
+       "speaker": "maedchen_baer",
        "text": "Das ist ja wie bei Shakespeare.",
-       "left_expr": "lachend",
-       "story": true
+       "story": true,
+       "voices": [
+        {
+         "id": "elisabeth",
+         "text": "Das ist ja wie bei Shakespeare.",
+         "expr": "lachend"
+        }
+       ]
       },
       {
        "left": "maedchen_baer",
@@ -184,7 +202,7 @@
     {
      "dialogue": [
       {
-       "left": "ritter",
+       "left": "",
        "right": "frischlinge",
        "speaker": "frischlinge",
        "text": "Papa!! Ihr habt unseren Vater umgehauen! Dafür zahlt ihr!",
@@ -192,7 +210,7 @@
        "story": true
       },
       {
-       "left": "ritter",
+       "left": "",
        "right": "frischlinge",
        "speaker": "frischlinge",
        "text": "Wir schwören Rache! Mit Keulen, mit Äxten, mit allem, was spitz ist!",
@@ -200,7 +218,7 @@
        "story": true
       },
       {
-       "left": "ritter",
+       "left": "",
        "right": "frischlinge",
        "speaker": "frischlinge",
        "text": "Merkt euch unsere Gesichter! ...Wir kommen wieder! WARTET NUR!",
@@ -235,7 +253,7 @@
     {
      "dialogue": [
       {
-       "left": "ritter",
+       "left": "",
        "right": "fuerst",
        "speaker": "fuerst",
        "text": "Genug, genug! Hört auf, bitte! Ich ergebe mich!",
@@ -258,14 +276,20 @@
        "story": true
       },
       {
-       "left": "robo",
+       "left": "maedchen_baer",
        "right": "fuerst",
-       "speaker": "robo",
+       "speaker": "maedchen_baer",
        "text": "Ein Strohmann? Wessen?",
-       "story": true
+       "story": true,
+       "voices": [
+        {
+         "id": "robo",
+         "text": "Ein Strohmann? Wessen?"
+        }
+       ]
       },
       {
-       "left": "robo",
+       "left": "",
        "right": "fuerst",
        "speaker": "fuerst",
        "text": "Das weiß ich nicht! Ich kenne nur die Briefe mit Anweisungen. Und wer nicht gehorcht... *schnief*",
@@ -273,14 +297,20 @@
        "story": true
       },
       {
-       "left": "elisabeth",
+       "left": "maedchen_baer",
        "right": "fuerst",
-       "speaker": "elisabeth",
+       "speaker": "maedchen_baer",
        "text": "Also gibt es noch jemanden, der größer ist als du?",
-       "story": true
+       "story": true,
+       "voices": [
+        {
+         "id": "elisabeth",
+         "text": "Also gibt es noch jemanden, der größer ist als du?"
+        }
+       ]
       },
       {
-       "left": "elisabeth",
+       "left": "",
        "right": "fuerst",
        "speaker": "fuerst",
        "text": "Viel größer. Bitte lasst mich gehen, ich will heim zu meiner Mama!",

@@ -1,18 +1,30 @@
 {
  "intro": [
   {
-   "left": "elisabeth",
-   "right": "robo",
-   "speaker": "elisabeth",
+   "left": "maedchen_baer",
+   "right": "",
+   "speaker": "maedchen_baer",
    "text": "Die Barrikaden am Kai sind weg, und in den Häusern brennt Licht. Alles wirkt so normal.",
-   "story": true
+   "story": true,
+   "voices": [
+    {
+     "id": "elisabeth",
+     "text": "Die Barrikaden am Kai sind weg, und in den Häusern brennt Licht. Alles wirkt so normal."
+    }
+   ]
   },
   {
-   "left": "elisabeth",
-   "right": "robo",
-   "speaker": "robo",
-   "text": "Regen bekommt meinen Servos gar nicht.",
-   "story": true
+   "left": "",
+   "right": "hund",
+   "speaker": "hund",
+   "text": "Der Regen geht mir durch Fell und Knochen.",
+   "story": true,
+   "voices": [
+    {
+     "id": "robo",
+     "text": "Regen bekommt meinen Servos gar nicht."
+    }
+   ]
   },
   {
    "left": "hund",

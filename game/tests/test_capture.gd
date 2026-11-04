@@ -18,7 +18,7 @@ func _initialize() -> void:
 	var m := Mission.load_mission("ch8")
 	check(m["goals"][0]["type"] == "capture" and m["title"] != "", "Kapitel 8 laedt mit Uebernahme-Ziel")
 	var fixed := Mission.dialogue_ids("ch8")
-	check(fixed.has("robo") and fixed.has("panzer") and fixed.has("elisabeth") and fixed.has("ritter"), "Sprecher: %s" % [fixed])
+	check(fixed.has("robo") and fixed.has("panzer") and not fixed.has("elisabeth") and not fixed.has("ritter"), "Robo (Schwester Robina) fest, Rest per Stimmen: %s" % [fixed])
 	check(not fixed.has("wendy") and not fixed.has("quacksalber"), "Wendy und Dr. Humbug sind nicht festgelegt (Gruppenwahl)")
 	b = Battle.new()
 	b.setup(m, defs)

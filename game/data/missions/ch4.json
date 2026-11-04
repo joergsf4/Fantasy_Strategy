@@ -97,14 +97,20 @@
     {
      "dialogue": [
       {
-       "left": "kungfu",
+       "left": "maedchen_baer",
        "right": "xiulan",
-       "speaker": "kungfu",
-       "text": "Eine alte Dame am Teehaus. Ich verbeuge mich, Großmutter.",
-       "story": true
+       "speaker": "maedchen_baer",
+       "text": "Eine alte Dame am Teehaus. Ich grüße Sie, Großmutter.",
+       "story": true,
+       "voices": [
+        {
+         "id": "kungfu",
+         "text": "Eine alte Dame am Teehaus. Ich verbeuge mich, Großmutter."
+        }
+       ]
       },
       {
-       "left": "kungfu",
+       "left": "",
        "right": "xiulan",
        "speaker": "xiulan",
        "text": "Verbeug dich ruhig, Jungchen. Dann hast du die Nase auf Höhe meines Knies.",
@@ -112,11 +118,17 @@
        "story": true
       },
       {
-       "left": "kungfu",
+       "left": "maedchen_baer",
        "right": "xiulan",
-       "speaker": "kungfu",
+       "speaker": "maedchen_baer",
        "text": "Du bist eine bösartige Hexe!",
-       "story": true
+       "story": true,
+       "voices": [
+        {
+         "id": "kungfu",
+         "text": "Du bist eine bösartige Hexe!"
+        }
+       ]
       }
      ]
     }
@@ -171,7 +183,7 @@
     {
      "dialogue": [
       {
-       "left": "kungfu",
+       "left": "",
        "right": "xiulan",
        "speaker": "xiulan",
        "text": "Moment mal. Diese Frau ist ja gefesselt! Mit Baby! Das war nicht ausgemacht.",
@@ -179,14 +191,20 @@
        "story": true
       },
       {
-       "left": "kungfu",
+       "left": "maedchen_baer",
        "right": "xiulan",
-       "speaker": "kungfu",
+       "speaker": "maedchen_baer",
        "text": "Der Regent hat sie als Geisel genommen. Du bist seine Wache.",
-       "story": true
+       "story": true,
+       "voices": [
+        {
+         "id": "kungfu",
+         "text": "Der Regent hat sie als Geisel genommen. Du bist seine Wache."
+        }
+       ]
       },
       {
-       "left": "kungfu",
+       "left": "",
        "right": "xiulan",
        "speaker": "xiulan",
        "text": "Ich sollte nur auf die Kleine aufpassen! Für Geld, ja, aber nicht dafür. Der Auftrag ist beendet.",
@@ -194,7 +212,7 @@
        "story": true
       },
       {
-       "left": "kungfu",
+       "left": "",
        "right": "xiulan",
        "speaker": "xiulan",
        "text": "Befreit sie, Jungchen. Wir sehen uns wieder, und dann zahlt mir jemand die Zahnarztrechnung.",
@@ -218,7 +236,7 @@
     {
      "dialogue": [
       {
-       "left": "wendy",
+       "left": "",
        "right": "mutter",
        "speaker": "mutter",
        "text": "Danke, danke! Mein Kleiner ist unversehrt. Sie wollten uns zum Regenten bringen.",
@@ -226,15 +244,21 @@
        "story": true
       },
       {
-       "left": "wendy",
+       "left": "maedchen_baer",
        "right": "mutter",
-       "speaker": "wendy",
-       "text": "Mäh, der Kleine hat ja eine Stimme. Die haben sie bis zum Tal gehört.",
-       "left_expr": "lachend",
-       "story": true
+       "speaker": "maedchen_baer",
+       "text": "Der Kleine hat ja eine Stimme. Die haben sie bis zum Tal gehört.",
+       "story": true,
+       "voices": [
+        {
+         "id": "wendy",
+         "text": "Mäh, der Kleine hat ja eine Stimme. Die haben sie bis zum Tal gehört.",
+         "expr": "lachend"
+        }
+       ]
       },
       {
-       "left": "wendy",
+       "left": "",
        "right": "mutter",
        "speaker": "mutter",
        "text": "Er hat Hunger und schlechte Laune. Wie sein Vater. Lauft, ich bringe ihn in Sicherheit.",

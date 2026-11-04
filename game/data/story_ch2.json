@@ -26,15 +26,21 @@
  ],
  "outro": [
   {
-   "left": "maedchen_baer",
-   "right": "kungfu",
-   "speaker": "kungfu",
+   "left": "",
+   "right": "maedchen_baer",
+   "speaker": "maedchen_baer",
    "text": "Der Hohlweg ist frei. Dahinter liegt die Brücke, und die ist, hört man, nicht mehr ganz.",
-   "story": true
+   "story": true,
+   "voices": [
+    {
+     "id": "kungfu",
+     "text": "Der Hohlweg ist frei. Dahinter liegt die Brücke, und die ist, hört man, nicht mehr ganz."
+    }
+   ]
   },
   {
    "left": "maedchen_baer",
-   "right": "kungfu",
+   "right": "",
    "speaker": "maedchen_baer",
    "left_expr": "lachend",
    "text": "Dann springen wir eben. Brumm, ich glaube, du wirst nass.",

@@ -1,15 +1,21 @@
 {
  "intro": [
   {
-   "left": "maedchen_baer",
-   "right": "ritter",
-   "speaker": "ritter",
-   "text": "Fahnen und Hufschläge im Tal… Das sind die Büttel des Regenten, und sie halten auf Eichenfurt zu! Kind, lauf zurück und warne die anderen.",
-   "story": true
+   "left": "",
+   "right": "maedchen_baer",
+   "speaker": "maedchen_baer",
+   "text": "Fahnen und Hufschläge im Tal… Das sind die Büttel des Regenten! Sie halten auf Eichenfurt zu. Wir müssen etwas tun!",
+   "story": true,
+   "voices": [
+    {
+     "id": "ritter",
+     "text": "Fahnen und Hufschläge im Tal… Das sind die Büttel des Regenten, und sie halten auf Eichenfurt zu! Kind, lauf zurück und warne die anderen."
+    }
+   ]
   },
   {
    "left": "maedchen_baer",
-   "right": "ritter",
+   "right": "",
    "speaker": "maedchen_baer",
    "text": "Ich laufe nicht weg. Brumm und ich kommen mit. Stimmt's, Brumm?",
    "left_expr": "wuetend",
@@ -38,12 +44,18 @@
    "story": true
   },
   {
-   "left": "maedchen_baer",
-   "right": "ritter",
-   "speaker": "ritter",
-   "text": "Der Bär nickt tatsächlich. Na gut. Aber du bleibst hinter mir.",
-   "right_expr": "lachend",
-   "story": true
+   "left": "",
+   "right": "maedchen_baer",
+   "speaker": "maedchen_baer",
+   "text": "Brumm nickt. Wir bleiben beieinander, dann passiert uns nichts.",
+   "story": true,
+   "voices": [
+    {
+     "id": "ritter",
+     "text": "Der Bär nickt tatsächlich. Na gut. Aber du bleibst hinter mir.",
+     "expr": "lachend"
+    }
+   ]
   },
   {
    "left": "maedchen_baer",
@@ -64,30 +76,42 @@
  ],
  "outro": [
   {
-   "left": "maedchen_baer",
-   "right": "wendy",
-   "speaker": "wendy",
-   "text": "Mäh… geschafft. Seid ihr verletzt? Ich habe Kräutertee dabei.",
-   "right_expr": "lachend",
-   "story": true
+   "left": "",
+   "right": "maedchen_baer",
+   "speaker": "maedchen_baer",
+   "text": "Geschafft! Ist jemand verletzt?",
+   "story": true,
+   "voices": [
+    {
+     "id": "wendy",
+     "text": "Mäh… geschafft. Seid ihr verletzt? Ich habe Kräutertee dabei.",
+     "expr": "lachend"
+    }
+   ]
   },
   {
    "left": "maedchen_baer",
-   "right": "wendy",
+   "right": "",
    "speaker": "maedchen_baer",
    "text": "Nur Brumms Stolz. Er hat eine Biene gefressen und es bereut.",
    "left_expr": "lachend",
    "story": true
   },
   {
-   "left": "ritter",
-   "right": "wendy",
-   "speaker": "ritter",
+   "left": "maedchen_baer",
+   "right": "",
+   "speaker": "maedchen_baer",
    "text": "Das war nur ein Vorposten. Der Regent im Süden steckt dahinter. Wir brechen auf.",
-   "story": true
+   "story": true,
+   "voices": [
+    {
+     "id": "ritter",
+     "text": "Das war nur ein Vorposten. Der Regent im Süden steckt dahinter. Wir brechen auf."
+    }
+   ]
   },
   {
-   "left": "ritter",
+   "left": "",
    "right": "haendler",
    "speaker": "haendler",
    "text": "Wartet! Nicht schießen, nicht stechen, nicht zuknoten! Ich bin Sack. Händler.",
@@ -95,28 +119,40 @@
    "story": true
   },
   {
-   "left": "ritter",
+   "left": "maedchen_baer",
    "right": "haendler",
-   "speaker": "ritter",
-   "text": "Ein sprechender Wollsack. In vierzig Jahren habe ich viel gesehen, aber das hier fehlte mir noch.",
-   "story": true
+   "speaker": "maedchen_baer",
+   "text": "Ein sprechender Wollsack. Brumm findet dich jetzt schon verdächtig.",
+   "story": true,
+   "voices": [
+    {
+     "id": "ritter",
+     "text": "Ein sprechender Wollsack. In vierzig Jahren habe ich viel gesehen, aber das hier fehlte mir noch."
+    }
+   ]
   },
   {
-   "left": "ritter",
+   "left": "",
    "right": "haendler",
    "speaker": "haendler",
    "text": "Das höre ich oft. Fragt nicht, wie ich lebendig wurde. Ich lag in einer Scheune in Eichenfurt, voll Schafswolle, und eines Morgens hatte ich Augen. Seitdem bin ich neugierig und pleite.",
    "story": true
   },
   {
-   "left": "ritter",
+   "left": "maedchen_baer",
    "right": "haendler",
-   "speaker": "ritter",
-   "text": "Und was wollt Ihr von uns?",
-   "story": true
+   "speaker": "maedchen_baer",
+   "text": "Und was willst du von uns?",
+   "story": true,
+   "voices": [
+    {
+     "id": "ritter",
+     "text": "Und was wollt Ihr von uns?"
+    }
+   ]
   },
   {
-   "left": "ritter",
+   "left": "",
    "right": "haendler",
    "speaker": "haendler",
    "text": "Verkaufen! Ihr kämpft, ihr werdet verletzt, ihr verliert Schwerter. Ich habe Heiltränke, Gegengift und Rüstung, und alles passt in mich hinein.",
@@ -154,14 +190,20 @@
    "story": true
   },
   {
-   "left": "ritter",
+   "left": "maedchen_baer",
    "right": "haendler",
-   "speaker": "ritter",
-   "text": "Meinetwegen. Aber wenn der Sack stört, bleibt er im Lager.",
-   "story": true
+   "speaker": "maedchen_baer",
+   "text": "Brumm sagt: Du darfst mit. Aber wenn du störst, bleibst du im Lager.",
+   "story": true,
+   "voices": [
+    {
+     "id": "ritter",
+     "text": "Meinetwegen. Aber wenn der Sack stört, bleibt er im Lager."
+    }
+   ]
   },
   {
-   "left": "ritter",
+   "left": "",
    "right": "haendler",
    "speaker": "haendler",
    "text": "Ich bin ein Sack. Ich bleibe überall liegen.",

@@ -136,7 +136,7 @@
     {
      "dialogue": [
       {
-       "left": "elisabeth",
+       "left": "",
        "right": "wart",
        "speaker": "wart",
        "text": "Piratenmädel! Hier wartet jemand auf dich. Mit einer größeren Rakete!",
@@ -144,11 +144,17 @@
        "story": true
       },
       {
-       "left": "elisabeth",
+       "left": "maedchen_baer",
        "right": "wart",
-       "speaker": "elisabeth",
-       "text": "Dann hast du dich in der Größe vertan. Mein Schiff hat die größeren Kanonen.",
-       "story": true
+       "speaker": "maedchen_baer",
+       "text": "Dann hast du dich in der Größe vertan. Wir haben die größeren Kanonen.",
+       "story": true,
+       "voices": [
+        {
+         "id": "elisabeth",
+         "text": "Dann hast du dich in der Größe vertan. Mein Schiff hat die größeren Kanonen."
+        }
+       ]
       }
      ]
     },

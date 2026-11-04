@@ -42,7 +42,7 @@ func _initialize() -> void:
 	await process_frame
 	check(s.squad[free_i] == "robo" and party.squad_for(m5)[free_i] == "robo", "Tausch landet in der Gruppe der Mission")
 	# gesperrter Platz laesst sich auch ueber die Party nicht tauschen
-	var fixed_i := s.squad.find("ritter")
+	var fixed_i := s.squad.find("maedchen_baer")
 	check(not party.set_squad_member(m5, fixed_i, "hund"), "Story-Platz bleibt gesperrt")
 	var closed := [false]
 	s.closed.connect(func() -> void: closed[0] = true)

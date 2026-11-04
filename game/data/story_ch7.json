@@ -1,12 +1,18 @@
 {
  "intro": [
   {
-   "left": "elisabeth",
-   "right": "maedchen_baer",
-   "speaker": "elisabeth",
-   "text": "Anker werfen! Das ist der Sandhafen, Hier versteckt sich der miese Regent!",
-   "left_expr": "lachend",
-   "story": true
+   "left": "maedchen_baer",
+   "right": "",
+   "speaker": "maedchen_baer",
+   "text": "Wir sind da! Das ist der Sandhafen. Hier versteckt sich der miese Regent!",
+   "story": true,
+   "voices": [
+    {
+     "id": "elisabeth",
+     "text": "Anker werfen! Das ist der Sandhafen, Hier versteckt sich der miese Regent!",
+     "expr": "lachend"
+    }
+   ]
   },
   {
    "left": "magical_girl",
@@ -32,19 +38,31 @@
    "story": true
   },
   {
-   "left": "quacksalber",
+   "left": "maedchen_baer",
    "right": "magical_girl",
-   "speaker": "quacksalber",
-   "text": "Hallo gnädiges Fräulein! Wer heilt, sollte sich kennen: Ich mit Salbe, du mit Sternen. Meine Nebenwirkungen sind überschaubar.",
-   "story": true
+   "speaker": "maedchen_baer",
+   "text": "Hallo! Wer heilt, sollte sich kennen: Ich bin Mira, das ist Brumm, und wir geben auf euch acht.",
+   "story": true,
+   "voices": [
+    {
+     "id": "quacksalber",
+     "text": "Hallo gnädiges Fräulein! Wer heilt, sollte sich kennen: Ich mit Salbe, du mit Sternen. Meine Nebenwirkungen sind überschaubar."
+    }
+   ]
   },
   {
-   "left": "quacksalber",
-   "right": "elisabeth",
-   "speaker": "elisabeth",
-   "text": "Ich nehme trotzdem zwei Flaschen.",
-   "right_expr": "lachend",
-   "story": true
+   "left": "",
+   "right": "maedchen_baer",
+   "speaker": "maedchen_baer",
+   "text": "Das klingt gut. Jeder Heiler zählt.",
+   "story": true,
+   "voices": [
+    {
+     "id": "elisabeth",
+     "text": "Ich nehme trotzdem zwei Flaschen.",
+     "expr": "lachend"
+    }
+   ]
   },
   {
    "left": "maedchen_baer",
@@ -57,31 +75,43 @@
  ],
  "outro": [
   {
-   "left": "elisabeth",
-   "right": "maedchen_baer",
-   "speaker": "elisabeth",
+   "left": "maedchen_baer",
+   "right": "",
+   "speaker": "maedchen_baer",
    "text": "Die Zwillinge sind erledigt. Der Weg zur Insel ist frei!",
-   "left_expr": "lachend",
-   "story": true
+   "story": true,
+   "voices": [
+    {
+     "id": "elisabeth",
+     "text": "Die Zwillinge sind erledigt. Der Weg zur Insel ist frei!",
+     "expr": "lachend"
+    }
+   ]
   },
   {
    "left": "magical_girl",
-   "right": "quacksalber",
+   "right": "",
    "speaker": "magical_girl",
-   "text": "Das war aufregend! Dr. Humbug, du hast tatsächlich jemanden geheilt!",
+   "text": "Das war aufregend! Wir haben tatsächlich gewonnen, und ich habe sogar ein paar Leute geheilt!",
    "story": true
   },
   {
    "left": "magical_girl",
-   "right": "quacksalber",
-   "speaker": "quacksalber",
-   "text": "Ich heile immer. Manchmal sogar ohne Nebenwirkungen.",
-   "right_expr": "lachend",
-   "story": true
+   "right": "maedchen_baer",
+   "speaker": "maedchen_baer",
+   "text": "Ihr beide habt uns heute am Leben gehalten. Danke.",
+   "story": true,
+   "voices": [
+    {
+     "id": "quacksalber",
+     "text": "Ich heile immer. Manchmal sogar ohne Nebenwirkungen.",
+     "expr": "lachend"
+    }
+   ]
   },
   {
    "left": "maedchen_baer",
-   "right": "elisabeth",
+   "right": "",
    "speaker": "maedchen_baer",
    "text": "Dann nichts wie weiter. Wir müssen den Unterschlupf des Regenten finden!",
    "story": true

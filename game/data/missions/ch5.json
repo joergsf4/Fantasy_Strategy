@@ -45,11 +45,17 @@
        "story": true
       },
       {
-       "left": "wendy",
+       "left": "maedchen_baer",
        "right": "waisenkinder",
-       "speaker": "wendy",
-       "text": "Mäh, die hängt ja hoch. Einer von uns muss sie läuten.",
-       "story": true
+       "speaker": "maedchen_baer",
+       "text": "Die Glocke hängt ja hoch. Einer von uns muss sie läuten.",
+       "story": true,
+       "voices": [
+        {
+         "id": "wendy",
+         "text": "Mäh, die hängt ja hoch. Einer von uns muss sie läuten."
+        }
+       ]
       }
      ]
     }

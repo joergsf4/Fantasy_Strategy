@@ -1,50 +1,80 @@
 {
  "intro": [
   {
-   "left": "ritter",
-   "right": "maedchen_baer",
-   "speaker": "ritter",
+   "left": "maedchen_baer",
+   "right": "",
+   "speaker": "maedchen_baer",
    "text": "Berge. Endlich Schatten. Da ist die Festung vom Regenten!",
-   "story": true
+   "story": true,
+   "voices": [
+    {
+     "id": "ritter",
+     "text": "Berge. Endlich Schatten. Da ist die Festung vom Regenten!"
+    }
+   ]
   },
   {
-   "left": "robo",
-   "right": "maedchen_baer",
-   "speaker": "robo",
-   "text": "Meine Sensoren melden: viele Feinde, viele Stufen, meine Servos mögen die Steigung gar nicht.",
-   "story": true
+   "left": "maedchen_baer",
+   "right": "",
+   "speaker": "maedchen_baer",
+   "text": "So viele Feinde, so viele Stufen. Brumm mag die Steigung gar nicht.",
+   "story": true,
+   "voices": [
+    {
+     "id": "robo",
+     "text": "Meine Sensoren melden: viele Feinde, viele Stufen, meine Servos mögen die Steigung gar nicht."
+    }
+   ]
   },
   {
-   "left": "elisabeth",
-   "right": "maedchen_baer",
-   "speaker": "elisabeth",
+   "left": "maedchen_baer",
+   "right": "",
+   "speaker": "maedchen_baer",
    "text": "Dort oben auf dem Pass steht jemand, den wir kennen. Der fiese Kerl mit dem Raketenwerfer.",
-   "story": true
+   "story": true,
+   "voices": [
+    {
+     "id": "elisabeth",
+     "text": "Dort oben auf dem Pass steht jemand, den wir kennen. Der fiese Kerl mit dem Raketenwerfer."
+    }
+   ]
   },
   {
    "left": "maedchen_baer",
    "speaker": "maedchen_baer",
    "text": "Wart! Und er ist nicht allein.",
-   "right": "elisabeth",
+   "right": "",
    "left_expr": "wuetend",
    "story": true
   },
   {
-   "left": "ritter",
-   "right": "maedchen_baer",
-   "speaker": "ritter",
+   "left": "maedchen_baer",
+   "right": "",
+   "speaker": "maedchen_baer",
    "text": "Wir müssen uns den Weg freikämpfen. Wir sind nicht so weit gekommen, um hier halt zu machen!",
-   "left_expr": "wuetend",
-   "story": true
+   "story": true,
+   "voices": [
+    {
+     "id": "ritter",
+     "text": "Wir müssen uns den Weg freikämpfen. Wir sind nicht so weit gekommen, um hier halt zu machen!",
+     "expr": "wuetend"
+    }
+   ]
   }
  ],
  "outro": [
   {
-   "left": "robo",
-   "right": "maedchen_baer",
-   "speaker": "robo",
+   "left": "maedchen_baer",
+   "right": "",
+   "speaker": "maedchen_baer",
    "text": "Der Regent ein Strohmann. Das ändert alles.",
-   "story": true
+   "story": true,
+   "voices": [
+    {
+     "id": "robo",
+     "text": "Der Regent ein Strohmann. Das ändert alles."
+    }
+   ]
   },
   {
    "left": "maedchen_baer",
@@ -54,11 +84,17 @@
    "story": true
   },
   {
-   "left": "ritter",
-   "right": "maedchen_baer",
-   "speaker": "ritter",
+   "left": "maedchen_baer",
+   "right": "",
+   "speaker": "maedchen_baer",
    "text": "Das werden wir herausfinden. Aber erst mal Rast. Die Festung gehört uns.",
-   "story": true
+   "story": true,
+   "voices": [
+    {
+     "id": "ritter",
+     "text": "Das werden wir herausfinden. Aber erst mal Rast. Die Festung gehört uns."
+    }
+   ]
   }
  ]
 }
