@@ -3805,6 +3805,7 @@ func _run_oiroke(u: Dictionary, id: String, target: Dictionary, sec: Dictionary)
 	_turn_towards(u, target["pos"])
 	_banner(str(ef.get("menu_name", "Sexy Jutsu")))
 	await get_tree().create_timer(0.35).timeout
+	Sfx.play("poof", 3.0, 1.0, 0.25)                             # PUFF genau beim Aufplatzen der Rauchwolke
 	await fx.ab._smoke_bomb(u)                                   # Rauchwolke, darin der Wechsel
 	var token := str(ef.get("token", "ninja_brueder"))
 	_swap_token(u, token)
@@ -3825,6 +3826,7 @@ func _run_oiroke(u: Dictionary, id: String, target: Dictionary, sec: Dictionary)
 	if not secrets_seen.has(sec["id"]) and secret_runner.is_valid():
 		secrets_seen.append(sec["id"])
 		await secret_runner.call(sec)
+	Sfx.play("poof", 3.0, 0.85, 0.25)
 	await fx.ab._smoke_bomb(u)                                   # Rauch: die Schwestern sind wieder normal
 	_swap_token(u, u["id"])
 	await get_tree().create_timer(0.3).timeout
