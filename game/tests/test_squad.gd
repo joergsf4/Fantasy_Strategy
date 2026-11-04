@@ -29,6 +29,12 @@ func _initialize() -> void:
 	party.equipment[old] = ["eisenschwert"]
 	var f6 := Mission.dialogue_ids("ch6")
 	check(f6.has("hund") and f6.has("elisabeth") and not f6.has("ritter") and not f6.has("robo"), "nur Story-Gespraeche legen fest, Fluff nicht: %s" % [f6])
+	var f3 := Mission.dialogue_ids("ch3")
+	check(f3.has("maedchen_baer") and f3.has("quacksalber") and not f3.has("wendy") and not f3.has("braumeisterin") and not f3.has("ritter"), "Kapitel 3: nur Mira und Dr. Humbug fest: %s" % [f3])
+	var vl := Mission.voiced([{"left": "maedchen_baer", "right": "", "speaker": "maedchen_baer", "text": "Mira", "voices": [{"id": "wendy", "text": "Wendy", "expr": "lachend"}, {"id": "ritter", "text": "Ritter"}]}], ["maedchen_baer", "ritter", "wendy"])
+	check(vl[0]["speaker"] == "wendy" and vl[0]["left"] == "wendy" and vl[0]["text"] == "Wendy" and vl[0]["left_expr"] == "lachend" and not vl[0].has("voices"), "erste anwesende Stimme spricht: %s" % [vl])
+	vl = Mission.voiced([{"left": "maedchen_baer", "right": "", "speaker": "maedchen_baer", "text": "Mira", "voices": [{"id": "wendy", "text": "Wendy"}]}], ["maedchen_baer", "robo"])
+	check(vl[0]["speaker"] == "maedchen_baer" and vl[0]["text"] == "Mira", "ohne passende Stimme spricht die Rueckfallstimme")
 	var roster := Party.roster(defs, 5)
 	check(roster.has("ritter") and not roster.has("hund") and Party.roster(defs, 6).has("hund"), "Hundsfreund ist erst ab Kapitel 6 waehlbar")
 	# nur kennengelernte Helden

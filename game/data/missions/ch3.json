@@ -194,15 +194,22 @@
        "story": true
       },
       {
-       "left": "braumeisterin",
+       "left": "maedchen_baer",
        "right": "oskar",
-       "speaker": "braumeisterin",
-       "text": "Zwei Blondschöpfe im Gleichschritt. Wer von euch hat das Dorf angezündet?",
+       "speaker": "maedchen_baer",
        "left_expr": "wuetend",
+       "text": "Zwei Blondschöpfe im Gleichschritt. Wer von euch hat das Dorf angezündet?",
+       "voices": [
+        {
+         "id": "braumeisterin",
+         "text": "Zwei Blondschöpfe im Gleichschritt. Wer von euch hat das Dorf angezündet?",
+         "expr": "wuetend"
+        }
+       ],
        "story": true
       },
       {
-       "left": "braumeisterin",
+       "left": "maedchen_baer",
        "right": "oskar",
        "speaker": "oskar",
        "text": "Angezündet? Wir haben nur Atmosphäre geschaffen.",

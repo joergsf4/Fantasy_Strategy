@@ -25,6 +25,31 @@ static func load_mission(id: String) -> Dictionary:
 
 ## Alle Figuren, die in dieser Mission sprechen (Einleitung, Abschluss, Kampfdialoge, Rueckzug). Sie sind in der Gruppe fest,
 ## alle anderen Helden der Gruppe duerfen vor der Mission gewechselt werden.
+## Stimmen: eine Zeile kann "voices" tragen, eine Liste [{id, text, expr?}] nach Vorrang. Die Zeile selbst ist die Rueckfallstimme (spricht immer).
+## Ist ein Held aus der Liste in der Gruppe, spricht er statt der Rueckfallstimme, mit eigenem Text (und Gesichtsausdruck).
+static func voiced(lines: Array, squad: Array) -> Array:
+	var out: Array = []
+	for l: Dictionary in lines:
+		var c := l.duplicate()
+		c.erase("voices")
+		for v: Dictionary in l.get("voices", []):
+			var side: String = "left" if l.get("speaker", "") == l.get("left", "") else "right"
+			var other: String = l.get("right" if side == "left" else "left", "")
+			if not squad.has(v.get("id", "")) or v["id"] == other:
+				continue
+			c[side] = v["id"]
+			c["speaker"] = v["id"]
+			c["text"] = v.get("text", "")
+			c.erase("text_by")
+			if v.get("expr", "") != "":
+				c[side + "_expr"] = v["expr"]
+			else:
+				c.erase(side + "_expr")
+			break
+		out.append(c)
+	return out
+
+
 static func dialogue_ids(id: String) -> Array:
 	var ids := {}
 	var add_lines := func(lines: Array) -> void:

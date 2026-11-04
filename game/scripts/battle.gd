@@ -3310,7 +3310,8 @@ func _flush_events() -> void:
 func _hero_lines(lines: Array, who: Dictionary) -> Array:
 	var out: Array = []
 	var hid: String = who.get("id", "")
-	for l: Dictionary in lines:
+	var squad: Array = (map_data.get("players", []) as Array).map(func(e: Dictionary) -> String: return e["id"])
+	for l: Dictionary in Mission.voiced(lines, squad):
 		var c := l.duplicate()
 		for k in ["left", "right", "speaker"]:
 			if c.get(k, "") == "$hero":

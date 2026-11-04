@@ -195,6 +195,12 @@ label.f select, label.f input { min-width: 120px; }
 
 .line { display: grid; grid-template-columns: 22px 92px 92px minmax(0, 1fr) 32px; gap: 10px; align-items: start; padding: 10px 0; border-top: 1px solid var(--line); position: relative; }
 .line:first-child { border-top: 0; }
+.voices { grid-column: 2 / -1; font-size: 13px; }
+.voices summary { cursor: pointer; color: var(--muted, #9a9); }
+.vbox { display: grid; gap: 8px; margin: 8px 0 0 6px; padding-left: 10px; border-left: 3px solid #8fd3ff55; }
+.voice { display: grid; grid-template-columns: 20px 36px 110px auto minmax(0, 1fr) 30px 30px 30px; gap: 8px; align-items: start; }
+.vprio { color: #8fd3ff; font-weight: 700; text-align: center; padding-top: 6px; }
+.voice b { padding-top: 6px; font-weight: 600; }
 .line.over-top::before, .line.over-bot::after { content: ""; position: absolute; left: 0; right: 0; height: 3px; background: var(--gold); border-radius: 2px; }
 .line.over-top::before { top: -2px; } .line.over-bot::after { bottom: -2px; }
 .line.dragging { opacity: .4; }
@@ -453,7 +459,21 @@ function lineHtml(l, i) {
   return `<div class="line" data-i="${i}" data-drop="line">
     <div class="grip" draggable="true" data-drag="line" title="Zum Umsortieren ziehen" aria-hidden="true">⋮⋮</div>
     ${slotHtml(l, "left")}${slotHtml(l, "right")}${body}
-    <button class="btn ghost danger del" data-act="delline" title="Zeile löschen" aria-label="Zeile löschen">🗑</button></div>`;
+    <button class="btn ghost danger del" data-act="delline" title="Zeile löschen" aria-label="Zeile löschen">🗑</button>
+    ${voicesHtml(l)}</div>`;
+}
+function voicesHtml(l) {
+  const vs = l.voices || [], base = l.speaker;
+  const rows = vs.map((v, j) => {
+    const u = DB.units[v.id], ex = v.expr || "";
+    return `<div class="voice" data-j="${j}">
+      <span class="vprio" title="Vorrang ${j + 1}: spricht, wenn die Figur in der Gruppe ist">${j + 1}</span>${avatar(v.id, ex, "sm")}<b>${esc(U(v.id))}</b>
+      ${u?.exprs.length ? `<select data-bind="vexpr" aria-label="Gesichtsausdruck">${Object.entries(EXPR).filter(([k]) => !k || u.exprs.includes(k)).map(([k, n]) => `<option value="${k}" ${k === ex ? "selected" : ""}>${n}</option>`).join("")}</select>` : ""}
+      <textarea class="txt" data-bind="vtext" rows="2" placeholder="Was sagt ${esc(U(v.id))} stattdessen? …" aria-label="Text von ${esc(U(v.id))}">${esc(v.text)}</textarea>
+      <button class="btn ghost" data-act="vup" ${j ? "" : "disabled"} title="Höher im Vorrang" aria-label="Höher">↑</button><button class="btn ghost" data-act="vdown" ${j < vs.length - 1 ? "" : "disabled"} title="Tiefer im Vorrang" aria-label="Tiefer">↓</button><button class="btn ghost danger" data-act="vdel" title="Stimme entfernen" aria-label="Stimme entfernen">✕</button></div>`;
+  }).join("");
+  return `<details class="voices" ${vs.length ? "open" : ""}><summary>Stimmen${vs.length ? ` (${vs.length}): ${vs.map(v => esc(U(v.id))).join(" › ")} › <b>${esc(U(base))}</b> (Standard)` : ""} <span class="hint">${vs.length ? "" : "– andere Helden können diese Zeile mit eigenem Text sprechen"}</span></summary>
+    <div class="vbox">${rows}<button class="btn" data-act="vadd">+ Stimme</button> <span class="hint">${esc(U(base))} spricht immer, wenn kein Held aus der Liste dabei ist.</span></div></details>`;
 }
 function whenEditor(cv, c) {
   const t = cv.t, type = whenType(t.when);
@@ -572,6 +592,10 @@ const acts = {
   speaker(el) { const { lines, i } = lineCtx(el), l = lines[i]; change(() => l.speaker = l[el.closest(".slot").dataset.side]); },
   clear(el) { const { lines, i } = lineCtx(el), side = el.closest(".slot").dataset.side; change(() => { const l = lines[i]; if (l.speaker === l[side]) l.speaker = l[side === "left" ? "right" : "left"]; delete l[side]; delete l[side + "_expr"]; }); },
   addline(el) { const { lines, key } = lineCtx(el, true), prev = lines.at(-1) || {}; change(() => lines.push({ ...(prev.left ? { left: prev.left } : {}), ...(prev.right ? { right: prev.right } : {}), ...(prev.left ? { speaker: prev.left } : {}), text: "", ...(prev.story ? { story: true } : {}) })); setTimeout(() => $(`.card[data-c="${key}"] .line:last-child textarea`)?.focus(), 0); },
+  vadd(el) { const { lines, i } = lineCtx(el), l = lines[i]; openPicker(el, id => { if ((l.voices || []).some(v => v.id === id) || id === l.speaker) return toast("Diese Figur spricht schon in dieser Zeile", ""); change(() => (l.voices ||= []).push({ id, text: "" })); }); },
+  vdel(el) { const { lines, i } = lineCtx(el), j = +el.closest(".voice").dataset.j; change(() => { lines[i].voices.splice(j, 1); if (!lines[i].voices.length) delete lines[i].voices; }); },
+  vup(el) { const { lines, i } = lineCtx(el), j = +el.closest(".voice").dataset.j, v = lines[i].voices; change(() => v.splice(j - 1, 0, v.splice(j, 1)[0])); },
+  vdown(el) { const { lines, i } = lineCtx(el), j = +el.closest(".voice").dataset.j, v = lines[i].voices; change(() => v.splice(j + 1, 0, v.splice(j, 1)[0])); },
   story(el) { const { lines } = lineCtx(el), on = el.checked; change(() => lines.forEach(l => on ? l.story = true : delete l.story)); },
   accept(el) { const { c, key } = lineCtx(el); change(() => delete c.triggers[+key.slice(2)].draft); },
   delline(el) { const { lines, i } = lineCtx(el), l = lines[i]; change(() => lines.splice(i, 1)); toast("Zeile gelöscht", "", undo); },
@@ -1069,10 +1093,11 @@ document.addEventListener("focusin", e => { if (e.target.matches("textarea, inpu
 document.addEventListener("input", e => {
   const el = e.target, bind = el.dataset.bind; if (!bind) return;
   const grow = () => el.tagName === "TEXTAREA" && fit(el);
-  if (["text", "tb", "note"].includes(bind)) {
+  if (["text", "tb", "note", "vtext"].includes(bind)) {
     if (typingSnap) { push(); typingSnap = false; }
     const { c, lines, i, key } = lineCtx(el);
     if (bind === "text") lines[i].text = el.value;
+    else if (bind === "vtext") lines[i].voices[+el.closest(".voice").dataset.j].text = el.value;
     else if (bind === "tb") lines[i].text_by[el.dataset.k] = el.value;
     else if (key.startsWith("t:")) { const t = c.triggers[+key.slice(2)]; el.value ? t.note = el.value : delete t.note; }
     grow(); updateStatus();
@@ -1083,7 +1108,8 @@ document.addEventListener("change", e => {
   if (el.id === "addflee" && el.value) { const c = ch(), k = el.value; change(() => { c.flee[k] = [{ left: "$hero", right: k, speaker: k, right_expr: "wuetend", text: "" }]; open["f:" + k] = true; }); return; }
   if (!bind || !el.closest("#main")) return;
   const { c, lines, i, key } = lineCtx(el);
-  if (bind === "expr") change(() => { const side = el.closest(".slot").dataset.side; el.value ? lines[i][side + "_expr"] = el.value : delete lines[i][side + "_expr"]; });
+  if (bind === "vexpr") change(() => { const v = lines[i].voices[+el.closest(".voice").dataset.j]; el.value ? v.expr = el.value : delete v.expr; });
+  else if (bind === "expr") change(() => { const side = el.closest(".slot").dataset.side; el.value ? lines[i][side + "_expr"] = el.value : delete lines[i][side + "_expr"]; });
   else if (bind === "whentype") { const t = c.triggers[+key.slice(2)]; open["w" + key.slice(2)] = true; change(() => t.when = makeWhen(el.value, c.id)); }
   else if (bind === "field") {
     const t = c.triggers[+key.slice(2)], p = JSON.parse(el.dataset.p), ty = el.dataset.t; open["w" + key.slice(2)] = true;

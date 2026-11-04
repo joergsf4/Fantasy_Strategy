@@ -258,6 +258,10 @@ func _lab_run(kind: String, hero: String, foe: String, maxed: bool) -> void:
 
 
 ## Mission laden und die vom Spieler gewaehlte Gruppe einsetzen (Plaetze der Karte bleiben, nur die Helden wechseln).
+func _squad_ids(m: Dictionary) -> Array:
+	return (m["players"] as Array).map(func(e: Dictionary) -> String: return e["id"])
+
+
 func _mission_with_squad(cid: String) -> Dictionary:
 	var m := Mission.load_mission(cid)
 	var ids := party.squad_for(m)
@@ -324,7 +328,7 @@ func _chapter(cid: String, skip_intro := false, next_cid := "") -> void:
 	stage.set_mode("dialog")
 	_cover_out(0.5)
 	if not skip_intro:
-		await _dialogue(story_c["intro"])
+		await _dialogue(Mission.voiced(story_c["intro"], _squad_ids(m)))
 	if SquadSelect.has_choice(party, units, m):         # Gruppenwahl vor der Runde (Story-Figuren sind gesperrt)
 		await _squad_select(m)
 		m = _mission_with_squad(cid)
@@ -368,9 +372,9 @@ func _chapter(cid: String, skip_intro := false, next_cid := "") -> void:
 	_fade_music(1.2)
 	_toast("Spielstand automatisch gespeichert")
 	if m.has("outro_at_sea"):                            # Abschlussgespraech waehrend der Ueberfahrt, vor dem Meer
-		await _dialogue_at_sea(story_c["outro"], m["outro_at_sea"])
+		await _dialogue_at_sea(Mission.voiced(story_c["outro"], _squad_ids(m)), m["outro_at_sea"])
 	else:
-		await _dialogue(story_c["outro"])
+		await _dialogue(Mission.voiced(story_c["outro"], _squad_ids(m)))
 	if next_cid != "" and Mission.load_mission(next_cid).get("stub", false):
 		party.save()
 		await _cover_in(0.4)

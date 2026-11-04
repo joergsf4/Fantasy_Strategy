@@ -38,3 +38,8 @@ Feste Stufen mit wachsenden Zahlen brachten keinen Spielspaß, deshalb gibt es T
 - Story sind Einleitungen und Abschlüsse, Auftritte und Rückzüge der Gegenspieler, Beitritte, Wendepunkte. Alles andere (Sprüche zu Fähigkeiten, Wetter, Hitze, Nebengeplänkel) ist Fluff.
 - Pro Mission (1–9, 12–17) gibt es für jeden wählbaren Helden ohne Story-Rolle einen **albernen Fluff-Spruch** (Auslöser: Runde 2 bis 6, nur wenn der Held in der Gruppe ist, Notiz „Fluff: <Held>“). So bekommt jeder Held, der mitkommt, ein paar Worte.
 - Fest vorgegeben sind damit je Mission nur noch 2 bis 5 von 6 Plätzen (vorher meist 4 bis 6).
+
+## 6. Stimmen: Story-Zeilen für wechselnde Figuren
+- Eine Dialogzeile kann `"voices": [{"id", "text", "expr"?}, …]` tragen (nach Vorrang). Die Zeile selbst ist die **Rückfallstimme** (meist Mira) und spricht immer. Ist ein Held aus der Liste in der Gruppe, spricht der erste davon an ihrer Stelle, mit eigenem Text und Gesichtsausdruck (`Mission.voiced`, angewendet bei Einleitung, Abschluss und Kampfgesprächen).
+- Fest vorgegeben sind nur noch Rückfallstimme und Gegenüber der Zeile, nicht die Stimmen. Im Text-Editor hängt unter jeder Zeile ein Bereich „Stimmen“ (Figur wählen, Text, Ausdruck, Vorrang ↑↓, entfernen).
+- Beispiel: Mission 3 (nur noch Mira und Dr. Humbug fest). Die Einleitung läuft vor der Gruppenwahl, dort zählt die zuletzt gewählte Gruppe (sonst die Vorgabe der Karte).

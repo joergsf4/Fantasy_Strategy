@@ -2,72 +2,129 @@
  "intro": [
   {
    "left": "maedchen_baer",
-   "right": "wendy",
-   "speaker": "wendy",
+   "right": "",
+   "speaker": "maedchen_baer",
    "text": "Seht ihr den Rauch? Das ist Mühlbach. Das Dorf liegt in Flammen!",
+   "voices": [
+    {
+     "id": "wendy",
+     "text": "Mäh! Seht ihr den Rauch? Das ist Mühlbach. Das Dorf liegt in Flammen!"
+    },
+    {
+     "id": "ritter",
+     "text": "Rauch über Mühlbach! Das Dorf steht in Flammen. Zu den Waffen – oder besser: zu den Eimern!"
+    },
+    {
+     "id": "samurai",
+     "text": "Rauch am Horizont. Mühlbach brennt. Der Weg des Kriegers führt heute durchs Wasser."
+    }
+   ],
    "story": true
   },
   {
    "left": "maedchen_baer",
-   "right": "wendy",
+   "right": "",
    "speaker": "maedchen_baer",
    "left_expr": "wuetend",
    "text": "Der Regent schickt seine Brandstifter voraus. Los, bevor das Feuer in den Wald springt!",
    "story": true
   },
   {
-   "left": "braumeisterin",
-   "right": "ritter",
-   "speaker": "braumeisterin",
-   "left_expr": "lachend",
-   "text": "Brandstifter und Feuer. Für sowas gibt es Bier. Zum Löschen und zum Feiern.",
+   "left": "maedchen_baer",
+   "right": "",
+   "speaker": "maedchen_baer",
+   "text": "Brandstifter und Feuer. Wir brauchen Wasser, und zwar viel!",
+   "voices": [
+    {
+     "id": "braumeisterin",
+     "text": "Brandstifter und Feuer. Für sowas gibt es Bier. Zum Löschen und zum Feiern.",
+     "expr": "lachend"
+    },
+    {
+     "id": "elisabeth",
+     "text": "Wasser? Davon hab ich ein ganzes Meer! …Leider nicht hier. Egal, Eimerkette!"
+    },
+    {
+     "id": "kungfu",
+     "text": "Feuer gehorcht dem, der ruhig bleibt. Und dem, der Eimer trägt."
+    }
+   ],
    "story": true
   },
   {
    "left": "quacksalber",
-   "right": "wendy",
+   "right": "",
    "speaker": "quacksalber",
    "text": "Halt, halt! Das ist meine Praxis dort hinten, Dr. Humbugs äußerst seriöse Heilanstalt! Wer hat das Dorf angezündet?",
    "story": true
   },
   {
    "left": "quacksalber",
-   "right": "wendy",
-   "speaker": "wendy",
-   "text": "Mäh, du bist Arzt?",
+   "right": "maedchen_baer",
+   "speaker": "maedchen_baer",
+   "text": "Du bist Arzt?",
+   "voices": [
+    {
+     "id": "wendy",
+     "text": "Mäh, du bist Arzt?"
+    }
+   ],
    "story": true
   },
   {
    "left": "quacksalber",
-   "right": "wendy",
+   "right": "",
    "speaker": "quacksalber",
    "text": "Wunderheiler. Mein Elixier kuriert alles, solange niemand die Zutaten prüft. Ich schließe mich euch an, wenn ihr meine Praxis rettet.",
    "left_expr": "lachend",
    "story": true
   },
   {
-   "left": "braumeisterin",
+   "left": "maedchen_baer",
    "right": "quacksalber",
-   "speaker": "braumeisterin",
-   "text": "Ein Mann mit Flaschen, ich mag ihn schon. Willkommen im Team.",
+   "speaker": "maedchen_baer",
    "left_expr": "lachend",
+   "text": "Ein Mann mit Flaschen. Na gut, willkommen im Team.",
+   "voices": [
+    {
+     "id": "braumeisterin",
+     "text": "Ein Mann mit Flaschen, ich mag ihn schon. Willkommen im Team.",
+     "expr": "lachend"
+    }
+   ],
    "story": true
   }
  ],
  "outro": [
   {
    "left": "maedchen_baer",
-   "right": "wendy",
-   "speaker": "wendy",
-   "right_expr": "lachend",
-   "text": "Mäh, wir haben es geschafft. Die Rauchwolke wird kleiner.",
+   "right": "",
+   "speaker": "maedchen_baer",
+   "text": "Wir haben es geschafft. Die Rauchwolke wird kleiner.",
+   "voices": [
+    {
+     "id": "wendy",
+     "text": "Mäh, wir haben es geschafft. Die Rauchwolke wird kleiner.",
+     "expr": "lachend"
+    }
+   ],
    "story": true
   },
   {
-   "left": "braumeisterin",
-   "right": "ritter",
-   "speaker": "ritter",
+   "left": "maedchen_baer",
+   "right": "",
+   "speaker": "maedchen_baer",
    "text": "Der Regent zündet Dörfer an, um uns aufzuhalten. Das wird er bereuen.",
+   "voices": [
+    {
+     "id": "ritter",
+     "text": "Der Regent zündet Dörfer an, um uns aufzuhalten. Das wird er bereuen."
+    },
+    {
+     "id": "samurai",
+     "text": "Dörfer anzünden ist würdelos. Der Regent wird dafür büßen."
+    }
+   ],
    "story": true
   },
   {

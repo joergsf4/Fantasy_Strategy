@@ -551,6 +551,19 @@ def check_lines(lines, where: str, speakers: set) -> None:
                 raise ValueError(f"{w}: unbekannte Figur '{l[k]}' in '{k}'")
         if l.get("speaker") not in (l.get("left"), l.get("right")):
             raise ValueError(f"{w}: Sprecher muss links oder rechts stehen")
+        voices = l.get("voices", [])
+        if not isinstance(voices, list):
+            raise ValueError(f"{w}: Stimmen muessen eine Liste sein")
+        seen = {l.get("speaker")}
+        for v in voices:
+            if not isinstance(v, dict) or v.get("id") not in speakers or not isinstance(v.get("text"), str):
+                raise ValueError(f"{w}: Stimme braucht eine bekannte Figur und einen Text")
+            if v["id"] in seen:
+                raise ValueError(f"{w}: Stimme '{v['id']}' kommt doppelt vor oder ist schon die Rueckfallstimme")
+            other = l.get("right") if l.get("speaker") == l.get("left") else l.get("left")
+            if v["id"] == other:
+                raise ValueError(f"{w}: Stimme '{v['id']}' steht schon auf der anderen Seite")
+            seen.add(v["id"])
 
 
 def check_chapter(body: dict, speakers: set, abilities: set) -> None:
@@ -580,6 +593,8 @@ def tidy(body: dict) -> None:
     for l in all_lines:
         if isinstance(l.get("text"), str):
             l["text"] = fix(l["text"])
+        for v in l.get("voices", []):
+            v["text"] = fix(v["text"])
         if isinstance(l.get("text_by"), dict):
             l["text_by"] = {k: fix(v) for k, v in l["text_by"].items()}
 

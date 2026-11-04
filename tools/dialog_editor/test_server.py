@@ -46,6 +46,21 @@ class EditorTest(unittest.TestCase):
         self.assertTrue(all(l.get("story") for l in story["intro"]))
         self.assertFalse(story["outro"][0].get("story", False))
 
+    def test_stimmen_werden_geprueft_und_gespeichert(self):
+        b = self.body()
+        l = b["intro"][0]
+        other = next(k for k in server.load_all()["units"] if k not in (l.get("left"), l.get("right")) and server.load_all()["units"][k].get("hero"))
+        l["voices"] = [{"id": other, "text": "Ich  sage es  anders."}]
+        server.save_chapter("ch2", b)
+        self.assertEqual(server.read(server.DATA / "story_ch2.json")["intro"][0]["voices"], [{"id": other, "text": "Ich sage es anders."}])
+        l["voices"] = [{"id": l["speaker"], "text": "doppelt"}]
+        with self.assertRaises(ValueError):
+            server.save_chapter("ch2", b)
+        l["voices"] = [{"id": "gibtsnicht", "text": "x"}]
+        with self.assertRaises(ValueError):
+            server.save_chapter("ch2", b)
+        b["intro"][0].pop("voices")
+
     def test_doppelte_leerzeichen_werden_beim_speichern_bereinigt(self):
         b = self.body()
         b["intro"][0]["text"] = "Ich  knacke   das Schloss! "
