@@ -721,6 +721,10 @@ func _screenshot_mode() -> void:
 		ss.setup_secret(Secrets.by_id(OS.get_environment("SHOT_SECRET") if OS.get_environment("SHOT_SECRET") != "" else "betrunkener_meister"), _names())
 		sl.add_child(ss)
 		await get_tree().create_timer(float(OS.get_environment("SHOT_DELAY")) if OS.get_environment("SHOT_DELAY") != "" else 4.0).timeout
+		for k in int(OS.get_environment("SHOT_ADV")) if OS.get_environment("SHOT_ADV") != "" else 0:      # SHOT_ADV = so oft weiterschalten (Text fertig tippen, naechste Zeile)
+			ss._advance()
+			ss._advance()
+			await get_tree().create_timer(0.9).timeout
 		get_viewport().get_texture().get_image().save_png(OS.get_environment("SHOT_OUT"))
 		get_tree().quit()
 		return

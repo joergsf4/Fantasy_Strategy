@@ -290,6 +290,37 @@ func _initialize() -> void:
 	await b._run_ability(o_hum, "tonikum", {"pos": Vector2i(5, 5), "tile": true})
 	check(not Status.has(o_rob, "treibstoff"), "zweites Mal im selben Kampf: kein Treibstoff mehr")
 
+	# --- Lasst meinen Lin in Ruhe: Lin faellt unter 50 %, Lumi steht daneben
+	clear()
+	scenes.clear()
+	var pr_lumi := spawn("magical_girl", "p", Vector2i(5, 5))
+	var pr_lin := spawn("kungfu", "p", Vector2i(5, 6))
+	var pr_e1 := spawn("soldat_infanterie", "e", Vector2i(6, 6))       # neben Lin
+	var pr_e2 := spawn("soldat_infanterie", "e", Vector2i(4, 5))       # neben Lumi
+	var pr_e3 := spawn("soldat_infanterie", "e", Vector2i(9, 9))       # weit weg
+	for z in [pr_e1, pr_e2, pr_e3]:
+		z["hp"] = 100
+		z["maxhp"] = 100
+	pr_lin["hp"] = 13                                                    # ueber 50 %: nichts
+	await b._protect_secrets()
+	check(pr_e1["hp"] == 100 and not Secrets.fired.has("lasst_meinen_lin_in_ruhe"), "ueber 50 %: kein Geheimnis")
+	pr_lin["hp"] = 11                                                    # unter 50 % (24 Leben)
+	var pr_expect := Combat.damage(pr_lumi, pr_e1, b._cover_for(pr_e1, pr_e1["pos"]), 0.0, 1.0)
+	await b._protect_secrets()
+	check(100 - pr_e1["hp"] == pr_expect and 100 - pr_e2["hp"] > 0 and pr_e3["hp"] == 100, "angrenzende Gegner bekommen normalen Angriffsschaden (%d, erwartet %d)" % [100 - pr_e1["hp"], pr_expect])
+	check(pr_lin["hp"] == int(ceili(float(pr_lin["maxhp"]) * 0.75)), "Lin wird auf 75 %% geheilt (%d von %d)" % [pr_lin["hp"], pr_lin["maxhp"]])
+	check(scenes == ["lasst_meinen_lin_in_ruhe"], "Szene danach, beim ersten Mal")
+	pr_lin["hp"] = 5
+	await b._protect_secrets()
+	check(pr_lin["hp"] == 5, "pro Level nur einmal")
+	clear()
+	var pr2_lumi := spawn("magical_girl", "p", Vector2i(2, 2))
+	var pr2_lin := spawn("kungfu", "p", Vector2i(5, 6))
+	pr2_lin["hp"] = 5
+	spawn("soldat_infanterie", "e", Vector2i(6, 6))
+	await b._protect_secrets()
+	check(pr2_lin["hp"] == 5 and pr2_lumi["hp"] > 0, "Lumi nicht daneben: nichts")
+
 	# --- Urinstinkt: Der Hundsfreund im Heulen der Alphaetoelfin wirft wuetend Knochen auf alle Gegner in Reichweite
 	clear()
 	scenes.clear()

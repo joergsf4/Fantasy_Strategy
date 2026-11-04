@@ -109,7 +109,7 @@ body.view-sec nav.chapters, body.view-sec aside.pal, body.view-sec #q, body.view
 .sform select, .sform input[type=text], .sform input[type=number], .sform textarea { background: var(--panel2); color: var(--text); border: 1px solid var(--line); border-radius: 6px; padding: 5px 8px; font: inherit; }
 .sform input[type=text].wide { width: 100%; }
 .sform input[type=number] { width: 70px; }
-.sline { display: grid; grid-template-columns: 150px 1fr auto; gap: 6px; margin: 5px 0; align-items: start; }
+.sline { display: grid; grid-template-columns: 150px 1fr 150px auto; gap: 6px; margin: 5px 0; align-items: start; }
 .sline textarea { width: 100%; min-height: 40px; resize: vertical; }
 .sbox { background: var(--panel2); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; margin-top: 8px; }
 .sbox h4 { font-size: 13px; color: var(--gold); margin-bottom: 4px; }
@@ -802,14 +802,23 @@ function secPreview(x) {
 const SEC_PLACEHOLDER = "Beschreibe das Geheimnis frei, z. B.: Brunhilde wirft ein Fass auf Lin. Der kämpft ab dann 10 % stärker im Drunken-Master-Stil und bekommt eine Sonderfähigkeit. Was soll passieren, wie soll es aussehen, welche Szene, welche Musik? Alles, was Claude für die Umsetzung wissen muss.";
 function secTech(x, i) {
   const o = SEC, uname = id => o.units[id]?.name || id, t = x.trigger, sc = x.scene, fig = Object.entries(o.units).map(([k, u]) => [k, u.name]);
-  const beam = t.type === "beam_via_ally", thr = t.type === "throw_ally", near = t.type === "ability_near_ally" || t.type === "hit_near_ally", hitn = t.type === "hit_near_ally", objn = t.type === "ability_near_object", area = t.type === "ability_area_ally", second = beam ? t.via : objn ? t.owner : area ? t.ally : near ? t.near : t.target;
+  const beam = t.type === "beam_via_ally", thr = t.type === "throw_ally", near = t.type === "ability_near_ally" || t.type === "hit_near_ally", hitn = t.type === "hit_near_ally", objn = t.type === "ability_near_object", area = t.type === "ability_area_ally", prot = t.type === "hp_below_near", second = beam ? t.via : objn ? t.owner : prot ? t.unit : area ? t.ally : near ? t.near : t.target;
   const abs = (o.units[t.by]?.abilities || []).map(a => [a, o.abilities[a] || a]); if (!abs.length) abs.push(["", "(keine passende Fähigkeit)"]);
   const who = [[t.by, uname(t.by)], [second, uname(second)]];
   const pt = list => list.map(n => [n, n]);
-  const typ = `<div class="sbox"><h4>Auslöser-Typ</h4><div class="row"><select data-f="ttype" aria-label="Auslöser-Typ">${secOpts([["ability_on_ally", "Fähigkeit auf einen Verbündeten einsetzen"], ["beam_via_ally", "Strahl über einen Verbündeten umlenken"], ["throw_ally", "Einen Verbündeten werfen"], ["ability_near_ally", "Verbündeter in der Nähe erschrickt"], ["hit_near_ally", "Verbündeter neben dem getroffenen Gegner"], ["ability_area_ally", "Verbündeter im Wirkbereich (z. B. Heulen)"]], t.type || "ability_on_ally")}</select></div></div>`;
+  const typ = `<div class="sbox"><h4>Auslöser-Typ</h4><div class="row"><select data-f="ttype" aria-label="Auslöser-Typ">${secOpts([["ability_on_ally", "Fähigkeit auf einen Verbündeten einsetzen"], ["beam_via_ally", "Strahl über einen Verbündeten umlenken"], ["throw_ally", "Einen Verbündeten werfen"], ["ability_near_ally", "Verbündeter in der Nähe erschrickt"], ["hit_near_ally", "Verbündeter neben dem getroffenen Gegner"], ["ability_area_ally", "Verbündeter im Wirkbereich (z. B. Heulen)"], ["hp_below_near", "Schützling fällt unter Lebensgrenze (Beschützerin daneben)"]], t.type || "ability_on_ally")}</select></div></div>`;
   const throwAbs = (o.units[t.by]?.throws || []).map(a => [a, o.abilities[a] || a]); if (!throwAbs.length) throwAbs.push(["", "(keine Wurf-Fähigkeit)"]);
   const reacts = (o.units[t.near]?.all_abilities || []).map(a => [a, o.abilities[a] || a]);
   const trig = objn ? `<div class="sbox"><h4>Auslöser (Objekt in der Nähe)</h4><p class="hint" style="margin:0">${esc(uname(t.by))} setzt ${esc(o.abilities[t.ability] || t.ability)} ein, während neben ${esc(uname(t.by))} ein Objekt „${esc(t.object)}“ von ${esc(uname(t.owner))} steht. Wirkung: Gegner im Umkreis ${+x.effects.radius || 2} des Einschlags haben ${+x.effects.turns || 2} Runden den Status „${esc(x.effects.status || "klebrig")}“. Dieser Auslöser wird im Spiel gebaut, hier sind Text und Szene bearbeitbar.</p></div>`
+  : prot ? `<div class="sbox"><h4>Auslöser</h4><div class="row">
+        <select data-f="by" aria-label="Beschützerin">${secOpts(fig, t.by)}</select> steht neben
+        <select data-f="unit" aria-label="Schützling">${secOpts(fig, t.unit)}</select>, und dessen Leben fällt unter
+        <input type="number" data-f="ratio" min="5" max="95" value="${Math.round((+t.ratio || 0.5) * 100)}" aria-label="Lebensgrenze in Prozent"> %.</div></div>
+      <div class="sbox"><h4>Wirkung</h4><div class="row">
+        Ruf <input type="text" data-f="shout" maxlength="40" value="${esc(x.effects.shout || "")}" placeholder="Lasst meinen Lin in Ruhe!" style="width:230px" aria-label="Ruf">
+        · Gegner im Umkreis <input type="number" data-f="prot_radius" min="1" max="3" value="${+x.effects.radius || 1}" aria-label="Umkreis"> Feld(er) um beide bekommen
+        <input type="number" data-f="prot_dmg" min="10" max="300" value="${+x.effects.dmg_pct || 100}" aria-label="Schaden in Prozent"> % des normalen Angriffsschadens von ${esc(uname(t.by))}
+        · ${esc(uname(t.unit))} wird auf <input type="number" data-f="prot_heal" min="1" max="100" value="${+x.effects.heal_to_pct || 75}" aria-label="Heilung auf Prozent"> % geheilt.</div></div>`
   : area ? `<div class="sbox"><h4>Auslöser</h4><div class="row">
         <select data-f="by" aria-label="Figur">${secOpts(fig, t.by)}</select> setzt
         <select data-f="ability" aria-label="Fähigkeit">${secOpts((o.units[t.by]?.all_abilities || []).map(a => [a, o.abilities[a] || a]), t.ability)}</select>
@@ -882,6 +891,7 @@ function secTech(x, i) {
         · Banner <input type="text" data-f="banner" maxlength="40" value="${esc(sc.banner || "")}" placeholder="GEHEIME INTERAKTION" style="width:200px" aria-label="Banner-Text vor der Szene"></div>
         ${sc.lines.map((l, j) => `<div class="sline"><select data-f="speaker" data-j="${j}" aria-label="Sprecher">${secOpts(who, l.speaker)}</select>
           <textarea data-f="text" data-j="${j}" rows="2" aria-label="Text der Zeile ${j + 1}">${esc(l.text)}</textarea>
+          <select data-f="blush" data-j="${j}" aria-label="Wer läuft rot an?" title="Wer läuft ab dieser Zeile rot an?">${secOpts(who, l.blush || "", "– niemand rot –")}</select>
           <button class="btn ghost" data-sact="rmline" data-j="${j}" aria-label="Zeile entfernen" title="Zeile entfernen">✕</button></div>`).join("")}
         <button class="btn" data-sact="addline">+ Zeile</button></div>
       <p style="margin-top:8px"><button class="btn" data-sact="rmtech">Technische Umsetzung entfernen (wieder nur Idee)</button></p>`;
@@ -940,13 +950,16 @@ function secNew() {
   sec.push({ id: "geheimnis_" + n, name: "Neue Idee", characters: [], prompt: "" });
 }
 function secSwitchType(x, type) {
-  const t = x.trigger, second = t.via || t.target || t.near || t.ally || t.owner, keepCut = x.effects?.cutin;
+  const t = x.trigger, second = t.via || t.target || t.near || t.ally || t.owner || t.unit, keepCut = x.effects?.cutin;
   if (type === "beam_via_ally") {
     x.trigger = { type, by: t.by, abilities: (SEC.units[t.by]?.beams || []).slice(0, 1), via: second };
     x.effects = { mode: "reflect", reflect_pct: 75, radius: 2 };
   } else if (type === "hit_near_ally") {
     x.trigger = { type, by: t.by, ability: SEC.units[t.by]?.all_abilities?.[0] || "", near: second };
     x.effects = { status: { id: "inspiriert", turns: 2, atk_pct: 25 } };
+  } else if (type === "hp_below_near") {
+    x.trigger = { type, by: t.by, unit: second, ratio: 0.5 };
+    x.effects = { heal_to_pct: 75, radius: 1, dmg_pct: 100 };
   } else if (type === "ability_area_ally") {
     x.trigger = { type, by: t.by, ability: SEC.units[t.by]?.all_abilities?.[0] || "", ally: second };
     x.effects = { fury: { ability: SEC.units[second]?.all_abilities?.[0] || "", mult_pct: 150 } };
@@ -986,6 +999,11 @@ document.addEventListener("input", e => {
   else if (f === "height") x.effects.height = Math.max(2, Math.min(8, parseFloat(el.value || "4.2") || 4.2));
   else if (f === "heal") x.effects.heal = Math.max(0, Math.min(60, parseInt(el.value || "0", 10) || 0));
   else if (f === "st_id") (x.effects.status ||= { id: "satt", turns: 3, reduce_pct: 25 }).id = el.value.trim();
+  else if (f === "ratio") x.trigger.ratio = Math.max(5, Math.min(95, parseInt(el.value || "50", 10) || 50)) / 100;
+  else if (f === "shout") { if (el.value.trim()) x.effects.shout = el.value; else delete x.effects.shout; }
+  else if (f === "prot_radius") x.effects.radius = Math.max(1, Math.min(3, parseInt(el.value || "1", 10) || 1));
+  else if (f === "prot_dmg") x.effects.dmg_pct = Math.max(10, Math.min(300, parseInt(el.value || "100", 10) || 100));
+  else if (f === "prot_heal") x.effects.heal_to_pct = Math.max(1, Math.min(100, parseInt(el.value || "75", 10) || 75));
   else if (f === "fury_pct") (x.effects.fury ||= {}).mult_pct = Math.max(50, Math.min(400, parseInt(el.value || "150", 10) || 150));
   else if (f === "en_radius") x.effects.enlarge.radius = Math.max(2, Math.min(4, parseInt(el.value || "2", 10) || 2));
   else if (f === "bo_id") x.effects.boost.id = el.value.replace(/[^a-z_]/g, "").slice(0, 20) || "treibstoff";
@@ -1005,7 +1023,9 @@ document.addEventListener("change", e => {
   const x = sec[+card.dataset.sec], f = el.dataset.f;
   if (f === "addchar") { if (el.value) (x.characters ||= []).push(el.value); }
   else if (f === "ttype") secSwitchType(x, el.value);
+  else if (f === "blush") { const l = x.scene.lines[+el.dataset.j]; if (el.value) l.blush = el.value; else delete l.blush; }
   else if (f === "near") { x.trigger.near = el.value; if (x.trigger.type === "ability_near_ally" && !x.effects.boost && !x.effects.enlarge) x.effects.react_ability = SEC.units[el.value]?.all_abilities?.[0] || ""; x.scene.lines.forEach(l => { if (l.speaker !== x.trigger.by) l.speaker = el.value; }); }
+  else if (f === "unit") { x.trigger.unit = el.value; x.scene.lines.forEach(l => { if (l.speaker !== x.trigger.by) l.speaker = el.value; }); }
   else if (f === "ally") { x.trigger.ally = el.value; x.effects.fury = { ...(x.effects.fury || {}), ability: SEC.units[el.value]?.all_abilities?.[0] || "" }; x.scene.lines.forEach(l => { if (l.speaker !== x.trigger.by) l.speaker = el.value; }); }
   else if (f === "fury_ab") x.effects.fury.ability = el.value;
   else if (f === "react_ability") x.effects.react_ability = el.value;
@@ -1015,6 +1035,7 @@ document.addEventListener("change", e => {
   else if (f === "beamab") { const set = new Set(x.trigger.abilities || []); el.checked ? set.add(el.dataset.ab) : set.delete(el.dataset.ab); x.trigger.abilities = [...set]; }
   else if (f === "cutin_on") { if (el.checked) x.effects.cutin = x.effects.cutin || { unit: x.trigger.via || x.trigger.by, title: x.name, sub: "" }; else delete x.effects.cutin; }
   else if (f === "cutin_unit") x.effects.cutin.unit = el.value;
+  else if (f === "by" && x.trigger.type === "hp_below_near") { x.trigger.by = el.value; x.scene.lines.forEach(l => { if (l.speaker !== x.trigger.unit) l.speaker = el.value; }); }
   else if (f === "by" && x.trigger.type === "ability_area_ally") { x.trigger.by = el.value; x.trigger.ability = SEC.units[el.value]?.all_abilities?.[0] || ""; x.scene.lines.forEach(l => { if (l.speaker !== x.trigger.ally) l.speaker = el.value; }); }
   else if (f === "by" && (x.trigger.type === "ability_near_ally" || x.trigger.type === "hit_near_ally")) { x.trigger.by = el.value; x.trigger.ability = SEC.units[el.value]?.all_abilities?.[0] || ""; x.scene.lines.forEach(l => { if (l.speaker !== x.trigger.near) l.speaker = el.value; }); }
   else if (f === "by" && x.trigger.type === "beam_via_ally") { x.trigger.by = el.value; x.trigger.abilities = (SEC.units[el.value].beams || []).slice(0, 1); x.scene.lines.forEach(l => { if (l.speaker !== x.trigger.via) l.speaker = el.value; }); }

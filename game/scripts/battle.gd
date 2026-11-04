@@ -3287,6 +3287,9 @@ func _match_state(w: Dictionary) -> Dictionary:
 
 ## Alle neuen Ereignisse gegen die Ausloeser der Mission pruefen (nach jeder Aktion, jeder Phase).
 func _flush_events() -> void:
+	await _protect_secrets()
+	if state == State.OVER:
+		return
 	var notes := _notes.duplicate()
 	_notes.clear()
 	for t: Dictionary in triggers:
@@ -3753,6 +3756,68 @@ func _object_apply(u: Dictionary, sec: Dictionary, target: Dictionary) -> void:
 			fx.flash_unit(v, Color(1.6, 1.3, 0.5), 0.3)
 			await _popup(v, "Festgeklebt!", Color(1.0, 0.85, 0.3))
 	await get_tree().create_timer(0.3).timeout
+
+
+## Geheimnis "Lasst meinen Lin in Ruhe" (Typ hp_below_near): Faellt der Schuetzling unter die Lebensgrenze, waehrend die Beschuetzerin auf einem Nachbarfeld steht,
+## schreit sie, Energie trifft alle angrenzenden Gegner (normaler Angriffsschaden der Beschuetzerin), der Schuetzling wird auf einen Anteil seiner Leben geheilt.
+## Danach (beim ersten Mal) die Szene. Wird nach jeder Aktion geprueft (_flush_events).
+func _protect_secrets() -> void:
+	for sec: Dictionary in Secrets.all():
+		var t: Dictionary = sec["trigger"]
+		if t.get("type", "") != "hp_below_near":
+			continue
+		var by := _find(t["by"])
+		var ward := _find(t["unit"])
+		if by.is_empty() or ward.is_empty() or by["team"] != "p" or ward["team"] != "p" or not units.has(by) or not units.has(ward):
+			continue
+		if float(ward["hp"]) / float(ward["maxhp"]) >= float(t["ratio"]) or ward["hp"] <= 0 or Grid.dist(by["pos"], ward["pos"]) != 1:
+			continue
+		await _run_protect(by, ward, sec)
+		return
+
+
+func _run_protect(by: Dictionary, ward: Dictionary, sec: Dictionary) -> void:
+	Secrets.fire(sec["id"])
+	var ef: Dictionary = sec["effects"]
+	_actor = by
+	var shout := str(ef.get("shout", "Lasst meinen Lin in Ruhe!"))
+	_turn_towards(by, ward["pos"])
+	_banner(shout)
+	_popup(by, shout, Color(1.0, 0.85, 0.5))
+	await fx.squash(by, 1.25, 0.8, 0.3)
+	var ci: Dictionary = ef.get("cutin", {})
+	if not ci.is_empty():
+		await _super_cutin(by, {}, str(ci.get("title", sec["name"])), str(ci.get("sub", "")))
+		_super_music_stop()
+	var victims: Array[Dictionary] = []
+	var rad := int(ef.get("radius", 1))
+	for v in units:
+		if v["team"] != by["team"] and _hittable(v) and not Status.has(v, "stealth") \
+				and (Grid.dist(v["pos"], ward["pos"]) <= rad or Grid.dist(v["pos"], by["pos"]) <= rad):
+			victims.append(v)
+	await fx.protect_burst(by, ward, victims)
+	var mult := float(ef.get("dmg_pct", 100)) / 100.0
+	for v in victims:
+		if not units.has(v):
+			continue
+		var dmg := Combat.damage(by, v, _cover_for(v, v["pos"]), 0.0, mult)
+		fx.reflect_hit(v)
+		await _deal(v, dmg, "")
+	if units.has(ward):
+		var goal := int(ceili(float(ward["maxhp"]) * float(ef.get("heal_to_pct", 75)) / 100.0))
+		var amount := maxi(0, goal - int(ward["hp"]))
+		if amount > 0:
+			ward["hp"] += amount
+			by["st"]["healed"] += amount
+			_refresh_unit(ward)
+			Sfx.event("heal")
+			_popup(ward, "+%d" % amount, Color(0.5, 1.0, 0.6))
+			fx.flash_unit(ward, Color(1.6, 1.5, 1.0), 0.4)
+		await get_tree().create_timer(0.5).timeout
+	if not secrets_seen.has(sec["id"]) and units.has(ward) and secret_runner.is_valid():
+		secrets_seen.append(sec["id"])
+		await secret_runner.call(sec)
+	_check_end()
 
 
 ## Geheimnis "Urinstinkt" (Typ ability_area_ally): Steht die Verbuendete "ally" im Wirkbereich der Faehigkeit von u (z. B. Heulen), erwachen ihre Urinstinkte:

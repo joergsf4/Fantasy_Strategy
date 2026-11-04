@@ -413,6 +413,23 @@ func shuriken_rain(from_unit: Dictionary, dest: Vector2i, victims: Array[Diction
 	await _wait(0.34 + minf(float(spots.size()) * 0.07, 1.1) + 0.1)
 
 
+## Beschuetzer-Energie: Sterne und ein Lichtkranz um die Beschuetzerin, Strahlen zu allen angrenzenden Gegnern.
+func protect_burst(by: Dictionary, ward: Dictionary, victims: Array) -> void:
+	Sfx.play("chime", 0.0, 1.3)
+	Sfx.play("zap", -2.0, 1.1, 0.1)
+	var c := fx.chest(by, 0.8)
+	fx.light_flash(c, Color(1.0, 0.9, 0.6), 4.0, 5.0, 0.6)
+	fx.shockwave(_pos(by), 1.6, Color(1.0, 0.9, 0.5, 0.8), 0.5)
+	fx.particles("fx_star", c, 16, 3.0, 0.2, 0.9, 1.5, Color(1.0, 0.95, 0.7), true, 200.0)
+	fx.flash_unit(ward, Color(1.5, 1.4, 1.0), 0.3)
+	await _wait(0.3)
+	for v: Dictionary in victims:
+		await fx.projectile("fx_star", c, fx.chest(v, 0.7), 0.22, 0.4, 0.7, 7.0)
+		fx.light_flash(fx.chest(v, 0.7), Color(1.0, 0.9, 0.6), 2.5, 4.0, 0.3)
+		fx.particles("fx_star", fx.chest(v, 0.7), 8, 2.5, 0.15, 0.5, 1.0, Color(1.0, 0.95, 0.7), true, 160.0)
+	await _wait(0.3)
+
+
 ## Shinobi no Kaze: Die Schwestern werfen ihre Wurfsterne in den Wirbel (Sterne fliegen im Bogen zur Mitte und kreisen kurz).
 func shuriken_into_whirl(helpers: Array, whirl: Dictionary) -> void:
 	Sfx.play("whoosh_l", -4.0, 1.5)

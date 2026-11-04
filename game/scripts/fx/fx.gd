@@ -717,6 +717,10 @@ func inspire(v: Dictionary) -> void:
 	await nw.inspire(v)
 
 
+func protect_burst(by: Dictionary, ward: Dictionary, victims: Array) -> void:
+	await nw.protect_burst(by, ward, victims)
+
+
 func shuriken_into_whirl(helpers: Array, whirl: Dictionary) -> void:
 	await nw.shuriken_into_whirl(helpers, whirl)
 

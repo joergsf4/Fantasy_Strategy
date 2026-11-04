@@ -336,11 +336,11 @@ def save_secrets(body: dict) -> None:
         if sec.get("trigger"):
             t = sec["trigger"]
             ttype = t.get("type", "ability_on_ally")
-            if ttype not in ("ability_on_ally", "beam_via_ally", "throw_ally", "ability_near_ally", "hit_near_ally", "ability_near_object", "ability_area_ally"):
+            if ttype not in ("ability_on_ally", "beam_via_ally", "throw_ally", "ability_near_ally", "hit_near_ally", "ability_near_object", "ability_area_ally", "hp_below_near"):
                 raise ValueError(f"{name}: unbekannter Ausloeser-Typ '{ttype}'")
             beam = ttype == "beam_via_ally"
             by = t["by"]
-            on = t["via"] if beam else (t["owner"] if ttype == "ability_near_object" else (t["ally"] if ttype == "ability_area_ally" else (t["near"] if ttype in ("ability_near_ally", "hit_near_ally") else t["target"])))
+            on = t["via"] if beam else (t["owner"] if ttype == "ability_near_object" else (t["unit"] if ttype == "hp_below_near" else t["ally"] if ttype == "ability_area_ally" else (t["near"] if ttype in ("ability_near_ally", "hit_near_ally") else t["target"])))
             if by not in units or "name" not in units[by] or on not in units or "name" not in units[on]:
                 raise ValueError(f"{name}: unbekannte Figur im Ausloeser")
             if by == on:
@@ -381,6 +381,22 @@ def save_secrets(body: dict) -> None:
                                 or not isinstance(turns, int) or isinstance(turns, bool) or not 1 <= turns <= 9:
                             raise ValueError(f"{name}: Status braucht eine Kennung, Schadensminderung 0 bis 90 Prozent und 1 bis 9 Runden")
                         new_effects["status"] = {"id": sid_, "turns": turns, "reduce_pct": red}
+            elif ttype == "hp_below_near":
+                ratio = t.get("ratio", 0.5)
+                if not isinstance(ratio, (int, float)) or isinstance(ratio, bool) or not 0.05 <= ratio <= 0.95:
+                    raise ValueError(f"{name}: die Lebensgrenze muss 5 bis 95 Prozent sein")
+                if (by, "hp_below_near", on) in triples:
+                    raise ValueError(f"{name}: dieser Ausloeser kommt zweimal vor")
+                triples.add((by, "hp_below_near", on))
+                ef = sec["effects"]
+                heal, rad, dmg = ef.get("heal_to_pct", 75), ef.get("radius", 1), ef.get("dmg_pct", 100)
+                for label, v, lo, hi in (("Heilung", heal, 1, 100), ("Umkreis", rad, 1, 3), ("Schaden", dmg, 10, 300)):
+                    if not isinstance(v, int) or isinstance(v, bool) or not lo <= v <= hi:
+                        raise ValueError(f"{name}: {label} muss {lo} bis {hi} sein")
+                new_trigger = {"type": "hp_below_near", "by": by, "unit": on, "ratio": float(ratio)}
+                new_effects = {"heal_to_pct": heal, "radius": rad, "dmg_pct": dmg}
+                if isinstance(ef.get("shout"), str) and ef["shout"].strip():
+                    new_effects["shout"] = ef["shout"].strip()[:40]
             elif ttype == "ability_area_ally":
                 ab = t["ability"]
                 if ab not in units[by].get("abilities", []) or abilities.get(ab, {}).get("target") != "self" or not abilities.get(ab, {}).get("area") \
@@ -529,7 +545,10 @@ def save_secrets(body: dict) -> None:
                     raise ValueError(f"{name}: Zeile {n}: Sprecher '{units.get(l.get('speaker'), {}).get('name', l.get('speaker'))}' gehoert nicht zum Ausloeser (nur {units[by]['name']} und {units[on]['name']})")
                 if len(txt) > 400:
                     raise ValueError(f"{name}: Zeile {n} ist zu lang (hoechstens 400 Zeichen)")
-                lines.append({"speaker": l["speaker"], "text": txt})
+                line = {"speaker": l["speaker"], "text": txt}
+                if l.get("blush") in (by, on):
+                    line["blush"] = l["blush"]
+                lines.append(line)
             if len(lines) > 12:
                 raise ValueError(f"{name}: die Szene darf hoechstens 12 Zeilen haben")
             for c in (by, on):

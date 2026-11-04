@@ -91,6 +91,15 @@ static func find_area(by: String, ability: String, ally: String) -> Dictionary:
 	return {}
 
 
+## Das Geheimnis, bei dem "by" ihren Schuetzling "unit" beschuetzt, wenn dessen Leben unter die Grenze faellt (Typ hp_below_near), oder {}.
+static func find_protect(by: String, unit: String) -> Dictionary:
+	for s: Dictionary in all():
+		var t: Dictionary = s["trigger"]
+		if t.get("type", "") == "hp_below_near" and t["by"] == by and t["unit"] == unit:
+			return s
+	return {}
+
+
 static func by_id(id: String) -> Dictionary:
 	for s: Dictionary in all():
 		if s["id"] == id:

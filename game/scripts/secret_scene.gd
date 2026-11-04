@@ -11,19 +11,23 @@ var _intro_done := false
 var _t := 0.0
 var _base := {}
 var _breath := 0.0
+var _blush: TextureRect       # Portrait, das gerade errötet ist
 
 
 func setup_secret(sec: Dictionary, unit_names: Dictionary) -> void:
 	secret = sec
 	var sc: Dictionary = sec["scene"]
 	var by: String = sec["trigger"]["by"]
-	var on: String = sec["trigger"].get("target", sec["trigger"].get("via", sec["trigger"].get("near", "")))
+	var on: String = sec["trigger"].get("target", sec["trigger"].get("via", sec["trigger"].get("near", sec["trigger"].get("unit", sec["trigger"].get("ally", "")))))
 	var nm := unit_names.duplicate()
 	nm[sc["left"]] = unit_names.get(by, by)
 	nm[sc["right"]] = unit_names.get(on, on)
 	var out: Array = []
 	for l: Dictionary in sc["lines"]:
-		out.append({"speaker": sc["left"] if l["speaker"] == by else sc["right"], "left": sc["left"], "right": sc["right"], "text": l["text"]})
+		var line := {"speaker": sc["left"] if l["speaker"] == by else sc["right"], "left": sc["left"], "right": sc["right"], "text": l["text"]}
+		if l.has("blush"):
+			line["blush"] = sc["left"] if l["blush"] == by else sc["right"]
+		out.append(line)
 	setup(out, nm)
 	voices = {sc["left"]: by, sc["right"]: on}      # Brabbel-Laut der Figuren statt der Portraitnamen
 
@@ -49,7 +53,15 @@ func _ready() -> void:
 func _advance() -> void:
 	if not _intro_done:
 		return
+	var before := _idx
 	super._advance()
+	if _idx == before:
+		return          # nur der Text wurde fertig getippt
+	if _idx >= 0 and _idx < lines.size() and lines[_idx].has("blush"):
+		_blush = _left if lines[_idx]["blush"] == lines[_idx]["left"] else _right        # Figur laeuft rot an (bleibt es bis zum Ende)
+	if _blush != null and _idx < lines.size():
+		var tw := create_tween()
+		tw.tween_property(_blush, "modulate", _blush.modulate * Color(1.0, 0.42, 0.45), 0.7)
 
 
 func _play_intro() -> void:
