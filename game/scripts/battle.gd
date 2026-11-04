@@ -3421,15 +3421,15 @@ func _near_reactions(u: Dictionary, id: String) -> void:
 
 
 ## Geheimnis "Klebekanone" (Typ ability_near_object): Setzt u die Faehigkeit ein, waehrend neben u ein Bienenkorb der Figur "owner" steht, wird der
-## Schuss zur Klebekanone: alle Gegner im Umkreis des Einschlags sind 2 Runden festgeklebt (koennen sich nicht bewegen). Beim ersten Mal Szene und Polarlicht-Auftritt.
-func _object_reactions(u: Dictionary, id: String, target: Dictionary) -> void:
-	if not units.has(u) or u["team"] != "p" or not target.has("pos"):
-		return
+## Schuss zur Klebekanone. Zuerst (beim ersten Mal) Szene und Polarlicht-Auftritt, DANACH feuert die Kanone, und der Klebeeffekt wirkt schon auf
+## diesen Schuss: alle Gegner im Umkreis des Einschlags sind 2 Runden festgeklebt. Rueckgabe: das Geheimnis oder {}.
+func _object_secret(u: Dictionary, id: String, target: Dictionary) -> Dictionary:
+	if not units.has(u) or u["team"] != "p" or not target.has("pos") or target.get("tile", false):
+		return {}
 	var sec := Secrets.find_object(u["id"], id)
 	if sec.is_empty():
-		return
+		return {}
 	var tr: Dictionary = sec["trigger"]
-	var hive := {}
 	for o in world.objects:
 		if o["type"] == str(tr["object"]) and o["state"] == "active" and Grid.dist(u["pos"], o["pos"]) <= 1:
 			var owner := {}
@@ -3437,18 +3437,26 @@ func _object_reactions(u: Dictionary, id: String, target: Dictionary) -> void:
 				if w["uid"] == str(o.get("owner", "")):
 					owner = w
 			if owner.is_empty() or owner["id"] == str(tr["owner"]):
-				hive = o
-	if hive.is_empty():
+				return sec
+	return {}
+
+
+## Szene und Auftritt des Geheimnisses (nur beim ersten Mal), vor dem Schuss.
+func _object_secret_intro(u: Dictionary, sec: Dictionary) -> void:
+	if secrets_seen.has(sec["id"]):
 		return
+	secrets_seen.append(sec["id"])
+	if secret_runner.is_valid():
+		await secret_runner.call(sec)
+	var ci: Dictionary = (sec["effects"] as Dictionary).get("cutin", {})
+	if not ci.is_empty():
+		await _super_cutin(u, {}, str(ci.get("title", sec["name"])), str(ci.get("sub", "")))
+		_super_music_stop()
+
+
+## Klebeeffekt am Einschlag (nach dem Schaden der Kanone).
+func _object_apply(u: Dictionary, sec: Dictionary, target: Dictionary) -> void:
 	var ef: Dictionary = sec["effects"]
-	if not secrets_seen.has(sec["id"]):
-		secrets_seen.append(sec["id"])
-		if secret_runner.is_valid():
-			await secret_runner.call(sec)
-		var ci: Dictionary = ef.get("cutin", {})
-		if not ci.is_empty():
-			await _super_cutin(u, {}, str(ci.get("title", sec["name"])), str(ci.get("sub", "")))
-			_super_music_stop()
 	var at: Vector3 = to_world(target["pos"]) + Vector3(0, 0.4, 0)
 	var tiles := _area_tiles({"area": {"shape": "radius", "r": int(ef.get("radius", 2))}}, target["pos"])
 	var glue := fx.make_sprite("fx_kleber", at + Vector3(0, 0.3, 0), 2.6, false, Color.WHITE, 3)
@@ -3782,6 +3790,9 @@ func _run_ability(u: Dictionary, id: String, target: Dictionary) -> void:
 			await _run_reflect(u, id, target, bb["via"], bb["sec"])
 			return
 		catch_bb = bb          # "catch": der Angriff laeuft normal weiter, die Figur im Weg faengt etwas auf
+	var glue_sec := _object_secret(u, id, target)      # Klebekanone: erst Szene und Auftritt, danach der Schuss
+	if not glue_sec.is_empty():
+		await _object_secret_intro(u, glue_sec)
 	u["st"]["abs"] += 1
 	Items.start_cooldown(u, id, int(ab["cd"]))
 	_actor = u
@@ -3810,7 +3821,8 @@ func _run_ability(u: Dictionary, id: String, target: Dictionary) -> void:
 		_super_music_stop()
 	await _near_reactions(u, id)
 	await _hit_near_reactions(u, id, target)
-	await _object_reactions(u, id, target)
+	if not glue_sec.is_empty() and units.has(u):
+		await _object_apply(u, glue_sec, target)
 	_check_end()
 
 

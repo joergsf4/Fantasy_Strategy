@@ -126,5 +126,27 @@ func _initialize() -> void:
 	s4["hp"] = 200
 	await b3._run_ability(eli2, "kanone", s4)
 	check(not Status.has(s4, "klebrig"), "Ohne Bienenkorb neben Elisabeth: normale Kanone")
+	# Reihenfolge beim ersten Mal: erst Szene (und Auftritt), danach feuert die Kanone
+	var b4 := _make(defs, m1)
+	await process_frame
+	for u in b4.units.duplicate():
+		b4.units.erase(u)
+		(u["node"] as Node3D).queue_free()
+	b4._spawn("elisabeth", "p", Vector2i(3, 7))
+	var eli4: Dictionary = b4.units.back()
+	b4._spawn("bienenmaedchen", "p", Vector2i(2, 7))
+	var bee4: Dictionary = b4.units.back()
+	var hive4 := b4.world.add_object("hive_p", Vector2i(3, 8), {"owner": bee4["uid"]})
+	b4._make_object(hive4)
+	b4._spawn("soldat_infanterie", "e", Vector2i(6, 7))
+	var t4: Dictionary = b4.units.back()
+	t4["hp"] = 200
+	t4["maxhp"] = 200
+	var order := []
+	b4.secret_runner = func(_sec: Dictionary) -> void:
+		order.append("szene hp=%d klebrig=%s" % [t4["hp"], str(Status.has(t4, "klebrig"))])
+	await b4._run_ability(eli4, "kanone", t4)
+	check(order.size() == 1 and order[0] == "szene hp=200 klebrig=false", "Szene laeuft VOR dem Schuss (Ziel noch unversehrt): %s" % [order])
+	check(t4["hp"] < 200 and Status.has(t4, "klebrig") and b4.secrets_seen.has("klebekanone"), "danach trifft die Kanone und klebt")
 	print("woelfe: ", "OK" if fails == 0 else "%d Fehler" % fails)
 	quit(fails)
