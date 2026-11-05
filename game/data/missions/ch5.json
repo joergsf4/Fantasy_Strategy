@@ -27,7 +27,7 @@
        "left": "maedchen_baer",
        "right": "waisenkinder",
        "speaker": "waisenkinder",
-       "text": "Hilfe! Die Bienen! Wenn jemand die Glocke am Haus läutet, hört der Hundsfreund sie bis ins Tal!",
+       "text": "Wenn jemand die Glocke am Haus läutet, hört der Hundsfreund sie bis ins Tal!",
        "story": true
       },
       {
@@ -48,12 +48,12 @@
        "left": "maedchen_baer",
        "right": "waisenkinder",
        "speaker": "maedchen_baer",
-       "text": "Die Glocke hängt ja hoch. Einer von uns muss sie läuten.",
+       "text": "Klein seid ihr wirklich. Brumm, Räuberleiter?",
        "story": true,
        "voices": [
         {
          "id": "wendy",
-         "text": "Mäh, die hängt ja hoch. Einer von uns muss sie läuten."
+         "text": "Mäh, klein seid ihr wirklich. Ich stell mich auf die Zehenspitzen."
         }
        ]
       }
@@ -450,7 +450,7 @@
     "left": "$hero",
     "right": "bienenmaedchen",
     "speaker": "bienenmaedchen",
-    "text": "Ich komme wieder. Mit mehr Bienen!",
+    "text": "Bsss! Meine Mädels stechen nachtragend.",
     "right_expr": "wuetend",
     "story": true
    }

@@ -4,15 +4,15 @@
    "left": "maedchen_baer",
    "right": "",
    "speaker": "maedchen_baer",
-   "text": "Seht ihr den Rauch? Das ist Mühlbach. Das Dorf liegt in Flammen!",
+   "text": "Mühlbach brennt.",
    "voices": [
     {
      "id": "wendy",
-     "text": "Mäh! Seht ihr den Rauch? Das ist Mühlbach. Das Dorf liegt in Flammen!"
+     "text": "Mäh! Mühlbach brennt!"
     },
     {
      "id": "ritter",
-     "text": "Rauch über Mühlbach! Das Dorf steht in Flammen. Zu den Waffen – oder besser: zu den Eimern!"
+     "text": "Mühlbach brennt! Zu den Waffen – oder besser: zu den Eimern!"
     },
     {
      "id": "samurai",
@@ -27,13 +27,7 @@
    "speaker": "maedchen_baer",
    "left_expr": "wuetend",
    "text": "Der Regent schickt seine Brandstifter voraus. Los, bevor das Feuer in den Wald springt!",
-   "story": true
-  },
-  {
-   "left": "maedchen_baer",
-   "right": "",
-   "speaker": "maedchen_baer",
-   "text": "Brandstifter und Feuer. Wir brauchen Wasser, und zwar viel!",
+   "story": true,
    "voices": [
     {
      "id": "braumeisterin",
@@ -42,14 +36,13 @@
     },
     {
      "id": "elisabeth",
-     "text": "Wasser? Davon hab ich ein ganzes Meer! …Leider nicht hier. Egal, Eimerkette!"
+     "text": "Wasser! Davon hab ich ein ganzes Meer! …Leider nicht hier. Egal, Eimerkette!"
     },
     {
      "id": "kungfu",
      "text": "Feuer gehorcht dem, der ruhig bleibt. Und dem, der Eimer trägt."
     }
-   ],
-   "story": true
+   ]
   },
   {
    "left": "quacksalber",
@@ -100,25 +93,11 @@
    "left": "maedchen_baer",
    "right": "",
    "speaker": "maedchen_baer",
-   "text": "Wir haben es geschafft. Die Rauchwolke wird kleiner.",
-   "voices": [
-    {
-     "id": "wendy",
-     "text": "Mäh, wir haben es geschafft. Die Rauchwolke wird kleiner.",
-     "expr": "lachend"
-    }
-   ],
-   "story": true
-  },
-  {
-   "left": "maedchen_baer",
-   "right": "",
-   "speaker": "maedchen_baer",
-   "text": "Der Regent zündet Dörfer an, um uns aufzuhalten. Das wird er bereuen.",
+   "text": "Wer Dörfer anzündet, um drei Leute aufzuhalten, hat Angst vor drei Leuten.",
    "voices": [
     {
      "id": "ritter",
-     "text": "Der Regent zündet Dörfer an, um uns aufzuhalten. Das wird er bereuen."
+     "text": "Wer Dörfer anzündet, um drei Leute aufzuhalten, hat Angst vor drei Leuten."
     },
     {
      "id": "samurai",

@@ -1,23 +1,10 @@
 {
  "intro": [
   {
-   "left": "maedchen_baer",
-   "right": "hund",
-   "speaker": "maedchen_baer",
-   "text": "Der Weg nach Westen führt über diesen Fluss. Lotte sagte, die Kinder seien in den Wald gebracht worden.",
-   "story": true,
-   "voices": [
-    {
-     "id": "ritter",
-     "text": "Der Weg nach Westen führt über diesen Fluss. Lotte sagte, die Kinder seien in den Wald gebracht worden."
-    }
-   ]
-  },
-  {
    "left": "hund",
    "right": "",
    "speaker": "hund",
-   "text": "Dann los! Jede Stunde zählt.",
+   "text": "Los, schneller! Die Kinder warten.",
    "left_expr": "wuetend",
    "story": true
   },
@@ -25,12 +12,12 @@
    "left": "hund",
    "right": "maedchen_baer",
    "speaker": "maedchen_baer",
-   "text": "Die Zugbrücke ist hochgezogen. Und drüben stehen Schweine, die sehr zufrieden aussehen.",
+   "text": "Da drüben stehen Schweine, die sehr zufrieden aussehen.",
    "story": true,
    "voices": [
     {
      "id": "elisabeth",
-     "text": "Die Zugbrücke ist hochgezogen. Und drüben stehen Schweine, die sehr zufrieden aussehen."
+     "text": "Da drüben stehen Schweine, die sehr zufrieden aussehen."
     }
    ]
   },
@@ -70,7 +57,7 @@
    "left": "hund",
    "right": "",
    "speaker": "hund",
-   "text": "Der Weg ist frei. Weiter in den Wald, zu den Kindern!",
+   "text": "Weiter. Ich rieche sie fast.",
    "left_expr": "wuetend",
    "story": true
   },

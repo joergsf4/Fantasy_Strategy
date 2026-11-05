@@ -35,7 +35,7 @@
    "left": "hund",
    "right": "maja",
    "speaker": "hund",
-   "text": "Die Zwillinge! Macht euch bereit, sie wollen das Haus anzünden!",
+   "text": "Nicht mein Haus. Nicht noch mal.",
    "left_expr": "wuetend",
    "story": true
   }
@@ -45,14 +45,14 @@
    "left": "maedchen_baer",
    "right": "hund",
    "speaker": "maedchen_baer",
-   "text": "Das Waisenhaus ist endgültig gerettet. Aber wer dieser Meister ist, wissen wir immer noch nicht.",
+   "text": "Und wer ist nun dieser Meister?",
    "story": true
   },
   {
    "left": "maedchen_baer",
    "right": "hund",
    "speaker": "hund",
-   "text": "Irgendjemand muss ihn doch kennen. Die Zwillinge, der Regent, der Professor... alle sprechen von ihm.",
+   "text": "Jeder redet von ihm. Keiner hat ihn gesehen.",
    "story": true
   },
   {
@@ -97,7 +97,7 @@
    "left": "hund",
    "right": "mutter",
    "speaker": "hund",
-   "text": "Bianca! Du bist hier, und das Baby auch!",
+   "text": "Bianca? Und … der Kleine. Hallo, Kleiner. Bitte nicht schreien.",
    "left_expr": "lachend",
    "story": true
   },
@@ -127,7 +127,7 @@
    "left": "bienenmaedchen",
    "right": "maedchen_baer",
    "speaker": "bienenmaedchen",
-   "text": "Endlich ein Plan. Ich komme mit, aber nur aus Berechnung. Der Meister hat meine Stöcke verbrannt.",
+   "text": "Endlich ein Plan. Ich komme mit, aber nur aus Berechnung.",
    "left_expr": "wuetend",
    "story": true
   },

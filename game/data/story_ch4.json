@@ -20,19 +20,6 @@
    "text": "Hört ihr das Geschrei? Das Baby hat Lungen für drei. Jeder im Umkreis weiß, wo wir hinmüssen, und die Wachen auch.",
    "left_expr": "wuetend",
    "story": true
-  },
-  {
-   "left": "maedchen_baer",
-   "right": "",
-   "speaker": "maedchen_baer",
-   "text": "Wir müssen die beiden retten. Dem Kind darf nichts geschehen!",
-   "story": true,
-   "voices": [
-    {
-     "id": "wendy",
-     "text": "Mäh. Wir müssen die beiden retten. Dem Kind darf nichts geschehen!"
-    }
-   ]
   }
  ],
  "outro": [
@@ -40,12 +27,12 @@
    "left": "maedchen_baer",
    "right": "",
    "speaker": "maedchen_baer",
-   "text": "Geschafft. Die Mutter ist in Sicherheit, und das Baby hat aufgehört zu brüllen.",
+   "text": "Das Baby schläft. Ich glaube, es hat uns gewinnen lassen.",
    "story": true,
    "voices": [
     {
      "id": "wendy",
-     "text": "Mäh, geschafft. Die Mutter ist in Sicherheit, und das Baby hat aufgehört zu brüllen.",
+     "text": "Mäh, das Baby schläft. Ich glaube, es hat uns gewinnen lassen.",
      "expr": "lachend"
     }
    ]
@@ -54,12 +41,12 @@
    "left": "",
    "right": "maedchen_baer",
    "speaker": "maedchen_baer",
-   "text": "Und eine Großmutter mit fliegendem Gebiss ist uns entkommen. Die vergesse ich nicht.",
+   "text": "Und die Oma mit dem Gebiss? … Weg. Die sehen wir wieder.",
    "story": true,
    "voices": [
     {
      "id": "kungfu",
-     "text": "Und eine Großmutter mit fliegendem Gebiss ist uns entkommen. Die vergesse ich nicht."
+     "text": "Und die Oma mit dem Gebiss? … Weg. Die sehen wir wieder."
     }
    ]
   },

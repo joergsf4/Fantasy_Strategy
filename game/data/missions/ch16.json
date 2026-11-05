@@ -389,7 +389,7 @@
        "left": "museklaugust",
        "right": "",
        "speaker": "museklaugust",
-       "text": "Gold! Gebt es mir! Ich bin König! Das ist legal!"
+       "text": "Gold! Wenn Xiùlán es nicht will, nehme ich es. Für die Perückenpflege."
       }
      ]
     }
@@ -504,7 +504,7 @@
        "left": "panzer",
        "right": "",
        "speaker": "panzer",
-       "text": "Zwei Zivilisten streiten. Ich fahre dazwischen. Das beendet jede Diskussion."
+       "text": "Zwei Zivilisten streiten. Mein Zielcomputer weiß nicht, wen er zuerst nehmen soll. Ich auch nicht."
       }
      ]
     }
@@ -517,7 +517,7 @@
     "left": "$hero",
     "right": "kugelblitz",
     "speaker": "kugelblitz",
-    "text": "Ich verlange eine Gehaltserhöhung! Und Urlaub! Ich komme wieder!",
+    "text": "Ich verlange eine Gehaltserhöhung! Und Urlaub! Und eine neue Frisur!",
     "right_expr": "wuetend",
     "story": true
    }

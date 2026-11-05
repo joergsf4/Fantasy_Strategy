@@ -33,7 +33,7 @@
    "left": "magical_girl",
    "right": "maedchen_baer",
    "speaker": "magical_girl",
-   "text": "Ich heile und beschütze! Naja und austeilen kann ich auch ganz gut. Macht der Sternnebel macht auf!!",
+   "text": "Ich heile und beschütze! Naja und austeilen kann ich auch ganz gut. Macht des Sternennebels, erwache!",
    "left_expr": "lachend",
    "story": true
   },
@@ -41,12 +41,12 @@
    "left": "maedchen_baer",
    "right": "magical_girl",
    "speaker": "maedchen_baer",
-   "text": "Hallo! Wer heilt, sollte sich kennen: Ich bin Mira, das ist Brumm, und wir geben auf euch acht.",
+   "text": "Ich bin Mira, das ist Brumm. Er mag Glitzer nicht. Er mag Honig.",
    "story": true,
    "voices": [
     {
      "id": "quacksalber",
-     "text": "Hallo gnädiges Fräulein! Wer heilt, sollte sich kennen: Ich mit Salbe, du mit Sternen. Meine Nebenwirkungen sind überschaubar."
+     "text": "Hallo gnädiges Fräulein! Wer heilt, sollte sich kennen: Ich mit Salbe, du mit Sternen."
     }
    ]
   },
@@ -54,7 +54,7 @@
    "left": "",
    "right": "maedchen_baer",
    "speaker": "maedchen_baer",
-   "text": "Das klingt gut. Jeder Heiler zählt.",
+   "text": "Hauptsache, du wirfst nicht mit Gebissen.",
    "story": true,
    "voices": [
     {
@@ -78,12 +78,12 @@
    "left": "maedchen_baer",
    "right": "",
    "speaker": "maedchen_baer",
-   "text": "Die Zwillinge sind erledigt. Der Weg zur Insel ist frei!",
+   "text": "Der Hafen gehört uns. Jetzt ins Landesinnere.",
    "story": true,
    "voices": [
     {
      "id": "elisabeth",
-     "text": "Die Zwillinge sind erledigt. Der Weg zur Insel ist frei!",
+     "text": "Der Hafen gehört uns. Jetzt ins Landesinnere.",
      "expr": "lachend"
     }
    ]
@@ -92,7 +92,7 @@
    "left": "magical_girl",
    "right": "",
    "speaker": "magical_girl",
-   "text": "Das war aufregend! Wir haben tatsächlich gewonnen, und ich habe sogar ein paar Leute geheilt!",
+   "text": "Hat jemand gesehen, wie ich geglitzert habe? Bitte sagt ja.",
    "story": true
   },
   {
@@ -104,7 +104,7 @@
    "voices": [
     {
      "id": "quacksalber",
-     "text": "Ich heile immer. Manchmal sogar ohne Nebenwirkungen.",
+     "text": "Ich heile immer. Ob es hilft, ist eine andere Frage.",
      "expr": "lachend"
     }
    ]

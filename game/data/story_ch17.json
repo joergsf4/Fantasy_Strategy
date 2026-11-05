@@ -4,7 +4,7 @@
    "left": "maedchen_baer",
    "right": "",
    "speaker": "maedchen_baer",
-   "text": "Der Sumpf liegt hinter uns, vor uns beginnt das Gebirge. Hier oben liegt Schnee, so weit man sehen kann.",
+   "text": "Schnee. Überall Schnee.",
    "story": true
   },
   {
@@ -59,17 +59,10 @@
    "story": true
   },
   {
-   "left": "maedchen_baer",
-   "right": "",
-   "speaker": "maedchen_baer",
-   "text": "Nach einem langen, beschwerlichen Aufstieg bricht die Nacht herein. Der Mond steht hell über dem Schnee.",
-   "story": true
-  },
-  {
    "left": "hund",
    "right": "maedchen_baer",
    "speaker": "hund",
-   "text": "Hört ihr das? Da heult etwas. Mehr als eines.",
+   "text": "Es wird Nacht. Hört ihr das? Da heult etwas. Mehr als eines.",
    "left_expr": "wuetend",
    "story": true
   }

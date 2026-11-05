@@ -4,7 +4,7 @@
    "left": "maedchen_baer",
    "right": "bienenmaedchen",
    "speaker": "maedchen_baer",
-   "text": "Vor uns liegt der Sumpf, dahinter beginnen die Berge. Bleibt auf dem festen Boden.",
+   "text": "Bleibt auf dem festen Boden. Brumm, das gilt auch für dich.",
    "story": true
   },
   {
@@ -26,18 +26,11 @@
    "left": "maedchen_baer",
    "right": "bienenmaedchen",
    "speaker": "maedchen_baer",
-   "text": "Seid ihr bereit? Da vorne bewegt sich etwas Großes aus Metall.",
+   "text": "Da vorne quietscht was. Groß.",
    "story": true
   }
  ],
  "outro": [
-  {
-   "left": "maedchen_baer",
-   "right": "hund",
-   "speaker": "maedchen_baer",
-   "text": "Wart und die Frischlinge sind geschlagen, aber der Sumpf nimmt kein Ende.",
-   "story": true
-  },
   {
    "left": "hund",
    "right": "bienenmaedchen",

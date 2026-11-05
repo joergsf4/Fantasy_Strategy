@@ -38,7 +38,7 @@
        "left": "hund",
        "right": "bienenmaedchen",
        "speaker": "bienenmaedchen",
-       "text": "Das ist ihr Anführer. Der Schneeweiße. Ich hasse Wölfe, sie sind zu laut.",
+       "text": "Die Große da. Die Weiße. Die ist der Chef. Ich hasse Wölfe, sie sind zu laut.",
        "right_expr": "wuetend",
        "story": true
       },
@@ -46,12 +46,12 @@
        "left": "hund",
        "right": "maedchen_baer",
        "speaker": "hund",
-       "text": "Die armen Wölfe. Wenn man sie nur vertreiben könnte, ohne dass jemand verletzt wird.",
+       "text": "Das sind keine Soldaten. Die haben nur Hunger. … Ich kenne das.",
        "story": true,
        "voices": [
         {
          "id": "wendy",
-         "text": "Die armen Wölfe. Wenn man sie nur vertreiben könnte, ohne dass jemand verletzt wird."
+         "text": "Mäh … das sind keine Soldaten. Die haben nur Hunger."
         }
        ]
       }
@@ -119,7 +119,7 @@
        "left": "hund",
        "right": "alphawolf",
        "speaker": "hund",
-       "text": "Sie ist mutig. Sie hat keine Angst vor uns. Sie wollte nur sehen, wer wir sind.",
+       "text": "Sie wollte nur sehen, wer wir sind.",
        "left_expr": "lachend",
        "story": true
       },
@@ -135,7 +135,7 @@
        "left": "maedchen_baer",
        "right": "alphawolf",
        "speaker": "alphawolf",
-       "text": "*Sie senkt den Kopf vor Mira und stellt sich neben die Gruppe. Eine neue Gefährtin.*",
+       "text": "*Sie senkt den Kopf vor Mira und stellt sich neben die Gruppe.*",
        "right_expr": "lachend",
        "story": true
       }
@@ -165,12 +165,6 @@
    "do": [
     {
      "dialogue": [
-      {
-       "left": "maedchen_baer",
-       "right": "alphawolf",
-       "speaker": "maedchen_baer",
-       "text": "Jetzt gibt es kein Zurück. Das Rudel wird alles geben."
-      },
       {
        "left": "maedchen_baer",
        "right": "alphawolf",
@@ -223,7 +217,7 @@
        "left": "maedchen_baer",
        "right": "wendy",
        "speaker": "maedchen_baer",
-       "text": "Das Rudel ist geschlagen. Der Weg über den Pass ist frei."
+       "text": "Ruhe. Endlich."
       },
       {
        "left": "bienenmaedchen",

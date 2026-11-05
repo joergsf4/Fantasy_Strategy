@@ -1,7 +1,16 @@
 # Dialoge: Verbesserungsvorschläge (Stand 2026-11-05)
 
 Durchgesehen: alle Einleitungen, Auslöser-Gespräche, Fluchtzeilen und Abschlüsse von Mission 1 bis 18 sowie alle Geheimnis-Szenen.
-Noch nichts davon ist eingebaut. Die Liste ist zum Abhaken gedacht: Was übernommen werden soll, einfach sagen (zum Beispiel „M9 komplett, M14 nur 2 und 4“).
+
+**Status: komplett umgesetzt (2026-11-05).** Abweichungen vom Vorschlag, weil die Zeilen sonst nicht zusammengepasst hätten:
+- M2: „Ein Tor in einer Mauer. Zu. Natürlich.“ (Muskelaugust antwortet direkt auf die Mauer).
+- M4: Xiùláns Antwort kann nicht je nach Sprecher wechseln. Darum verbeugt sich jetzt auch Mira, und Xiùlán sagt „Kindchen“ statt „Jungchen“ (passt zu Lin und Mira). Im Abschluss „gewinnen lassen“ statt „gewonnen lassen“ (Fehler im Vorschlag).
+- M12: „Dann los! Jede Stunde zählt.“ hing an der gestrichenen Zeile, jetzt „Los, schneller! Die Kinder warten.“
+- M13: „Ein Ruck, ein Knacken… Was war das?“ bleibt, weil die Kinder darauf antworten. Nur „Wart?! Das ist unmöglich!“ ist ersetzt.
+- M14: Stachelias erste Motivzeile bleibt (Miras „Dann haben wir wenigstens dasselbe Ziel“ bezieht sich darauf). Gekürzt ist stattdessen die zweite: „Endlich ein Plan. Ich komme mit, aber nur aus Berechnung.“
+- M15: Gestrichen ist die Zeile im Abschluss, der Auslöser bleibt.
+- M17: Die Erzählzeile ist gestrichen, dafür beginnt der Hundsfreund mit „Es wird Nacht.“
+- Muster 8 und 10 sind ebenfalls umgesetzt: Abgänge ohne „Ich komme wieder“ (Xiùlán, Stachelia, Kugelblitz, Maja, Oskar), weniger Wiederholungen bei Elisabeth (M3, M14), Robina (M9, M16, Schmiermittel), Muskelaugust (M7, M16) und Humbug (M7). Wart und seine Frischlinge behalten ihr „Wir kommen wieder“.
 
 ## Schon erledigt
 

@@ -21,14 +21,14 @@
    "left": "hund",
    "right": "",
    "speaker": "hund",
-   "text": "Keine Spuren, keine Wachen. Nur ein dünner Rauchfaden. Wer wohnt in so einer Gegend?",
+   "text": "Rauch aus dem Schornstein. Wer wohnt freiwillig hier oben?",
    "story": true
   },
   {
    "left": "maedchen_baer",
    "right": "",
    "speaker": "maedchen_baer",
-   "text": "Finden wir es heraus. Sei wachsam, Brumm!",
+   "text": "Brumm, du klopfst.",
    "story": true
   }
  ],
@@ -45,7 +45,7 @@
    "left": "maedchen_baer",
    "right": "fuerst_lumpen",
    "speaker": "maedchen_baer",
-   "text": "Erst bekommst du eine Decke. Und dann erzählst du uns alles über den Meister.",
+   "text": "Erst bekommst du eine zweite Decke. Und dann erzählst du uns alles über den Meister.",
    "story": true,
    "voices": [
     {
@@ -59,7 +59,7 @@
    "left": "maedchen_baer",
    "right": "fuerst_lumpen",
    "speaker": "fuerst_lumpen",
-   "text": "Ich habe ihn nur ein einziges Mal getroffen, und da war er im Schatten. Ich konnte ihn nicht sehen. Nur einen blauen Mantel oder Pelz.",
+   "text": "Ich habe ihn nur ein einziges Mal getroffen, und da stand er im Schatten. Nur ein blauer Mantel. Oder Pelz.",
    "story": true,
    "right_expr": "weinerlich"
   },

@@ -38,6 +38,14 @@
       {
        "left": "hund",
        "right": "kugelblitz",
+       "speaker": "kugelblitz",
+       "text": "Prof. Kugelblitz, zu Ihren Diensten. Sie werden gleich verstehen, wie sehr man elektrisiert sein kann!",
+       "right_expr": "wuetend",
+       "story": true
+      },
+      {
+       "left": "hund",
+       "right": "kugelblitz",
        "speaker": "hund",
        "text": "Gebt uns die Kinder zurück!",
        "left_expr": "wuetend",
@@ -49,14 +57,6 @@
        "speaker": "kugelblitz",
        "text": "Zurückgeben? Ich zapfe sie nur ein wenig an. Mit dem Honig als Katalysator fließt ihre Lebensenergie direkt zum Meister!",
        "right_expr": "lachend",
-       "story": true
-      },
-      {
-       "left": "hund",
-       "right": "kugelblitz",
-       "speaker": "kugelblitz",
-       "text": "Prof. Kugelblitz, zu Ihren Diensten. Sie werden gleich verstehen, wie sehr man elektrisiert sein kann!",
-       "right_expr": "wuetend",
        "story": true
       }
      ]
@@ -90,7 +90,7 @@
        "left": "robo",
        "right": "kugelblitz",
        "speaker": "robo",
-       "text": "Interessante Beobachtung: Das Ziel verliert die Kontrolle."
+       "text": "Puls des Professors: hoch. Frisur: höher."
       }
      ]
     }
@@ -285,7 +285,7 @@
        "left": "hund",
        "right": "cyborg_wart",
        "speaker": "hund",
-       "text": "Wart?! Das ist unmöglich!",
+       "text": "Nein. Nein, nein. Nicht der schon wieder.",
        "left_expr": "wuetend",
        "story": true
       },
@@ -318,7 +318,7 @@
        "left": "hund",
        "right": "kugelblitz",
        "speaker": "kugelblitz",
-       "text": "Ein Rückschlag! Ein vorübergehender Rückschlag! Der Meister wird sehr, sehr unzufrieden sein. Aber ich komme wieder, mit einer größeren Maschine!",
+       "text": "Ein Rückschlag! Ein vorübergehender Rückschlag! Der Meister wird sehr, sehr unzufrieden sein. Ich brauche eine größere Maschine!",
        "right_expr": "wuetend",
        "story": true
       }
@@ -589,7 +589,7 @@
     "left": "$hero",
     "right": "kugelblitz",
     "speaker": "kugelblitz",
-    "text": "Das ist nur ein Experiment! Ein misslungenes Experiment! Ich komme wieder, mit besseren Daten!",
+    "text": "Das ist nur ein Experiment! Ein misslungenes Experiment! Notiz: Nächstes Mal Gummistiefel!",
     "right_expr": "wuetend",
     "story": true
    }

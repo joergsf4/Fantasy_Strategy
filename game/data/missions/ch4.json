@@ -100,7 +100,7 @@
        "left": "maedchen_baer",
        "right": "xiulan",
        "speaker": "maedchen_baer",
-       "text": "Eine alte Dame am Teehaus. Ich grüße Sie, Großmutter.",
+       "text": "Eine alte Dame am Teehaus. Ich verbeuge mich, Großmutter.",
        "story": true,
        "voices": [
         {
@@ -113,7 +113,7 @@
        "left": "",
        "right": "xiulan",
        "speaker": "xiulan",
-       "text": "Verbeug dich ruhig, Jungchen. Dann hast du die Nase auf Höhe meines Knies.",
+       "text": "Verbeug dich ruhig, Kindchen. Dann hast du die Nase auf Höhe meines Knies.",
        "right_expr": "lachend",
        "story": true
       },
@@ -121,12 +121,12 @@
        "left": "maedchen_baer",
        "right": "xiulan",
        "speaker": "maedchen_baer",
-       "text": "Du bist eine bösartige Hexe!",
+       "text": "Und Sie sind für den Regenten hier?",
        "story": true,
        "voices": [
         {
          "id": "kungfu",
-         "text": "Du bist eine bösartige Hexe!"
+         "text": "Ich nehme die Verbeugung zurück."
         }
        ]
       }
@@ -215,7 +215,7 @@
        "left": "",
        "right": "xiulan",
        "speaker": "xiulan",
-       "text": "Befreit sie, Jungchen. Wir sehen uns wieder, und dann zahlt mir jemand die Zahnarztrechnung.",
+       "text": "Befreit sie, Kindchen. Wir sehen uns wieder, und dann zahlt mir jemand die Zahnarztrechnung.",
        "story": true
       }
      ]
@@ -474,7 +474,7 @@
     "left": "$hero",
     "right": "xiulan",
     "speaker": "xiulan",
-    "text": "Ich komme wieder. Mit Ersatzgebiss!",
+    "text": "Und das Gebiss bleibt hier! … Nein, doch nicht. Gebt es her!",
     "right_expr": "wuetend",
     "story": true
    }

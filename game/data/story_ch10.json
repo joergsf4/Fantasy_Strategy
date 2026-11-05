@@ -4,12 +4,12 @@
    "left": "maedchen_baer",
    "right": "",
    "speaker": "maedchen_baer",
-   "text": "Die Barrikaden am Kai sind weg, und in den Häusern brennt Licht. Alles wirkt so normal.",
+   "text": "Die Barrikaden am Kai sind weg, und in den Häusern brennt Licht. Ohne die Büttel ist es hier richtig langweilig.",
    "story": true,
    "voices": [
     {
      "id": "elisabeth",
-     "text": "Die Barrikaden am Kai sind weg, und in den Häusern brennt Licht. Alles wirkt so normal."
+     "text": "Die Barrikaden am Kai sind weg, und in den Häusern brennt Licht. Ohne die Büttel ist es hier richtig langweilig."
     }
    ]
   },
@@ -75,7 +75,7 @@
    "left": "maedchen_baer",
    "right": "hund",
    "speaker": "maedchen_baer",
-   "text": "Wir kommen mit! Ich habe so das Gefühl, dass uns das auf die Fährte des wahren Bösen bringt.",
+   "text": "Wir kommen mit. Kinder klaut man nicht.",
    "story": true
   }
  ],

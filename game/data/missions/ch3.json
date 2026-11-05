@@ -130,7 +130,7 @@
        "left": "samurai",
        "right": "soldat_beritten",
        "speaker": "samurai",
-       "text": "Seid auf der Hut! Der Feind hat berittene Truppen."
+       "text": "Pferde. Ich hasse es, nach oben zu schauen."
       },
       {
        "left": "samurai",
@@ -358,7 +358,7 @@
        "left": "$hero",
        "right": "wart",
        "speaker": "$hero",
-       "text": "Das Wildschwein vom Hohlweg! Der Regent schickt wohl alles, was Beine hat.",
+       "text": "Der schon wieder.",
        "story": true
       },
       {
@@ -516,7 +516,7 @@
        "left": "elisabeth",
        "right": "",
        "speaker": "elisabeth",
-       "text": "Brennende Häuser und kein Meer in Sicht. Ich bin beleidigt – und verschwitzt."
+       "text": "Wer hier gezündelt hat, hat keine Ahnung von Pulver. Viel zu ungleichmäßig."
       }
      ]
     }
@@ -616,7 +616,7 @@
     "right": "maja",
     "speaker": "maja",
     "right_expr": "wuetend",
-    "text": "Das war der Anfang, nicht das Ende. Der Regent erfährt davon!",
+    "text": "Der Regent erfährt davon! … Und dann erfährt er, dass ich recht hatte.",
     "story": true
    }
   ]

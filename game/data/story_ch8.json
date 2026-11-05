@@ -17,7 +17,7 @@
    "left": "",
    "right": "maedchen_baer",
    "speaker": "maedchen_baer",
-   "text": "Brumm hechelt seit einer Stunde. Wir brauchen Wasser, und zwar schnell.",
+   "text": "Brumm hechelt seit einer Stunde. Ich auch.",
    "story": true
   },
   {
@@ -47,19 +47,6 @@
    "speaker": "maedchen_baer",
    "text": "Xiùlán. Die Alte mit dem Gebiss.",
    "story": true
-  },
-  {
-   "left": "maedchen_baer",
-   "right": "",
-   "speaker": "maedchen_baer",
-   "text": "Die Oase ist der einzige Weg weiter. Wir nehmen sie ein, bevor uns die Sonne in die Knie zwingt.",
-   "story": true,
-   "voices": [
-    {
-     "id": "ritter",
-     "text": "Die Oase ist der einzige Weg weiter. Wir nehmen sie ein, bevor die Sonne uns in die Knie zwingt."
-    }
-   ]
   }
  ],
  "outro": [
@@ -96,28 +83,22 @@
    "left": "maedchen_baer",
    "right": "panzer",
    "speaker": "maedchen_baer",
-   "text": "Willkommen in der Gruppe, Robina. Der Weg zum Regenten ist offen.",
+   "text": "Robina? Brumm will auf dir mitfahren.",
    "story": true,
    "voices": [
     {
      "id": "ritter",
-     "text": "Willkommen in der Gruppe, Robina. Der Weg zum Regenten ist offen."
+     "text": "Willkommen, Robina. Darf ein alter Ritter auf Euch mitfahren?"
     }
    ]
   },
   {
    "left": "maedchen_baer",
    "right": "panzer",
-   "speaker": "maedchen_baer",
-   "text": "Ein Panzer als große Schwester. Was für eine wilde Truppe wir doch sind.",
+   "speaker": "panzer",
+   "text": "Nein.",
    "story": true,
-   "voices": [
-    {
-     "id": "elisabeth",
-     "text": "Ein Panzer als große Schwester. Was für eine wilde Truppe wir doch sind.",
-     "expr": "lachend"
-    }
-   ]
+   "right_expr": "wuetend"
   },
   {
    "left": "",

@@ -84,14 +84,8 @@
       {
        "left": "$hero",
        "right": "maedchen_baer",
-       "speaker": "maedchen_baer",
-       "text": "Wir kommen der Festung immer näher. Haltet durch, Freunde."
-      },
-      {
-       "left": "$hero",
-       "right": "maedchen_baer",
        "speaker": "$hero",
-       "text": "Brumm sträubt sich das Fell. Seid auf der Hut!",
+       "text": "Hier oben stimmt was nicht.",
        "right_expr": "wuetend"
       }
      ]
@@ -542,7 +536,7 @@
        "left": "panzer",
        "right": "",
        "speaker": "panzer",
-       "text": "Treppen. Ich hasse Treppen. Ich rolle einfach drüber. Alle ausweichen."
+       "text": "Treppen. Robo, du hast mir nie gesagt, dass es Treppen gibt."
       }
      ]
     }

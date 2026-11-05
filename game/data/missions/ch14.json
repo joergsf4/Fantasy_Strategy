@@ -47,7 +47,7 @@
        "left": "maedchen_baer",
        "right": "hund",
        "speaker": "hund",
-       "text": "Das Waisenhaus brennt! Wir haben zwei Runden, dann ist es weg!",
+       "text": "Das Dach! Schnell, bevor es einstürzt!",
        "left_expr": "wuetend",
        "story": true
       },
@@ -55,7 +55,7 @@
        "left": "maedchen_baer",
        "right": "hund",
        "speaker": "maedchen_baer",
-       "text": "Löscht es! Stellt euch neben das Feuer, oder nutzt den Fasswurf!",
+       "text": "Wasser, Bier, egal! Alles drauf!",
        "story": true
       }
      ]
@@ -174,7 +174,7 @@
        "left": "maedchen_baer",
        "right": "waisenkinder",
        "speaker": "maedchen_baer",
-       "text": "Ihr seid in Sicherheit. Das war ein Team!",
+       "text": "Alle raus? Zählt nach. … Gut.",
        "left_expr": "lachend"
       }
      ]
@@ -290,7 +290,7 @@
        "left": "elisabeth",
        "right": "",
        "speaker": "elisabeth",
-       "text": "Feuer an Land! Mein Albtraum – so viel Holz und kein Meer zum Löschen!"
+       "text": "Oskar und Maja mit Fackeln. Ich hätte sie gleich in Mühlbach versenken sollen."
       }
      ]
     }
@@ -464,7 +464,7 @@
     "left": "$hero",
     "right": "oskar",
     "speaker": "oskar",
-    "text": "Das war nur der Anfang. Der Meister vergisst nicht!",
+    "text": "Lauf, Schwesterherz! Meine Haare riechen schon wieder nach Rauch!",
     "right_expr": "wuetend",
     "story": true
    }
