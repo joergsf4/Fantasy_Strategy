@@ -4,12 +4,12 @@
    "left": "maedchen_baer",
    "right": "",
    "speaker": "maedchen_baer",
-   "text": "Der Sturm lässt nach, wenigstens ein bisschen. Seht mal, da vorn am linken Rand: eine Hütte!",
+   "text": "Der Sturm lässt nach, wenigstens ein bisschen. Seht mal, da vorn: eine Hütte!",
    "story": true,
    "voices": [
     {
      "id": "wendy",
-     "text": "Mäh! Seht ihr das? Da vorn, am linken Rand, eine Hütte! Vielleicht gibt es dort Tee!"
+     "text": "Mäh! Ich kann eine Hütte sehen. Vielleicht gibt es dort Tee!"
     },
     {
      "id": "elisabeth",
@@ -28,7 +28,7 @@
    "left": "maedchen_baer",
    "right": "",
    "speaker": "maedchen_baer",
-   "text": "Finden wir es heraus. Aber vorsichtig, und Waffen bereit.",
+   "text": "Finden wir es heraus. Sei wachsam, Brumm!",
    "story": true
   }
  ],
@@ -59,9 +59,16 @@
    "left": "maedchen_baer",
    "right": "fuerst_lumpen",
    "speaker": "fuerst_lumpen",
-   "text": "Alles? Äh… ich kenne nur Briefe. Aber in den Briefen stand viel. Und einiges davon wird euch nicht gefallen.",
+   "text": "Ich habe ihn nur ein einziges Mal getroffen, und da war er im Schatten. Ich konnte ihn nicht sehen. Nur einen blauen Mantel oder Pelz.",
    "story": true,
    "right_expr": "weinerlich"
+  },
+  {
+   "left": "hund",
+   "right": "fuerst_lumpen",
+   "speaker": "hund",
+   "text": "Ggrrr … blau, was?",
+   "story": true
   }
  ]
 }
