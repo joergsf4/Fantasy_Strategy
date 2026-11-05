@@ -39,9 +39,14 @@ func _initialize() -> void:
 	check(Mission.goal_text(b.goal, 0, 1, b._capture_info()).begins_with("Ziel: Seht nach"), "Zieltext vor dem Auftritt")
 	await b._check_end()
 	check(got.is_empty() and b.state != Battle.State.OVER, "Mission laeuft weiter")
-	# Held naehert sich der Huette (Huette bei (1,3), Abstand 3)
+	# Die Gruppe startet nah genug: ein Held erreicht mit einem Zug die Huette (Abstand 5), ohne mehrere Runden zu laufen
+	var closest := 99
+	for u in b.units:
+		closest = mini(closest, Grid.dist(u["pos"], Vector2i(1, 3)))
+	check(closest <= 7, "Start nah an der Huette: naechster Held %d Felder entfernt" % closest)
+	# Held naehert sich der Huette (Huette bei (1,3), Abstand 5)
 	var mira := b._find("maedchen_baer")
-	mira["pos"] = Vector2i(4, 3)
+	mira["pos"] = Vector2i(4, 5)
 	await b._flush_events()
 	check(not b._find("fuerst_lumpen").is_empty() and b._find("fuerst_lumpen")["team"] == "p", "Der Regent tritt als Schuetzling auf")
 	check(b._count_team("e") == 3 and b._find("cyborg_wart").size() > 0, "Robowart und zwei Frischlinge erscheinen")

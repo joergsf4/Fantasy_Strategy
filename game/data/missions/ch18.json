@@ -22,7 +22,7 @@
    "when": {
     "near_object": {
      "id": "huette",
-     "dist": 3
+     "dist": 5
     }
    },
    "note": "Der Regent tritt aus der Hütte, Robowart und die Frischlinge greifen ein",
@@ -81,7 +81,7 @@
        "id": "cyborg_wart",
        "team": "e",
        "pos": [
-        9,
+        8,
         1
        ],
        "dust": true,
@@ -91,7 +91,7 @@
        "id": "frischlinge",
        "team": "e",
        "pos": [
-        8,
+        6,
         0
        ],
        "label": "Die Frischlinge"
@@ -100,8 +100,8 @@
        "id": "frischlinge",
        "team": "e",
        "pos": [
-        10,
-        1
+        9,
+        2
        ],
        "label": "Die Frischlinge"
       }
