@@ -5,7 +5,7 @@
  "briefing": "Mitten im Schneesturm steht am Kartenrand eine einsame, schäbige Hütte. Keine Feinde in Sicht. Aber wer wohnt in so einer Gegend? Sieh nach, und sei auf alles gefasst. Wenn der Regent fällt, ist die Mission verloren: Er weiß mehr, als er sagt.",
  "interlude_before": {
   "scene": "snow",
-  "duration": 24,
+  "duration": 16,
   "title": "Der Regent im Schnee"
  },
  "goals": [

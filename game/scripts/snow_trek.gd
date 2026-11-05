@@ -11,7 +11,7 @@ const SKY := Color(0.24, 0.27, 0.33)
 const SINK := 0.34                             # so tief stecken die Figuren im Schnee (Meter)
 const WIND := Vector3(-1.0, -0.10, 0.28)       # Richtung der Schneeflocken (von rechts hinten nach links vorn)
 
-var duration := 24.0
+var duration := 16.0
 var kicker := ""
 var title := "Der Pass im Schneesturm"
 var party_ids: Array = PARTY.duplicate()       # wer mitlaeuft (Standard: feste Liste, im Spiel die gewaehlte Truppe)
@@ -28,6 +28,9 @@ var _bars: Array[ColorRect] = []
 var _t := 0.0
 var _age := 0.0
 var _done := false
+var _skipping := false
+var _fade_tw: Tween
+var _out_tw: Tween
 var _rng := RandomNumberGenerator.new()
 var _noise := FastNoiseLite.new()
 var _next_gust := 2.0
@@ -363,13 +366,15 @@ func _build_overlay() -> void:
 	_black.set_anchors_preset(Control.PRESET_FULL_RECT)
 	_black.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_black)
-	create_tween().tween_property(_black, "modulate:a", 0.0, 1.6).from(1.0)
+	_fade_tw = create_tween()
+	_fade_tw.tween_property(_black, "modulate:a", 0.0, 1.6).from(1.0)
 	var tt := create_tween()
 	tt.tween_interval(3.0)
 	tt.tween_property(box, "modulate:a", 1.0, 1.2)
 	tt.tween_interval(4.2)
 	tt.tween_property(box, "modulate:a", 0.0, 1.0)
 	var out := create_tween()
+	_out_tw = out
 	out.tween_interval(duration - 1.6)
 	out.tween_property(_black, "modulate:a", 1.0, 1.6)
 	out.tween_callback(_finish)
@@ -395,12 +400,25 @@ func _process(delta: float) -> void:
 	_step(delta)
 
 
-func _unhandled_input(event: InputEvent) -> void:
-	if _age < 0.6:
+func _input(event: InputEvent) -> void:
+	if _age < 0.6 or _skipping:
 		return
-	if (event is InputEventMouseButton and event.pressed) or (event is InputEventKey and event.pressed and not event.echo):
+	if (event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT) or (event is InputEventKey and event.pressed and not event.echo):
 		get_viewport().set_input_as_handled()
-		_finish()
+		_skip()
+
+
+## Abbrechen: kurz in Schwarz ueberblenden (und den Wind ausblenden), dann beenden.
+func _skip() -> void:
+	_skipping = true
+	for tw: Tween in [_fade_tw, _out_tw]:        # laufende Ein- und Ausblendung stoppen, sonst kaempfen sie gegen die Schwarzblende
+		if tw != null and tw.is_valid():
+			tw.kill()
+	create_tween().tween_property(_black, "modulate:a", 1.0, 0.5)
+	if _wind != null:
+		create_tween().tween_property(_wind, "volume_db", -50.0, 0.5)
+	await get_tree().create_timer(0.55).timeout
+	_finish()
 
 
 func _finish() -> void:

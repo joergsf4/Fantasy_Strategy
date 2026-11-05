@@ -642,6 +642,7 @@ func _play_interlude(data: Dictionary) -> void:
 		trek.setup(data)
 		layer.add_child(trek)
 		await trek.finished
+		await _cover_in(0.05)               # Schwarzblende danach: der naechste Bildschirm blendet aus Schwarz auf (kein kurzes Aufblitzen)
 		layer.queue_free()
 		return
 	var it := Interlude.new()
