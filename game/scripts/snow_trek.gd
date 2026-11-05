@@ -12,7 +12,7 @@ const SINK := 0.34                             # so tief stecken die Figuren im 
 const WIND := Vector3(-1.0, -0.10, 0.28)       # Richtung der Schneeflocken (von rechts hinten nach links vorn)
 
 var duration := 24.0
-var kicker := "Kapitel 3"
+var kicker := ""
 var title := "Der Pass im Schneesturm"
 var party_ids: Array = PARTY.duplicate()       # wer mitlaeuft (Standard: feste Liste, im Spiel die gewaehlte Truppe)
 var _vp: SubViewport
@@ -355,7 +355,8 @@ func _build_overlay() -> void:
 	box.modulate.a = 0.0
 	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(box)
-	box.add_child(_label(kicker, 32, UiTheme.GOLD))
+	if kicker != "":
+		box.add_child(_label(kicker, 32, UiTheme.GOLD))
 	box.add_child(_label(title, 54, Color(1.0, 0.97, 0.9)))
 	_black = ColorRect.new()
 	_black.color = Color.BLACK
