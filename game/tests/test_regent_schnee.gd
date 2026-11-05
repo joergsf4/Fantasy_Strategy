@@ -49,9 +49,9 @@ func _initialize() -> void:
 	mira["pos"] = Vector2i(4, 5)
 	await b._flush_events()
 	check(not b._find("fuerst_lumpen").is_empty() and b._find("fuerst_lumpen")["team"] == "p", "Der Regent tritt als Schuetzling auf")
-	check(b._count_team("e") == 3 and b._find("cyborg_wart").size() > 0, "Robowart und zwei Frischlinge erscheinen")
+	check(b._count_team("e") == 2 and b._find("cyborg_wart").size() > 0 and b._find("frischlinge").size() > 0, "Robowart und die Frischlinge (eine Figur) erscheinen")
 	check(said.has("fuerst_lumpen") and said.has("cyborg_wart") and said.has("frischlinge"), "Dialoge gelaufen: %s" % [said])
-	check(Mission.goal_text(b.goal, 3, 1, b._capture_info()).contains("3 übrig") and not b.goal_met(), "Ziel jetzt: Gegner besiegen")
+	check(Mission.goal_text(b.goal, 2, 1, b._capture_info()).contains("2 übrig") and not b.goal_met(), "Ziel jetzt: Gegner besiegen")
 	# Faellt der Regent, ist die Mission verloren
 	var regent := b._find("fuerst_lumpen")
 	regent["hp"] = 1
