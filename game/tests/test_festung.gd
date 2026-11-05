@@ -18,7 +18,7 @@ func _initialize() -> void:
 	var m := Mission.load_mission("ch9")
 	check(m["goals"][0]["type"] == "defeat" and (m["no_flee"] as Array).has("wart"), "Kapitel 9: Wart muss besiegt werden und flieht nicht")
 	var f9 := Mission.dialogue_ids("ch9")
-	check(f9.has("hund") and f9.has("maedchen_baer"), "Mission 9: der Hundsfreund ist fest dabei (Hinweis auf das blaue Ungetuem, falsche Faehrte): %s" % [f9])
+	check(f9.has("maedchen_baer") and not f9.has("hund"), "Mission 9: nur Mira ist fest (der Hinweis auf das blaue Ungetuem wurde wieder gestrichen): %s" % [f9])
 	for id: String in f9:
 		check(defs.has(id), "Sprecher %s existiert" % id)
 	for e in ["fuerst_weinerlich", "frischlinge", "frischlinge_lachend", "frischlinge_wuetend", "wart_sterbend"]:
