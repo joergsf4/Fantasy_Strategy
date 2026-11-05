@@ -57,7 +57,7 @@
        "left": "hund",
        "right": "frischlinge",
        "speaker": "frischlinge",
-       "text": "Oh nein! Wer hat den Hebel getroffen?! Der sollte doch niemand erreichen!",
+       "text": "Oh nein! Wer hat den Hebel getroffen?! Den sollte doch niemand erreichen!",
        "right_expr": "wuetend",
        "story": true
       }

@@ -85,7 +85,7 @@
        "left": "$hero",
        "right": "maedchen_baer",
        "speaker": "maedchen_baer",
-       "text": "Wir kommen der Festung immer näher. Haltet durch Freunde."
+       "text": "Wir kommen der Festung immer näher. Haltet durch, Freunde."
       },
       {
        "left": "$hero",
@@ -563,7 +563,7 @@
     "left": "$hero",
     "right": "frischlinge",
     "speaker": "frischlinge",
-    "text": "Wir kommen wieder! Drauf könnt ihr euch verlasen ihr alten Fossile!",
+    "text": "Wir kommen wieder! Drauf könnt ihr euch verlassen, ihr alten Fossile!",
     "right_expr": "wuetend",
     "story": true
    }

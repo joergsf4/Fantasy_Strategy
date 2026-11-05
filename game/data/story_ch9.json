@@ -51,12 +51,12 @@
    "left": "maedchen_baer",
    "right": "",
    "speaker": "maedchen_baer",
-   "text": "Wir müssen uns den Weg freikämpfen. Wir sind nicht so weit gekommen, um hier halt zu machen!",
+   "text": "Wir müssen uns den Weg freikämpfen. Wir sind nicht so weit gekommen, um hier Halt zu machen!",
    "story": true,
    "voices": [
     {
      "id": "ritter",
-     "text": "Wir müssen uns den Weg freikämpfen. Wir sind nicht so weit gekommen, um hier halt zu machen!",
+     "text": "Wir müssen uns den Weg freikämpfen. Wir sind nicht so weit gekommen, um hier Halt zu machen!",
      "expr": "wuetend"
     }
    ]

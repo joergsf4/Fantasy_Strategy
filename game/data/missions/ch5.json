@@ -435,7 +435,7 @@
     "left": "$hero",
     "right": "bienenmaedchen",
     "speaker": "bienenmaedchen",
-    "text": "Autsch! Das hat gesessen. Der Regent kriegt meinen Stachel zu spüren, nicht eurer!",
+    "text": "Autsch! Das hat gesessen. Der Regent kriegt meinen Stachel zu spüren, nicht euren!",
     "right_expr": "wuetend",
     "story": true
    },

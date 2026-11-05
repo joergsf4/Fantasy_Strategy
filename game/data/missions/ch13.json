@@ -114,17 +114,11 @@
      "dialogue": [
       {
        "left": "hund",
-       "right": "maedchen_baer",
-       "speaker": "maedchen_baer",
-       "text": "Das ist… Wart. Aber das Ding ist halb Maschine.",
-       "story": true,
-       "voices": [
-        {
-         "id": "kugelblitz",
-         "text": "Die Schweinchen schwächeln! Zeit für Plan B. Behälter Sieben, öffnen!",
-         "expr": "lachend"
-        }
-       ]
+       "right": "kugelblitz",
+       "speaker": "kugelblitz",
+       "text": "Die Schweinchen schwächeln! Zeit für Plan B. Behälter Sieben, öffnen!",
+       "right_expr": "lachend",
+       "story": true
       },
       {
        "left": "hund",

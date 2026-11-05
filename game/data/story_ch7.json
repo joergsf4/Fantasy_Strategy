@@ -9,7 +9,7 @@
    "voices": [
     {
      "id": "elisabeth",
-     "text": "Anker werfen! Das ist der Sandhafen, Hier versteckt sich der miese Regent!",
+     "text": "Anker werfen! Das ist der Sandhafen. Hier versteckt sich der miese Regent!",
      "expr": "lachend"
     }
    ]
@@ -18,7 +18,7 @@
    "left": "magical_girl",
    "right": "maedchen_baer",
    "speaker": "magical_girl",
-   "text": "Ich bin Lumi Sternenglanz. Die Sterne haben mich hier her geführt. Ich biete euch meine unfassbare Niedlichkeit an.",
+   "text": "Ich bin Lumi Sternenglanz. Die Sterne haben mich hierher geführt. Ich biete euch meine unfassbare Niedlichkeit an.",
    "left_expr": "lachend",
    "story": true
   },
