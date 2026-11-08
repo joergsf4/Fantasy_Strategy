@@ -1,0 +1,387 @@
+{
+ "id": "ch25",
+ "title": "Der Thronsaal",
+ "map": "res://data/map_ch25.json",
+ "no_flee": [
+  "sack_boss"
+ ],
+ "briefing": "Brumm folgt Xiùláns Fährte bis in den Thronsaal der Basis. Auf dem Thron sitzt Professor Kugelblitz, bewacht von Maja, Oskar und Soldaten. In zwei Käfigen sitzen der Sack und die bewusstlose Xiùlán. An den Professor kommt niemand heran. Der Sack weiß Rat: Stachelia soll den magischen Honig in die Maschine an der Ostwand füllen. Xiùlán kann man befreien (zwei Runden), dann kämpft sie mit.",
+ "goals": [
+  {
+   "type": "rout",
+   "text": "Ziel: Besiegt alle Gegner im Thronsaal"
+  }
+ ],
+ "flee": {
+  "maja": [
+   {
+    "left": "maedchen_baer",
+    "right": "maja",
+    "speaker": "maja",
+    "text": "Das war nicht für Oskar. Das war für mich. Und es hat nicht geklappt!",
+    "story": true,
+    "right_expr": "wuetend"
+   }
+  ],
+  "oskar": [
+   {
+    "left": "maedchen_baer",
+    "right": "oskar",
+    "speaker": "oskar",
+    "text": "Ich hab gesagt, ich hab keine Wahl. Jetzt hab ich eine: weg hier!",
+    "story": true
+   }
+  ]
+ },
+ "triggers": [
+  {
+   "when": {
+    "object": {
+     "id": "honigmaschine",
+     "state": "filled"
+    }
+   },
+   "note": "Die Enthüllung: der Honig lädt den Sack auf, der Professor flieht, der Sack besteigt den Thron",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "bienenmaedchen",
+       "right": "haendler",
+       "speaker": "bienenmaedchen",
+       "text": "Der Honig ist drin! Und jetzt?",
+       "story": true
+      }
+     ]
+    },
+    {
+     "beam": {
+      "from": "honigmaschine",
+      "to": "kaefig_sack"
+     }
+    },
+    {
+     "dialogue": [
+      {
+       "left": "bienenmaedchen",
+       "right": "haendler",
+       "speaker": "haendler",
+       "text": "Hihi … hihihi … HAHAHA! Jetzt, meine Lieben, bekomme ich, was mir gehört.",
+       "story": true,
+       "right_expr": "lachend"
+      },
+      {
+       "left": "bienenmaedchen",
+       "right": "kugelblitz",
+       "speaker": "kugelblitz",
+       "text": "Nein, nein, nein! Die Maschine war nie für dich! Mein Sohn, bitte …",
+       "story": true
+      },
+      {
+       "left": "bienenmaedchen",
+       "right": "haendler",
+       "speaker": "haendler",
+       "text": "Ich habe dir gesagt: Nenn mich nicht Sohn, wenn jemand zuhört.",
+       "story": true
+      },
+      {
+       "left": "bienenmaedchen",
+       "right": "kugelblitz",
+       "speaker": "kugelblitz",
+       "text": "Ich … ich hole Hilfe! Ganz weit weg! Sofort!",
+       "story": true,
+       "right_expr": "wuetend"
+      }
+     ]
+    },
+    {
+     "retreat": "kugelblitz"
+    },
+    {
+     "world": {
+      "id": "kaefig_sack",
+      "effect": "break"
+     }
+    },
+    {
+     "spawn": [
+      {
+       "id": "sack_boss",
+       "near": "kugelblitz",
+       "label": "Der Sack besteigt den Thron",
+       "dust": true
+      }
+     ]
+    },
+    {
+     "dialogue": [
+      {
+       "left": "maedchen_baer",
+       "right": "sack_boss",
+       "speaker": "sack_boss",
+       "text": "Frische Ware, frisch aus dem Sack! Heute im Angebot: ihr.",
+       "story": true,
+       "right_expr": "lachend"
+      },
+      {
+       "left": "maedchen_baer",
+       "right": "sack_boss",
+       "speaker": "maedchen_baer",
+       "text": "Du? Die ganze Zeit? Du hast uns Heiltränke verkauft!",
+       "story": true
+      },
+      {
+       "left": "maedchen_baer",
+       "right": "sack_boss",
+       "speaker": "sack_boss",
+       "text": "Und ihr habt bezahlt. Ihr sucht den Meister? Hier sitzt er.",
+       "story": true
+      },
+      {
+       "left": "maedchen_baer",
+       "right": "sack_boss",
+       "speaker": "sack_boss",
+       "text": "Maja! Oskar! Soldaten! Sie gehören euch!",
+       "story": true,
+       "right_expr": "wuetend"
+      },
+      {
+       "left": "maedchen_baer",
+       "right": "oskar",
+       "speaker": "oskar",
+       "text": "Hab ich eine Wahl? … Nein? Dachte ich mir.",
+       "story": true
+      }
+     ]
+    },
+    {
+     "unguard": [
+      "maja",
+      "oskar",
+      "soldat_infanterie",
+      "soldat_bogenschuetze",
+      "soldat_beritten"
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "object": {
+     "id": "kaefig_xiulan",
+     "state": "free"
+    }
+   },
+   "note": "Xiùlán wacht auf und kämpft mit",
+   "do": [
+    {
+     "spawn": [
+      {
+       "id": "xiulan_gast",
+       "team": "p",
+       "pos": [
+        10,
+        1
+       ],
+       "hp_ratio": 0.5,
+       "label": "Xiùlán kämpft mit"
+      }
+     ]
+    },
+    {
+     "dialogue": [
+      {
+       "left": "maedchen_baer",
+       "right": "xiulan",
+       "speaker": "xiulan",
+       "text": "Mein Kopf … wer hat das Licht so laut gedreht?",
+       "story": true
+      },
+      {
+       "left": "maedchen_baer",
+       "right": "xiulan",
+       "speaker": "maedchen_baer",
+       "text": "Kannst du kämpfen?",
+       "story": true
+      },
+      {
+       "left": "maedchen_baer",
+       "right": "xiulan",
+       "speaker": "xiulan",
+       "text": "Wer mich in diesen Käfig gesteckt hat, bekommt mein Gebiss zu spüren. Gratis.",
+       "story": true,
+       "right_expr": "wuetend"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "victory": true
+   },
+   "if": {
+    "present": [
+     "xiulan_gast"
+    ]
+   },
+   "note": "Abschluss: Xiùlán",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "maedchen_baer",
+       "right": "xiulan",
+       "speaker": "xiulan",
+       "text": "Mein Lohn ist weg, der Professor auch. Ich bleibe trotzdem. Irgendwer schuldet mir hier noch Geld.",
+       "story": true,
+       "right_expr": "lachend"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "victory": true
+   },
+   "if": {
+    "present": [
+     "hund"
+    ]
+   },
+   "note": "Abschluss: Hundsfreund und das blaue Ungetüm",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "hund",
+       "right": "",
+       "speaker": "hund",
+       "text": "Der Regent hat was von einem blauen Pelz gefaselt. Und ich dachte die ganze Zeit, er meint mich."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 2
+   },
+   "if": {
+    "present": [
+     "ritter"
+    ]
+   },
+   "note": "Fluff: ritter",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "ritter",
+       "right": "",
+       "speaker": "ritter",
+       "text": "Ein Thron aus Blech. Wer so sitzt, hat noch nie im Sattel gesessen."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 2
+   },
+   "if": {
+    "present": [
+     "elisabeth"
+    ]
+   },
+   "note": "Fluff: elisabeth",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "elisabeth",
+       "right": "",
+       "speaker": "elisabeth",
+       "text": "Ein roter Teppich! Endlich empfängt man mich standesgemäß."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 3
+   },
+   "if": {
+    "present": [
+     "wendy"
+    ]
+   },
+   "note": "Fluff: wendy",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "wendy",
+       "right": "",
+       "speaker": "wendy",
+       "text": "Mäh … der Sack hat immer so freundlich geguckt."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 3
+   },
+   "if": {
+    "present": [
+     "robo"
+    ]
+   },
+   "note": "Fluff: robo",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "robo",
+       "right": "",
+       "speaker": "robo",
+       "text": "Scan: Käfig links. Inhalt: Händler. Laune: verdächtig gut."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 3
+   },
+   "if": {
+    "present": [
+     "braumeisterin"
+    ]
+   },
+   "note": "Fluff: braumeisterin",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "braumeisterin",
+       "right": "",
+       "speaker": "braumeisterin",
+       "text": "Wer hier gewinnt, gibt die erste Runde aus."
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "flee_below": {
+  "maja": 0.3,
+  "oskar": 0.3
+ }
+}

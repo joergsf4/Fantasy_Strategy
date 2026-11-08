@@ -4,71 +4,104 @@
    "left": "maedchen_baer",
    "right": "",
    "speaker": "maedchen_baer",
-   "text": "Der Sturm lässt nach, wenigstens ein bisschen. Seht mal, da vorn: eine Hütte!",
-   "story": true,
-   "voices": [
-    {
-     "id": "wendy",
-     "text": "Mäh! Ich kann eine Hütte sehen. Vielleicht gibt es dort Tee!"
-    },
-    {
-     "id": "elisabeth",
-     "text": "Land in Sicht! Na ja, Hütte in Sicht. Das ist fast dasselbe."
-    }
-   ]
+   "text": "Schnee. Überall Schnee.",
+   "story": true
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "hund",
+   "speaker": "maedchen_baer",
+   "text": "Ich frage mich, wie es dem Sack geht. Hoffentlich tun die Frischlinge ihm nichts.",
+   "story": true
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "hund",
+   "speaker": "hund",
+   "text": "Wir finden ihn. Ich vergesse den Geruch von einem Freund nicht.",
+   "story": true
+  },
+  {
+   "left": "bienenmaedchen",
+   "right": "",
+   "speaker": "bienenmaedchen",
+   "text": "Es ist eiskalt. Meine Flügel sind steif, meine Fühler gefroren. Wer hatte die Idee, in die Berge zu gehen?",
+   "left_expr": "wuetend",
+   "story": true
   },
   {
    "left": "hund",
    "right": "",
    "speaker": "hund",
-   "text": "Rauch aus dem Schornstein. Wer wohnt freiwillig hier oben?",
+   "text": "Der Meister versteckt sich im Norden, Stachelia. Das war der Plan, und du warst dabei.",
    "story": true
   },
   {
    "left": "maedchen_baer",
    "right": "",
    "speaker": "maedchen_baer",
-   "text": "Brumm, du klopfst.",
-   "story": true
-  }
- ],
- "outro": [
-  {
-   "left": "fuerst_lumpen",
-   "right": "",
-   "speaker": "fuerst_lumpen",
-   "text": "Ich lebe… ich lebe wirklich noch! Danke. Danke! Bitte nehmt mich mit, ich verspreche, nicht zu stören.",
-   "story": true,
-   "left_expr": "weinerlich"
-  },
-  {
-   "left": "maedchen_baer",
-   "right": "fuerst_lumpen",
-   "speaker": "maedchen_baer",
-   "text": "Erst bekommst du eine zweite Decke. Und dann erzählst du uns alles über den Meister.",
+   "text": "Keine Sorge, ich habe vorgesorgt! Für jeden ein dicker Mantel, Mütze und Handschuhe. Aus dem Waisenhaus geborgt.",
    "story": true,
    "voices": [
     {
      "id": "wendy",
-     "text": "Mäh! Ich habe einen Pullover in Regentengröße. Mit Flügellöchern, aber das merkt keiner.",
+     "text": "Keine Sorge, ich habe vorgesorgt! Für jeden ein dicker Mantel, Mütze und Handschuhe. Ich habe einfach alles gestrickt, was ich hatte.",
      "expr": "lachend"
     }
    ]
   },
   {
    "left": "maedchen_baer",
-   "right": "fuerst_lumpen",
-   "speaker": "fuerst_lumpen",
-   "text": "Ich habe ihn nur ein einziges Mal getroffen, und da stand er im Schatten. Nur ein blauer Mantel. Oder Pelz.",
+   "right": "bienenmaedchen",
+   "speaker": "maedchen_baer",
+   "text": "Für dich gibt es auch einen Pullover, Stachelia. Mit Flügellöchern!",
    "story": true,
-   "right_expr": "weinerlich"
+   "voices": [
+    {
+     "id": "wendy",
+     "text": "Für dich gibt es auch einen Pullover, Stachelia. Mit Flügellöchern!",
+     "expr": "lachend"
+    }
+   ]
+  },
+  {
+   "left": "",
+   "right": "bienenmaedchen",
+   "speaker": "bienenmaedchen",
+   "text": "Ich trage keine Wolle. ...Doch. Gib her. Aber nur, weil mir kalt ist.",
+   "right_expr": "wuetend",
+   "story": true
   },
   {
    "left": "hund",
-   "right": "fuerst_lumpen",
+   "right": "maedchen_baer",
    "speaker": "hund",
-   "text": "Ggrrr … blau, was?",
+   "text": "Es wird Nacht. Hört ihr das? Da heult etwas. Mehr als eines.",
+   "left_expr": "wuetend",
    "story": true
+  }
+ ],
+ "outro": [
+  {
+   "left": "maedchen_baer",
+   "right": "",
+   "speaker": "maedchen_baer",
+   "text": "Die Nacht ist überstanden. Weiter über den Pass, der Meister ist nicht mehr weit.",
+   "story": true
+  },
+  {
+   "left": "hund",
+   "right": "maedchen_baer",
+   "speaker": "hund",
+   "text": "Gut, dass wir die Mäntel hatten.",
+   "story": true,
+   "voices": [
+    {
+     "id": "wendy",
+     "text": "Gut, dass ich genug Wolle hatte.",
+     "expr": "lachend"
+    }
+   ]
   }
  ]
 }

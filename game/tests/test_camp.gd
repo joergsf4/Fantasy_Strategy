@@ -1,6 +1,6 @@
 extends SceneTree
 ## godot --headless --path game --script tests/test_camp.gd
-## Haendler, Brauen und Ausruestung im Party-Zustand.
+## Haendler und Ausruestung im Party-Zustand.
 
 var fails := 0
 
@@ -37,18 +37,8 @@ func _initialize() -> void:
 	low.gold = ht_price - 1
 	check(not low.buy("heiltrank") and low.gold == ht_price - 1, "Zu wenig Gold: nichts passiert")
 	# Vorrat setzt sich im naechsten Kapitel zurueck
-	p.absorb({"inventory": p.inventory, "materials": {}, "gold": 0, "equipment": []})
+	p.absorb({"inventory": p.inventory, "gold": 0, "equipment": []})
 	check(p.chapter == 2 and p.bought.is_empty(), "Neues Kapitel: Vorrat zurueckgesetzt")
-	# Brauen
-	var q := Party.new_game()
-	q.materials = {"kraut": 3, "hopfen": 1, "kristall": 2}
-	check(q.can_brew("heiltrank") and q.can_brew("gegengift") and q.can_brew("aether") and not q.can_brew("bier"), "Brauen: Heiltrank, Gegengift, Aether ja; Bier nein (nur 1 Hopfen)")
-	var ht: int = q.inventory["heiltrank"]
-	check(q.brew("heiltrank") and q.materials["kraut"] == 1 and q.inventory["heiltrank"] == ht + 1, "Heiltrank gebraut: -2 Kraut, +1 Trank")
-	check(not q.brew("heiltrank") and q.materials["kraut"] == 1, "Zu wenig Kraut: nichts passiert")
-	check(q.brew("gegengift") and q.materials["kraut"] == 0, "Gegengift: -1 Kraut")
-	check(q.brew("aether") and q.materials["kristall"] == 0, "Aether: -2 Kristall")
-	check(not q.brew("unbekannt"), "Unbekanntes Rezept")
 	# Ausruestung anlegen
 	var r := Party.new_game()
 	r.pool = ["schwere_axt", "eisenschwert", "plattenpanzer", "kristallstab", "fernrohr"]

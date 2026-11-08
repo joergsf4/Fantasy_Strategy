@@ -69,20 +69,6 @@
    }
   },
   {
-   "id": "soldat_infanterie",
-   "pos": [
-    7,
-    1
-   ]
-  },
-  {
-   "id": "soldat_infanterie",
-   "pos": [
-    8,
-    3
-   ]
-  },
-  {
    "id": "soldat_bogenschuetze",
    "pos": [
     9,
@@ -126,10 +112,6 @@
     6
    ],
    "reward": {
-    "materials": {
-     "kraut": 1,
-     "hopfen": 1
-    },
     "gold": 20
    }
   }

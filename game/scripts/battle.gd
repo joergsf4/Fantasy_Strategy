@@ -7,9 +7,13 @@ signal finished(won: bool)
 const PORTRAIT_DIR := "res://assets/portraits/"
 const TOKEN_DIR := "res://assets/tokens/"
 const COL_MOVE := Color(0.25, 0.55, 1.0, 0.45)
+const COL_MOVE_SNOW := Color(0.30, 0.72, 0.97, 0.45)
 const COL_ATTACK := Color(1.0, 0.25, 0.2, 0.55)
 const COL_HEAL := Color(0.3, 1.0, 0.4, 0.55)
 const COL_SELF := Color(1.0, 0.9, 0.2, 0.5)
+const COL_HIDE := Color(1.0, 0.82, 0.25, 0.6)          # Versteckfeld (Kartenfeld "hide_steps", Mission 23)
+const COL_MOVE_BACK := Color(0.95, 0.28, 0.08, 0.62)      # Bewegungsfeld, von dem aus ein Gegner im Ruecken getroffen wird (+30 %)
+const COL_MOVE_FLANK := Color(1.0, 0.58, 0.22, 0.48)     # ... an der Flanke (+15 %)
 const TEAM_COLOR := {"p": Color(0.2, 0.5, 1.0), "e": Color(0.95, 0.2, 0.2)}
 
 enum State { IDLE, SELECTED, ACTION, TARGETING, BUSY, OVER }
@@ -57,6 +61,9 @@ var _forecast: TextBox
 var _target_kind := ""
 var _target_units: Array[Dictionary] = []
 var sel_dir := Vector2i.RIGHT
+var hide_i := 0                   # Versteck-Pfad (Kartenfeld "hide_steps"): naechster Schritt
+var _hide_allowed: Dictionary = {}  # in diesem Zug erlaubte Versteckfelder (leer: keine Einschraenkung)
+var _pos_hint := false           # Auswahl zeigt Ruecken-/Flankenfelder (Hinweistext erklaert die Farben)
 var cam_home := Transform3D.IDENTITY
 var _in_stage := false
 var abilities: Dictionary = {}
@@ -65,7 +72,7 @@ var _cur_ab := ""
 var _cur_item := ""
 var chests: Array[Dictionary] = []     # {pos, reward, open, node}
 var villages: Array[Dictionary] = []   # {pos, reward, visited}
-var loot := {"gold": 0, "items": {}, "materials": {}, "equipment": []}   # Beute dieses Kampfes (Gegenstaende gehen direkt in den Rucksack)
+var loot := {"gold": 0, "items": {}, "equipment": []}   # Beute dieses Kampfes (Gegenstaende gehen direkt in den Rucksack)
 var all_units: Array[Dictionary] = []     # alle je gespawnten Figuren (fuer die Statistik, auch gefallene)
 var fallen: Array[String] = []         # gefallene Helden (fuer Bonusziele)
 var _start_inventory: Dictionary = {}
@@ -123,7 +130,10 @@ func _ready() -> void:
 	_sync_grid()
 	terrain = TerrainView.new()
 	terrain.biome = map_data.get("biome", "wiese")
+	terrain.curated_volcano = map_data.get("curated_volcano", false)
+	terrain.curated_trees = map_data.get("curated_trees", [])
 	terrain.wall_sides = map_data.get("walls", [])
+	terrain.carpet = map_data.get("carpet", [])
 	terrain.setup(grid)
 	add_child(terrain)
 	_build_environment()
@@ -161,8 +171,10 @@ func _ready() -> void:
 	add_child(_cursor)
 	for e: Dictionary in map_data["players"]:
 		_spawn(e["id"], "p", Vector2i(e["pos"][0], e["pos"][1]), {"hp": e["hp"]} if e.has("hp") else {})
+	for e: Dictionary in map_data.get("guests", []):
+		_spawn(e["id"], "p", Vector2i(e["pos"][0], e["pos"][1]), {"hp": e.get("hp", unit_defs[e["id"]]["hp"]), "atk": e.get("atk", unit_defs[e["id"]]["atk"])})
 	for e: Dictionary in map_data["enemies"]:
-		var extra := {"carry": e.get("carry", {}), "guard": e.get("guard", false)}
+		var extra := {"carry": e.get("carry", {}), "guard": e.get("guard", false), "idle": e.get("idle", false), "untouchable": e.get("untouchable", false)}
 		if e.has("hp"):
 			extra["hp"] = e["hp"]
 		if e.has("atk_mult"):      # Karte staerkt oder schwaecht den Angriff dieser Figur (Faktor auf den Grundwert)
@@ -346,6 +358,11 @@ func _apply_night_rain(env: Environment, sun: DirectionalLight3D) -> void:
 	env.fog_enabled = true
 	env.fog_light_color = Color(0.1, 0.14, 0.26)
 	env.fog_density = 0.02
+	if not snowy:      # verregnete Nacht: dichter blaugrauer Nebel und Bodendunst ueber Wasser und Dorf (bedrohlicher)
+		env.fog_light_color = Color(0.17, 0.21, 0.31)
+		env.fog_density = 0.11
+		env.fog_height = 0.9
+		env.fog_height_density = 0.35
 	env.tonemap_exposure = 0.95
 	var sk := env.sky.sky_material as ProceduralSkyMaterial
 	sk.sky_top_color = Color(0.03, 0.05, 0.14)
@@ -364,7 +381,7 @@ func _apply_night_rain(env: Environment, sun: DirectionalLight3D) -> void:
 	mat.set_shader_parameter("shadow_tint", Vector3(0.0, 0.01, 0.05))
 	mat.set_shader_parameter("saturation", 0.78)
 	mat.set_shader_parameter("contrast", 1.18)
-	mat.set_shader_parameter("haze", 0.0)
+	mat.set_shader_parameter("haze", 0.0 if map_data.get("mood", "") == "nacht_schnee" else 0.1)
 	mat.set_shader_parameter("vignette", 0.6)
 	mat.set_shader_parameter("shimmer", 0.0)
 	rect.material = mat
@@ -466,6 +483,12 @@ func _build_snowfall() -> void:
 ## Lichtstimmungen fuer Tageszeit und Himmel (Kartenfeld "mood"): sun = {rot, color, energy}, amb = {color, energy}, fog = {color, density} oder fehlt,
 ## sky = {top, horizon, ground}, grade = Farbfilter (tint, sat, contrast, haze, vignette).
 const LIGHT_PRESETS := {
+	"vulkan": {"sun": [Vector3(-25, -50, 0), Color(1.0, 0.65, 0.44), 0.85], "amb": [Color(0.57, 0.46, 0.43), 0.7], "fog": [Color(0.37, 0.27, 0.26), 0.008],
+		"sky": [Color(0.22, 0.18, 0.21), Color(0.52, 0.32, 0.27), Color(0.3, 0.25, 0.24)], "grade": [Vector3(1.02, 0.95, 0.91), 0.9, 1.05, 0.02, 0.25]},
+	"basis": {"sun": [Vector3(-70, -30, 0), Color(0.78, 0.88, 1.0), 0.7], "amb": [Color(0.34, 0.42, 0.56), 0.65], "fog": [],
+		"sky": [Color(0.03, 0.04, 0.07), Color(0.08, 0.1, 0.15), Color(0.05, 0.06, 0.09)], "grade": [Vector3(0.93, 1.0, 1.08), 0.95, 1.14, 0.0, 0.45]},
+	"thronsaal": {"sun": [Vector3(-65, -35, 0), Color(0.95, 0.82, 1.0), 0.6], "amb": [Color(0.4, 0.33, 0.52), 0.6], "fog": [],
+		"sky": [Color(0.04, 0.02, 0.06), Color(0.12, 0.06, 0.14), Color(0.06, 0.03, 0.08)], "grade": [Vector3(1.04, 0.95, 1.06), 0.95, 1.15, 0.0, 0.5]},
 	"morgen": {"sun": [Vector3(-30, -60, 0), Color(1.0, 0.88, 0.7), 1.05], "amb": [Color(0.75, 0.8, 0.85), 0.55], "fog": [],
 		"sky": [Color(0.45, 0.62, 0.9), Color(0.95, 0.88, 0.8), Color(0.7, 0.75, 0.6)], "grade": [Vector3(1.04, 1.0, 0.94), 1.05, 1.05, 0.0, 0.25]},
 	"bewoelkt": {"sun": [Vector3(-48, -38, 0), Color(0.86, 0.9, 1.0), 0.55], "amb": [Color(0.7, 0.75, 0.8), 0.7], "fog": [Color(0.62, 0.66, 0.7), 0.006],
@@ -875,6 +898,8 @@ func _spawn(id: String, team: String, pos: Vector2i, extra := {}) -> void:
 	if extra.has("hp"):
 		u["hp"] = int(extra["hp"])
 		u["maxhp"] = int(extra["hp"])
+	if extra.has("atk"):
+		u["atk"] = int(extra["atk"])
 	if extra.has("atk_mult"):
 		u["atk"] = maxi(1, roundi(float(u["atk"]) * float(extra["atk_mult"])))
 	if team == "p":     # Faehigkeiten, die nur diese Mission gewaehrt ("grants": {Held: [Faehigkeit]}), z. B. Breitseite
@@ -882,6 +907,9 @@ func _spawn(id: String, team: String, pos: Vector2i, extra := {}) -> void:
 			(u["abilities"] as Array).append(ab_id)
 	u["carry"] = extra.get("carry", {})
 	u["guard"] = extra.get("guard", false)    # Wache: bleibt auf dem Posten, bis ein Held nahe kommt
+	u["idle"] = extra.get("idle", false)      # Kartenfeld "idle": handelt nie (Wart am Stollen in Mission 22 ruft nur Wellen)
+	if extra.get("untouchable", false) and not (u["tags"] as Array).has("unantastbar"):      # Kartenfeld "untouchable": kein Ziel von Angriffen und Faehigkeiten
+		(u["tags"] as Array).append("unantastbar")
 	if team == "p":
 		_apply_talents(u, id, d)
 		Items.apply_equipment(u, (loadout.get("equipment", {}) as Dictionary).get(id, []))
@@ -1161,7 +1189,10 @@ func _update_status() -> void:
 		State.IDLE:
 			_hint.text = "Wähle eine blaue Figur."
 		State.SELECTED:
-			_hint.text = "Ziel-Feld wählen (blau). Rechtsklick = abbrechen."
+			if _hide_allowed.size() > 1:
+				_hint.text = "Versteck wählen (golden). Rechtsklick = abbrechen."
+			else:
+				_hint.text = "Ziel-Feld wählen (blau; rot = Gegner im Rücken +30 %, orange = Flanke +15 %). Rechtsklick = abbrechen." if _pos_hint else "Ziel-Feld wählen (blau). Rechtsklick = abbrechen."
 		State.ACTION:
 			_hint.text = "Aktion wählen. Rechtsklick = Zug zurücknehmen."
 		State.TARGETING:
@@ -1479,7 +1510,7 @@ func _click(p: Vector2i) -> void:
 		State.SELECTED:
 			if not u.is_empty() and u != sel and u["team"] == "p" and not u["done"]:
 				_select(u)
-			elif reach.has(p) and (u.is_empty() or u == sel):
+			elif reach.has(p) and (u.is_empty() or u == sel) and (_hide_allowed.is_empty() or _hide_allowed.has(p)):
 				_move_player(p)
 			else:
 				_hint.text = _why_not_reachable(p)   # Auswahl bleibt, Rechtsklick bricht ab
@@ -1538,8 +1569,29 @@ func _select(u: Dictionary) -> void:
 	var tiles := {}
 	for p: Vector2i in reach:
 		if not occupied.has(p):
-			tiles[p] = COL_MOVE
+			tiles[p] = COL_MOVE_SNOW if map_data.get("biome", "") == "schnee" else COL_MOVE
 	reach[u["pos"]] = 0   # besetzte Felder bleiben in reach: man darf durch eigene Leute laufen, nur das Ziel muss frei sein
+	_pos_hint = false
+	if u["team"] == "p":       # Blickrichtung sichtbar machen: Felder, von denen aus ein Gegner im Ruecken oder an der Flanke steht
+		for p: Vector2i in tiles:
+			var side := _side_from(u, p)
+			if side != "":
+				var col := COL_MOVE_BACK if side == "back" else COL_MOVE_FLANK
+				if map_data.get("biome", "") == "schnee":     # auf hellem Schnee mischen sich halbdurchsichtige Orangetoene zu Rosa: deckender
+					col.a = minf(1.0, col.a + 0.28)
+				tiles[p] = col
+				_pos_hint = true
+	_hide_allowed = {}
+	var steps: Array = map_data.get("hide_steps", [])
+	if u["team"] == "p" and not steps.is_empty():      # Versteck-Pfad: nur die Felder des naechsten Schritts sind erreichbar (golden)
+		tiles = {}
+		if hide_i < steps.size():
+			for spot: Array in steps[hide_i]:
+				var sp := Vector2i(spot[0], spot[1])
+				if reach.has(sp) and not occupied.has(sp):
+					_hide_allowed[sp] = true
+					tiles[sp] = COL_HIDE
+		_hide_allowed[u["pos"]] = true
 	tiles[u["pos"]] = COL_SELF
 	_show_tiles(tiles)
 	_show_card(u)
@@ -1547,16 +1599,41 @@ func _select(u: Dictionary) -> void:
 	_update_status()
 
 
+## Bester Positionsbonus aus der Blickrichtung der Gegner, wenn u von Feld p aus angreift: "back", "flank" oder "".
+## Hoehe und Hinterhalt zaehlen hier nicht (die Vorschau beim Zielen zeigt den vollen Bonus).
+func _side_from(u: Dictionary, p: Vector2i) -> String:
+	var best := ""
+	for o in _attack_targets(u, p):
+		var tags: Array = Combat.position_bonus(p, o["pos"], o["dir"], 0.0, 0.0)["tags"]
+		if tags.any(func(t: String) -> bool: return t.begins_with("Rücken")):
+			return "back"
+		if tags.any(func(t: String) -> bool: return t.begins_with("Flanke")):
+			best = "flank"
+	return best
+
+
 func _move_player(p: Vector2i) -> void:
 	state = State.BUSY
 	_show_tiles({})
 	_update_status()
 	await _walk(sel, p)
+	_hide_progress(p)
 	await _run_triggers("enter", p, sel)
 	_check_end()
 	if state == State.OVER:
 		return
 	_enter_action()
+
+
+## Versteck-Pfad: steht die Figur auf einem Feld des naechsten Schritts, rueckt der Pfad vor (Ausloeser "hide_step" pruefen _flush_events).
+func _hide_progress(p: Vector2i) -> void:
+	var steps: Array = map_data.get("hide_steps", [])
+	if hide_i >= steps.size():
+		return
+	for spot: Array in steps[hide_i]:
+		if Vector2i(spot[0], spot[1]) == p:
+			hide_i += 1
+			return
 
 
 ## Aktionsmenue neben der Figur.
@@ -1613,6 +1690,9 @@ func _enter_action(show_abilities := false, show_items := false) -> void:
 			for ob in world.objects:
 				if ob["type"] == "bell" and ob["state"] == "ready" and Grid.dist(sel["pos"], ob["pos"]) == 1:
 					_menu_button(box, "Glocke läuten", true, func() -> void: _ring_bell(sel, ob))
+			for hm in world.objects:
+				if hm["type"] == "honigmaschine" and hm["state"] == "empty" and sel["id"] == "bienenmaedchen" and Grid.dist(sel["pos"], hm["pos"]) == 1:
+					_menu_button(box, "Honig einfüllen", true, func() -> void: _fill_honey(sel, hm))
 			var hs := _hostage_near(sel["pos"])
 			if not hs.is_empty():
 				var ho := _hostage_option(hs)
@@ -1716,7 +1796,7 @@ func _loot_marker(node: Node3D, lift: float) -> void:
 	tw.tween_property(m, "position:y", m.position.y, 0.7).set_trans(Tween.TRANS_SINE)
 
 
-## Belohnung gutschreiben: Gegenstaende in den Rucksack, Zutaten/Gold/Ausruestung in die Beute.
+## Belohnung gutschreiben: Gegenstaende in den Rucksack, Gold/Ausruestung in die Beute.
 ## Rueckgabe: Textzeilen fuer die Anzeige.
 func _grant(reward: Dictionary) -> Array[String]:
 	var lines: Array[String] = []
@@ -1725,10 +1805,6 @@ func _grant(reward: Dictionary) -> Array[String]:
 		inventory[id] = int(inventory.get(id, 0)) + n
 		loot["items"][id] = int(loot["items"].get(id, 0)) + n
 		lines.append("+%s%s" % [Items.item_name(id), " ×%d" % n if n > 1 else ""])
-	for id: String in reward.get("materials", {}):
-		var n2 := int(reward["materials"][id])
-		loot["materials"][id] = int(loot["materials"].get(id, 0)) + n2
-		lines.append("+%s%s" % [Items.item_name(id), " ×%d" % n2 if n2 > 1 else ""])
 	for id: String in reward.get("equipment", []):
 		(loot["equipment"] as Array).append(id)
 		lines.append("+%s" % Items.item_name(id))
@@ -1795,8 +1871,45 @@ func _down(def: Dictionary) -> void:
 		return
 	if def["team"] == "e" and unit_defs[def["id"]].get("flees", false) and not (map_data.get("no_flee", []) as Array).has(def["id"]):
 		await _flee(def)
+		await _run_triggers("flee", def["id"], _actor)
 	else:
 		fx.death(def)
+
+
+## Energiestrahl fuer Story-Momente: Aufladen an der Quelle, mehrere pulsierende Strahlen mit Funken entlang der Bahn, Einschlag mit Lichtblitz.
+func _energy_beam(a: Vector3, b: Vector3, col: Color) -> void:
+	Sfx.play("laser_charge")
+	for i in 3:      # Aufladen: Funken sammeln sich, das Licht schwillt an
+		fx.particles("fx_star", a, 10, 2.2, 0.22, 0.6, -1.0, col, true, 180.0)
+		fx.light_flash(a, col, 2.0 + i, 3.0 + i, 0.35)
+		await get_tree().create_timer(0.3).timeout
+	Sfx.play("laser_fire")
+	fx.shake(0.08, 0.4)
+	for i in 7:      # pulsierender Hauptstrahl, leicht zitternd, weisser Kern
+		var j := Vector3(randf_range(-0.08, 0.08), randf_range(-0.08, 0.08), 0)
+		fx.beam(a, b + j, col, 0.8 + 0.2 * sin(i * 1.7), 0.42)
+		fx.beam(a, b + j * 0.5, Color(1.0, 0.95, 0.6), 0.35, 0.42)
+		fx.beam(a, b, Color(1, 1, 0.9), 0.14, 0.42)
+		for k in 5:
+			fx.particles("fx_star", a.lerp(b, (k + randf()) / 5.0), 3, 1.2, 0.18, 0.5, 0.0, col, true, 180.0)
+		fx.light_flash(a.lerp(b, 0.5), col, 2.5, 5.0, 0.3)
+		if i % 2 == 0:
+			Sfx.play("zap", -6.0, 0.9 + randf() * 0.3)
+		await get_tree().create_timer(0.28).timeout
+	Sfx.event("explosion")      # Einschlag am Ziel
+	fx.light_flash(b, col, 6.0, 7.0, 1.0)
+	fx.particles("fx_star", b, 36, 4.5, 0.3, 1.1, 2.0, col, true, 180.0)
+	fx.particles("fx_smoke", b, 14, 2.0, 0.7, 1.2, -0.3, Color(1.0, 0.9, 0.6, 0.8), false, 160.0)
+	fx.shake(0.16, 0.6)
+	await get_tree().create_timer(0.8).timeout
+
+
+## Missionsfeld "flee_below": {id: Anteil}: dieser Gegner flieht schon, wenn sein Leben unter diesen Anteil faellt (Maja und Oskar im Finale bei 30 %).
+func _flees_early(def: Dictionary) -> bool:
+	if def["team"] != "e" or not units.has(def) or not unit_defs[def["id"]].get("flees", false):
+		return false
+	var r := float((map_data.get("flee_below", {}) as Dictionary).get(def["id"], 0.0))
+	return r > 0.0 and float(def["hp"]) <= r * float(def["maxhp"])
 
 
 ## Scheue Figuren (Tag "scheu", z. B. Woelfe) verschwinden bei Angst auf der Stelle: kein Tod, kein Nemesis, zaehlt nicht als besiegt.
@@ -1884,12 +1997,12 @@ func stats() -> Dictionary:
 	return {"rows": rows, "awards": awards}
 
 
-## Ergebnis fuer Belohnungsbildschirm und Party: Rucksack-Rest samt Beute, Zutaten, Gold, Ziele.
+## Ergebnis fuer Belohnungsbildschirm und Party: Rucksack-Rest samt Beute, Gold, Ziele.
 func results() -> Dictionary:
 	if not _results.is_empty():
 		return _results     # nur einmal berechnen, sonst wuerden Belohnungen doppelt gutgeschrieben
 	var gained := {"gold": int(loot["gold"]), "items": (loot["items"] as Dictionary).duplicate(),
-		"materials": (loot["materials"] as Dictionary).duplicate(), "equipment": (loot["equipment"] as Array).duplicate()}
+		"equipment": (loot["equipment"] as Array).duplicate()}
 	var done: Array = []
 	for o: Dictionary in map_data.get("objectives", []):
 		var ok := false
@@ -1924,8 +2037,6 @@ func results() -> Dictionary:
 		for id: String in r.get("items", {}):
 			inventory[id] = int(inventory.get(id, 0)) + int(r["items"][id])
 			gained["items"][id] = int(gained["items"].get(id, 0)) + int(r["items"][id])
-		for id: String in r.get("materials", {}):
-			gained["materials"][id] = int(gained["materials"].get(id, 0)) + int(r["materials"][id])
 		for id: String in r.get("equipment", []):
 			(gained["equipment"] as Array).append(id)
 		gained["gold"] += int(r.get("gold", 0))
@@ -1942,7 +2053,7 @@ func results() -> Dictionary:
 
 ## Bilanz einer verlorenen Mission: nur die Statistik (keine Beute, keine Belohnungen), fuer den Niederlage-Bildschirm.
 func defeat_summary() -> Dictionary:
-	return {"defeat": true, "stats": stats(), "turns": turn, "objectives": [], "gold": 0, "items": {}, "materials": {}, "equipment": []}
+	return {"defeat": true, "stats": stats(), "turns": turn, "objectives": [], "gold": 0, "items": {}, "equipment": []}
 
 
 # ------------------------------------------------------------------ Weltobjekte
@@ -1973,14 +2084,69 @@ func _build_decor() -> void:
 			if grid.terrain(Vector2i(x, y)) == "V" and world.at(Vector2i(x, y)).is_empty():
 				spots.append(["fx_dorf_wueste" if map_data.get("biome", "") == "wueste" else "fx_dorf", Vector2i(x, y), 1.5])
 	for d: Dictionary in map_data.get("decor", []):
-		spots.append([d["sprite"], Vector2i(d["pos"][0], d["pos"][1]), float(d.get("size", 1.0))])
+		spots.append([d["sprite"], Vector2i(d["pos"][0], d["pos"][1]), float(d.get("size", 1.0)), d.get("effect", ""), d.get("light", []), float(d.get("back", 0.0))])
 	for sp: Array in spots:
 		var root := Node3D.new()
 		root.position = to_world(sp[1]) + Vector3(rng.randf_range(-0.12, 0.12), 0, rng.randf_range(-0.1, 0.1))
+		if sp.size() > 5 and float(sp[5]) > 0.0:      # Deko-Feld "back": so weit nach hinten (Norden), dass eine Figur auf dem Feld davor steht (Thron, Mission 25)
+			root.position = to_world(sp[1]) - Vector3(0, 0, float(sp[5]))
 		add_child(root)
-		_object_sprite(sp[0], sp[2], root)
+		var sprite := _object_sprite(sp[0], sp[2], root)
+		if sp.size() > 3 and sp[3] == "campfire":
+			root.name = "Campfire"
+			_campfire(root, sprite)
+		elif sp.size() > 3 and sp[3] == "smoke":
+			_vent_smoke(root)
+		if sp.size() > 4 and (sp[4] as Array).size() == 3:      # Deko-Feld "light": [r, g, b] farbiges Punktlicht (Geraete in der Basis)
+			var dl := OmniLight3D.new()
+			dl.light_color = Color(float(sp[4][0]), float(sp[4][1]), float(sp[4][2]))
+			dl.light_energy = 1.8
+			dl.omni_range = 3.5
+			dl.position = Vector3(0, 1.0, 0.4)
+			root.add_child(dl)
 		if map_data.get("mood", "") == "nacht_regen" and (sp[0] as String).begins_with("fx_dorf"):     # warmes Licht aus den Fenstern
 			_window_glow(root)
+
+
+## Das Feuer ist ein 2D-Sprite; sein Licht beleuchtet die 3D-Landschaft.
+func _campfire(root: Node3D, flame: MeshInstance3D) -> void:
+	for side in [-1.0, 1.0]:
+		var stone := fx.make_sprite("fx_fels1", Vector3(side * 0.24, 0.13, 0.1), 0.34, false, Color(0.7, 0.6, 0.5), 1, root)
+		stone.name = "CampfireStone"
+	var light := OmniLight3D.new()
+	light.name = "CampfireLight"
+	light.position = Vector3(0, 0.6, 0)
+	light.light_color = Color(1.0, 0.38, 0.12)
+	light.light_energy = 2.2
+	light.omni_range = 4.0
+	root.add_child(light)
+	var flicker := light.create_tween().set_loops()
+	flicker.tween_property(light, "light_energy", 2.8, 0.22).set_trans(Tween.TRANS_SINE)
+	flicker.tween_property(light, "light_energy", 1.8, 0.31).set_trans(Tween.TRANS_SINE)
+	flicker.tween_property(light, "light_energy", 2.2, 0.17).set_trans(Tween.TRANS_SINE)
+	var dance := flame.create_tween().set_loops()
+	dance.tween_property(flame, "scale", flame.scale * Vector3(0.94, 1.08, 1.0), 0.26).set_trans(Tween.TRANS_SINE)
+	dance.tween_property(flame, "scale", flame.scale, 0.24).set_trans(Tween.TRANS_SINE)
+
+
+## Deko-Effekt "smoke" (Fumarole im Oedland): zwei versetzte weiche, hellgraue Rauchschleier steigen langsam auf, wachsen und verblassen, in Schleife.
+func _vent_smoke(root: Node3D) -> void:
+	for i in 2:
+		var puff := fx.make_sprite("soft", Vector3(0, 0.25, 0.05), 0.7, false, Color(0.86, 0.84, 0.8, 0.0), 1, root)
+		puff.name = "VentSmoke"
+		var mat := puff.material_override as ShaderMaterial
+		var base := puff.scale
+		var tw := puff.create_tween().set_loops()
+		tw.tween_interval(1.6 * float(i))
+		tw.tween_callback(func() -> void:
+			puff.position = Vector3(0, 0.25, 0.05)
+			puff.scale = base)
+		tw.tween_method(func(k: float) -> void:
+			puff.position.y = 0.25 + k * 1.3
+			puff.position.x = sin(k * 3.0) * 0.12
+			puff.scale = base * (1.0 + k * 1.8)
+			mat.set_shader_parameter("tint", Color(0.86, 0.84, 0.8, 0.6 * sin(k * PI))), 0.0, 1.0, 3.6)
+		tw.tween_interval(1.6 * float(1 - i))
 
 
 ## Lichtschein aus den Haeusern in der Nacht: weicher warmer Fleck, ein schwaches Flackern und ein kleines Punktlicht.
@@ -2075,7 +2241,7 @@ func _make_object(o: Dictionary) -> void:
 	if o["type"] == "bridge":
 		_make_bridge(o)
 		return
-	if o["type"] in ["zylinder", "maschine", "hive", "hive_p", "bell", "orphanage", "ship", "crate", "teahouse", "tent", "switch", "huette"]:
+	if o["type"] in ["zylinder", "maschine", "hive", "hive_p", "bell", "orphanage", "ship", "crate", "teahouse", "tent", "switch", "huette", "geraet", "honigmaschine"]:
 		_make_ch5_object(o)
 		return
 	var stone := Color(0.52, 0.5, 0.54)
@@ -2209,6 +2375,22 @@ func _refresh_object(o: Dictionary, animate: bool) -> void:
 			fx.particles("fx_star", to_world(o["pos"]) + Vector3(0, 0.8, 0), 20, 3.5, 0.2, 0.8, 5.0, Color(0.5, 1.0, 0.6), true, 180.0)
 			fx.light_flash(to_world(o["pos"]) + Vector3(0, 0.8, 0), Color(0.4, 1.0, 0.5), 3.0, 4.0, 0.7)
 			fx.shake(0.1, 0.4)
+	if o["type"] == "honigmaschine":
+		(p["body"] as Node3D).visible = st == "empty"
+		(p["full"] as Node3D).visible = st != "empty"
+		(p["glow"] as Node3D).visible = st != "empty"
+		if animate and st == "filled":
+			Sfx.event("gate_open")
+			fx.particles("fx_star", to_world(o["pos"]) + Vector3(0, 1.0, 0), 24, 3.0, 0.3, 1.0, 5.0, Color(1.0, 0.8, 0.25), true, 180.0)
+			fx.light_flash(to_world(o["pos"]) + Vector3(0, 1.0, 0), Color(1.0, 0.75, 0.25), 3.5, 5.0, 0.9)
+			fx.shake(0.1, 0.6)
+	if o["type"] == "hostage" and o.get("replace", false) and st != "bound":      # Objektfeld "replace": Kaefig springt auf, die Figur steht danach als Einheit da
+		(p["body"] as Node3D).visible = false
+		(p["sprite"] as Node3D).visible = false
+		if animate:
+			Sfx.event("explosion" if st == "broken" else "gate_open")
+			fx.particles("fx_smoke", to_world(o["pos"]) + Vector3(0, 0.4, 0), 16, 2.0, 0.7, 1.2, -0.3, Color(0.75, 0.7, 0.8, 0.9), false, 120.0)
+			fx.shake(0.08, 0.35)
 	if o["type"] == "maschine":
 		(p["body"] as Node3D).visible = st == "intact"
 		(p["glow"] as Node3D).visible = st == "intact"
@@ -2256,6 +2438,7 @@ const WATER_Y := 0.02
 
 ## Karten-Objekte als Pixel-Sprites (Gemini, freigestellt): Bienenstock, Glocke, Waisenhaus, Teehaus, Schiff, Hafen-Hindernisse.
 ## Die Spiellogik (Sperren, Zustaende) steckt in World, hier nur die Optik.
+const GERAET_SIZE := {"fx_konsole": 1.5, "fx_reaktor": 1.9, "fx_serverschrank": 1.7, "fx_roboterarm": 1.8, "fx_monitorwand": 2.0, "fx_glaszylinder": 1.7}
 const OBJ_SPRITE := {"hive": ["fx_bienenstock", 1.0], "hive_p": ["fx_bienenstock", 0.9], "bell": ["fx_glocke", 1.6], "orphanage": ["fx_waisenhaus", 1.9], "teahouse": ["fx_teehaus", 1.7], "tent": ["fx_zelt", 1.25], "huette": ["fx_huette", 1.7], "switch": ["fx_hebel", 0.7], "maschine": ["fx_maschine", 2.3], "zylinder": ["fx_glaszylinder", 1.7]}
 const CRATE_SPRITES := [["fx_kiste", 1.0], ["fx_fass", 1.05], ["fx_saecke", 1.0]]
 
@@ -2307,6 +2490,13 @@ func _make_ch5_object(o: Dictionary) -> void:
 			root.add_child(piv)
 			parts["body"] = _object_sprite("fx_glocke", 1.6, piv)
 			parts["lever"] = piv
+		"honigmaschine":     # Mission 25: leer bzw. mit leuchtendem Honig gefuellt (zweites Bild), goldener Schein
+			parts["body"] = _object_sprite("fx_honigmaschine", 1.9, root)
+			parts["full"] = _object_sprite("fx_honigmaschine_voll", 1.9, root)
+			parts["glow"] = fx.make_sprite("soft", Vector3(0, 0.9, 0.1), 3.0, true, Color(1.0, 0.75, 0.2, 0.6), 0, root)
+		"geraet":    # technisches Geraet (Biom Basis): Bild aus dem Objektfeld "look", blockiert das Feld (Deckung in Mission 23)
+			var look: String = o["look"] if str(o.get("look", "")) != "" else "fx_konsole"
+			parts["body"] = _object_sprite(look, float(GERAET_SIZE.get(look, 1.6)), root)
 		_:
 			var def: Array = OBJ_SPRITE[o["type"]]
 			parts["body"] = _object_sprite(def[0], def[1], root)
@@ -2358,9 +2548,15 @@ func _make_hostage(o: Dictionary) -> void:
 	sp.offset = Vector2(0, tex.get_height() / 2.0)
 	sp.position = Vector3(0, 0.08, 0)
 	root.add_child(sp)
-	var post := _object_sprite("fx_pfahl", 0.8, root)      # Pfahl mit Seilen hinter der Gefangenen
-	post.position.z = -0.12
-	var mi := post
+	if o.get("dim", false):      # Objektfeld "dim": bewusstlos (etwas dunkler, Mission 25)
+		sp.modulate = Color(0.78, 0.78, 0.86)
+	var mi: Node3D
+	if str(o.get("look", "")) != "":      # Objektfeld "look": eigenes Bild mit der Figur darin (Kaefig im Finale, fx_kaefig_sack), die Einzelfigur entfaellt
+		sp.visible = false
+		mi = _object_sprite(o["look"], 1.75, root)
+	else:
+		mi = _object_sprite("fx_pfahl", 0.8, root)      # Pfahl mit Seilen hinter der Gefangenen
+		mi.position.z = -0.12
 	_obj_nodes[o["id"]] = {"root": root, "body": mi, "rubble": null, "doors": [], "lever": null, "sprite": sp}
 
 
@@ -2635,6 +2831,21 @@ func _ring_bell(u: Dictionary, o: Dictionary) -> void:
 	_finish_unit_after(u)
 
 
+## Stachelia fuellt den magischen Honig in die Maschine (Mission 25): Weltwechsel empty -> filled, Ausloeser "object".
+func _fill_honey(u: Dictionary, o: Dictionary) -> void:
+	_close_menu()
+	state = State.BUSY
+	_show_tiles({})
+	_update_status()
+	_actor = u
+	await _popup(u, "Honig eingefüllt", Color(1.0, 0.85, 0.3))
+	await _after_world_change(world.apply(o, "fill"))
+	_check_end()
+	if state == State.OVER:
+		return
+	_finish_unit_after(u)
+
+
 ## Gefesselte Geisel auf einem Nachbarfeld ({} wenn keine).
 func _hostage_near(p: Vector2i) -> Dictionary:
 	for o in world.objects:
@@ -2643,10 +2854,14 @@ func _hostage_near(p: Vector2i) -> Dictionary:
 	return {}
 
 
-## Befreien braucht zwei Runden und eine Geisel ohne Wache daneben. Rueckgabe: {text, enabled} fuer den Menuepunkt.
+## Befreien braucht zwei Runden (Objektfeld "steps": 1 = eine) und eine Geisel ohne Wache daneben. Rueckgabe: {text, enabled} fuer den Menuepunkt.
 func _hostage_option(o: Dictionary) -> Dictionary:
+	if o.get("locked", false):      # Objektfeld "locked": nicht zu befreien (der Sack im Kaefig, Mission 25)
+		return {"text": "Käfig verschlossen", "enabled": false}
 	if _hostage_guards(o) > 0:
 		return {"text": "Befreien (Wache!)", "enabled": false}
+	if int(o.get("steps", 2)) == 1:      # Objektfeld "steps": 1 = in einem Zug frei (Mission 22)
+		return {"text": "Befreien", "enabled": true}
 	var p: int = o.get("progress", 0)
 	if p == 0:
 		return {"text": "Fesseln lösen (1/2)", "enabled": true}
@@ -2683,7 +2898,7 @@ func _free_hostage(u: Dictionary, o: Dictionary) -> void:
 	_show_tiles({})
 	_update_status()
 	_actor = u
-	if int(o.get("progress", 0)) == 0:
+	if int(o.get("progress", 0)) == 0 and int(o.get("steps", 2)) > 1:
 		o["progress"] = 1
 		o["cut_turn"] = turn
 		Sfx.event("rope")
@@ -2967,12 +3182,14 @@ func _resolve(u: Dictionary, target: Dictionary) -> void:
 		return
 	await _strike(u, target)
 	var dist := Grid.dist(u["pos"], target["pos"])
-	if target["hp"] > 0 and Combat.can_counter(target, dist):
+	if units.has(target) and target["hp"] > 0 and Combat.can_counter(target, dist):      # frueh geflohene Gegner (flee_below) schlagen nicht mehr zurueck
 		await _strike(target, u)
 	_check_end()
 
 
 func _strike(att: Dictionary, def: Dictionary, mult := 1.0, ignore_def := 0.0, lunge := true, quick := false) -> void:
+	if not is_instance_valid(att.get("node")) or not is_instance_valid(def.get("node")):
+		return      # Figur ist schon vom Feld (z. B. frueh geflohen)
 	_actor = att
 	var fc := forecast(att, def, att["pos"], mult, ignore_def)
 	var dmg: int = fc["dmg"]
@@ -3005,7 +3222,7 @@ func _strike(att: Dictionary, def: Dictionary, mult := 1.0, ignore_def := 0.0, l
 		_popup(def, "-%d%s" % [dmg, tag_text], Color(1, 0.45, 0.35))   # nicht abwarten (Serientreffer)
 	else:
 		await _popup(def, "-%d%s" % [dmg, tag_text], Color(1, 0.45, 0.35))
-	if def["hp"] <= 0:
+	if def["hp"] <= 0 or _flees_early(def):
 		units.erase(def)
 		await _down(def)
 
@@ -3122,8 +3339,9 @@ func goal_met() -> bool:
 		"capture":
 			var cu := _find(str(goal["unit"]))
 			return not cu.is_empty() and cu["team"] == "p"
-		"defeat":
-			return _find(str(goal["unit"])).is_empty()
+		"defeat":      # nur wenn die Figur schon auf dem Feld war (Mission 24: Robo-Wart kommt erst spaeter)
+			var gid := str(goal["unit"])
+			return _find(gid).is_empty() and all_units.any(func(x: Dictionary) -> bool: return x["id"] == gid)
 		"reach":
 			var t := Vector2i(goal["tile"][0], goal["tile"][1])
 			for u in units:
@@ -3187,6 +3405,8 @@ func _run_triggers(kind: String, data: Variant, who := {}) -> void:
 			hit = Vector2i(w["enter"][0], w["enter"][1]) == data
 		elif kind == "object" and w.has("object"):
 			hit = w["object"]["id"] == data["id"] and w["object"]["state"] == data["state"]
+		elif kind == "flee" and w.has("flee"):
+			hit = w["flee"] == data
 		if hit and _cond_ok(t.get("if", {})):    # Bedingung nicht erfuellt: Ausloeser bleibt fuer spaeter erhalten
 			t["fired"] = true
 			await _fire(t, who)
@@ -3299,6 +3519,10 @@ func _match_state(w: Dictionary) -> Dictionary:
 			for u in units:
 				if u["team"] == "p":
 					return u
+	if w.has("hide_step") and hide_i >= int(w["hide_step"]):      # Versteck-Pfad: Versteck n ist erreicht
+		for u in units:
+			if u["team"] == "p":
+				return u
 	if w.has("enemies_left") and _count_team("e") <= int(w["enemies_left"]):
 		for u in units:
 			if u["team"] == "p":
@@ -3316,6 +3540,8 @@ func _flush_events() -> void:
 	for t: Dictionary in triggers:
 		if t.get("fired", false):
 			continue
+		if t.get("repeat", false) and goal_met():      # nach dem Sieg (z. B. Wart zieht ab) keine neuen Wellen mehr
+			continue
 		var w: Dictionary = t["when"]
 		var who: Dictionary = {}
 		for n: Dictionary in notes:
@@ -3326,7 +3552,8 @@ func _flush_events() -> void:
 			who = _match_state(w)
 		if who.is_empty() or not _cond_ok(t.get("if", {})):
 			continue
-		t["fired"] = true
+		if not t.get("repeat", false):      # "repeat": feuert jedes Mal neu, wenn die Bedingung wieder gilt (Wellen in Mission 22)
+			t["fired"] = true
 		await _fire(t, who)
 		if state == State.OVER:
 			return
@@ -3370,6 +3597,16 @@ func _fire(t: Dictionary, who := {}) -> void:
 				units.erase(rt)
 				retreated.append(rt["id"])
 				await _flee(rt, false)
+		if step.has("beam"):        # {"beam": {"from": Objekt, "to": Objekt}}: gewaltiger Energiestrahl (Honigmaschine -> Kaefig des Sacks, Mission 25)
+			var bo := world.by_id(str(step["beam"]["from"]))
+			var bt := world.by_id(str(step["beam"]["to"]))
+			if not bo.is_empty() and not bt.is_empty():
+				var bc: Array = step["beam"].get("color", [1.0, 0.78, 0.22])
+				await _energy_beam(to_world(bo["pos"]) + Vector3(0, 1.25, 0), to_world(bt["pos"]) + Vector3(0, 0.85, 0), Color(bc[0], bc[1], bc[2]))
+		if step.has("unguard"):      # {"unguard": ["maja", ...]}: diese Wachen verlassen ihren Posten und greifen an (Mission 25)
+			for gu in units:
+				if gu["team"] == "e" and (step["unguard"] as Array).has(gu["id"]):
+					gu["guard"] = false
 		if step.has("retreat_all"):   # {"retreat_all": ["wolf", "alphawolf"]}: alle Gegner dieser Arten ziehen sich zurueck
 			for rid: String in step["retreat_all"]:
 				while true:
@@ -3398,9 +3635,12 @@ func _fire(t: Dictionary, who := {}) -> void:
 			await get_tree().create_timer(1.1).timeout
 		if step.has("spawn"):
 			for e: Dictionary in step["spawn"]:
-				var pos := _free_tile_near(Vector2i(e["pos"][0], e["pos"][1]), {"flying": false})
+				var pos := _free_tile_near(_spawn_base(e), {"flying": false})
 				_spawn(e["id"], e.get("team", "e"), pos, {"carry": e.get("carry", {})})
 				var u: Dictionary = units.back()
+				if e.has("hp_ratio"):      # mit weniger Leben auftauchen (Xiùlán wacht mit halbem Leben auf, Mission 25)
+					u["hp"] = maxi(1, roundi(float(u["maxhp"]) * float(e["hp_ratio"])))
+					_refresh_unit(u)
 				if e.get("team", "e") == "e":
 					enemy_spawned = true
 				Sfx.event("buzz" if e["id"] == "bienenkrieger" else "")
@@ -3411,6 +3651,54 @@ func _fire(t: Dictionary, who := {}) -> void:
 					fx.shake(0.1, 0.5)
 					Sfx.event("gate_open")
 				await _popup(u, e.get("label", "Verstärkung"), Color(0.6, 1.0, 0.6) if e.get("team", "e") == "p" else Color(1.0, 0.6, 0.4))
+		if step.has("knockout"):      # {"knockout": id}: die Figur wird k.o. geschlagen (BONK, Sterne, kippt um, Zzz), Mission 23
+			var ku := _find(str(step["knockout"]))
+			if not ku.is_empty():
+				Sfx.play("w_fist", 0.0)
+				Sfx.play("crit", -2.0, 0.8)
+				fx.shake(0.14, 0.35)
+				fx.particles("fx_star", fx.chest(ku, 1.1), 7, 1.1, 0.3, 1.3, -0.2, Color(1.0, 0.95, 0.5), true, 180.0)
+				_popup(ku, "BONK!", Color(1.0, 0.85, 0.2))
+				var ks: Sprite3D = ku["sprite"]
+				ks.billboard = BaseMaterial3D.BILLBOARD_DISABLED
+				var kscale := ks.scale
+				var side := (1.0 if ks.flip_h else -1.0) if not step.has("fall") else (-1.0 if str(step["fall"]) == "right" else 1.0)      # "fall": "left"/"right" (sonst nach hinten zur Blickrichtung)
+				var fall := create_tween()
+				fall.tween_method(func(k: float) -> void:
+					ks.global_basis = cam.global_basis * Basis(Vector3(0, 0, 1), side * k * PI * 0.5)
+					ks.scale = kscale
+					ks.modulate = Color.WHITE.lerp(Color(0.62, 0.62, 0.72), k), 0.0, 1.0, 0.45).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_OUT)
+				await fall.finished
+				ku["knocked_out"] = true
+				await _popup(ku, "Zzz …", Color(0.7, 0.8, 1.0))
+		if step.has("blackout"):      # {"blackout": Sekunden}: Schwarzblende ueber der Karte (main.gd entfernt sie nach der Mission)
+			var bl := CanvasLayer.new()
+			bl.layer = 20
+			bl.add_to_group("blackout")
+			add_child(bl)
+			var br := ColorRect.new()
+			br.color = Color.BLACK
+			br.set_anchors_preset(Control.PRESET_FULL_RECT)
+			br.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			br.modulate.a = 0.0
+			bl.add_child(br)
+			var btw := create_tween()
+			btw.tween_property(br, "modulate:a", 1.0, float(step["blackout"]))
+			await btw.finished
+		if step.has("waves"):      # {"waves": [[Spawns], ...], "caller": id, "calls": [Rufe]}: jedes Ausloesen schickt die naechste Welle reihum
+			var wl: Array = step["waves"]
+			var wi := int(t.get("wave_i", 0))
+			t["wave_i"] = wi + 1
+			var caller := _find(str(step.get("caller", "")))
+			var calls: Array = step.get("calls", ["Nachschub!"])
+			if not caller.is_empty():
+				await _popup(caller, str(calls[wi % calls.size()]), Color(1.0, 0.55, 0.4))
+			for e: Dictionary in (wl[wi % wl.size()] as Array):
+				var wpos := _free_tile_near(Vector2i(e["pos"][0], e["pos"][1]), {"flying": false})
+				_spawn(e["id"], "e", wpos, {})
+				enemy_spawned = true
+				fx.particles("fx_smoke", to_world(wpos) + Vector3(0, 0.3, 0), 8, 1.4, 0.5, 0.8, -0.2, Color(0.6, 0.55, 0.5, 0.85), false, 120.0)
+			Sfx.event("gate_open")
 	_update_status()
 
 
@@ -3453,7 +3741,7 @@ func _ab_targets(u: Dictionary, id: String, pos: Vector2i) -> Array[Dictionary]:
 				continue
 			if ab.has("require_tag") and not (o["tags"] as Array).has(ab["require_tag"]):
 				continue
-			if ab.get("require_back", false) and not _from_behind(pos, o):
+			if ab.get("require_back", false) and not _from_behind(pos, o) and _foe_secret(u, id, o, pos).is_empty():
 				continue
 			if ab.get("shape", "") == "line" and o["pos"].x != pos.x and o["pos"].y != pos.y:
 				continue   # Strahl: nur auf geraden Linien
@@ -3786,18 +4074,18 @@ func _object_apply(u: Dictionary, sec: Dictionary, target: Dictionary) -> void:
 ## Geheimnis "Sexy Jutsu" (Typ ability_on_foe): Greifen die Kage-Schwestern Maja mit dem Hinterhalt an, gibt es statt des Hinterhalts das Jutsu.
 ## Rauchwolke, die Schwestern werden zu attraktiven Ninja-Brueder (nur ein Gag), Polarlicht-Auftritt, Maja ist 3 Runden verwirrt und greift nicht an.
 ## Danach (beim ersten Mal) die Szene, dann Rauch und die Schwestern sind wieder normal.
-func _foe_secret(u: Dictionary, id: String, target: Dictionary) -> Dictionary:
-	if not units.has(u) or u["team"] != "p" or not target.has("uid") or target.get("team", "p") == "p":
+func _foe_secret(u: Dictionary, id: String, target: Dictionary, pos: Vector2i) -> Dictionary:
+	if not units.has(u) or u["team"] != "p" or not target.has("uid") or target.get("team", "p") == "p" or Grid.dist(pos, target["pos"]) != 1:
 		return {}
 	return Secrets.find_foe(u["id"], id, target["id"])
 
 
-## Bietet dieser Held in dieser Lage das Jutsu im Menue an (ein gueltiges Hinterhalt-Ziel ist der Gegner des Geheimnisses)?
+## Bietet dieser Held in dieser Lage das Jutsu im Menue an?
 func _foe_secret_available(u: Dictionary, id: String, pos: Vector2i) -> Dictionary:
 	if u["team"] != "p":
 		return {}
 	for o in _ab_targets(u, id, pos):
-		var sec := Secrets.find_foe(u["id"], id, o["id"])
+		var sec := _foe_secret(u, id, o, pos)
 		if not sec.is_empty():
 			return sec
 	return {}
@@ -4229,7 +4517,7 @@ func _run_reflect(u: Dictionary, id: String, target: Dictionary, via: Dictionary
 			await _deal(v, dmg, "")
 	if healing:
 		_note("heal", {"by": u, "healed": victims})
-	if first:
+	if not ci.is_empty():
 		_super_music_stop()
 	_check_end()
 
@@ -4384,7 +4672,7 @@ func _effect_targets(u: Dictionary, ab: Dictionary, target: Dictionary, to: Stri
 
 func _run_ability(u: Dictionary, id: String, target: Dictionary) -> void:
 	var ab: Dictionary = abilities[id]
-	var foe_sec := _foe_secret(u, id, target)
+	var foe_sec := _foe_secret(u, id, target, u["pos"])
 	if not foe_sec.is_empty():
 		await _run_oiroke(u, id, target, foe_sec)
 		return
@@ -4593,9 +4881,19 @@ func _deal(def: Dictionary, dmg: int, text: String) -> void:
 	def["hp"] = maxi(0, def["hp"] - dmg)
 	_refresh_unit(def)
 	await _popup(def, ("-%d" % dmg) + (("\n" + text) if text != "" else ""), Color(1, 0.45, 0.35))
-	if def["hp"] <= 0:
+	if def["hp"] <= 0 or _flees_early(def):
 		units.erase(def)
 		await _down(def)
+
+
+## Spawn-Position eines Schritts: "pos": [x, y] oder "near": id = wo diese Figur zuletzt stand (auch gefallen, z. B. Abgang nach dem Sieg).
+func _spawn_base(e: Dictionary) -> Vector2i:
+	if e.has("near"):
+		for k in range(all_units.size() - 1, -1, -1):
+			if all_units[k]["id"] == str(e["near"]):
+				return all_units[k]["pos"]
+	var p: Array = e.get("pos", [0, 0])
+	return Vector2i(int(p[0]), int(p[1]))
 
 
 func _free_tile_near(p: Vector2i, mover: Dictionary) -> Vector2i:
@@ -4693,6 +4991,8 @@ func _end_player_turn() -> void:
 		if not units.has(e) or e["done"]:
 			continue
 		if e["guard"] and not _alarm(e):
+			continue
+		if e.get("idle", false):
 			continue
 		await _enemy_move(e)
 		if units.has(e):

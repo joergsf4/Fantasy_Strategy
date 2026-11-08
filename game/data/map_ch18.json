@@ -1,21 +1,18 @@
 {
  "rows": [
-  "MMMMGGGGGGMM",
-  "MGGGFGGGGGGM",
-  "GGGFFGGMMGGG",
-  "GGGGGGGMGGFG",
+  "MMGGGGGGGGMM",
+  "MGGFFGGGGFGM",
+  "GGGFGGGMGGGG",
+  "GGGGGGMMGGFG",
+  "GFGGWWGGGGGG",
+  "GGGGWWGGFFGG",
+  "GGMGGGGGGGGG",
   "GGGGGGGGGGGG",
-  "GGFGGGGGGGGG",
-  "GGGGGMGGGGGG",
-  "GGGGGGGGGGFG",
   "GGGGGGGGGGGG",
   "GGGGGGGGGGGG"
  ],
  "biome": "schnee",
  "mood": "nacht_schnee",
- "weather": [
-  "fog"
- ],
  "walls": [
   "n",
   "w",
@@ -26,72 +23,105 @@
    "id": "maedchen_baer",
    "pos": [
     5,
-    7
+    8
    ]
   },
   {
    "id": "hund",
    "pos": [
     4,
-    7
+    8
    ]
   },
   {
    "id": "ritter",
    "pos": [
     6,
-    7
+    8
    ]
   },
   {
    "id": "elisabeth",
    "pos": [
     3,
-    7
+    8
    ]
   },
   {
-   "id": "robo",
+   "id": "bienenmaedchen",
    "pos": [
-    5,
+    7,
     8
    ]
   },
   {
    "id": "wendy",
    "pos": [
-    4,
+    2,
     8
    ]
   }
  ],
- "enemies": [],
- "objects": [
+ "enemies": [
   {
-   "id": "huette",
-   "type": "huette",
+   "id": "alphawolf",
    "pos": [
-    1,
+    6,
+    2
+   ]
+  },
+  {
+   "id": "wolf",
+   "pos": [
+    4,
+    2
+   ]
+  },
+  {
+   "id": "wolf",
+   "pos": [
+    8,
+    3
+   ]
+  },
+  {
+   "id": "wolf",
+   "pos": [
+    3,
+    4
+   ]
+  },
+  {
+   "id": "wolf",
+   "pos": [
+    9,
+    4
+   ]
+  },
+  {
+   "id": "wolf",
+   "pos": [
+    5,
     3
    ]
   }
  ],
+ "objects": [],
  "decor": [],
  "rewards": {
-  "gold": 380
+  "gold": 320
  },
  "objectives": [
   {
    "id": "alle_leben",
    "text": "Kein Held fällt",
    "reward": {
-    "gold": 120
+    "gold": 110
    }
   },
   {
-   "id": "schnell",
-   "text": "In 10 Runden gewonnen",
-   "turns": 10,
+   "id": "friedlich",
+   "text": "Das Rudel friedlich vertrieben",
    "reward": {
     "items": {
      "heilhonig": 2

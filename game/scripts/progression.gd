@@ -42,6 +42,17 @@ static func gear_for(unit_def: Dictionary, tier: float) -> Array:
 	return out
 
 
-## Anzahl geschaffter Kampfmissionen vor Kapitel n (Mission 10 ist ein Zwischenspiel ohne Kampf).
-static func missions_done_before(n: int) -> int:
-	return n - 1 if n <= 10 else n - 2
+## Anzahl geschaffter Kampfmissionen vor Kapitel n (Zwischenspiele "stub" und Missionen mit "no_rewards" zaehlen nicht).
+static var _combat_cache: Dictionary = {}
+
+static func missions_done_before(n: int) -> int:      # zaehlt nur Kampfmissionen: Zwischenspiele ("stub") und Missionen mit "no_rewards" nicht
+	var c := 0
+	for i in range(1, n):
+		var cid := "ch%d" % i
+		if not _combat_cache.has(cid):
+			var mp := "res://data/missions/%s.json" % cid
+			var md: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(mp)) if FileAccess.file_exists(mp) else {}
+			_combat_cache[cid] = not md.is_empty() and not md.get("stub", false) and not md.get("no_rewards", false)
+		if _combat_cache[cid]:
+			c += 1
+	return c

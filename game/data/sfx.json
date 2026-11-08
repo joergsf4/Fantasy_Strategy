@@ -53,6 +53,13 @@
     "db": -5
    }
   },
+  "hogsmeat_speerwerfer": {
+   "shot": "whoosh_l",
+   "hit": [
+    "arrow_hit",
+    "t_flesh"
+   ]
+  },
   "soldat_bogenschuetze": {
    "shot": "bow_shot",
    "hit": [
@@ -318,6 +325,36 @@
   },
   "heulen": {
    "cast": "roar"
+  },
+  "flammenkanone": {
+   "shot": "fire_whoosh",
+   "hit": "explosion"
+  },
+  "blitzkanone": {
+   "windup": "laser_charge",
+   "shot": "zap",
+   "hit": {
+    "s": "zap",
+    "db": -2
+   }
+  },
+  "frostkanone": {
+   "shot": "laser_fire",
+   "hit": "glass"
+  },
+  "wurfmesser": {
+   "shot": "whoosh_s",
+   "hit": [
+    "w_metal",
+    "arrow_hit"
+   ]
+  },
+  "trankwurf": {
+   "cast": "whoosh_l",
+   "heal": [
+    "glass",
+    "heal"
+   ]
   }
  },
  "events": {

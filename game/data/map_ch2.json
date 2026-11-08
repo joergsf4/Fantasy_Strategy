@@ -63,8 +63,8 @@
     2
    ],
    "carry": {
-    "materials": {
-     "hopfen": 1
+    "items": {
+     "bier": 1
     }
    }
   },
@@ -136,9 +136,6 @@
     0
    ],
    "reward": {
-    "materials": {
-     "kristall": 1
-    },
     "gold": 15
    }
   }

@@ -309,14 +309,13 @@ func defend_fx(u: Dictionary) -> void:
 func hop(u: Dictionary, h := 0.3, time := 0.25) -> void:
 	var sp := u["sprite"] as Sprite3D
 	var y0 := sp.position.y
-	var tw := create_tween()
+	var tw := sp.create_tween()
 	tw.tween_method(func(t: float) -> void:
 		if is_instance_valid(sp):
 			sp.position.y = y0 + sin(t * PI) * h, 0.0, 1.0, time)
 	tw.tween_callback(func() -> void:
 		if is_instance_valid(sp):
 			sp.position.y = y0)
-	await tw.finished
 
 
 func lunge(u: Dictionary, toward: Vector3, dist: float, time := 0.18) -> void:
@@ -369,6 +368,10 @@ func windup(id: String, u: Dictionary, target: Dictionary) -> void:
 ## Fluegel/Wellen vor den Treffern (nur Faehigkeiten mit Flaeche).
 func cast(id: String, u: Dictionary, _target: Dictionary, tiles: Array[Vector2i]) -> void:
 	Sfx.ability(id, "cast", u, _target)
+	if id == "trankwurf" and not _target.is_empty() and _target != u:      # der Sack wirft einen Trank im Bogen zum Verbuendeten
+		await projectile("fx_flasche", chest(u, 0.7), chest(_target, 0.6), 0.5, 1.6, 0.5, 9.0)
+		particles("fx_star", chest(_target, 0.6), 8, 1.2, 0.3, 0.7, 0.0, Color(0.6, 1.0, 0.6), true, 120.0)
+		return
 	match id:
 		"verspotten":
 			var col: Array = c(id, "color", [1, 0.25, 0.15, 0.6])
@@ -387,6 +390,21 @@ func before_hit(id: String, u: Dictionary, v: Dictionary, i: int) -> void:
 			await _bone_shot(u, v, i)
 		"gebiss":
 			await _gebiss_shot(u, v)
+		"flammenkanone":     # Robo-Frischling (Feuer): Feuerball mit Rauchspur
+			await projectile("fx_fireball", chest(u, 0.55), chest(v, 0.5), 0.38, 0.6, 0.75, 7.0, "fx_smoke")
+		"blitzkanone":       # Robo-Frischling (Blitz): zackiger Doppelstrahl, flackert
+			var a := chest(u, 0.6)
+			var b := chest(v, 0.5)
+			var mid := (a + b) * 0.5 + Vector3(randf_range(-0.3, 0.3), randf_range(0.2, 0.45), 0)
+			beam(a, mid, Color(0.75, 0.9, 1.0), 0.12, 0.3)
+			beam(mid, b, Color(0.75, 0.9, 1.0), 0.12, 0.3)
+			await get_tree().create_timer(0.12).timeout
+		"wurfmesser":        # der Sack (Mission 25): wirbelnde Klinge aus dem Beutel
+			await projectile("fx_shuriken", chest(u, 0.7), chest(v, 0.5), 0.4, 1.0, 0.55, 18.0)
+		"frostkanone":       # Robo-Frischling (Eis): frostblauer Strahl
+			beam(chest(u, 0.6), chest(v, 0.5), Color(0.55, 0.9, 1.0), 0.22, 0.4)
+			particles("fx_smoke", chest(u, 0.6), 6, 1.0, 0.25, 0.6, 0.2, Color(0.8, 0.95, 1.0, 0.8), false, 60.0)
+			await get_tree().create_timer(0.18).timeout
 		_:
 			await ab.before_hit(id, u, v, i)
 
@@ -405,6 +423,25 @@ func on_hit(id: String, u: Dictionary, v: Dictionary, i: int) -> void:
 			_bonk(u, v, i)
 		"gebiss":
 			_gebiss_hit(u, v)
+		"flammenkanone":
+			_explosion(chest(v, 0.4), 0.7)
+			particles("fx_fireball", chest(v, 0.5), 6, 1.4, 0.25, 0.6, -0.4, Color(1.0, 0.6, 0.2), true, 120.0)
+		"blitzkanone":
+			var bolt := make_sprite("fx_bolt", chest(v, 0.9), 1.2, true, Color(0.85, 0.95, 1.0))
+			var bt := bolt.create_tween()
+			bt.tween_property(bolt, "scale", bolt.scale * 1.3, 0.12)
+			bt.tween_callback(bolt.queue_free)
+			shake(0.08, 0.2)
+			for o in battle.units:      # der Blitz springt auf Gegner neben dem Ziel ueber
+				if o != v and o["team"] != u["team"] and Grid.dist(o["pos"], v["pos"]) == 1:
+					beam(chest(v, 0.5), chest(o, 0.5), Color(0.75, 0.9, 1.0), 0.08, 0.25)
+		"frostkanone":
+			particles("fx_smoke", chest(v, 0.5), 14, 1.8, 0.3, 0.9, 0.3, Color(0.82, 0.95, 1.0, 0.9), false, 180.0)
+			var ice := make_sprite("fx_eisfels", chest(v, 0.2), 1.1, false, Color(0.7, 0.9, 1.0, 0.75), 3)
+			var it := ice.create_tween()
+			it.tween_interval(0.45)
+			it.tween_method(func(a: float) -> void: (ice.material_override as ShaderMaterial).set_shader_parameter("alpha", a), 1.0, 0.0, 0.35)
+			it.tween_callback(ice.queue_free)
 		_:
 			ab.on_hit(id, u, v, i)
 

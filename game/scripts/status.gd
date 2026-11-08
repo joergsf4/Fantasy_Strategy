@@ -5,7 +5,7 @@ extends RefCounted
 const NAMES := {
 	"stun": "Benommen", "poison": "Gift", "taunt": "Spott", "stealth": "Verborgen",
 	"buff": "Gestärkt", "tired": "Erschöpft", "polymorph": "Verwandelt", "defend": "Verteidigt", "scared": "Eingeschüchtert", "angst": "Panik", "betrunken": "Bierlaune", "satt": "Satt", "inspiriert": "Inspiriert", "treibstoff": "Turbo-Treibstoff", "geschmiert": "Geschmiert", "verwirrt": "Verwirrt", "wachsam": "Wachsam",
-	"analysiert": "Analysiert", "klebrig": "Festgeklebt", "schild": "Wollmantel", "wut": "Wutanfall", "brennen": "Brennt", "tempo": "Beflügelt", "uebel": "Übel",
+	"analysiert": "Analysiert", "klebrig": "Festgeklebt", "schild": "Wollmantel", "wut": "Wutanfall", "brennen": "Brennt", "tempo": "Beflügelt", "uebel": "Übel", "unterkuehlt": "Unterkühlt",
 }
 const BURN_DAMAGE := 3
 const GOOD := ["treibstoff", "geschmiert", "inspiriert", "satt", "betrunken", "stealth", "buff", "defend", "wachsam", "schild", "wut", "tempo"]

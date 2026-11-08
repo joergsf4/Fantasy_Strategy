@@ -6,6 +6,7 @@ render_mode unshaded, cull_disabled, depth_draw_opaque;
 uniform sampler2D tex : source_color, filter_linear_mipmap, repeat_disable;
 uniform float sway : hint_range(0.0, 0.2) = 0.045;
 uniform float brightness : hint_range(0.5, 1.5) = 0.97;
+uniform float desaturate : hint_range(0.0, 1.0) = 0.0;
 
 varying vec3 tint;
 
@@ -23,7 +24,8 @@ void vertex() {
 
 void fragment() {
 	vec4 c = texture(tex, UV);
-	ALBEDO = c.rgb * tint * brightness;
+	float grey = dot(c.rgb, vec3(0.299, 0.587, 0.114));
+	ALBEDO = mix(c.rgb, vec3(grey), desaturate) * tint * brightness;
 	ALPHA = c.a;
 	ALPHA_SCISSOR_THRESHOLD = 0.5;
 }

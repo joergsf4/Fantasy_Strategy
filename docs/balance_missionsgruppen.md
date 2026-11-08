@@ -31,11 +31,11 @@
 - **Mission 14:** 100%: Mira & Brumm, Blauer Hundsfreund, Brunhilde Bräu, Käpt’n Elisabeth, Die Kage-Schwestern; 100%: Mira & Brumm, Blauer Hundsfreund, Brunhilde Bräu, Käpt’n Elisabeth, Robina; 100%: Mira & Brumm, Blauer Hundsfreund, Brunhilde Bräu, Käpt’n Elisabeth, Ser Albrecht
 - **Mission 15:** 75%: Mira & Brumm, Blauer Hundsfreund, Stachelia, Meister Lin, Lumi Sternenglanz, Dr. Humbug; 81%: Mira & Brumm, Blauer Hundsfreund, Stachelia, Brunhilde Bräu, Dr. Humbug, Wendy Wolle; 88%: Mira & Brumm, Blauer Hundsfreund, Stachelia, Brunhilde Bräu, Lumi Sternenglanz, Dr. Humbug
 - **Mission 16:** 81%: Mira & Brumm, Blauer Hundsfreund, Stachelia, Lumi Sternenglanz, Muskelaugust, Dr. Humbug; 81%: Mira & Brumm, Blauer Hundsfreund, Stachelia, Dr. Humbug, Ser Albrecht, Wendy Wolle; 94%: Mira & Brumm, Blauer Hundsfreund, Stachelia, Brunhilde Bräu, Lumi Sternenglanz, Wendy Wolle
-- **Mission 17:** 100%: Mira & Brumm, Blauer Hundsfreund, Stachelia, Brunhilde Bräu, Käpt’n Elisabeth, Die Kage-Schwestern; 100%: Mira & Brumm, Blauer Hundsfreund, Stachelia, Brunhilde Bräu, Käpt’n Elisabeth, Robina; 100%: Mira & Brumm, Blauer Hundsfreund, Stachelia, Brunhilde Bräu, Meister Lin, Takeda
+- **Mission 18:** 100%: Mira & Brumm, Blauer Hundsfreund, Stachelia, Brunhilde Bräu, Käpt’n Elisabeth, Die Kage-Schwestern; 100%: Mira & Brumm, Blauer Hundsfreund, Stachelia, Brunhilde Bräu, Käpt’n Elisabeth, Robina; 100%: Mira & Brumm, Blauer Hundsfreund, Stachelia, Brunhilde Bräu, Meister Lin, Takeda
 
 ### Beitrag der Helden (Siegquote der Gruppen mit dem Helden minus Durchschnitt, in Prozentpunkten)
 
-| Held | M1 | M3 | M5 | M6 | M7 | M8 | M9 | M12 | M14 | M15 | M16 | M17 |
+| Held | M1 | M3 | M5 | M6 | M7 | M8 | M9 | M12 | M14 | M15 | M16 | M18 |
 |---|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|
 | Blauer Hundsfreund |  |  |  | +0 | +0 | +3 | +0 | +0 | +0 | +0 | +0 | +0 |
 | Brunhilde Bräu | – | +0 | +0 | +1 | +0 | -1 | +0 | +0 | +0 | -1 | +1 | +0 |

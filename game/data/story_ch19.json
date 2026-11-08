@@ -1,0 +1,149 @@
+{
+ "intro": [
+  {
+   "left": "maedchen_baer",
+   "right": "",
+   "speaker": "maedchen_baer",
+   "text": "Der Sturm lässt nach, wenigstens ein bisschen. Seht mal, da vorn: eine Hütte!",
+   "story": true,
+   "voices": [
+    {
+     "id": "wendy",
+     "text": "Mäh! Ich kann eine Hütte sehen. Vielleicht gibt es dort Tee!"
+    },
+    {
+     "id": "elisabeth",
+     "text": "Land in Sicht! Na ja, Hütte in Sicht. Das ist fast dasselbe."
+    }
+   ]
+  },
+  {
+   "left": "hund",
+   "right": "",
+   "speaker": "hund",
+   "text": "Rauch aus dem Schornstein. Wer wohnt freiwillig hier oben?",
+   "story": true
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "",
+   "speaker": "maedchen_baer",
+   "text": "Brumm, du klopfst.",
+   "story": true
+  }
+ ],
+ "outro": [
+  {
+   "left": "fuerst_lumpen",
+   "right": "",
+   "speaker": "fuerst_lumpen",
+   "text": "Ich lebe… ich lebe wirklich noch! Danke. Danke! Bitte nehmt mich mit, ich verspreche, nicht zu stören.",
+   "story": true,
+   "left_expr": "weinerlich"
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "fuerst_lumpen",
+   "speaker": "maedchen_baer",
+   "text": "Erst bekommst du eine zweite Decke. Und dann erzählst du uns alles über den Meister.",
+   "story": true,
+   "voices": [
+    {
+     "id": "wendy",
+     "text": "Mäh! Ich habe einen Pullover in Regentengröße. Mit Flügellöchern, aber das merkt keiner.",
+     "expr": "lachend"
+    }
+   ]
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "fuerst_lumpen",
+   "speaker": "fuerst_lumpen",
+   "text": "Ich habe ihn nur ein einziges Mal getroffen, und da stand er im Schatten. Nur ein blauer Mantel. Oder Pelz.",
+   "story": true,
+   "right_expr": "weinerlich"
+  },
+  {
+   "left": "hund",
+   "right": "fuerst_lumpen",
+   "speaker": "hund",
+   "text": "Ggrrr … blau, was?",
+   "story": true
+  },
+  {
+   "left": "hund",
+   "right": "fuerst_lumpen",
+   "speaker": "fuerst_lumpen",
+   "text": "Ich habe übrigens noch eine Truhe. Waren aus besseren Tagen: Klingen, Rüstungen, Tränke. Ich verkaufe sie euch. Zum Freundschaftspreis.",
+   "story": true,
+   "right_expr": "lachend"
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "fuerst_lumpen",
+   "speaker": "maedchen_baer",
+   "text": "Du willst uns etwas verkaufen? Du? Der Regent, der uns die ganze Zeit Büttel hinterhergeschickt hat?",
+   "story": true
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "fuerst_lumpen",
+   "speaker": "fuerst_lumpen",
+   "text": "Das war gar nicht persönlich gemeint. Und bitte nennt mich Morgrim. Morgrim, der Händler.",
+   "story": true,
+   "right_expr": "weinerlich"
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "fuerst_lumpen",
+   "speaker": "maedchen_baer",
+   "text": "Na gut, Morgrim. Aber nimm die zweite Decke. Und rück die Preise raus.",
+   "story": true
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "fuerst_lumpen",
+   "speaker": "maedchen_baer",
+   "text": "Aber unser Sack ist nicht bloß ein Händler. Er ist unser Freund, und wir holen ihn zurück.",
+   "story": true
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "fuerst_lumpen",
+   "speaker": "fuerst_lumpen",
+   "text": "Eine Sache weiß ich noch: Der Meister versteckt sich in einer geheimen Basis im flammenden Berg der Vorsehung. Dort wird er euch erwarten.",
+   "story": true
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "fuerst_lumpen",
+   "speaker": "maedchen_baer",
+   "text": "Dann müssen wir an Hogsmeat vorbei. Dem Dorf der Wildschweine. Brumm, ich glaube, deine Nase wird gleich sehr beschäftigt sein.",
+   "story": true,
+   "voices": [
+    {
+     "id": "hund",
+     "text": "Zum Berg müssen wir an Hogsmeat vorbei. Dem Dorf der Wildschweine. Ggrrr … ich rieche jetzt schon Ärger."
+    },
+    {
+     "id": "elisabeth",
+     "text": "Auf dem Weg liegt Hogsmeat, das Dorf der Wildschweine. Na wunderbar. Ich hoffe, sie haben nichts gegen Besuch."
+    }
+   ]
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "fuerst_lumpen",
+   "speaker": "maedchen_baer",
+   "text": "Wenn die Frischlinge aus Hogsmeat kommen, wissen sie vielleicht, wo der Sack ist.",
+   "story": true
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "fuerst_lumpen",
+   "speaker": "fuerst_lumpen",
+   "text": "Wenn ihr da wirklich durchwollt, solltet ihr euch gut ausrüsten. Ich hätte da zufällig eine Truhe voller Waren …",
+   "story": true
+  }
+ ]
+}

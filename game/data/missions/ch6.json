@@ -415,6 +415,7 @@
  "outro_at_sea": {
   "scene": "sea",
   "dir": "right",
-  "speed": 1.8
+  "speed": 1.8,
+  "music": "res://assets/audio/seefahrt.mp3"
  }
 }

@@ -1,10 +1,10 @@
 class_name Camp
 extends Control
-## Lager zwischen Kapiteln: Haendler, Brauen, Ausruestung, Aufstellung. Aenderungen gehen direkt in den Party-Zustand.
+## Lager zwischen Kapiteln: Haendler, Ausruestung, Aufstellung, Talente. Aenderungen gehen direkt in den Party-Zustand.
 
 signal closed
 
-const TABS := ["Händler", "Brauen", "Ausrüstung", "Aufstellung", "Talente"]
+const TABS := ["Händler", "Ausrüstung", "Aufstellung", "Talente"]
 const SLOTS := {"waffe": "Waffe", "ruestung": "Rüstung", "talisman": "Talisman"}
 const GOLD_COL := Color(1.0, 0.83, 0.42)
 
@@ -17,6 +17,7 @@ var _tab := 0
 var _hero := ""
 var _slot := ""
 var _quip := ""
+var _auto_gear_message := ""
 var _head: RichTextLabel
 var _body: Control
 var _tab_buttons: Array[Button] = []
@@ -28,7 +29,10 @@ func setup(p: Party, defs: Dictionary, squad_ids: Array, next_mission := {}) -> 
 	squad = squad_ids
 	mission = next_mission
 	_hero = squad_ids[0] if not squad_ids.is_empty() else ""
-	_quip = (Party.shop_data()["quips"] as Array)[0]
+	var mer := party.merchant()
+	_quip = str((mer["quips"] as Array)[0]) if not mer.is_empty() else ""
+	if mer.is_empty():
+		_tab = 1      # kein Haendler im Lager (Sack ist entfuehrt): Ausruestung ist die erste Seite
 
 
 func _ready() -> void:
@@ -58,9 +62,12 @@ func _ready() -> void:
 		var b := _button(TABS[i], func() -> void:
 			_tab = i
 			_slot = ""
+			_auto_gear_message = ""
 			_refresh(), Vector2(190, 36))
 		tabs.add_child(b)
 		_tab_buttons.append(b)
+		if i == 0 and party.merchant().is_empty():
+			b.visible = false
 	_head = RichTextLabel.new()
 	_head.bbcode_enabled = true
 	_head.fit_content = true
@@ -133,27 +140,21 @@ func _portrait(id: String, size: Vector2) -> TextureRect:
 func _refresh() -> void:
 	for i in _tab_buttons.size():
 		_tab_buttons[i].disabled = i == _tab
-	var mats: PackedStringArray = []
-	for id: String in party.materials:
-		if int(party.materials[id]) > 0:
-			mats.append("%s ×%d" % [Items.item_name(id), int(party.materials[id])])
 	var inv: PackedStringArray = []
 	for id: String in party.inventory:
 		if int(party.inventory[id]) > 0:
 			inv.append("%s ×%d" % [Items.item_name(id), int(party.inventory[id])])
-	_head.text = "[color=#ffd36b]Gold[/color] %d     [color=#ffd36b]Rucksack[/color] %s     [color=#ffd36b]Zutaten[/color] %s" % [
-		party.gold, ", ".join(inv) if not inv.is_empty() else "leer", ", ".join(mats) if not mats.is_empty() else "keine"]
+	_head.text = "[color=#ffd36b]Gold[/color] %d     [color=#ffd36b]Rucksack[/color] %s" % [
+		party.gold, ", ".join(inv) if not inv.is_empty() else "leer"]
 	_clear(_body)
 	match _tab:
 		0:
 			_build_shop()
 		1:
-			_build_brew()
-		2:
 			_build_gear()
-		3:
+		2:
 			_build_squad()
-		4:
+		3:
 			_build_talents()
 
 
@@ -164,8 +165,9 @@ func _build_shop() -> void:
 	row.add_theme_constant_override("separation", 22)
 	_body.add_child(row)
 	var left := VBoxContainer.new()
-	left.add_child(_portrait("haendler", Vector2(250, 290)))
-	var nm := _label(Party.shop_data()["merchant"]["name"] + " (Händler)", UiTheme.F_HEAD, 20, GOLD_COL)
+	var mer := party.merchant()
+	left.add_child(_portrait(str(mer["portrait"]), Vector2(250, 290)))
+	var nm := _label(str(mer["name"]) + " (Händler)", UiTheme.F_HEAD, 20, GOLD_COL)
 	nm.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	left.add_child(nm)
 	row.add_child(left)
@@ -197,7 +199,7 @@ func _build_shop() -> void:
 		line.add_child(price)
 		var buy := _button("Kaufen (%d übrig)" % w["left"] if w["left"] > 0 else "Ausverkauft", func() -> void:
 			if party.buy(id):
-				_quip = (Party.shop_data()["quips"] as Array)[randi() % Party.shop_data()["quips"].size()]
+				_quip = str((mer["quips"] as Array)[randi() % (mer["quips"] as Array).size()])
 			_refresh(), Vector2(190, 30))
 		buy.disabled = not party.can_buy(id)
 		line.add_child(buy)
@@ -233,41 +235,6 @@ func _build_talents() -> void:
 	tp.changed.connect(func() -> void: pass)
 
 
-# ------------------------------------------------------------------ Brauen
-
-func _build_brew() -> void:
-	var col := VBoxContainer.new()
-	col.add_theme_constant_override("separation", 8)
-	_body.add_child(col)
-	col.add_child(_text("Aus Zutaten werden im Lager feste Rezepte. Kein Zufall, kein Grinden.", 20, Color(0.8, 0.85, 0.75), 900))
-	var recs := Party.recipes()
-	for id: String in recs:
-		var r: Dictionary = recs[id]
-		var line := HBoxContainer.new()
-		line.add_theme_constant_override("separation", 14)
-		line.add_child(_portrait(_crafter_portrait(r["crafter"]), Vector2(64, 76)))
-		var info := VBoxContainer.new()
-		info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		var cost: PackedStringArray = []
-		for m: String in r["cost"]:
-			cost.append("%d %s (%d)" % [r["cost"][m], Items.item_name(m), int(party.materials.get(m, 0))])
-		var crafter_name: String = unit_defs[r["crafter"]]["name"]
-		info.add_child(_text("%s – %s" % [Items.item_name(id), Items.consumables()[id]["text"]], 20, UiTheme.CREAM, 620))
-		info.add_child(_text("%s braut aus: %s" % [crafter_name, ", ".join(cost)], 17, Color(0.8, 0.8, 0.75), 620))
-		info.add_child(_text(r["line"], 17, Color(0.85, 0.95, 0.8), 620))
-		line.add_child(info)
-		var b := _button("Herstellen", func() -> void:
-			party.brew(id)
-			_refresh(), Vector2(150, 34))
-		b.disabled = not party.can_brew(id) or not squad.has(r["crafter"])
-		line.add_child(b)
-		col.add_child(line)
-
-
-func _crafter_portrait(id: String) -> String:
-	return id
-
-
 # ------------------------------------------------------------------ Ausruestung
 
 func _effective(hero: String) -> String:
@@ -283,6 +250,15 @@ func _effective(hero: String) -> String:
 
 
 func _build_gear() -> void:
+	var actions := HBoxContainer.new()
+	actions.add_theme_constant_override("separation", 12)
+	_body.add_child(actions)
+	actions.add_child(_button("Automatisch ausrüsten", func() -> void:
+		var count := party.auto_equip(squad, unit_defs)
+		_auto_gear_message = ("%d %s ausgerüstet." % [count, "freier Platz" if count == 1 else "freie Plätze"]) if count > 0 else "Keine passenden Gegenstände für freie Plätze im Lager."
+		_slot = ""
+		_refresh(), Vector2(220, 34)))
+	actions.add_child(_text(_auto_gear_message, 17, Color(0.8, 0.85, 0.75)))
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 18)
 	_body.add_child(row)
@@ -328,6 +304,7 @@ func _candidates(slot: String) -> Control:
 	if party.worn_in(_hero, slot) != "":
 		box.add_child(_button("Ablegen", func() -> void:
 			party.unequip(_hero, slot)
+			_auto_gear_message = ""
 			_refresh(), Vector2(200, 28)))
 	for id: String in party.pool:
 		if Items.equipment()[id]["slot"] != slot:
@@ -337,6 +314,7 @@ func _candidates(slot: String) -> Control:
 		var b := _button("%s  (%s)%s" % [it["name"], it["text"], "" if ok else "  – nicht tragbar"], func() -> void:
 			party.equip(_hero, id, d)
 			_slot = ""
+			_auto_gear_message = ""
 			_refresh(), Vector2(520, 28))
 		b.disabled = not ok
 		box.add_child(b)

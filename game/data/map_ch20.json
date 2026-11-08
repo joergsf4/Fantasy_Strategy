@@ -1,0 +1,201 @@
+{
+ "rows": [
+  "MMMGGGGGGMMM",
+  "MFFGGGGGGFFM",
+  "MFGGGGGGGGFM",
+  "FFGGGFGGGGFF",
+  "FGGGGGGGGGGF",
+  "FGGGFGGGFGGF",
+  "FFGGGGGGGGFF",
+  "MFGGGGGGGGFM",
+  "MFFGGGGGGFFM",
+  "MMGGGGGGGGMM"
+ ],
+ "mood": "nacht",
+ "weather": [
+  "fog"
+ ],
+ "walls": [
+  "n",
+  "w",
+  "e"
+ ],
+ "players": [
+  {
+   "id": "maedchen_baer",
+   "pos": [
+    5,
+    8
+   ]
+  },
+  {
+   "id": "hund",
+   "pos": [
+    4,
+    8
+   ]
+  },
+  {
+   "id": "ritter",
+   "pos": [
+    6,
+    8
+   ]
+  },
+  {
+   "id": "elisabeth",
+   "pos": [
+    3,
+    8
+   ]
+  },
+  {
+   "id": "robo",
+   "pos": [
+    7,
+    8
+   ]
+  },
+  {
+   "id": "wendy",
+   "pos": [
+    5,
+    9
+   ]
+  }
+ ],
+ "enemies": [
+  {
+   "id": "hogsmeat_krieger",
+   "pos": [
+    3,
+    4
+   ]
+  },
+  {
+   "id": "hogsmeat_krieger",
+   "pos": [
+    7,
+    4
+   ]
+  },
+  {
+   "id": "hogsmeat_krieger",
+   "pos": [
+    5,
+    2
+   ]
+  },
+  {
+   "id": "hogsmeat_speerwerfer",
+   "pos": [
+    2,
+    2
+   ]
+  },
+  {
+   "id": "hogsmeat_speerwerfer",
+   "pos": [
+    9,
+    2
+   ]
+  },
+  {
+   "id": "frischlinge",
+   "pos": [
+    4,
+    3
+   ]
+  }
+ ],
+ "decor": [
+  {
+   "sprite": "fx_hogsmeat_huette",
+   "pos": [
+    2,
+    1
+   ],
+   "size": 1.5
+  },
+  {
+   "sprite": "fx_hogsmeat_huette",
+   "pos": [
+    9,
+    1
+   ],
+   "size": 1.5
+  },
+  {
+   "sprite": "fx_hogsmeat_halle",
+   "pos": [
+    5,
+    0
+   ],
+   "size": 1.8
+  },
+  {
+   "sprite": "fx_wachturm",
+   "pos": [
+    10,
+    4
+   ],
+   "size": 1.4
+  },
+  {
+   "sprite": "fx_flamme",
+   "pos": [
+    6,
+    3
+   ],
+   "size": 0.8,
+   "effect": "campfire"
+  }
+ ],
+ "chests": [
+  {
+   "pos": [
+    1,
+    4
+   ],
+   "reward": {
+    "gold": 50,
+    "items": {
+     "heiltrank": 1
+    }
+   }
+  },
+  {
+   "pos": [
+    10,
+    3
+   ],
+   "reward": {
+    "gold": 50
+   }
+  }
+ ],
+ "villages": [],
+ "objects": [],
+ "rewards": {
+  "gold": 400
+ },
+ "objectives": [
+  {
+   "id": "alle_leben",
+   "text": "Kein Held fällt",
+   "reward": {
+    "gold": 120
+   }
+  },
+  {
+   "id": "schnell",
+   "text": "In 10 Runden gewonnen",
+   "turns": 10,
+   "reward": {
+    "items": {
+     "aether": 1
+    }
+   }
+  }
+ ]
+}

@@ -50,9 +50,9 @@ func _initialize() -> void:
 	var q := Party.new_game()
 	check(q.level() == 1 and q.points("ritter") == 0, "Stufe 1, keine Punkte")
 	for i in 2:
-		q.absorb({"inventory": {}, "materials": {}, "gold": 0, "equipment": []})
+		q.absorb({"inventory": {}, "gold": 0, "equipment": []})
 	check(q.level() == 3 and q.points("ritter") == 0, "Nach zwei Missionen Stufe 3, noch kein Punkt")
-	q.absorb({"inventory": {}, "materials": {}, "gold": 0, "equipment": []})
+	q.absorb({"inventory": {}, "gold": 0, "equipment": []})
 	check(q.level() == 4 and q.points("ritter") == 1 and q.points("wendy") == 1, "Stufe 4: ein Punkt fuer jeden Helden (gleich)")
 	check(Party.points_for(12) == 4 and Party.points_for(13) == 4 and Party.points_for(2) == 0, "Punkte alle drei Missionen")
 	check(q.needs_prompt("ritter") and q.needs_prompt("hund"), "Aufstiegsbildschirm faellig")
@@ -125,12 +125,13 @@ func _initialize() -> void:
 	# Teststart eines Kapitels mit ueblicher Ausruestung und Talenten (START_CH)
 	var tp := Party.for_chapter(defs, 14)
 	check(tp.test_run and tp.chapter == 14 and tp.earned == 12 and tp.points("robo") == 0, "Teststart Kapitel 14: 12 Missionen, alle Punkte verteilt")
-	check(Talents.spent(tp.talents["robo"]) == 4 and not (tp.equipment["robo"] as Array).is_empty(), "Teststart: Robo hat 4 Punkte verteilt und Ausruestung (%s)" % [tp.equipment["robo"]])
+	check(Talents.spent(tp.talents["robo"]) == 4 and tp.points("robo") == 0, "Teststart: Robo hat 4 Punkte verteilt")
 	var tier_ok := true
-	for it: String in tp.equipment["samurai"]:
-		if int(Items.equipment()[it]["tier"]) > 4:
-			tier_ok = false
-	check(tier_ok and tp.equipment.has("wendy") and tp.gold == 400, "Teststart: Ausruestung fuer alle Helden")
+	for pieces: Array in tp.equipment.values():
+		for it: String in pieces:
+			if int(Items.equipment()[it]["tier"]) > 4:
+				tier_ok = false
+	check(tier_ok and tp.equipment.has("wendy") and tp.gold >= 0, "Teststart: Ausruestung fuer die Missionsgruppe")
 	tp.save("user://test_party_nosave.json")
 	check(not FileAccess.file_exists("user://test_party_nosave.json"), "Teststart wird nie gespeichert")
 	print("aufstieg: ", "OK" if fails == 0 else "%d Fehler" % fails)

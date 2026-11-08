@@ -15,43 +15,43 @@
   {
    "id": "hund",
    "pos": [
-    0,
-    1
+    8,
+    6
    ]
   },
   {
    "id": "maedchen_baer",
    "pos": [
-    1,
-    0
+    9,
+    6
    ]
   },
   {
    "id": "elisabeth",
    "pos": [
-    1,
-    1
+    7,
+    5
    ]
   },
   {
    "id": "ritter",
    "pos": [
-    0,
-    2
+    7,
+    6
    ]
   },
   {
    "id": "robo",
    "pos": [
-    2,
-    1
+    8,
+    7
    ]
   },
   {
    "id": "samurai",
    "pos": [
-    0,
-    3
+    8,
+    5
    ]
   }
  ],
@@ -88,5 +88,6 @@
    }
   }
  ],
- "mood": "nacht_regen"
+ "mood": "nacht_regen",
+ "dialog_cam": "flach"
 }

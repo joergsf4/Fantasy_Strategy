@@ -31,6 +31,30 @@ static func can_equip(u: Dictionary, id: String) -> bool:
 	return true
 
 
+## Vergleichswert fuer die automatische Verteilung; negative Bewegungsboni sind bewusst ein Nachteil.
+static func auto_equip_score(unit_def: Dictionary, id: String) -> int:
+	var item: Dictionary = equipment()[id]
+	var mods: Dictionary = item["mods"]
+	var role: String = unit_def.get("role", "")
+	var ranged := int(unit_def.get("range", 1)) > 1
+	var damage := role in ["damage", "ranged", "mage"]
+	var tank := role == "tank"
+	var score := int(mods.get("atk", 0)) * (6 if damage else 3)
+	score += int(mods.get("def", 0)) * (6 if tank else 4)
+	score += int(mods.get("res", 0)) * (5 if unit_def.get("dmg_type", "body") == "magic" else 3)
+	score += int(mods.get("hp", 0))
+	score += int(mods.get("move", 0)) * (8 if ranged else 10)
+	score += int(mods.get("range", 0)) * (30 if damage else 22)
+	if int(mods.get("cd_bonus", 0)) > 0:
+		var useful_abilities := 0
+		for ability_id: String in unit_def.get("abilities", []):
+			var ability: Dictionary = _ability_defs().get(ability_id, {})
+			if int(ability.get("cd", 0)) > 1:
+				useful_abilities += 1
+		score += int(mods["cd_bonus"]) * mini(useful_abilities, 3) * 10
+	return score
+
+
 ## Werte der Ausruestung auf die Figur anwenden (einmal beim Aufstellen).
 static func apply_equipment(u: Dictionary, ids: Array) -> void:
 	var worn: Array = []
@@ -138,9 +162,9 @@ static func apply_item(id: String, target: Dictionary, team_units: Array) -> Dic
 	return res
 
 
-## Anzeigename eines Gegenstands, einer Ausruestung oder einer Zutat.
+## Anzeigename eines Gegenstands oder einer Ausruestung.
 static func item_name(id: String) -> String:
-	for sec: String in ["consumables", "equipment", "materials"]:
+	for sec: String in ["consumables", "equipment"]:
 		if defs().get(sec, {}).has(id):
 			return defs()[sec][id]["name"]
 	return id

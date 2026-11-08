@@ -369,16 +369,5 @@
     "heilkraut"
    ]
   }
- },
- "materials": {
-  "kraut": {
-   "name": "Kraut"
-  },
-  "hopfen": {
-   "name": "Hopfen"
-  },
-  "kristall": {
-   "name": "Kristall"
-  }
  }
 }

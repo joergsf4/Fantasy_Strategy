@@ -2,6 +2,8 @@
 
 Erzeugt von `tools/balance.py` mit dem grafikfreien Simulator (`game/sim/`). Er nutzt dieselben Regeln wie das Spiel (Parität per `tests/test_sim.gd` geprüft) und lässt beide Seiten von derselben einfachen KI spielen. Die Zahlen zeigen **relative Stärke**, nicht das Verhalten menschlicher Spieler.
 
+**Hinweis:** Die Messungen unten stammen von vor der Verstärkung des Knochenwurfs und müssen für dessen aktuelle Wirkung neu berechnet werden.
+
 ## Kurzfassung
 
 - Stärkste Gruppenbeiträge: Robo (+37.8 Pp), Ser Albrecht (+4.3 Pp), Takeda (+1.5 Pp)

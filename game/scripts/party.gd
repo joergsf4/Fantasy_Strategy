@@ -1,14 +1,14 @@
 class_name Party
 extends RefCounted
-## Zustand der Heldengruppe ueber Kapitel hinweg: Gold, Rucksack, Zutaten, Ausruestung. Wird gespeichert.
+## Zustand der Heldengruppe ueber Kapitel hinweg: Gold, Rucksack, Ausruestung. Wird gespeichert.
 ## Nichts fuellt sich von selbst auf: verbrauchte Gegenstaende sind weg, Beute kommt aus festen Quellen.
 
 const SAVE_PATH := "user://save.json"
+const ORDER := 1      # Version der Kapitelreihenfolge im Spielstand (1: Zwischenspiel nach Mission 16 eingefuegt, alte Kapitel 17 und 18 sind jetzt 18 und 19)
 
 var chapter := 1
 var gold := 0
 var inventory: Dictionary = {}     # Verbrauchsgegenstaende {id: Anzahl}
-var materials: Dictionary = {}     # Zutaten {id: Anzahl}
 var equipment: Dictionary = {}     # getragen: {Held: [Ausruestung]}
 var pool: Array = []               # besitzt, aber nicht getragen
 var squads: Dictionary = {}              # {Mission: [Helden]}: vom Spieler geaenderte Aufstellung vor der Mission
@@ -16,29 +16,84 @@ var nemesis: Array = []            # entkommene Gegner, tauchen in spaeteren Mis
 var secrets_seen: Array = []     # gesehene Geheimnis-Szenen (Szene laeuft nur beim ersten Mal)
 var test_run := false              # Teststart (START_CH, Testlabor): wird nie gespeichert
 var recruited: Array = []          # in einer Mission gewonnene Verbuendete (z. B. Alphawolf), nur dann waehlbar (recruit_only)
+var pending_interlude: Dictionary = {}
 var earned := 0                    # geschaffte Kampfmissionen; daraus ergeben sich Gruppenstufe und Talentpunkte (alle levels_per_point Stufen einer)
 var prompted: Dictionary = {}      # {Held: Stufe}, ab der der Aufstiegsbildschirm fuer ihn schon gezeigt wurde
 var talents: Dictionary = {}       # verteilte Punkte je Held {id: {hp, atk, a1, a2}} (Talents)
 var bought: Dictionary = {}        # im aktuellen Lager gekauft {id: Anzahl} (Haendler hat nur festen Vorrat)
 
 
-## Gruppe mit dem, was zu Beginn von Kapitel n ueblich waere: Talentpunkte (Standardverteilung) fuer alle Helden, Ausruestung nach der Zielkurve,
-## Gold und Vorraete. Wird nie gespeichert (test_run).
+## Testgruppe: bisherige feste Belohnungen und ein Teil optionaler Goldbeute finanzieren Einkaeufe beim jeweils verfuegbaren Haendler.
+## Wird nie gespeichert (test_run).
 static func for_chapter(defs: Dictionary, n: int) -> Party:
 	var p := Party.new_game()
 	p.test_run = true
 	p.chapter = n
 	p.earned = Progression.missions_done_before(n)
-	p.gold = 400
-	p.inventory = {"heiltrank": 4, "gegengift": 2, "aether": 2, "rauchbombe": 1}
-	var tier: float = float(((Progression.data()["missions"] as Dictionary).get("ch%d" % n, {}) as Dictionary).get("gear_tier", 1.0))
+	var squad: Array = (Mission.load_mission("ch%d" % n)["players"] as Array).map(func(e: Dictionary) -> String: return e["id"])
 	for id: String in defs:
 		if not defs[id].get("hero", false):
 			continue
 		p.talents[id] = Talents.default_allocation(points_for(p.earned))
-		if n > 1:
-			p.equipment[id] = Progression.gear_for(defs[id], tier)
+	p.release_absent(squad)
+	p.auto_equip(squad, defs)
+	for completed in range(1, n):
+		var m := Mission.load_mission("ch%d" % completed)
+		if not m.get("stub", false):
+			p.gold += int((m.get("rewards", {}) as Dictionary).get("gold", 0))
+			var optional := 0
+			for chest: Dictionary in m.get("chests", []):
+				optional += int((chest.get("reward", {}) as Dictionary).get("gold", 0))
+			for objective: Dictionary in m.get("objectives", []):
+				optional += int((objective.get("reward", {}) as Dictionary).get("gold", 0))
+			p.gold += optional / 2
+		p.chapter = completed + 1
+		p.bought.clear()
+		var next_m := Mission.load_mission("ch%d" % p.chapter)
+		if (not m.get("stub", false) and not next_m.get("stub", false)) or (m.get("stub", false) and m.get("camp_after", false)):
+			p._test_shop(squad, defs)
+	p.chapter = n
 	return p
+
+
+## Greift nur auf Waren und Stueckzahlen der damaligen Lager zu; ein Teil des Goldes bleibt als Reserve.
+func _test_shop(squad: Array, defs: Dictionary) -> void:
+	release_absent([])
+	auto_equip(squad, defs)
+	var tier: float = float(((Progression.data()["missions"] as Dictionary).get("ch%d" % chapter, {}) as Dictionary).get("gear_tier", 1.0))
+	var caps := {"waffe": ceili(tier), "ruestung": maxi(1, floori(tier)), "talisman": maxi(1, floori(tier))}
+	var reserve := gold / 5
+	while true:
+		var best := {}
+		var best_value := 0.0
+		for ware: Dictionary in stock():
+			var id: String = ware["id"]
+			if int(ware["left"]) <= 0 or int(ware["price"]) > gold - reserve or not Items.equipment().has(id):
+				continue
+			var item: Dictionary = Items.equipment()[id]
+			var slot: String = item["slot"]
+			if int(item["tier"]) > int(caps[slot]):
+				continue
+			for hero: String in squad:
+				if not defs.has(hero) or not defs[hero].get("hero", false):
+					continue
+				var d: Dictionary = defs[hero]
+				if not Items.can_equip({"dmg_type": d.get("dmg_type", "body"), "range": int(d.get("range", 1))}, id):
+					continue
+				if slot == "ruestung" and ((item["mods"] as Dictionary).has("res") != (d.get("dmg_type", "body") == "magic")):
+					continue
+				var old := worn_in(hero, slot)
+				var old_score := Items.auto_equip_score(d, old) if old != "" else 0
+				var gain := Items.auto_equip_score(d, id) - old_score
+				var value := float(gain) / float(10 + old_score) if gain > 0 else 0.0
+				if value > best_value:
+					best_value = value
+					best = {"id": id, "hero": hero}
+		if best.is_empty():
+			break
+		if not buy(best["id"]) or not equip(best["hero"], best["id"], defs[best["hero"]]):
+			push_error("Testausruestung konnte nicht gekauft oder angelegt werden: %s" % best)
+			break
 
 
 static func new_game() -> Party:
@@ -103,15 +158,9 @@ func refund_point(id: String, key: String) -> bool:
 	return true
 
 
-static func _add(into: Dictionary, from: Dictionary) -> void:
-	for k: String in from:
-		into[k] = int(into.get(k, 0)) + int(from[k])
-
-
 ## Ergebnis eines gewonnenen Kampfes uebernehmen (Rucksack-Rest + Beute + Belohnungen).
 func absorb(results: Dictionary) -> void:
 	inventory = (results["inventory"] as Dictionary).duplicate()
-	_add(materials, results["materials"])
 	gold += int(results["gold"])
 	pool.append_array(results["equipment"])
 	for id: String in results.get("fled", []):
@@ -128,7 +177,7 @@ func absorb(results: Dictionary) -> void:
 	bought = {}
 
 
-## Zutaten und Gold ausgeben, Gegenstand erhalten. false = nicht moeglich (zu wenig).
+## Gold ausgeben. false = nicht moeglich (zu wenig).
 func can_afford(price: int) -> bool:
 	return gold >= price
 
@@ -141,7 +190,7 @@ func spend(price: int) -> bool:
 
 
 func to_dict() -> Dictionary:
-	return {"chapter": chapter, "gold": gold, "inventory": inventory, "materials": materials, "equipment": equipment, "pool": pool, "bought": bought, "nemesis": nemesis, "squads": squads, "secrets_seen": secrets_seen, "earned": earned, "talents": talents, "prompted": prompted, "recruited": recruited}
+	return {"order": ORDER, "chapter": chapter, "gold": gold, "inventory": inventory, "equipment": equipment, "pool": pool, "bought": bought, "nemesis": nemesis, "squads": squads, "secrets_seen": secrets_seen, "earned": earned, "talents": talents, "prompted": prompted, "recruited": recruited, "pending_interlude": pending_interlude}
 
 
 static func from_dict(d: Dictionary) -> Party:
@@ -149,17 +198,19 @@ static func from_dict(d: Dictionary) -> Party:
 	p.chapter = int(d.get("chapter", 1))
 	p.earned = int(d.get("earned", 0))
 	p.recruited = (d.get("recruited", []) as Array).duplicate()
+	p.pending_interlude = (d.get("pending_interlude", {}) as Dictionary).duplicate(true)
 	p.prompted = _ints(d.get("prompted", {}))
 	p.talents = (d.get("talents", {}) as Dictionary).duplicate(true)
 	p.gold = int(d.get("gold", 0))
 	p.inventory = _ints(d.get("inventory", {}))
-	p.materials = _ints(d.get("materials", {}))
 	p.equipment = (d.get("equipment", {}) as Dictionary).duplicate(true)
 	p.pool = (d.get("pool", []) as Array).duplicate()
 	p.bought = _ints(d.get("bought", {}))
 	p.nemesis = (d.get("nemesis", []) as Array).duplicate()
 	p.squads = (d.get("squads", {}) as Dictionary).duplicate(true)
 	p.secrets_seen = (d.get("secrets_seen", []) as Array).duplicate()
+	if int(d.get("order", 0)) < 1:      # alter Spielstand: Kapitel ab dem alten 17 (Woelfe) ruecken um eins nach hinten
+		_migrate_order0(p)
 	return p
 
 
@@ -210,12 +261,24 @@ func squad_for(m: Dictionary) -> Array:
 	var base: Array = (m["players"] as Array).map(func(e: Dictionary) -> String: return e["id"])
 	var saved: Array = squads.get(m.get("id", ""), [])
 	if saved.size() != base.size():
-		return base
+		var previous: String = m.get("squad_from", "")
+		if previous == "":
+			return base
+		saved = squad_for(Mission.load_mission(previous))
+		if saved.size() != base.size() and not m.get("squad_resize", false):
+			return base
 	var fixed: Array = Mission.dialogue_ids(m["id"])
 	var out: Array = []
 	for i in base.size():
-		var id: String = base[i] if fixed.has(base[i]) else saved[i]
-		out.append(id if not out.has(id) else base[i])
+		if fixed.has(base[i]):
+			out.append(base[i])
+			continue
+		var saved_at_slot: String = saved[i] if i < saved.size() else base[i]
+		var candidates := [saved_at_slot] + saved + base if m.get("squad_resize", false) else [saved_at_slot, base[i]] + saved + base
+		for candidate: String in candidates:
+			if not fixed.has(candidate) and not out.has(candidate):
+				out.append(candidate)
+				break
 	return out
 
 
@@ -259,20 +322,42 @@ static func load_from(path := SAVE_PATH) -> Party:
 	return Party.from_dict(d) if d is Dictionary else null
 
 
-# ------------------------------------------------------------------ Haendler, Brauen, Ausruestung
+# ------------------------------------------------------------------ Haendler, Ausruestung
+
+static func _migrate_order0(p: Party) -> void:
+	if p.chapter >= 17:
+		p.chapter += 1
+	for k: String in ["ch18", "ch17"]:      # absteigend, damit nichts doppelt verschoben wird
+		if p.squads.has(k):
+			p.squads["ch%d" % (int(k.substr(2)) + 1)] = p.squads[k]
+			p.squads.erase(k)
+
 
 static func shop_data() -> Dictionary:
 	return JSON.parse_string(FileAccess.get_file_as_string("res://data/shop.json"))
 
 
-static func recipes() -> Dictionary:
-	return JSON.parse_string(FileAccess.get_file_as_string("res://data/recipes.json"))
+## Haendler im Lager dieses Kapitels (shop.json "merchants": id, name, portrait, quips, from/until). {} = keiner da.
+static func merchant_at(chapter_no: int) -> Dictionary:
+	for m: Dictionary in shop_data().get("merchants", []):
+		if int(m.get("from", 1)) <= chapter_no and chapter_no <= int(m.get("until", 9999)):
+			return m
+	return {}
 
 
-## Waren des Haendlers fuer das aktuelle Kapitel: [{id, price, n, left}]
+func merchant() -> Dictionary:
+	return merchant_at(chapter)
+
+
+## Waren des Haendlers fuer das aktuelle Kapitel: [{id, price, n, left}]. Jede Ware gehoert einem Haendler ("for", Standard sack).
 func stock() -> Array:
 	var out: Array = []
+	var mid: String = str(merchant().get("id", ""))
+	if mid == "":
+		return out
 	for w: Dictionary in shop_data().get("stock", []):
+		if str(w.get("for", "sack")) != mid:
+			continue
 		if int(w.get("from", 1)) > chapter or (w.has("until") and int(w["until"]) < chapter):
 			continue      # noch nicht oder nicht mehr im Sortiment (Ausruestung nach Stufen, siehe shop.json)
 		var left := int(w["n"]) - int(bought.get(w["id"], 0))
@@ -317,26 +402,6 @@ func sell(id: String) -> bool:
 	return true
 
 
-func can_brew(id: String) -> bool:
-	var r: Dictionary = recipes().get(id, {})
-	if r.is_empty():
-		return false
-	for m: String in r["cost"]:
-		if int(materials.get(m, 0)) < int(r["cost"][m]):
-			return false
-	return true
-
-
-func brew(id: String) -> bool:
-	if not can_brew(id):
-		return false
-	var r: Dictionary = recipes()[id]
-	for m: String in r["cost"]:
-		materials[m] = int(materials[m]) - int(r["cost"][m])
-	inventory[id] = int(inventory.get(id, 0)) + 1
-	return true
-
-
 ## Ausruestung eines Helden anlegen (aus dem Lager). Ein Stueck pro Platz: das alte geht zurueck ins Lager.
 ## unit_def = Eintrag aus units.json (fuer Einschraenkungen wie "nur Magier").
 func equip(hero: String, id: String, unit_def: Dictionary) -> bool:
@@ -355,6 +420,51 @@ func equip(hero: String, id: String, unit_def: Dictionary) -> bool:
 	worn.append(id)
 	equipment[hero] = worn
 	return true
+
+
+## Nur freie Plaetze der aktuellen Gruppe belegen; pro Platz die beste Gesamtverteilung ermitteln.
+func auto_equip(squad: Array, unit_defs: Dictionary) -> int:
+	var equipped := 0
+	for slot: String in ["waffe", "ruestung", "talisman"]:
+		var heroes: Array = []
+		for hero: String in squad:
+			if unit_defs.has(hero) and not heroes.has(hero) and worn_in(hero, slot) == "":
+				heroes.append(hero)
+		# Bitmaske der bereits versorgten Helden -> Gesamtwert und Zuordnung.
+		var states := {0: {"score": 0, "assignments": []}}
+		for id: String in pool:
+			if not Items.equipment().has(id) or Items.equipment()[id]["slot"] != slot:
+				continue
+			var next := states.duplicate()
+			for mask: int in states:
+				var state: Dictionary = states[mask]
+				for i in heroes.size():
+					var bit := 1 << i
+					if mask & bit:
+						continue
+					var d: Dictionary = unit_defs[heroes[i]]
+					if not Items.can_equip({"dmg_type": d.get("dmg_type", "body"), "range": int(d.get("range", 1))}, id):
+						continue
+					var value := Items.auto_equip_score(d, id)
+					if value <= 0:
+						continue
+					var new_mask := mask | bit
+					var total := int(state["score"]) + value
+					if not next.has(new_mask) or total > int(next[new_mask]["score"]):
+						var assignments: Array = (state["assignments"] as Array).duplicate()
+						assignments.append([heroes[i], id])
+						next[new_mask] = {"score": total, "assignments": assignments}
+			states = next
+		var best: Dictionary = states[0]
+		for state: Dictionary in states.values():
+			if int(state["score"]) > int(best["score"]):
+				best = state
+		for assignment: Array in best["assignments"]:
+			if equip(assignment[0], assignment[1], unit_defs[assignment[0]]):
+				equipped += 1
+			else:
+				push_error("Automatische Ausruestung fehlgeschlagen: %s fuer %s" % [assignment[1], assignment[0]])
+	return equipped
 
 
 func unequip(hero: String, slot: String) -> void:

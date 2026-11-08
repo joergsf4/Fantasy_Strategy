@@ -1,0 +1,238 @@
+{
+ "biome": "vulkan",
+ "curated_volcano": true,
+ "mood": "vulkan",
+ "weather": [
+  "ash",
+  "embers"
+ ],
+ "walls": [
+  "n",
+  "e",
+  "w"
+ ],
+ "rows": [
+  "MMMGGGGGMMMM",
+  "MMGGGGGGGGMM",
+  "MGGGMGGGGGGM",
+  "GGGGGGGMGGGG",
+  "GGMGGGGGGGMG",
+  "GGGGGGGGGGGG",
+  "GMGGGGMGGGGG",
+  "GGGGGGGGGMGG",
+  "MGGGGGGGGGGM",
+  "MMGGGGGGGGMM"
+ ],
+ "players": [
+  {
+   "id": "maedchen_baer",
+   "pos": [
+    5,
+    9
+   ]
+  },
+  {
+   "id": "hund",
+   "pos": [
+    6,
+    9
+   ]
+  },
+  {
+   "id": "ritter",
+   "pos": [
+    4,
+    9
+   ]
+  },
+  {
+   "id": "elisabeth",
+   "pos": [
+    7,
+    9
+   ]
+  },
+  {
+   "id": "robo",
+   "pos": [
+    5,
+    8
+   ]
+  },
+  {
+   "id": "wendy",
+   "pos": [
+    6,
+    8
+   ]
+  }
+ ],
+ "enemies": [
+  {
+   "id": "cyborg_wart",
+   "pos": [
+    4,
+    1
+   ],
+   "idle": true,
+   "untouchable": true
+  },
+  {
+   "id": "hogsmeat_krieger",
+   "pos": [
+    1,
+    5
+   ]
+  },
+  {
+   "id": "hogsmeat_krieger",
+   "pos": [
+    10,
+    5
+   ]
+  },
+  {
+   "id": "hogsmeat_speerwerfer",
+   "pos": [
+    7,
+    2
+   ]
+  },
+  {
+   "id": "soldat_bogenschuetze",
+   "pos": [
+    5,
+    3
+   ]
+  }
+ ],
+ "objects": [
+  {
+   "id": "zwerg1",
+   "type": "hostage",
+   "pos": [
+    0,
+    5
+   ],
+   "figure": "zwerg_alt",
+   "steps": 1
+  },
+  {
+   "id": "zwerg2",
+   "type": "hostage",
+   "pos": [
+    11,
+    5
+   ],
+   "figure": "zwerg_kraeftig",
+   "steps": 1
+  },
+  {
+   "id": "zwerg3",
+   "type": "hostage",
+   "pos": [
+    8,
+    1
+   ],
+   "figure": "zwerg_jung",
+   "steps": 1
+  }
+ ],
+ "decor": [
+  {
+   "sprite": "fx_stollen",
+   "pos": [
+    4,
+    0
+   ],
+   "size": 3.0
+  },
+  {
+   "sprite": "fx_basaltsaeulen",
+   "pos": [
+    0,
+    0
+   ],
+   "size": 1.2
+  },
+  {
+   "sprite": "fx_basaltsaeulen",
+   "pos": [
+    11,
+    1
+   ],
+   "size": 1.0
+  },
+  {
+   "sprite": "fx_vulkanstumpf",
+   "pos": [
+    -1,
+    3
+   ],
+   "size": 0.95
+  },
+  {
+   "sprite": "fx_vulkanstumpf",
+   "pos": [
+    12,
+    7
+   ],
+   "size": 0.9
+  },
+  {
+   "sprite": "fx_schwefel",
+   "pos": [
+    2,
+    7
+   ],
+   "size": 0.7
+  },
+  {
+   "sprite": "fx_obsidian",
+   "pos": [
+    9,
+    7
+   ],
+   "size": 0.8
+  },
+  {
+   "sprite": "fx_fumarole",
+   "pos": [
+    3,
+    6
+   ],
+   "size": 0.85,
+   "effect": "smoke"
+  },
+  {
+   "sprite": "fx_basaltsaeulen",
+   "pos": [
+    0,
+    9
+   ],
+   "size": 1.0
+  }
+ ],
+ "rewards": {
+  "gold": 480
+ },
+ "objectives": [
+  {
+   "id": "alle_leben",
+   "text": "Keine Figur fällt",
+   "reward": {
+    "gold": 120
+   }
+  },
+  {
+   "id": "schnell",
+   "text": "In 8 Runden alle befreit",
+   "turns": 8,
+   "reward": {
+    "items": {
+     "heilhonig": 2
+    }
+   }
+  }
+ ]
+}

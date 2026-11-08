@@ -1,0 +1,58 @@
+{
+ "intro": [
+  {
+   "left": "maedchen_baer",
+   "right": "hund",
+   "speaker": "maedchen_baer",
+   "text": "Hört ihr das? Spitzhacken.",
+   "story": true
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "hund",
+   "speaker": "hund",
+   "text": "Spitzhacken. Und ein Quietschen, das ich kenne.",
+   "right_expr": "wuetend",
+   "story": true
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "cyborg_wart",
+   "speaker": "cyborg_wart",
+   "text": "Schneller, ihr Bartwichte! Der Meister will den Berg bis Sonntag hohl haben!",
+   "right_expr": "wuetend",
+   "story": true
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "cyborg_wart",
+   "speaker": "maedchen_baer",
+   "text": "Wart. Hast du nichts Besseres zu tun?",
+   "story": true
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "cyborg_wart",
+   "speaker": "cyborg_wart",
+   "text": "Ich habe Personal. Und davon jede Menge. Wachen!",
+   "right_expr": "lachend",
+   "story": true
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "hund",
+   "speaker": "hund",
+   "text": "Lass ihn rufen. Wir holen die Zwerge, dann hat er niemanden mehr zum Anschreien.",
+   "story": true
+  }
+ ],
+ "outro": [
+  {
+   "left": "maedchen_baer",
+   "right": "hund",
+   "speaker": "maedchen_baer",
+   "text": "Der Stollen führt mitten in den Berg. Da wollten wir sowieso hin.",
+   "story": true
+  }
+ ]
+}

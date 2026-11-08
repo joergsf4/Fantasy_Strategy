@@ -11,6 +11,11 @@ uniform float swamp_on : hint_range(0.0, 1.0) = 0.0;
 uniform float snowland : hint_range(0.0, 1.0) = 0.0;   // Biom Schnee: Gras wird Schnee, Waldboden harter Firn
 uniform float swamp : hint_range(0.0, 1.0) = 0.0;      // Biom Sumpf: Gras wird mooriges Olivgruen, Waldboden dunkler Schlamm
 uniform float desert : hint_range(0.0, 1.0) = 0.0;     // Biom Wueste: Gras und Waldboden werden zu Sand
+uniform float volcano : hint_range(0.0, 1.0) = 0.0;
+uniform float lava_flow : hint_range(0.0, 1.0) = 0.0;
+uniform float throne_hall : hint_range(0.0, 1.0) = 0.0;   // Biom Thronsaal: Basis-Boden mit goldenen Fugen, violettem Leuchten und rotem Teppich
+uniform vec4 carpet_rect = vec4(-99.0, -99.0, -98.0, -98.0);
+uniform float base_floor : hint_range(0.0, 1.0) = 0.0;   // Biom Basis: Metallplatten wie in einer Schurkenbasis
 
 varying vec3 wpos;
 varying vec3 wnrm;
@@ -100,6 +105,52 @@ void fragment() {
 	float shore = smoothstep(water_level + 0.12, water_level + 0.005, wpos.y);
 	col = mix(col, sand, shore);
 	col = mix(col, vec3(0.20, 0.30, 0.30), smoothstep(water_level, water_level - 0.4, wpos.y));
+	vec3 ash = mix(vec3(0.16, 0.13, 0.13), vec3(0.37, 0.29, 0.26), large * 0.55 + mid * 0.45);
+	ash *= 0.88 + 0.24 * fine;
+	float crust = smoothstep(0.48, 0.74, fbm(p * 2.8 + 14.0));
+	ash = mix(ash, vec3(0.11, 0.09, 0.09) * (0.85 + mid * 0.3), crust * 0.6);
+	col = mix(col, ash, volcano);
+	float crack = 1.0 - smoothstep(0.012, 0.04, abs(sin(p.x * 2.0 + p.y * 1.3 + fbm(p * 0.8) * 5.0)));
+	float ember = crack * smoothstep(0.62, 0.72, fbm(p * 0.55 + 31.0)) * volcano;
+	// Ein erkalteter Lavastrom durchzieht das Feld; er veraendert keine Spielregeln.
+	float flow_x = 3.2 + 0.45 * p.y + sin(p.y * 0.58) * 0.8;
+	float flow_dist = abs(p.x - flow_x + (fbm(p * 0.7) - 0.4) * 0.75);
+	float flow = (1.0 - smoothstep(1.0, 1.6, flow_dist)) * lava_flow;
+	vec3 cooled = mix(vec3(0.19, 0.19, 0.20), vec3(0.34, 0.31, 0.30), mid);
+	float bands = 0.5 + 0.5 * sin(flow_dist * 8.0 + p.y * 1.4 + fbm(p * 1.6) * 8.0);
+	cooled *= 0.8 + bands * 0.35;
+	col = mix(col, cooled, flow * 0.85);
+	ember *= 1.0 - flow * 0.65;
+	col = mix(col, vec3(0.65, 0.13, 0.025), ember * 0.65);
+
+	// Biom Basis: eine Metallplatte je Kachel (Fugen, Nieten, gebuerstet), einige Fugen leuchten cyan, rote Warnstreifen am Spielfeldrand,
+	// ausserhalb und an Steigungen dunklere Wandpaneele
+	vec2 cell = floor(p + 0.5);
+	vec2 q = fract(p + 0.5);
+	vec2 eq = min(q, 1.0 - q);
+	float seam = 1.0 - smoothstep(0.018, 0.045, min(eq.x, eq.y));
+	vec3 metal = mix(vec3(0.19, 0.22, 0.27), vec3(0.30, 0.33, 0.39), hash21(cell) * 0.6 + mid * 0.4);
+	metal *= 0.93 + 0.08 * vnoise(vec2(p.x * 70.0, p.y * 3.0));
+	vec2 rq = abs(q - 0.5);
+	float rivet = 1.0 - smoothstep(0.022, 0.034, length(rq - vec2(0.41)));
+	metal += vec3(0.16) * rivet;
+	metal = mix(metal, vec3(0.06, 0.07, 0.09), seam);
+	float glow_seam = seam * step(0.72, hash21(cell + 7.3)) * (0.75 + 0.25 * sin(TIME * 1.6 + hash21(cell) * 6.0));
+	float inside_b = step(map_rect.x, p.x) * step(map_rect.y, p.y) * step(p.x, map_rect.z) * step(p.y, map_rect.w);
+	float edge_d = min(min(p.x - map_rect.x, map_rect.z - p.x), min(p.y - map_rect.y, map_rect.w - p.y));
+	float warn = inside_b * (1.0 - smoothstep(0.16, 0.2, edge_d)) * step(0.5, fract((p.x + p.y) * 2.2));
+	metal = mix(metal, vec3(0.55, 0.08, 0.06), warn * 0.85);
+	vec3 wallc = mix(vec3(0.10, 0.12, 0.16), vec3(0.18, 0.21, 0.26), step(0.5, fract(wpos.y * 1.6)));
+	wallc = mix(wallc, vec3(0.05, 0.06, 0.08), 1.0 - smoothstep(0.02, 0.05, abs(fract(wpos.y * 1.6) - 0.5)));
+	// Thronsaal: Fugen in dunklem Gold, roter Samtteppich mit Goldborte (Kartenfeld "carpet")
+	metal = mix(metal, vec3(0.42, 0.32, 0.12), seam * throne_hall * 0.7);
+	float in_carpet = step(carpet_rect.x, p.x) * step(carpet_rect.y, p.y) * step(p.x, carpet_rect.z) * step(p.y, carpet_rect.w);
+	float c_edge = min(min(p.x - carpet_rect.x, carpet_rect.z - p.x), min(p.y - carpet_rect.y, carpet_rect.w - p.y));
+	vec3 velvet = mix(vec3(0.36, 0.04, 0.06), vec3(0.5, 0.07, 0.09), vnoise(p * 9.0) * 0.6 + mid * 0.4);
+	velvet = mix(velvet, vec3(0.78, 0.6, 0.22), (1.0 - smoothstep(0.07, 0.1, c_edge)) * step(0.025, c_edge));
+	metal = mix(metal, velvet, in_carpet * throne_hall);
+	metal = mix(metal, wallc, clamp(w_rock + (1.0 - inside_b) * 0.6, 0.0, 1.0));
+	col = mix(col, metal, base_floor);
 
 	// Spielfeld: dezentes Raster, Umland leicht abgedunkelt
 	float inside = step(map_rect.x, p.x) * step(map_rect.y, p.y) * step(p.x, map_rect.z) * step(p.y, map_rect.w);
@@ -110,5 +161,6 @@ void fragment() {
 	col *= 1.0 - 0.1 * (1.0 - inside);
 
 	ALBEDO = col;
+	EMISSION = vec3(1.0, 0.17, 0.015) * ember * 0.55 + mix(vec3(0.1, 0.75, 1.0), vec3(0.75, 0.3, 1.0), throne_hall) * glow_seam * inside_b * base_floor * (0.9 - 0.4 * throne_hall);
 	ROUGHNESS = 1.0;
 }

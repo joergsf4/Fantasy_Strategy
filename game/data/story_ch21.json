@@ -1,0 +1,140 @@
+{
+ "intro": [
+  {
+   "left": "maedchen_baer",
+   "right": "ninjas",
+   "speaker": "maedchen_baer",
+   "text": "Da vorne sind die Zwillinge. Und Xiùlán. Warten wir ab.",
+   "story": true
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "ninjas",
+   "speaker": "ninjas",
+   "text": "Im Schatten der Felsen sehen sie uns nicht.",
+   "story": true
+  },
+  {
+   "left": "xiulan",
+   "right": "oskar",
+   "speaker": "oskar",
+   "text": "Da ist ja unsere Verräterin! Hat die große Xiùlán ihren Lohn schon gezählt?",
+   "right_expr": "lachend"
+  },
+  {
+   "left": "xiulan",
+   "right": "maja",
+   "speaker": "maja",
+   "text": "Du hast den Professor im Stich gelassen. Der Meister mag keine Verräterinnen.",
+   "right_expr": "wuetend"
+  },
+  {
+   "left": "xiulan",
+   "right": "oskar",
+   "speaker": "xiulan",
+   "text": "Der Professor schuldet mir immer noch Geld. Und du schuldest mir eine Entschuldigung.",
+   "left_expr": "wuetend"
+  },
+  {
+   "left": "xiulan",
+   "right": "oskar",
+   "speaker": "oskar",
+   "text": "Eine Entschuldigung? Von mir? Was willst du denn tun, Oma?",
+   "right_expr": "lachend"
+  },
+  {
+   "left": "xiulan",
+   "right": "oskar",
+   "speaker": "xiulan",
+   "text": "Rechnung begleichen.",
+   "left_expr": "wuetend"
+  }
+ ],
+ "after_beating": [
+  {
+   "left": "xiulan",
+   "right": "maja",
+   "speaker": "xiulan",
+   "text": "Und das war nur die Anzahlung.",
+   "left_expr": "lachend",
+   "right_expr": "wuetend"
+  }
+ ],
+ "after_flee": [
+  {
+   "left": "xiulan",
+   "right": "maja",
+   "speaker": "maja",
+   "text": "Oskar! ... Du bezahlst dafür, Xiùlán! Soldaten, schnappt sie!",
+   "right_expr": "wuetend"
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "ninjas",
+   "speaker": "maedchen_baer",
+   "text": "Sie ist allein gegen alle. Wir helfen ihr!",
+   "story": true
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "ninjas",
+   "speaker": "ninjas",
+   "text": "Wir decken euch. Auf geht's!",
+   "story": true
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "xiulan",
+   "speaker": "maedchen_baer",
+   "text": "Wir stehen an deiner Seite!",
+   "voices": [
+    {
+     "id": "hund",
+     "text": "Na gut, Oma. Heute beißen wir auf derselben Seite."
+    },
+    {
+     "id": "ritter",
+     "text": "Eine Dame in Bedrängnis! Ser Albrecht eilt zur Hilfe!"
+    },
+    {
+     "id": "samurai",
+     "text": "Xiùlán, heute kämpfen wir Seite an Seite."
+    },
+    {
+     "id": "elisabeth",
+     "text": "Oma, wir halten dir den Rücken frei!"
+    }
+   ]
+  },
+  {
+   "left": "xiulan",
+   "right": "maedchen_baer",
+   "speaker": "xiulan",
+   "text": "Gut. Aber mein Gebiss gehört mir!",
+   "left_expr": "lachend"
+  }
+ ],
+ "outro": [
+  {
+   "left": "maedchen_baer",
+   "right": "xiulan",
+   "speaker": "maedchen_baer",
+   "text": "Du hast uns geholfen. Kommst du mit zum Berg?",
+   "story": true
+  },
+  {
+   "left": "xiulan",
+   "right": "maedchen_baer",
+   "speaker": "xiulan",
+   "text": "Ich habe eine Rechnung einzutreiben. Aber meinen Weg gehe ich allein.",
+   "left_expr": "lachend"
+  },
+  {
+   "left": "ninjas",
+   "right": "maedchen_baer",
+   "speaker": "ninjas",
+   "text": "Dann sehen wir sie bestimmt wieder.",
+   "story": true
+  }
+ ]
+}

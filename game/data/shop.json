@@ -1,14 +1,30 @@
 {
- "_info": "Sortiment des Haendlers: jede Ware hat from (ab diesem Kapitel) und optional until (bis einschliesslich diesem Kapitel), n = Stueckzahl je Lager. Ausruestung nach Stufen (items.json tier 1 bis 4); Preise steigen mit der Stufe, gekauft wird mit dem Gold der Missionen. Verkauf: halber Preis (Party.sell).",
- "merchant": {
-  "name": "Sack",
-  "portrait": "haendler"
- },
- "quips": [
-  "Frische Ware, frisch aus dem Sack! Nur heute – wie jeden Tag.",
-  "Mein Sack hat für alles ein Fach. Nur nicht für Rückgaben.",
-  "Gold in den Sack, Ware raus – und zugebunden!",
-  "Ich hab nichts gegen Helden. Besonders nichts gegen ihr Gold."
+ "_info": "Sortiment des Haendlers: jede Ware hat from (ab diesem Kapitel) und optional until (bis einschliesslich diesem Kapitel), n = Stueckzahl je Lager. Ausruestung nach Stufen (items.json tier 1 bis 4); Preise steigen mit der Stufe, gekauft wird mit dem Gold der Missionen. Verkauf: halber Preis (Party.sell). merchants: wer im Lager handelt (id, name, portrait, quips, from/until = Kapitelnummer der Party im Lager). Sack bis Kapitel 16 (im Zwischenspiel Kapitel 17 entfuehren ihn die Frischlinge), keiner in Kapitel 17 bis 19, Morgrim ab 20 (nach Mission 19). Jede Ware gehoert einem Haendler (Feld for, Standard sack).",
+ "merchants": [
+  {
+   "id": "sack",
+   "name": "Sack",
+   "portrait": "haendler",
+   "until": 16,
+   "quips": [
+    "Frische Ware, frisch aus dem Sack! Nur heute – wie jeden Tag.",
+    "Mein Sack hat für alles ein Fach. Nur nicht für Rückgaben.",
+    "Gold in den Sack, Ware raus – und zugebunden!",
+    "Ich hab nichts gegen Helden. Besonders nichts gegen ihr Gold."
+   ]
+  },
+  {
+   "id": "morgrim",
+   "name": "Morgrim",
+   "portrait": "fuerst_lumpen",
+   "from": 20,
+   "quips": [
+    "Diese Truhe habe ich aus besseren Tagen gerettet. Sie war das Einzige, das mich nicht verlassen hat.",
+    "Alles echt! Früher habe ich so etwas nur an Generäle verschenkt. Heute nehme ich Gold. Mir ist kalt.",
+    "Kaufen Sie, kaufen Sie! Bitte. Ich brauche eine dickere Decke.",
+    "Als Regent hätte ich Ihnen das alles abgenommen. Als Händler gebe ich Ihnen einen Freundschaftspreis."
+   ]
+  }
  ],
  "stock": [
   {
@@ -192,6 +208,62 @@
    "price": 360,
    "n": 1,
    "from": 11
+  },
+  {
+   "id": "heiltrank",
+   "price": 45,
+   "n": 3,
+   "from": 20,
+   "for": "morgrim"
+  },
+  {
+   "id": "gegengift",
+   "price": 28,
+   "n": 2,
+   "from": 20,
+   "for": "morgrim"
+  },
+  {
+   "id": "aether",
+   "price": 40,
+   "n": 2,
+   "from": 20,
+   "for": "morgrim"
+  },
+  {
+   "id": "runenschwert",
+   "price": 460,
+   "n": 1,
+   "from": 20,
+   "for": "morgrim"
+  },
+  {
+   "id": "mithrilhemd",
+   "price": 440,
+   "n": 1,
+   "from": 20,
+   "for": "morgrim"
+  },
+  {
+   "id": "sternenstab",
+   "price": 420,
+   "n": 1,
+   "from": 20,
+   "for": "morgrim"
+  },
+  {
+   "id": "runenrobe",
+   "price": 420,
+   "n": 1,
+   "from": 20,
+   "for": "morgrim"
+  },
+  {
+   "id": "drachenzahn",
+   "price": 400,
+   "n": 1,
+   "from": 20,
+   "for": "morgrim"
   }
  ]
 }

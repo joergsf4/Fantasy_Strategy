@@ -62,71 +62,11 @@
    ]
   }
  ],
- "enemies": [
-  {
-   "id": "alphawolf",
-   "pos": [
-    6,
-    2
-   ]
-  },
-  {
-   "id": "wolf",
-   "pos": [
-    4,
-    2
-   ]
-  },
-  {
-   "id": "wolf",
-   "pos": [
-    8,
-    3
-   ]
-  },
-  {
-   "id": "wolf",
-   "pos": [
-    3,
-    4
-   ]
-  },
-  {
-   "id": "wolf",
-   "pos": [
-    9,
-    4
-   ]
-  },
-  {
-   "id": "wolf",
-   "pos": [
-    5,
-    3
-   ]
-  }
- ],
+ "enemies": [],
  "objects": [],
  "decor": [],
  "rewards": {
-  "gold": 320
+  "gold": 0
  },
- "objectives": [
-  {
-   "id": "alle_leben",
-   "text": "Kein Held fällt",
-   "reward": {
-    "gold": 110
-   }
-  },
-  {
-   "id": "friedlich",
-   "text": "Das Rudel friedlich vertrieben",
-   "reward": {
-    "items": {
-     "heilhonig": 2
-    }
-   }
-  }
- ]
+ "objectives": []
 }

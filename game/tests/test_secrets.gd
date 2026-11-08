@@ -98,6 +98,6 @@ func run_tests() -> void:
 	check(scenes_shown.is_empty() and Status.has(lin3, "betrunken"), "Spaeter: keine Szene mehr, Effekt bleibt")
 	# Party-Speicher
 	var p := Party.new_game()
-	p.absorb({"inventory": {}, "materials": {}, "gold": 0, "equipment": [], "secrets_seen": ["betrunkener_meister"]})
+	p.absorb({"inventory": {}, "gold": 0, "equipment": [], "secrets_seen": ["betrunkener_meister"]})
 	check(p.secrets_seen == ["betrunkener_meister"] and (p.loadout()["secrets_seen"] as Array).has("betrunkener_meister"), "Party merkt gesehene Szene")
 	check(Party.from_dict(p.to_dict()).secrets_seen == ["betrunkener_meister"], "Speichern und Laden")

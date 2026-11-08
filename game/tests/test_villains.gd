@@ -14,6 +14,7 @@ func check(cond: bool, msg: String) -> void:
 
 func _initialize() -> void:
 	Engine.time_scale = 12.0
+	Sfx.muted = true
 	var defs: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/units.json"))
 	b = Battle.new()
 	var m := Mission.load_mission("ch1")
@@ -58,7 +59,28 @@ func run_tests(defs: Dictionary) -> void:
 	var ch3 := Mission.load_mission("ch3")
 	check((ch2["enemies"] as Array).any(func(e: Dictionary) -> bool: return e["id"] == "wart"), "Hohlweg: Wart ist Gegner")
 	check((ch3["enemies"] as Array).any(func(e: Dictionary) -> bool: return e["id"] == "oskar") and (ch3["enemies"] as Array).any(func(e: Dictionary) -> bool: return e["id"] == "maja"), "Feuer-Dorf: Oskar und Maja sind Gegner")
+	var ch3_ids: Array = (ch3["enemies"] as Array).map(func(e: Dictionary) -> String: return e["id"])
+	check(ch3_ids.size() == 5 and ch3_ids.count("soldat_infanterie") == 1 and ch3_ids.has("soldat_bogenschuetze") and ch3_ids.has("soldat_beritten"), "Feuer-Dorf: drei Soldaten verschiedener Typen neben den Zwillingen")
+	check((ch3["enemies"] as Array).any(func(e: Dictionary) -> bool: return e["id"] == "soldat_infanterie" and e.get("carry", {}).get("items", {}).get("gegengift", 0) == 1), "Feuer-Dorf: Gegengift-Beute bleibt erhalten")
 	check(not (ch2["enemies"] as Array).any(func(e: Dictionary) -> bool: return e["id"] == "xiulan"), "Xiulan bleibt aufgehoben")
+
+	# Die Sprunganimation endet mit ihrer Figur, auch wenn sie vorzeitig entfernt wird.
+	var temp := Node3D.new()
+	var sprite := Sprite3D.new()
+	b.add_child(temp)
+	temp.add_child(sprite)
+	b.fx.hop({"sprite": sprite}, 0.3, 0.5)
+	temp.queue_free()
+	await process_frame
+	await create_timer(0.7).timeout
+	check(not is_instance_valid(sprite), "Sprung: entfernte Figur wird freigegeben")
+	var stable := Sprite3D.new()
+	b.add_child(stable)
+	stable.position.y = 0.4
+	b.fx.hop({"sprite": stable}, 0.3, 0.2)
+	await create_timer(0.3).timeout
+	check(is_equal_approx(stable.position.y, 0.4), "Sprung: lebende Figur kehrt zur Ausgangshoehe zurueck")
+	stable.queue_free()
 
 	# --- Rakete: Treffer plus halber Schaden auf Nachbarn, Reichweite 2-4
 	var s := scene([["ritter", [7, 7]], ["kungfu", [8, 7]], ["samurai", [7, 2]]], [["wart", [4, 7]]])

@@ -5,7 +5,8 @@ const TITLE_MUSIC := "res://assets/audio/title_theme.mp3"
 const BATTLE_MUSIC := "res://assets/audio/battle_theme.mp3"
 const WIN_MUSIC := "res://assets/audio/sieg_statistik.mp3"
 const DEFEAT_MUSIC := "res://assets/audio/niederlage_statistik.mp3"
-const CHAPTERS := ["ch1", "ch2", "ch3", "ch4", "ch5", "ch6", "ch7", "ch8", "ch9", "ch10", "ch11", "ch12", "ch13", "ch14", "ch15", "ch16", "ch17", "ch18"]
+const VOLCANO_TREK := preload("res://scripts/volcano_trek.gd")
+const CHAPTERS := ["ch1", "ch2", "ch3", "ch4", "ch5", "ch6", "ch7", "ch8", "ch9", "ch10", "ch11", "ch12", "ch13", "ch14", "ch15", "ch16", "ch17", "ch18", "ch19", "ch20", "ch21", "ch22", "ch23", "ch24", "ch25"]
 const MUSIC_DB := -6.0
 
 var units: Dictionary
@@ -20,6 +21,14 @@ var _in_game := false            # Hauptmenue verlassen: ab hier gibt es etwas z
 
 func _load_json(path: String) -> Dictionary:
 	return JSON.parse_string(FileAccess.get_file_as_string(path))
+
+
+## Fenster im Hintergrund (Alt-Tab, minimiert): Bildrate stark drosseln, damit Laptops nicht heiss laufen.
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_APPLICATION_FOCUS_OUT:
+		Settings.set_focused(false)
+	elif what == NOTIFICATION_APPLICATION_FOCUS_IN:
+		Settings.set_focused(true)
 
 
 func _ready() -> void:
@@ -48,6 +57,8 @@ func _names() -> Dictionary:
 		n[id] = units[id]["name"]
 	n["waisenkinder"] = "Die Waisenkinder"
 	n["haendler"] = "Sack"          # Haendler im Lager, keine Kampfeinheit
+	n["frischlinge_robo"] = "Robo-Frischlinge"   # Gespraechsbild der Robo-Frischlinge (Mission 24), die Figuren sind drei Einzeleinheiten
+	n["schatten"] = "???"           # der Schatten, mit dem der Professor spricht (Mission 23), keine Kampfeinheit
 	n["mutter"] = "Bianca"     # Geisel aus Mission 4 (Platzhaltername), keine Kampfeinheit
 	return n
 
@@ -66,11 +77,8 @@ func _run() -> void:
 	add_child(stage)
 	_play_music(TITLE_MUSIC)
 	var start_ch := OS.get_environment("START_CH")      # START_CH=ch14 (und START_SKIP=1 ohne Einleitung): Titel und Menue ueberspringen, direkt in diese Mission
-	if start_ch != "" and CHAPTERS.has(start_ch):         # mit ueblichen Talenten, Ausruestung und Vorraeten dieser Mission, ohne den Spielstand anzufassen
-		party = Party.for_chapter(units, int(start_ch.substr(2)))
-		stage.party = party
 	var choice: Dictionary = {"action": "continue", "cheat": true} if start_ch != "" and CHAPTERS.has(start_ch) else await _title(mini(party.chapter, CHAPTERS.size()) if resumed else 0)
-	if choice["action"] == "new":              # Neues Spiel: alter Spielstand weg
+	if choice["action"] == "new" and not choice["cheat"]:              # Neues Spiel: alter Spielstand weg
 		Party.delete_save()
 		party = Party.new_game()
 		stage.party = party
@@ -80,10 +88,13 @@ func _run() -> void:
 	if cheat:
 		resumed = false          # Testmenue: die Kapitelwahl bestimmt, wo es weitergeht
 	var pick: Array = [CHAPTERS.find(start_ch), OS.get_environment("START_SKIP") == "1"] if start_ch != "" and CHAPTERS.has(start_ch) else (await _choose_level() if cheat else await _resume_pick(resumed))
+	if cheat:
+		_prepare_test_chapter(int(pick[0]))
 	for i in range(int(pick[0]), CHAPTERS.size()):
 		party.chapter = i + 1
 		var nxt: String = CHAPTERS[i + 1] if i + 1 < CHAPTERS.size() else ""
-		await _chapter(CHAPTERS[i], bool(pick[1]) and i == int(pick[0]), nxt)
+		var direct_arrival: bool = cheat and i == int(pick[0]) and CHAPTERS[i] == "ch21" and not bool(pick[1])
+		await _chapter(CHAPTERS[i], bool(pick[1]) and i == int(pick[0]), nxt, direct_arrival)
 	var layer := CanvasLayer.new()
 	layer.layer = 2
 	add_child(layer)
@@ -98,6 +109,7 @@ func _run() -> void:
 	end.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	end.set_anchors_preset(Control.PRESET_FULL_RECT)
 	layer.add_child(end)
+	await _cover_out(0.7)
 
 
 ## Musik wechseln: der alte Titel blendet aus, der neue blendet ein (fade = 0: sofort).
@@ -145,11 +157,18 @@ func _title(save_chapter := 0) -> Dictionary:
 	return {"action": action, "cheat": cheat}
 
 
+## Kapitelwahl und START_CH verwenden denselben unabhaengigen Teststand.
+func _prepare_test_chapter(index: int) -> void:
+	party = Party.for_chapter(units, index + 1)
+	stage.party = party
+
+
 ## Normales Spiel ohne Kapitelwahl: dort weitermachen, wo man aufgehoert hat (nach einem Spielstand erst ins Lager).
 func _resume_pick(resumed: bool) -> Array:
 	var idx := clampi(party.chapter - 1, 0, CHAPTERS.size() - 1)
 	if resumed and idx > 0:
 		await _camp(Mission.load_mission(CHAPTERS[idx]))
+		await _play_pending_interlude()
 	return [idx, false]
 
 
@@ -221,6 +240,12 @@ func _lab_run(kind: String, hero: String, foe: String, maxed: bool) -> void:
 	if kind == "schneesturm":
 		await _play_snow_trek()
 		return
+	if kind == "berge":      # Testlabor: Zwischenspiel Ueberfall am Pass (ch17)
+		var bi: Dictionary = (Mission.load_mission("ch17")["interlude"] as Dictionary).duplicate()
+		bi["party"] = ["maedchen_baer", "ritter", "hund", "elisabeth", "robo"]
+		await _play_interlude(bi)
+		await _cover_out(0.4)
+		return
 	var lab_party := Party.new_game()
 	lab_party.earned = 21 if maxed else 3                 # Stufe 22 (7 Punkte) bzw. Stufe 4
 	lab_party.gold = 999
@@ -283,7 +308,7 @@ func _lab_run(kind: String, hero: String, foe: String, maxed: bool) -> void:
 			cl.queue_free()
 		"belohnung":
 			stage.set_mode("dialog")
-			await _reward({"gold": 205, "items": {"heiltrank": 1}, "materials": {"kraut": 3}, "equipment": [], "level_to": 4, "point_gain": true,
+			await _reward({"gold": 205, "items": {"heiltrank": 1}, "equipment": [], "level_to": 4, "point_gain": true,
 				"objectives": [{"id": "a", "text": "Kein Held fällt", "done": true, "reward": {"gold": 60}}], "turns": 7,
 				"stats": {"rows": [{"id": hero, "name": units[hero]["name"], "alive": true, "hp": 20, "maxhp": 32, "dealt": 41, "taken": 12, "healed": 0, "kills": 3, "abs": 2, "bonus": 1}], "awards": []}})
 		"reise":
@@ -333,6 +358,8 @@ func _mission_with_squad(cid: String) -> Dictionary:
 	for i in (m["players"] as Array).size():
 		m["players"][i]["id"] = ids[i]
 	party.release_absent(ids)
+	if party.test_run:
+		party.auto_equip(ids, units)
 	return m
 
 
@@ -379,7 +406,7 @@ func _cover_out(t := 0.5) -> void:
 	cv.get_parent().queue_free()
 
 
-func _chapter(cid: String, skip_intro := false, next_cid := "") -> void:
+func _chapter(cid: String, skip_intro := false, next_cid := "", direct_arrival := false) -> void:
 	if Mission.load_mission(cid).get("stub", false):      # Zwischenspiel ohne Kampf: Reisebild, dann das Gespraech im Hafen
 		await _interlude_chapter(cid, next_cid)
 		return
@@ -393,11 +420,28 @@ func _chapter(cid: String, skip_intro := false, next_cid := "") -> void:
 	if stage.map_data.get("id", "") != cid:
 		stage.map_data = m
 		stage.new_battle()
+	if m.get("select_before_intro", false) and SquadSelect.has_choice(party, units, m):
+		stage.set_mode("dialog")
+		_cover_out(0.5)
+		await _squad_select(m)
+		m = _mission_with_squad(cid)
+		stage.map_data = m
+		stage.new_battle()
+	if direct_arrival:
+		var journey: Dictionary = (Mission.load_mission("ch20")["interlude_after"] as Dictionary).duplicate(true)
+		journey["party"] = _squad_ids(m)
+		await _play_interlude(journey)
+	if cid == "ch1" and not skip_intro:
+		_play_music(BATTLE_MUSIC, 1.0)
+		await _mission_one_flyover()
 	stage.set_mode("dialog")
 	_cover_out(0.5)
 	if not skip_intro:
-		await _dialogue(Mission.voiced(story_c["intro"], _squad_ids(m)))
-	if SquadSelect.has_choice(party, units, m):         # Gruppenwahl vor der Runde (Story-Figuren sind gesperrt)
+		if cid == "ch21":
+			await _mission_twenty_one_intro(story_c, m)
+		else:
+			await _dialogue(Mission.voiced(story_c["intro"], _squad_ids(m)))
+	if not m.get("select_before_intro", false) and SquadSelect.has_choice(party, units, m):
 		await _squad_select(m)
 		m = _mission_with_squad(cid)
 		stage.map_data = m
@@ -408,7 +452,8 @@ func _chapter(cid: String, skip_intro := false, next_cid := "") -> void:
 			joining.append(hid)
 	if not joining.is_empty():
 		await _talent_screen(joining)
-	_play_music(BATTLE_MUSIC, 2.5)
+	if cid != "ch1" or skip_intro:
+		_play_music(BATTLE_MUSIC, 2.5)
 	while true:
 		_battle_active = true
 		await stage.start_battle()
@@ -426,22 +471,31 @@ func _chapter(cid: String, skip_intro := false, next_cid := "") -> void:
 		_play_music(BATTLE_MUSIC, 2.0)
 	_fade_music(3.0)
 	stage.backdrop_again()
-	var res := stage.battle.results()
-	res["level_to"] = party.level() + 1                                              # Gruppenstufe nach dieser Mission
-	res["point_gain"] = Party.points_for(party.earned + 1) > Party.points_for(party.earned)
-	await _reward(res, false)
-	party.absorb(res)
-	party.save()
-	var present: Array = []                                                          # Aufstieg nur fuer Helden, die dabei waren
-	for row: Dictionary in (res.get("stats", {}) as Dictionary).get("rows", []):
-		if units.has(row["id"]) and units[row["id"]].get("hero", false) and party.needs_prompt(row["id"]):
-			present.append(row["id"])
-	await _talent_screen(present)                                                    # fuehrt die froehliche Musik weiter
-	_fade_music(1.2)
-	_toast("Spielstand automatisch gespeichert")
+	if m.get("no_rewards", false):      # Zwischenspiel (Mission 23): keine Belohnung, kein Aufstieg, zaehlt nicht als Kampfmission
+		party.chapter += 1
+		party.save()
+		await _cover_in(0.0)               # nach einer Schwarzblende im Kampf ("blackout") schwarz bleiben, dann deren Ebene entfernen
+		get_tree().call_group("blackout", "queue_free")
+	else:
+		var res := stage.battle.results()
+		res["level_to"] = party.level() + 1                                              # Gruppenstufe nach dieser Mission
+		res["point_gain"] = Party.points_for(party.earned + 1) > Party.points_for(party.earned)
+		await _reward(res, false)
+		party.absorb(res)
+		if m.has("interlude_after"):
+			party.pending_interlude = (m["interlude_after"] as Dictionary).duplicate(true)
+			party.pending_interlude["party"] = party.squad_for(m)
+		party.save()
+		var present: Array = []                                                          # Aufstieg nur fuer Helden, die dabei waren
+		for row: Dictionary in (res.get("stats", {}) as Dictionary).get("rows", []):
+			if units.has(row["id"]) and units[row["id"]].get("hero", false) and party.needs_prompt(row["id"]):
+				present.append(row["id"])
+		await _talent_screen(present)                                                    # fuehrt die froehliche Musik weiter
+		_fade_music(1.2)
+		_toast("Spielstand automatisch gespeichert")
 	if m.has("outro_at_sea"):                            # Abschlussgespraech waehrend der Ueberfahrt, vor dem Meer
 		await _dialogue_at_sea(Mission.voiced(story_c["outro"], _squad_ids(m)), m["outro_at_sea"])
-	else:
+	elif not (story_c["outro"] as Array).is_empty():     # leerer Abschluss (Mission 23 endet mit der Schwarzblende im Kampf)
 		await _dialogue(Mission.voiced(story_c["outro"], _squad_ids(m)))
 	if next_cid != "" and Mission.load_mission(next_cid).get("stub", false):
 		party.save()
@@ -449,8 +503,241 @@ func _chapter(cid: String, skip_intro := false, next_cid := "") -> void:
 		return                                           # naechstes Kapitel hat keinen Kampf: kein Lager
 	await _camp(Mission.load_mission(next_cid) if next_cid != "" else m)   # Lager: Gruppe der naechsten Mission waehlen
 	party.save()
+	await _play_pending_interlude()
 	if next_cid != "":
 		await _cover_in(0.4)
+
+
+func _play_pending_interlude() -> void:
+	if party.pending_interlude.is_empty():
+		return
+	await _play_interlude(party.pending_interlude)
+	party.pending_interlude.clear()
+	party.save()
+
+
+func _mission_twenty_one_intro(story_c: Dictionary, m: Dictionary) -> void:
+	var b := stage.battle
+	stage.mission_twenty_one_camera()
+	var oskar := _spawn_oskar_ch21(b)
+	var xiulan := b._find("xiulan")
+	await _dialogue(Mission.voiced(story_c["intro"], _squad_ids(m)))
+	await _xiulan_brawl(b, xiulan, oskar)
+	await _dialogue(Mission.voiced(story_c["after_beating"], _squad_ids(m)))
+	await _dialogue(Mission.voiced(story_c["after_flee"], _squad_ids(m)))
+	stage.set_mode("dialog")
+
+
+## Oskar steht fuer die Eroeffnung von Mission 21 kurz auf der Karte (ohne Lebensbalken, ohne Statistik).
+func _spawn_oskar_ch21(b: Battle) -> Dictionary:
+	b._spawn("oskar", "e", Vector2i(7, 2))
+	var oskar := b._find("oskar")
+	(oskar["bar"] as Node3D).visible = false
+	(oskar["label"] as Node3D).visible = false
+	return oskar
+
+
+## Eroeffnung Mission 21: Xiùlán stuermt auf Oskar los, beide verschwinden in einer Comic-Pruegelwolke (Lautwoerter, Sterne,
+## Geraeusche), die Wolke platzt, Oskar fliegt sich drehend aus dem Bild ("Ich hole Verstaerkung!"). Danach ist Oskar weg,
+## Xiùlán steht wieder auf ihrem Feld. Keine Runde, kein Leben.
+func _xiulan_brawl(b: Battle, xiulan: Dictionary, oskar: Dictionary) -> void:
+	var xn: Node3D = xiulan["node"]
+	var on: Node3D = oskar["node"]
+	var xs: Sprite3D = xiulan["sprite"]
+	var os_: Sprite3D = oskar["sprite"]
+	var home := xn.position
+	var spot := on.position
+	var clash := spot.lerp(home, 0.25)
+	b._turn_towards(xiulan, oskar["pos"])
+	b._turn_towards(oskar, xiulan["pos"])
+	(xiulan["bar"] as Node3D).visible = false
+	(xiulan["ring"] as Node3D).visible = false
+	(oskar["ring"] as Node3D).visible = false
+	var words_layer := CanvasLayer.new()
+	words_layer.layer = 7
+	add_child(words_layer)
+	# 1. Ansturm
+	Sfx.play("whoosh_l", -4.0)
+	b.fx.particles("fx_smoke", home + Vector3(0, 0.15, 0), 6, 1.2, 0.3, 0.5, 0.5, Color(0.85, 0.8, 0.7), false, 70.0)
+	var run := create_tween()
+	run.tween_method(func(k: float) -> void: xn.position = home.lerp(clash, k) + Vector3(0, sin(k * PI) * 0.5, 0), 0.0, 1.0, 0.35)
+	await run.finished
+	# 2. Pruegelwolke
+	xs.visible = false
+	os_.visible = false
+	Sfx.play("poof", -2.0)
+	var cloud := Node3D.new()
+	cloud.position = clash
+	b.add_child(cloud)
+	var puffs: Array = []
+	for i in 7:
+		var off := Vector3(randf_range(-0.7, 0.7), 0.45 + randf_range(0.0, 0.8), randf_range(-0.2, 0.2))
+		var pf := b.fx.make_sprite("fx_smoke", off, randf_range(1.2, 1.55), false, Color(0.97, 0.95, 0.92, 1.0), 5, cloud)
+		puffs.append([pf, off, pf.scale, randf() * TAU])
+	var hits := [0.15, 0.55, 0.95, 1.35, 1.75, 2.1]
+	var words := ["BAM!", "POW!", "KLONK!", "ZACK!", "WUMMS!", "AUA!"]
+	var sounds := ["w_fist", "crit", "crunch", "boing", "w_fist", "crit"]
+	var t := 0.0
+	var next := 0
+	var peeks := [[0.7, oskar, Vector3(0.7, 0, 0.1)], [1.55, xiulan, Vector3(-0.7, 0, 0.1)]]
+	var peeked := 0
+	var peek_until := -1.0
+	var peek_unit: Dictionary = {}
+	while t < 2.4:
+		await get_tree().process_frame
+		t += get_process_delta_time()
+		for pd: Array in puffs:
+			var pf: MeshInstance3D = pd[0]
+			var ph: float = pd[3]
+			pf.position = (pd[1] as Vector3) + Vector3(sin(t * 23.0 + ph) * 0.06, absf(sin(t * 17.0 + ph)) * 0.08, 0)
+			pf.scale = (pd[2] as Vector3) * (1.0 + 0.12 * sin(t * 19.0 + ph))
+		cloud.position.y = clash.y + absf(sin(t * 9.0)) * 0.12
+		if next < hits.size() and t >= float(hits[next]):
+			_comic_word(b, words_layer, str(words[next]), clash + Vector3(-1.0 if next % 2 == 0 else 1.0, 0.3 * float(next % 3), 0))
+			Sfx.play(str(sounds[next]), -3.0, randf_range(0.9, 1.15))
+			if next % 2 == 1:
+				Sfx.play("v_grunt", -7.0, 1.2)
+			_comic_star(b, clash + Vector3(randf_range(-0.7, 0.7), randf_range(0.6, 1.4), 0.2))
+			b.fx.shake(0.06, 0.15)
+			next += 1
+		if peeked < peeks.size() and t >= float(peeks[peeked][0]):      # kurz blitzt jemand am Wolkenrand hervor
+			peek_unit = peeks[peeked][1]
+			(peek_unit["node"] as Node3D).position = clash + (peeks[peeked][2] as Vector3)
+			(peek_unit["sprite"] as Sprite3D).visible = true
+			(peek_unit["sprite"] as Sprite3D).flip_h = not (peek_unit["sprite"] as Sprite3D).flip_h
+			peek_until = t + 0.12
+			peeked += 1
+		if peek_until > 0.0 and t >= peek_until:
+			(peek_unit["sprite"] as Sprite3D).visible = false
+			peek_until = -1.0
+	# 3. Wolke platzt
+	Sfx.play("poof", 0.0)
+	b.fx.particles("fx_smoke", clash + Vector3(0, 0.5, 0), 14, 2.2, 0.5, 0.6, -0.2, Color(0.95, 0.93, 0.9), false, 180.0)
+	var pop := create_tween().set_parallel(true)
+	for pd: Array in puffs:
+		pop.tween_property(pd[0], "scale", (pd[2] as Vector3) * 1.8, 0.25)
+		pop.tween_method(func(a: float) -> void: ((pd[0] as MeshInstance3D).material_override as ShaderMaterial).set_shader_parameter("alpha", a), 1.0, 0.0, 0.25)
+	await pop.finished
+	cloud.visible = false
+	xn.position = clash
+	xs.visible = true
+	b._turn_towards(xiulan, oskar["pos"])
+	# 4. Oskar fliegt in die Hoehe und kommt dabei mit einem Zoom auf die Kamera zu, dann schiesst er oben aus dem Bild.
+	#    Eine 2D-Kopie seines Bildes dreht sich um ihre Mitte (das 3D-Bild hat seinen Drehpunkt an den Fuessen und wuerde kreisen).
+	on.position = clash + Vector3(0.35, 0, -0.1)
+	os_.visible = false
+	var start := on.position
+	var cam := b.cam
+	var foot0 := cam.unproject_position(start)
+	var head0 := cam.unproject_position(start + Vector3(0, 1.3, 0))
+	var h0 := maxf(60.0, foot0.distance_to(head0))
+	var c0 := cam.unproject_position(start + Vector3(0, 0.65, 0))       # Bildmitte der Figur am Boden
+	var near := Vector2(lerpf(c0.x, 640.0, 0.55), 250.0)                  # hier ist er der Kamera am naechsten
+	var gone := Vector2(near.x + 520.0, -420.0)                          # schraeg oben aus dem Bild
+	var flyer := TextureRect.new()
+	flyer.texture = load("res://assets/tokens/oskar_flug.png") if ResourceLoader.exists("res://assets/tokens/oskar_flug.png") else os_.texture      # entsetzt, rudernd (nur fuer diesen Flug)
+	flyer.flip_h = os_.flip_h
+	flyer.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	flyer.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	flyer.size = Vector2(h0 * float(flyer.texture.get_width()) / float(flyer.texture.get_height()), h0) * (1.25 if flyer.texture != os_.texture else 1.0)      # liegend breiter: etwas groesser, damit er gleich gross wirkt
+	flyer.pivot_offset = flyer.size * 0.5
+	words_layer.add_child(flyer)
+	var shout := _comic_word(b, words_layer, "Ich hole Verstääärkung!", start, false)
+	Sfx.play("boing", -2.0, 0.8)
+	Sfx.play("whoosh_l", -4.0, 0.7)
+	var passed := [false]      # Array: das Lambda unten schreibt hinein (einfache Werte faengt es nur als Kopie ein)
+	var fly := create_tween()
+	fly.tween_method(func(k: float) -> void:
+		var c: Vector2
+		var sc: float
+		if k < 0.65:      # in die Hoehe und auf die Kamera zu: waechst stark
+			var e := ease(k / 0.65, 0.6)
+			c = c0.lerp(near, e) + Vector2(0, -sin(e * PI) * 40.0)
+			sc = lerpf(1.0, 4.2, e * e)
+		else:             # an der Kamera vorbei schraeg nach oben aus dem Bild
+			var e2 := (k - 0.65) / 0.35
+			c = near.lerp(gone, e2 * e2)
+			sc = lerpf(4.2, 6.5, e2)
+			if not passed[0]:
+				passed[0] = true
+				Sfx.play("whoosh_l", -2.0, 1.3)
+		flyer.position = c - flyer.size * 0.5
+		flyer.rotation = k * TAU * 3.0
+		flyer.scale = Vector2.ONE * sc
+		shout.position = c - shout.size * 0.5 + Vector2(0, -h0 * 0.6 * sc - 10.0)
+		shout.position.y = maxf(shout.position.y, 24.0)      # Ruf bleibt im Bild, auch wenn Oskar riesig wird
+		shout.position.x = clampf(shout.position.x, 16.0, 1264.0 - shout.size.x * shout.scale.x)
+		shout.scale = Vector2.ONE * minf(1.6, 0.8 + 0.25 * sc)
+		shout.modulate.a = 1.0 - smoothstep(0.75, 0.95, k), 0.0, 1.0, 2.0)
+	# Xiùlán klopft sich die Haende ab: zwei kleine Huepfer
+	var hop := create_tween()
+	for i in 2:
+		hop.tween_property(xn, "position:y", clash.y + 0.18, 0.12)
+		hop.tween_property(xn, "position:y", clash.y, 0.12)
+	await fly.finished
+	flyer.queue_free()
+	# 5. Oskar ist weg, Xiùlán geht zurueck auf ihr Feld
+	b.units.erase(oskar)
+	b.all_units.erase(oskar)
+	on.queue_free()
+	cloud.queue_free()
+	var back := create_tween()
+	back.tween_property(xn, "position", home, 0.4).set_trans(Tween.TRANS_SINE)
+	await back.finished
+	(xiulan["bar"] as Node3D).visible = true
+	(xiulan["ring"] as Node3D).visible = true
+	await get_tree().create_timer(0.5).timeout
+	words_layer.queue_free()
+
+
+## Comic-Lautwort ueber der Pruegelwolke (gelb, schwarzer Rand, schraeg, ploppt auf). fade = false: bleibt stehen (Aufrufer steuert).
+func _comic_word(b: Battle, layer: CanvasLayer, text: String, at: Vector3, fade := true) -> Label:
+	var l := Label.new()
+	l.text = text
+	l.add_theme_font_override("font", UiTheme.font(UiTheme.F_TITLE))
+	l.add_theme_font_size_override("font_size", 58 if fade else 34)
+	l.add_theme_color_override("font_color", Color(1.0, 0.86, 0.15))
+	l.add_theme_color_override("font_outline_color", Color.BLACK)
+	l.add_theme_constant_override("outline_size", 16 if fade else 12)
+	layer.add_child(l)
+	l.size = l.get_minimum_size()
+	l.pivot_offset = l.size * 0.5
+	var p := b.cam.unproject_position(at + Vector3(0, 1.6, 0))
+	l.position = p - l.size * 0.5
+	if not fade:
+		return l
+	l.rotation = randf_range(-0.35, 0.35)
+	l.scale = Vector2.ONE * 0.3
+	var tw := l.create_tween()
+	tw.tween_property(l, "scale", Vector2.ONE * 1.25, 0.08)
+	tw.tween_property(l, "scale", Vector2.ONE, 0.07)
+	tw.tween_interval(0.2)
+	tw.tween_property(l, "modulate:a", 0.0, 0.15)
+	tw.tween_callback(l.queue_free)
+	return l
+
+
+## Stern, der in der Wolke kurz aufblitzt.
+func _comic_star(b: Battle, at: Vector3) -> void:
+	var st := b.fx.make_sprite("fx_star", at, 0.4, true, Color(1.0, 0.95, 0.5), 6)
+	var mat := st.material_override as ShaderMaterial
+	var base := st.scale
+	var tw := st.create_tween().set_parallel(true)
+	tw.tween_property(st, "scale", base * 1.8, 0.3)
+	tw.tween_method(func(a: float) -> void: mat.set_shader_parameter("alpha", a), 1.0, 0.0, 0.3)
+	tw.chain().tween_callback(st.queue_free)
+
+
+func _mission_one_flyover() -> void:
+	await _cover_in(0.0)
+	stage.set_mode("flyover")
+	stage.mission_one_flyover_at(0.0)
+	await _cover_out(0.7)
+	var flight := create_tween()
+	flight.tween_method(stage.mission_one_flyover_at, 0.0, 1.0, 9.0)
+	await flight.finished
+	await _cover_in(0.7)
+	stage.restore_dialog_camera()
 
 
 ## Kurze Meldung unten in der Mitte (blendet von selbst aus).
@@ -540,6 +827,153 @@ func _talent_screen(hero_ids: Array) -> void:
 
 
 ## Dialog mitten im Kampf: ueber der abgedunkelten Karte, ohne die Buehne zu wechseln.
+var _auto_dialogue := 0.0      # Aufnahmen (SHOT=cutscene): Dialoge schalten nach so vielen Sekunden selbst weiter
+
+
+## Aufnahme SHOT=cutscene SHOT_SCENE=finale: spielt Mission 25 selbst. Stachelia laeuft zur Honigmaschine, Ser Albrecht (oder wer am naechsten steht)
+## befreit Xiùlán, alle anderen greifen das lohnendste Ziel an bzw. heilen; die Gegner ziehen mit ihrer normalen KI.
+func _autoplay_finale() -> void:
+	stage = Stage.new()
+	stage.party = Party.for_chapter(units, 25)      # Talente und Ausruestung wie beim Kapitelsprung im Testlabor
+	stage.setup(Mission.load_mission("ch25"), units)
+	stage.dialogue_runner = _battle_dialogue
+	add_child(stage)
+	for i in 10:
+		await get_tree().process_frame
+	await get_tree().create_timer(1.0).timeout
+	var st: Dictionary = _load_json("res://data/story_ch25.json")
+	await _battle_dialogue(st["intro"])
+	await stage.start_battle()
+	var lb := stage.battle
+	lb.dialogue_runner = _battle_dialogue
+	var over := [false]
+	var won := [false]
+	lb.finished.connect(func(w: bool) -> void:
+		over[0] = true
+		won[0] = w
+		print("FINALE: ", "gewonnen" if w else "verloren", " in Runde ", lb.turn, " Helden: ", lb.units.filter(func(u: Dictionary) -> bool: return u["team"] == "p").map(func(u: Dictionary) -> String: return "%s %d" % [u["id"], u["hp"]]), " gefallen: ", lb.fallen))
+	for rnd in 25:
+		if over[0] or lb.state == Battle.State.OVER:
+			break
+		var heroes: Array = lb.units.filter(func(u: Dictionary) -> bool: return u["team"] == "p")
+		if OS.get_environment("FINALE_LOG") == "1":
+			print("Runde ", lb.turn, " Helden ", heroes.map(func(u: Dictionary) -> String: return "%s %d/%d" % [u["id"], u["hp"], u["maxhp"]]), " Gegner ", lb.units.filter(func(u: Dictionary) -> bool: return u["team"] == "e").map(func(u: Dictionary) -> String: return "%s %d/%d" % [u["id"], u["hp"], u["maxhp"]]))
+		heroes.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return _auto_rank(a) < _auto_rank(b))
+		for h: Dictionary in heroes:
+			if over[0] or lb.state == Battle.State.OVER or not lb.units.has(h) or h["done"]:
+				continue
+			await _auto_hero(lb, h)
+			await get_tree().create_timer(0.25).timeout
+		if over[0] or lb.state == Battle.State.OVER:
+			break
+		lb.state = Battle.State.IDLE
+		await lb._end_player_turn()
+		while not over[0] and lb.state != Battle.State.IDLE and lb.state != Battle.State.OVER:
+			await get_tree().process_frame
+	while not over[0]:
+		await get_tree().process_frame
+	await get_tree().create_timer(1.0).timeout
+	if won[0]:
+		await _battle_dialogue(st["outro"])
+
+
+func _auto_rank(u: Dictionary) -> int:
+	return 0 if u["id"] == "bienenmaedchen" else (1 if u["id"] == "ritter" else 2)
+
+
+## Ein Zug eines Helden in der Aufnahme.
+func _auto_hero(lb: Battle, h: Dictionary) -> void:
+	lb.state = Battle.State.IDLE
+	lb._select(h)
+	await get_tree().create_timer(0.35).timeout
+	var occupied := {}
+	for o in lb.units:
+		if o != h:
+			occupied[o["pos"]] = true
+	var free_tiles: Array = lb.reach.keys().filter(func(t: Vector2i) -> bool: return not occupied.has(t))
+	var hm := lb.world.by_id("honigmaschine")
+	var cage := lb.world.by_id("kaefig_xiulan")
+	# Stachelia: zur Honigmaschine und einfuellen
+	if h["id"] == "bienenmaedchen" and hm["state"] == "empty":
+		var t := _auto_closest(free_tiles, hm["pos"], h["pos"])
+		if t != h["pos"]:
+			await lb._walk(h, t)
+		if Grid.dist(h["pos"], hm["pos"]) == 1:
+			await lb._fill_honey(h, hm)
+			return
+		_auto_done(lb, h)
+		return
+	# Ser Albrecht: Xiùlán befreien (zwei Runden)
+	if h["id"] == "ritter" and cage["state"] == "bound":
+		var t2 := _auto_closest(free_tiles, cage["pos"], h["pos"])
+		if t2 != h["pos"]:
+			await lb._walk(h, t2)
+		if Grid.dist(h["pos"], cage["pos"]) == 1 and lb._hostage_option(cage)["enabled"]:
+			await lb._free_hostage(h, cage)
+			return
+	# Heiler: verletzte Verbuendete versorgen
+	if int(h["heal"]) > 0:
+		for a: Dictionary in lb.units:
+			if a["team"] == "p" and a != h and a["hp"] < a["maxhp"] * 0.6:
+				for t3: Vector2i in free_tiles + [h["pos"]]:
+					if Combat.in_range(h, Grid.dist(t3, a["pos"])):
+						if t3 != h["pos"]:
+							await lb._walk(h, t3)
+						await lb._resolve(h, a)
+						_auto_done(lb, h)
+						return
+	# Angriff: lohnendstes Ziel von einem erreichbaren Feld
+	var best := -INF
+	var bt: Vector2i = h["pos"]
+	var bv: Dictionary = {}
+	for t4: Vector2i in free_tiles + [h["pos"]]:
+		for e: Dictionary in lb.units:
+			if e["team"] != "e" or not lb._hittable(e) or not Combat.in_range(h, Grid.dist(t4, e["pos"])):
+				continue
+			var fc := lb.forecast(h, e, t4)
+			var sc: float = fc["dmg"] * 10.0 + (60.0 if fc["kill"] else 0.0) - maxf(fc["counter"], 0.0) * 3.0 + (25.0 if e["id"] == "sack_boss" else 0.0)
+			if sc > best:
+				best = sc
+				bt = t4
+				bv = e
+	if not bv.is_empty():
+		if bt != h["pos"]:
+			await lb._walk(h, bt)
+		await lb._resolve(h, bv)
+		_auto_done(lb, h)
+		return
+	# Sonst: zum naechsten angreifbaren Gegner (vor dem Honig zur Maschine hin)
+	var goal: Vector2i = hm["pos"]
+	var gd := 999
+	for e2: Dictionary in lb.units:
+		if e2["team"] == "e" and lb._hittable(e2) and Grid.dist(h["pos"], e2["pos"]) < gd:
+			gd = Grid.dist(h["pos"], e2["pos"])
+			goal = e2["pos"]
+	var t5 := _auto_closest(free_tiles, goal, h["pos"])
+	if t5 != h["pos"]:
+		await lb._walk(h, t5)
+	_auto_done(lb, h)
+
+
+func _auto_closest(tiles: Array, goal: Vector2i, from: Vector2i) -> Vector2i:
+	var best: Vector2i = from
+	var bd := Grid.dist(from, goal)
+	for t: Vector2i in tiles:
+		var d := Grid.dist(t, goal)
+		if d >= 1 and d < bd:
+			bd = d
+			best = t
+	return best
+
+
+func _auto_done(lb: Battle, h: Dictionary) -> void:
+	h["done"] = true
+	lb._refresh_unit(h)
+	lb.sel = {}
+	lb._show_tiles({})
+	lb._check_end()
+
+
 func _battle_dialogue(lines: Array) -> void:
 	var layer := CanvasLayer.new()
 	layer.layer = 7
@@ -550,6 +984,7 @@ func _battle_dialogue(lines: Array) -> void:
 	layer.add_child(dim)
 	var d := Dialogue.new()
 	d.setup(lines, _names())
+	d.auto_advance = _auto_dialogue
 	layer.add_child(d)
 	await d.finished
 	layer.queue_free()
@@ -580,12 +1015,19 @@ func _interlude_chapter(cid: String, next_cid := "") -> void:
 		stage.new_battle()
 	stage.set_mode("dialog")
 	_cover_out(0.0)
-	await _play_interlude(m.get("interlude", {}))
+	var il: Dictionary = (m.get("interlude", {}) as Dictionary).duplicate()
+	var squad: Array = []
+	if m.get("voiced", false):      # Gruppe des vorigen Kapitels: sie laeuft durch das Bild und spricht (Stimmen der Zeilen)
+		squad = party.squad_for(Mission.load_mission(CHAPTERS[maxi(0, CHAPTERS.find(cid) - 1)]))
+		il["party"] = squad
+	await _play_interlude(il)
 	_cover_out(0.7)
-	await _dialogue(story_c["intro"])
+	await _dialogue(Mission.voiced(story_c["intro"], squad) if m.get("voiced", false) else story_c["intro"])
 	if not (story_c["outro"] as Array).is_empty():
 		await _dialogue(story_c["outro"])
 	party.save()
+	if m.get("camp_after", false) and next_cid != "":      # kein Haendler, aber Lager (Ausruestung, Aufstellung) vor der naechsten Mission
+		await _camp(Mission.load_mission(next_cid))
 	if m.has("card_after"):                      # Schwarzblende mit Texteinblendung, dann der naechste Schauplatz
 		await _scene_card(str(m["card_after"]), next_cid)
 
@@ -637,12 +1079,20 @@ func _play_interlude(data: Dictionary) -> void:
 	var layer := CanvasLayer.new()
 	layer.layer = 8
 	add_child(layer)
-	if data.get("scene", "") == "snow":        # Zwischensequenz im Schneesturm (SnowTrek, alles in 3D mit den Chibi-Sprites)
-		var trek := SnowTrek.new()
+	if data.get("scene", "") in ["snow", "volcano"]:
+		var trek: SnowTrek = VOLCANO_TREK.new() if data["scene"] == "volcano" else SnowTrek.new()
 		trek.setup(data)
 		layer.add_child(trek)
 		await trek.finished
 		await _cover_in(0.05)               # Schwarzblende danach: der naechste Bildschirm blendet aus Schwarz auf (kein kurzes Aufblitzen)
+		layer.queue_free()
+		return
+	if data.get("scene", "") == "berge":       # Zwischensequenz: die Frischlinge entfuehren den Sack (MountainRaid, 3D mit den Chibi-Sprites)
+		var raid := MountainRaid.new()
+		raid.setup(data)
+		layer.add_child(raid)
+		await raid.finished
+		await _cover_in(0.05)
 		layer.queue_free()
 		return
 	var it := Interlude.new()
@@ -679,6 +1129,7 @@ func _dialogue(lines: Array, layer_no := 2) -> void:
 	add_child(layer)
 	var d := Dialogue.new()
 	d.setup(lines, _names())
+	d.auto_advance = _auto_dialogue
 	layer.add_child(d)
 	await d.finished
 	layer.queue_free()
@@ -733,6 +1184,30 @@ func _screenshot_mode() -> void:
 		get_viewport().get_texture().get_image().save_png(OS.get_environment("SHOT_OUT"))
 		get_tree().quit()
 		return
+	if mode in ["ch21battle", "ch21fight"]:
+		stage = Stage.new()
+		stage.setup(Mission.load_mission("ch21"), units)
+		add_child(stage)
+		if mode == "ch21battle":
+			stage.battle._spawn("oskar", "e", Vector2i(6, 3))
+			stage.battle.enter_title_mode()
+			stage.mission_twenty_one_camera()
+		else:
+			await stage.start_battle()
+		await get_tree().create_timer(1.0).timeout
+		get_viewport().get_texture().get_image().save_png(OS.get_environment("SHOT_OUT"))
+		get_tree().quit()
+		return
+	if mode == "ch1flyover":
+		stage = Stage.new()
+		stage.setup(map, units)
+		add_child(stage)
+		stage.set_mode("flyover")
+		stage.mission_one_flyover_at(float(OS.get_environment("SHOT_PROGRESS")))
+		await get_tree().create_timer(1.0).timeout
+		get_viewport().get_texture().get_image().save_png(OS.get_environment("SHOT_OUT"))
+		get_tree().quit()
+		return
 	if mode == "flow":  # Ablauf-Test: Titel -> (simulierter Tastendruck) -> Dialog
 		_run()
 		await get_tree().create_timer(5.0).timeout
@@ -774,6 +1249,71 @@ func _screenshot_mode() -> void:
 		_scene_card(str(Mission.load_mission("ch10")["card_after"]), "ch11")
 		await get_tree().create_timer(float(OS.get_environment("SHOT_DELAY")) if OS.get_environment("SHOT_DELAY") != "" else 2.2).timeout
 		get_viewport().get_texture().get_image().save_png(OS.get_environment("SHOT_OUT"))
+		get_tree().quit()
+		return
+	if mode == "cutscene":   # Zwischensequenz in Echtzeit wie im Spiel abspielen, dann beenden (zum Mitschneiden mit --write-movie)
+		var party_ids := ["maedchen_baer", "ritter", "hund", "elisabeth", "robo", "wendy"]
+		var cs: Dictionary = {}
+		match OS.get_environment("SHOT_SCENE"):
+			"meer":      # Ueberfahrt nach Mission 6 (im Spiel laeuft das Abschlussgespraech darueber)
+				cs = (Mission.load_mission("ch6")["outro_at_sea"] as Dictionary).duplicate()
+				cs["duration"] = 10.0
+			"kapitel2":  # Reisebild vor Kapitel 2
+				cs = (Mission.load_mission("ch10")["interlude"] as Dictionary).duplicate()
+			"berge":     # Ueberfall am Pass: die Frischlinge entfuehren den Sack
+				cs = (Mission.load_mission("ch17")["interlude"] as Dictionary).duplicate()
+			"schnee":    # Wanderung im Schneesturm vor dem Regenten
+				cs = (Mission.load_mission("ch19")["interlude_before"] as Dictionary).duplicate()
+			"vulkan":    # Wanderung durchs Oedland zum Vulkan
+				cs = (Mission.load_mission("ch20")["interlude_after"] as Dictionary).duplicate()
+			"labor":     # Mission 23: Xiùlán schleicht von Versteck zu Versteck, Gespraech, Maja, Knockout (Dialoge laufen selbst weiter)
+				_auto_dialogue = 1.4
+				stage = Stage.new()
+				stage.setup(Mission.load_mission("ch23"), units)
+				stage.dialogue_runner = _battle_dialogue
+				add_child(stage)
+				for i in 10:
+					await get_tree().process_frame
+				await stage.start_battle()
+				var lb := stage.battle
+				lb.dialogue_runner = _battle_dialogue
+				var lx := lb._find("xiulan")
+				for st: Array in (lb.map_data["hide_steps"] as Array):
+					lb._select(lx)
+					await get_tree().create_timer(0.9).timeout
+					var tgt: Vector2i = lb._hide_allowed.keys().filter(func(p: Vector2i) -> bool: return p != lx["pos"])[0]
+					await lb._walk(lx, tgt)
+					lb._hide_progress(tgt)
+					lb._show_tiles({})
+					await lb._flush_events()
+					await get_tree().create_timer(0.4).timeout
+				await lb._check_end()
+				await get_tree().create_timer(1.0).timeout
+				get_tree().quit()
+				return
+			"finale":    # Mission 25 automatisch gespielt (Aufnahme zum Anschauen): einfache Heldensteuerung, normale Gegner-KI, Dialoge laufen selbst weiter
+				_auto_dialogue = 1.6
+				await _autoplay_finale()
+				await get_tree().create_timer(1.0).timeout
+				get_tree().quit()
+				return
+			"xiulan":    # Eroeffnung Mission 21: Xiùlán verpruegelt Oskar (ohne Gespraeche)
+				stage = Stage.new()
+				stage.setup(Mission.load_mission("ch21"), units)
+				add_child(stage)
+				for i in 10:
+					await get_tree().process_frame
+				stage.mission_twenty_one_camera()
+				var xo := _spawn_oskar_ch21(stage.battle)
+				await get_tree().create_timer(1.0).timeout
+				await _xiulan_brawl(stage.battle, stage.battle._find("xiulan"), xo)
+				await get_tree().create_timer(0.8).timeout
+				get_tree().quit()
+				return
+		cs["party"] = party_ids
+		await get_tree().create_timer(0.3).timeout
+		await _play_interlude(cs)
+		await get_tree().create_timer(0.5).timeout
 		get_tree().quit()
 		return
 	if mode == "interlude":   # Reisebild von ch10: SHOT_DELAY = Sekunden bis zum Bild
@@ -877,6 +1417,23 @@ func _screenshot_mode() -> void:
 		get_viewport().get_texture().get_image().save_png(OS.get_environment("SHOT_OUT"))
 		get_tree().quit()
 		return
+	if mode == "berge":   # Zwischenspiel Ueberfall am Pass (ch17): SHOT_DELAY = Sekunden bis zum Bild (Zeit laeuft mit Zeitraffer SHOT_SPEED)
+		var raid := MountainRaid.new()
+		raid.setup({"duration": 60.0, "kicker": "Zwischenspiel", "title": "Am Fuß der Berge", "party": ["maedchen_baer", "ritter", "hund", "elisabeth", "robo"]})
+		var rl := CanvasLayer.new()
+		rl.layer = 6
+		add_child(rl)
+		rl.add_child(raid)
+		var stp := float(OS.get_environment("SHOT_DELAY")) if OS.get_environment("SHOT_DELAY") != "" else 10.0
+		raid.set_process(false)
+		await get_tree().process_frame
+		while raid._t < stp:      # Zeitlauf von Hand vorspulen, damit Kamera und Figuren wie im Spiel nachziehen
+			raid._t += 1.0 / 30.0
+			raid._step(1.0 / 30.0)
+		await get_tree().create_timer(0.8).timeout
+		get_viewport().get_texture().get_image().save_png(OS.get_environment("SHOT_OUT"))
+		get_tree().quit()
+		return
 	if mode == "squad":   # Gruppenwahl: SHOT_CH=ch5, SHOT_PICK=<Platz>
 		stage = Stage.new()
 		stage.setup(map, units)
@@ -927,7 +1484,7 @@ func _screenshot_mode() -> void:
 		rl.layer = 6
 		add_child(rl)
 		var rs := RewardScreen.new()
-		rs.setup({"gold": 205, "items": {"heiltrank": 1, "gegengift": 1, "aether": 1}, "materials": {"kraut": 3, "hopfen": 1}, "equipment": [],
+		rs.setup({"gold": 205, "items": {"heiltrank": 1, "gegengift": 1, "aether": 1}, "equipment": [],
 			"objectives": [{"id": "a", "text": "Kein Held fällt", "done": true, "reward": {"gold": 60}}, {"id": "b", "text": "In 6 Runden gewonnen", "done": false, "reward": {}}],
 			"turns": 7, "stats": {"rows": [
 				{"id": "ritter", "name": "Ser Albrecht", "alive": true, "hp": 12, "maxhp": 34, "dealt": 41, "taken": 22, "healed": 0, "kills": 3, "abs": 2, "bonus": 1},
@@ -997,12 +1554,16 @@ func _screenshot_mode() -> void:
 		get_viewport().get_texture().get_image().save_png(OS.get_environment("SHOT_OUT"))
 		get_tree().quit()
 		return
-	if mode == "snowtrek":   # Schneesturm-Zwischensequenz: tools/make_trailer.sh-aehnlich aufnehmen oder SHOT_DELAY (Sekunden) + SHOT_OUT fuer ein Bild
+	if mode in ["snowtrek", "volcanotrek"]:
 		stage = Stage.new()
 		stage.setup(map, units)
 		add_child(stage)
 		stage.set_mode("dialog")
-		var strek := SnowTrek.new()
+		var strek: SnowTrek = VOLCANO_TREK.new() if mode == "volcanotrek" else SnowTrek.new()
+		if mode == "volcanotrek":
+			var data: Dictionary = (Mission.load_mission("ch20")["interlude_after"] as Dictionary).duplicate()
+			data["party"] = ["maedchen_baer", "braumeisterin", "museklaugust", "wendy", "bienenmaedchen", "samurai"]
+			strek.setup(data)
 		var sl2 := CanvasLayer.new()
 		sl2.layer = 12
 		add_child(sl2)
@@ -1065,7 +1626,7 @@ func _screenshot_mode() -> void:
 		add_child(la)
 		if OS.get_environment("SHOT_PART") == "reward":
 			var rs := RewardScreen.new()
-			rs.setup({"gold": 205, "items": {"heiltrank": 1}, "materials": {"kraut": 3}, "equipment": [], "level_to": 4, "point_gain": true,
+			rs.setup({"gold": 205, "items": {"heiltrank": 1}, "equipment": [], "level_to": 4, "point_gain": true,
 				"objectives": [{"id": "a", "text": "Kein Held fällt", "done": true, "reward": {"gold": 60}}], "turns": 7,
 				"stats": {"rows": [{"id": "robo", "name": "Robo", "alive": true, "hp": 20, "maxhp": 32, "dealt": 41, "taken": 12, "healed": 0, "kills": 3, "abs": 2, "bonus": 1},
 					{"id": "hund", "name": "Blauer Hundsfreund", "alive": true, "hp": 26, "maxhp": 26, "dealt": 22, "taken": 4, "healed": 0, "kills": 2, "abs": 3, "bonus": 0}], "awards": []}})
@@ -1080,7 +1641,7 @@ func _screenshot_mode() -> void:
 		get_viewport().get_texture().get_image().save_png(OS.get_environment("SHOT_OUT"))
 		get_tree().quit()
 		return
-	if mode == "camp":   # Lager: SHOT_TAB=0..4, SHOT_GOLD=n
+	if mode == "camp":   # Lager: SHOT_TAB=0..3, SHOT_GOLD=n
 		var bc := Battle.new()
 		bc.setup(map, units)
 		add_child(bc)
@@ -1088,7 +1649,6 @@ func _screenshot_mode() -> void:
 		bc.enter_title_mode()
 		var pc := Party.new_game()
 		pc.gold = int(OS.get_environment("SHOT_GOLD")) if OS.get_environment("SHOT_GOLD") != "" else 205
-		pc.materials = {"kraut": 3, "hopfen": 1, "kristall": 2}
 		pc.pool = ["eisenschwert", "schwere_axt", "plattenpanzer", "rubinring"]
 		pc.earned = 5
 		pc.talents = {"kungfu": {"hp": 1, "atk": 0, "a1": 2, "a2": 0}}
@@ -1450,11 +2010,20 @@ func _screenshot_mode() -> void:
 		get_tree().quit()
 		return
 	var b := Battle.new()
-	b.setup(map, units)
+	b.setup(Mission.load_mission(OS.get_environment("SHOT_CH")) if mode == "flanke" and OS.get_environment("SHOT_CH") != "" else map, units)
 	add_child(b)
 	if mode == "select":  # Figur waehlen, Reichweite zeigen
 		await get_tree().process_frame
 		b._select(b.unit_at(Vector2i(2, 8)))
+	if mode == "flanke":  # Auswahl mit Ruecken-/Flankenfeldern: ein Gegner steht nah und blickt nach Norden (SHOT_CH=chN: andere Karte)
+		await get_tree().process_frame
+		var fl_hero: Dictionary = b.unit_at(Vector2i(2, 8)) if OS.get_environment("SHOT_CH") == "" else b.units.filter(func(x: Dictionary) -> bool: return x["team"] == "p")[0]
+		var fl_foe: Dictionary = b.unit_at(Vector2i(8, 5)) if OS.get_environment("SHOT_CH") == "" else b.units.filter(func(x: Dictionary) -> bool: return x["team"] == "e")[0]
+		var fl_pos: Vector2i = Vector2i(4, 6) if OS.get_environment("SHOT_CH") == "" else (fl_hero["pos"] as Vector2i) + Vector2i(2, -2)     # mit SHOT_CH: zwei Felder schraeg vor den ersten Helden
+		fl_foe["pos"] = fl_pos
+		(fl_foe["node"] as Node3D).position = b.to_world(fl_pos)
+		b._face_step(fl_foe, Vector2i.UP)
+		b._select(fl_hero)
 	if mode == "menu" or mode == "target":  # Aktionsmenue bzw. Zielwahl mit Schadensvorschau
 		await get_tree().process_frame
 		var hero: Dictionary = b.unit_at(Vector2i(2, 8))
@@ -1495,6 +2064,9 @@ func _screenshot_mode() -> void:
 
 ## Aufbau pro Faehigkeit fuer die Bildstreifen: [Wirkende Figur, Ziel, weitere Figuren]
 const FX_SCENES := {
+	"flammenkanone": {"u": ["frischling_feuer", "e", [7, 7]], "t": ["ritter", "p", [4, 7]], "more": []},
+	"blitzkanone": {"u": ["frischling_blitz", "e", [7, 7]], "t": ["ritter", "p", [4, 7]], "more": [["hund", "p", [4, 6]]]},
+	"frostkanone": {"u": ["frischling_eis", "e", [7, 7]], "t": ["ritter", "p", [4, 7]], "more": []},
 	"kanone": {"u": ["elisabeth", "p", [3, 7]], "t": ["soldat_infanterie", "e", [6, 7]], "more": [["soldat_infanterie", "e", [7, 7]], ["soldat_beritten", "e", [6, 6]]]},
 	"verspotten": {"u": ["ritter", "p", [4, 7]], "t": ["soldat_infanterie", "e", [6, 7]], "more": [["soldat_infanterie", "e", [5, 5]], ["soldat_beritten", "e", [8, 7]]]},
 	"knochenwurf": {"u": ["hund", "p", [4, 7]], "t": ["soldat_infanterie", "e", [6, 7]], "more": []},

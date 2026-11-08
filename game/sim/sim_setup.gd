@@ -77,7 +77,7 @@ static func build(spec: Dictionary, seed_: int) -> SimBattle:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = seed_ * 2654435761 + 17
 	var mname: String = spec.get("map", "open")
-	var use_ch1: bool = mname in ["ch1", "ch2", "ch3", "ch5", "ch6", "ch7", "ch8", "ch9", "ch12", "ch14", "ch15", "ch16", "ch17"]
+	var use_ch1: bool = mname in ["ch1", "ch2", "ch3", "ch5", "ch6", "ch7", "ch8", "ch9", "ch12", "ch14", "ch15", "ch16", "ch17", "ch18", "ch19", "ch20", "ch21", "ch25"]
 	var mdata: Dictionary = mission_map(mname) if use_ch1 else {}
 	var rows: Array = mdata["rows"] if use_ch1 else random_rows(rng)
 	var b := SimBattle.new(rows, seed_)
@@ -102,6 +102,33 @@ static func build(spec: Dictionary, seed_: int) -> SimBattle:
 	if use_ch1:       # Spawn-Schritte der Mission (Runden-Ausloeser), Rueckkehrer nur mit passender Vorgeschichte
 		var em: Dictionary = spec.get("e_mods", {})
 		for t: Dictionary in mdata.get("triggers", []):
+			if (t["when"] as Dictionary).has("flee") and t.get("if", {}).is_empty():
+				for step: Dictionary in t["do"]:
+					for sp: Dictionary in step.get("spawn", []):
+						b.flee_spawns.append({"flee": t["when"]["flee"], "id": sp["id"], "team": sp.get("team", "e"),
+							"pos": Vector2i(sp["pos"][0], sp["pos"][1]), "hp": float(em.get("hp", 1.0)) if sp.get("team", "e") == "e" else 1.0,
+							"atk": float(em.get("atk", 1.0)) if sp.get("team", "e") == "e" else 1.0})
+			if (t["when"] as Dictionary).has("enemies_left") and (t["do"] as Array).any(func(st: Dictionary) -> bool: return st.has("win")):
+				b.win_left = int(t["when"]["enemies_left"])      # Mission 18: bleibt nur noch die Alphawoelfin, ist die Mission gewonnen
+			if (t["when"] as Dictionary).has("object") and str(t["when"]["object"].get("state", "")) == "filled":      # Mission 25: gerechnet ab dem Honig (der Sack auf dem Thron, der Professor ist fort)
+				for step: Dictionary in t["do"]:
+					for sp: Dictionary in step.get("spawn", []):
+						var at := Vector2i.ZERO
+						for me: Dictionary in mdata["enemies"]:
+							if sp.has("near") and me["id"] == sp["near"]:
+								at = Vector2i(me["pos"][0], me["pos"][1])
+						if sp.has("pos"):
+							at = Vector2i(sp["pos"][0], sp["pos"][1])
+						b.spawn(sp["id"], "e", at, float(em.get("hp", 1.0)), float(em.get("atk", 1.0)))
+				continue
+			if (t["when"] as Dictionary).has("near_object"):      # Mission 19: die Gruppe startet nah an der Huette, der Ausloeser greift sofort
+				for step: Dictionary in t["do"]:
+					for sp: Dictionary in step.get("spawn", []):
+						var tm: String = sp.get("team", "e")
+						var fly2: bool = SimBattle.defs()[sp["id"]].get("flying", false)
+						b.spawn(sp["id"], tm, b.free_tile_near(Vector2i(sp["pos"][0], sp["pos"][1]), {"flying": fly2}),
+							float(em.get("hp", 1.0)) if tm == "e" else 1.0, float(em.get("atk", 1.0)) if tm == "e" else 1.0)
+				continue
 			if not (t["when"] as Dictionary).has("turn"):
 				continue
 			var need: Array = (t.get("if", {}) as Dictionary).get("fled", [])
@@ -123,8 +150,16 @@ static func build(spec: Dictionary, seed_: int) -> SimBattle:
 			for ab_id: String in (m.get("grants", {}) as Dictionary).get(hero["id"], []):
 				(hero["abilities"] as Array).append(ab_id)    # Faehigkeiten, die nur diese Mission gewaehrt (Breitseite)
 			pi += 1
+		for g: Dictionary in m.get("guests", []):      # Gast-Verbuendete (Mission 21: Xiùlán) mit festen Werten der Karte
+			var gd: Dictionary = SimBattle.defs()[g["id"]]
+			b.spawn(g["id"], "p", Vector2i(g["pos"][0], g["pos"][1]), float(g.get("hp", gd["hp"])) / float(gd["hp"]), float(g.get("atk", gd["atk"])) / float(gd["atk"]))
+		b.lose_id = str(m.get("lose_if_fallen", ""))
+		b.flee_below = (Mission.load_mission(mname).get("flee_below", {}) as Dictionary).duplicate()      # Mission 19: faellt der Regent, ist die Mission verloren
 		var ei := 0
 		for e: Dictionary in m["enemies"]:
+			if e.get("untouchable", false):      # unangreifbare Zuschauer (Professor auf dem Thron) rechnet der Simulator nicht mit
+				ei += 1
+				continue
 			var d2: Dictionary = enemies[ei] if ei < enemies.size() else {}
 			var base_hp: float = float(d2.get("hp", 1.0))
 			if e.has("hp"):   # Karte setzt absolute Leben (Stachelia 34): als Faktor auf die Grundwerte

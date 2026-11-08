@@ -1,0 +1,212 @@
+{
+ "id": "ch19",
+ "title": "Der Regent im Schnee",
+ "map": "res://data/map_ch19.json",
+ "briefing": "Mitten im Schneesturm steht am Kartenrand eine einsame, schäbige Hütte. Keine Feinde in Sicht. Aber wer wohnt in so einer Gegend? Sieh nach, und sei auf alles gefasst. Wenn der Regent fällt, ist die Mission verloren: Er weiß mehr, als er sagt.",
+ "interlude_before": {
+  "scene": "snow",
+  "duration": 16,
+  "title": "Der Regent im Schnee"
+ },
+ "goals": [
+  {
+   "type": "rout_spawned",
+   "wait_text": "Ziel: Seht nach, wer in der Hütte wohnt",
+   "text": "Ziel: Beschützt den Regenten, besiegt alle Gegner (%d übrig)"
+  }
+ ],
+ "lose_if_fallen": "fuerst_lumpen",
+ "triggers": [
+  {
+   "when": {
+    "near_object": {
+     "id": "huette",
+     "dist": 5
+    }
+   },
+   "note": "Der Regent tritt aus der Hütte, Robowart und die Frischlinge greifen ein",
+   "do": [
+    {
+     "spawn": [
+      {
+       "id": "fuerst_lumpen",
+       "team": "p",
+       "pos": [
+        2,
+        3
+       ],
+       "label": "Der Regent tritt aus der Hütte"
+      }
+     ]
+    },
+    {
+     "dialogue": [
+      {
+       "left": "fuerst_lumpen",
+       "right": "",
+       "speaker": "fuerst_lumpen",
+       "text": "Wer… wer ist da?! Bitte nicht schlagen! Mir ist so kalt!",
+       "story": true,
+       "left_expr": "weinerlich"
+      },
+      {
+       "left": "maedchen_baer",
+       "right": "fuerst_lumpen",
+       "speaker": "maedchen_baer",
+       "text": "Du bist doch der Regent! Du siehst aus wie ein nasser Teppich, den man draußen vergessen hat.",
+       "story": true
+      },
+      {
+       "left": "maedchen_baer",
+       "right": "fuerst_lumpen",
+       "speaker": "fuerst_lumpen",
+       "text": "Ihr Narren! Ihr habt sie zu mir geführt!",
+       "story": true,
+       "right_expr": "weinerlich"
+      },
+      {
+       "left": "hund",
+       "right": "fuerst_lumpen",
+       "speaker": "hund",
+       "text": "Sie? Wen meinst du?",
+       "story": true,
+       "left_expr": "wuetend"
+      }
+     ]
+    },
+    {
+     "spawn": [
+      {
+       "id": "cyborg_wart",
+       "team": "e",
+       "pos": [
+        8,
+        1
+       ],
+       "dust": true,
+       "label": "Robowart!"
+      },
+      {
+       "id": "frischlinge",
+       "team": "e",
+       "pos": [
+        6,
+        0
+       ],
+       "label": "Die Frischlinge"
+      }
+     ]
+    },
+    {
+     "dialogue": [
+      {
+       "left": "cyborg_wart",
+       "right": "fuerst_lumpen",
+       "speaker": "cyborg_wart",
+       "text": "Verräter. Der Meister hat entschieden: Der Regent verstummt. Und ihr gleich mit.",
+       "story": true,
+       "left_expr": "wuetend"
+      },
+      {
+       "left": "frischlinge",
+       "right": "fuerst_lumpen",
+       "speaker": "frischlinge",
+       "text": "Boss, dürfen wir ihn zuerst hauen? Bitte, bitte, bitte! Er hat gar keine Rüstung mehr!",
+       "story": true,
+       "left_expr": "lachend"
+      },
+      {
+       "left": "maedchen_baer",
+       "right": "fuerst_lumpen",
+       "speaker": "fuerst_lumpen",
+       "text": "Rettet mich! Ich gebe euch alles! … Ich habe nur noch diese Decke.",
+       "story": true,
+       "right_expr": "weinerlich"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 2
+   },
+   "note": "Fluff: Wendy friert",
+   "if": {
+    "present": [
+     "wendy"
+    ]
+   },
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "wendy",
+       "right": "",
+       "speaker": "wendy",
+       "text": "Mäh … sogar meine Wolle ist steifgefroren. Ich knirsche beim Gehen."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 3
+   },
+   "note": "Fluff: Albrecht",
+   "if": {
+    "present": [
+     "ritter"
+    ]
+   },
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "ritter",
+       "right": "",
+       "speaker": "ritter",
+       "text": "Mein Harnisch ist ein Eisblock mit Wappen. Immerhin rostet nichts mehr."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 4
+   },
+   "note": "Fluff: Elisabeth",
+   "if": {
+    "present": [
+     "elisabeth"
+    ]
+   },
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "elisabeth",
+       "right": "",
+       "speaker": "elisabeth",
+       "text": "Ich mag ja Eisberge. Aber dieser Eisberg hat kein Meer drumherum."
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "flee": {
+  "cyborg_wart": [
+   {
+    "left": "$hero",
+    "right": "cyborg_wart",
+    "speaker": "cyborg_wart",
+    "text": "Rückzug… Reparatur… Das war nicht das Ende. Der Meister vergisst nicht.",
+    "right_expr": "wuetend",
+    "story": true
+   }
+  ]
+ }
+}

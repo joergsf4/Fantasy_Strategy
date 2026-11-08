@@ -12,6 +12,7 @@ var lines: Array = []
 var names: Dictionary = {}
 var _idx := -1
 var _typing := false
+var auto_advance := 0.0          # > 0: nach so vielen Sekunden selbst weiterschalten (nur fuer Aufnahmen, SHOT=cutscene)
 var _left: TextureRect
 var _right: TextureRect
 var _name_label: Label
@@ -145,9 +146,14 @@ func _advance() -> void:
 	_syll = 0
 	_tween = create_tween()
 	_tween.tween_method(_type_to, 0.0, 1.0, maxf(0.3, _text.text.length() * 0.025))
+	var at := _idx
 	_tween.finished.connect(func() -> void:
 		_typing = false
-		_more.visible = true)
+		_more.visible = true
+		if auto_advance > 0.0:
+			get_tree().create_timer(auto_advance).timeout.connect(func() -> void:
+				if _idx == at and is_inside_tree():
+					_advance()))
 
 
 ## Tippt den Text bis Anteil r und brabbelt dabei: bei jedem zweiten Buchstaben klingt der Laut der Figur.

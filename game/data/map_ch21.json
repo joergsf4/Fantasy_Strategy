@@ -1,0 +1,258 @@
+{
+ "rows": [
+  "MMMGGGGGGMMM",
+  "MMGGGGGGGGMM",
+  "MGGGGGGGGGGM",
+  "MGGGGGGGGGGM",
+  "GGGGGGGGGGGG",
+  "GGGMGGGGMGGG",
+  "GGGGGGGGGGGG",
+  "MGGGGGGGGGGM",
+  "MGGGGGGGGGGM",
+  "MMGGGGGGGGMM"
+ ],
+ "biome": "vulkan",
+ "curated_volcano": true,
+ "mood": "vulkan",
+ "weather": [
+  "ash",
+  "embers"
+ ],
+ "players": [
+  {
+   "id": "maedchen_baer",
+   "pos": [
+    4,
+    8
+   ]
+  },
+  {
+   "id": "ninjas",
+   "pos": [
+    5,
+    8
+   ]
+  },
+  {
+   "id": "hund",
+   "pos": [
+    6,
+    8
+   ]
+  },
+  {
+   "id": "ritter",
+   "pos": [
+    7,
+    8
+   ]
+  }
+ ],
+ "guests": [
+  {
+   "id": "xiulan",
+   "pos": [
+    5,
+    4
+   ],
+   "hp": 78,
+   "atk": 15
+  }
+ ],
+ "enemies": [
+  {
+   "id": "maja",
+   "pos": [
+    8,
+    2
+   ]
+  },
+  {
+   "id": "soldat_infanterie",
+   "pos": [
+    3,
+    3
+   ]
+  },
+  {
+   "id": "soldat_infanterie",
+   "pos": [
+    8,
+    4
+   ]
+  },
+  {
+   "id": "soldat_beritten",
+   "pos": [
+    9,
+    5
+   ]
+  },
+  {
+   "id": "soldat_bogenschuetze",
+   "pos": [
+    2,
+    2
+   ]
+  },
+  {
+   "id": "soldat_bogenschuetze",
+   "pos": [
+    9,
+    2
+   ]
+  }
+ ],
+ "decor": [
+  {
+   "sprite": "fx_vulkantotbaum",
+   "pos": [
+    10,
+    7
+   ],
+   "size": 1.8
+  },
+  {
+   "sprite": "fx_basaltsaeulen",
+   "pos": [
+    1,
+    0
+   ],
+   "size": 1.25
+  },
+  {
+   "sprite": "fx_basaltsaeulen",
+   "pos": [
+    11,
+    1
+   ],
+   "size": 1.0
+  },
+  {
+   "sprite": "fx_basaltsaeulen",
+   "pos": [
+    0,
+    8
+   ],
+   "size": 1.1
+  },
+  {
+   "sprite": "fx_basaltsaeulen",
+   "pos": [
+    10,
+    9
+   ],
+   "size": 0.95
+  },
+  {
+   "sprite": "fx_vulkanstumpf",
+   "pos": [
+    -1,
+    1
+   ],
+   "size": 1.28
+  },
+  {
+   "sprite": "fx_vulkanstumpf",
+   "pos": [
+    12,
+    2
+   ],
+   "size": 1.15
+  },
+  {
+   "sprite": "fx_vulkanstumpf",
+   "pos": [
+    -1,
+    6
+   ],
+   "size": 1.08
+  },
+  {
+   "sprite": "fx_vulkanstumpf",
+   "pos": [
+    12,
+    7
+   ],
+   "size": 1.22
+  },
+  {
+   "sprite": "fx_obsidian",
+   "pos": [
+    2,
+    7
+   ],
+   "size": 0.84
+  },
+  {
+   "sprite": "fx_obsidian",
+   "pos": [
+    11,
+    6
+   ],
+   "size": 0.77
+  },
+  {
+   "sprite": "fx_schwefel",
+   "pos": [
+    1,
+    4
+   ],
+   "size": 0.74
+  },
+  {
+   "sprite": "fx_schwefel",
+   "pos": [
+    11,
+    3
+   ],
+   "size": 0.68
+  },
+  {
+   "sprite": "fx_fumarole",
+   "pos": [
+    2,
+    5
+   ],
+   "size": 0.9,
+   "effect": "smoke"
+  },
+  {
+   "sprite": "fx_fumarole",
+   "pos": [
+    10,
+    2
+   ],
+   "size": 0.84,
+   "effect": "smoke"
+  }
+ ],
+ "chests": [
+  {
+   "pos": [
+    10,
+    4
+   ],
+   "reward": {
+    "gold": 100,
+    "items": {
+     "heiltrank": 1
+    }
+   }
+  }
+ ],
+ "villages": [],
+ "objects": [],
+ "rewards": {
+  "gold": 450
+ },
+ "objectives": [
+  {
+   "id": "alle_leben",
+   "text": "Keine Figur fällt",
+   "reward": {
+    "gold": 120
+   }
+  }
+ ]
+}

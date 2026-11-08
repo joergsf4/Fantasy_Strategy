@@ -1,0 +1,262 @@
+{
+ "id": "ch23",
+ "title": "Zwischenspiel: Im Labor des Professors",
+ "map": "res://data/map_ch23.json",
+ "fixed_squad": true,
+ "no_rewards": true,
+ "briefing": "Xiùlán ist allein in die Basis der Feinde eingebrochen und schleicht durch das Labor von Professor Kugelblitz. Sie muss sich in jeder Runde hinter einem Gerät verstecken, die möglichen Verstecke leuchten golden. Von Versteck zu Versteck kommt sie dem Professor näher und belauscht ein Gespräch, das nicht für fremde Ohren bestimmt ist.",
+ "goals": [
+  {
+   "type": "reach",
+   "tile": [
+    6,
+    2
+   ],
+   "text": "Ziel: Schleich dich an den Professor heran (Verstecke leuchten golden)"
+  }
+ ],
+ "triggers": [
+  {
+   "when": {
+    "hide_step": 1
+   },
+   "note": "Belauscht 1: der Schatten kommt",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "kugelblitz",
+       "right": "schatten",
+       "speaker": "kugelblitz",
+       "text": "Die Werte steigen, die Werte fallen … ach, ich halte die Tafel verkehrt herum.",
+       "story": true
+      },
+      {
+       "left": "kugelblitz",
+       "right": "schatten",
+       "speaker": "schatten",
+       "text": "Professor.",
+       "story": true
+      },
+      {
+       "left": "kugelblitz",
+       "right": "schatten",
+       "speaker": "kugelblitz",
+       "text": "Ah! Mein Sohn! Du hast mich erschreckt. Ich meine … willkommen.",
+       "story": true,
+       "left_expr": "wuetend"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "hide_step": 2
+   },
+   "note": "Belauscht 2",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "kugelblitz",
+       "right": "schatten",
+       "speaker": "schatten",
+       "text": "Wie weit sind die Versuche?",
+       "story": true
+      },
+      {
+       "left": "kugelblitz",
+       "right": "schatten",
+       "speaker": "kugelblitz",
+       "text": "Fast fertig. Ganz bald. Irgendwann bestimmt.",
+       "story": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "hide_step": 3
+   },
+   "note": "Belauscht 3",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "kugelblitz",
+       "right": "schatten",
+       "speaker": "schatten",
+       "text": "Das hast du letzte Woche auch gesagt.",
+       "story": true
+      },
+      {
+       "left": "kugelblitz",
+       "right": "schatten",
+       "speaker": "kugelblitz",
+       "text": "Und letzte Woche war es auch fast fertig! Wissenschaft braucht Zeit, mein Sohn.",
+       "story": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "hide_step": 4
+   },
+   "note": "Belauscht 4",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "kugelblitz",
+       "right": "schatten",
+       "speaker": "schatten",
+       "text": "Zeit habe ich. Geduld nicht. Mach weiter mit den Experimenten.",
+       "story": true
+      },
+      {
+       "left": "kugelblitz",
+       "right": "schatten",
+       "speaker": "kugelblitz",
+       "text": "Natürlich. Sofort. Mit großer Freude. Mit sehr großer Freude.",
+       "story": true,
+       "left_expr": "lachend"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "hide_step": 5
+   },
+   "note": "Belauscht 5: der Schatten geht",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "kugelblitz",
+       "right": "schatten",
+       "speaker": "schatten",
+       "text": "Und, Professor … nenn mich nicht Sohn, wenn jemand zuhört.",
+       "story": true
+      },
+      {
+       "left": "kugelblitz",
+       "right": "schatten",
+       "speaker": "kugelblitz",
+       "text": "Hier hört doch niemand zu.",
+       "story": true
+      },
+      {
+       "left": "xiulan",
+       "right": "",
+       "speaker": "xiulan",
+       "text": "*flüstert* Doch. Ich.",
+       "story": true,
+       "left_expr": "lachend"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "victory": true
+   },
+   "note": "Abschlussszene: Maja schlägt Xiùlán k.o.",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "xiulan",
+       "right": "kugelblitz",
+       "speaker": "xiulan",
+       "text": "Hab ich dich, Blitzableiter! Wo ist mein Lohn?",
+       "story": true,
+       "left_expr": "lachend"
+      },
+      {
+       "left": "xiulan",
+       "right": "kugelblitz",
+       "speaker": "kugelblitz",
+       "text": "Waaah! Wie … wie sind Sie hier hereingekommen?!",
+       "story": true,
+       "right_expr": "wuetend"
+      }
+     ]
+    },
+    {
+     "spawn": [
+      {
+       "id": "maja",
+       "team": "e",
+       "pos": [
+        5,
+        2
+       ],
+       "label": "Maja"
+      }
+     ]
+    },
+    {
+     "dialogue": [
+      {
+       "left": "xiulan",
+       "right": "maja",
+       "speaker": "maja",
+       "text": "Durch die Tür, Professor. So wie ich.",
+       "story": true,
+       "right_expr": "lachend"
+      },
+      {
+       "left": "xiulan",
+       "right": "maja",
+       "speaker": "xiulan",
+       "text": "Die kleine Schwester. Na, wie geht es dem Bruder?",
+       "story": true,
+       "left_expr": "lachend"
+      },
+      {
+       "left": "xiulan",
+       "right": "maja",
+       "speaker": "maja",
+       "text": "Er hat drei Tage geweint. Das ist für Oskar.",
+       "story": true,
+       "right_expr": "wuetend"
+      }
+     ]
+    },
+    {
+     "knockout": "xiulan",
+     "fall": "right"
+    },
+    {
+     "dialogue": [
+      {
+       "left": "kugelblitz",
+       "right": "maja",
+       "speaker": "kugelblitz",
+       "text": "Bringt sie in den Käfig. Und Maja … danke.",
+       "story": true
+      },
+      {
+       "left": "kugelblitz",
+       "right": "maja",
+       "speaker": "maja",
+       "text": "Nicht für dich.",
+       "story": true,
+       "right_expr": "wuetend"
+      }
+     ]
+    },
+    {
+     "blackout": 1.2
+    }
+   ]
+  }
+ ]
+}

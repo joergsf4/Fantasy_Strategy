@@ -1,0 +1,315 @@
+{
+ "biome": "thronsaal",
+ "mood": "thronsaal",
+ "walls": [
+  "n",
+  "e",
+  "w",
+  "s"
+ ],
+ "carpet": [
+  6,
+  2,
+  6,
+  10
+ ],
+ "rows": [
+  "GGGGGGGGGGGGGG",
+  "GGGGGGGGGGGGGG",
+  "GGGGGGGGGGGGGG",
+  "GGGGGGGGGGGGGG",
+  "GGGGGGGGGGGGGG",
+  "GGGGGGGGGGGGGG",
+  "GGGGGGGGGGGGGG",
+  "GGGGGGGGGGGGGG",
+  "GGGGGGGGGGGGGG",
+  "GGGGGGGGGGGGGG",
+  "GGGGGGGGGGGGGG"
+ ],
+ "players": [
+  {
+   "id": "maedchen_baer",
+   "pos": [
+    5,
+    10
+   ]
+  },
+  {
+   "id": "bienenmaedchen",
+   "pos": [
+    8,
+    10
+   ]
+  },
+  {
+   "id": "hund",
+   "pos": [
+    6,
+    10
+   ]
+  },
+  {
+   "id": "ritter",
+   "pos": [
+    4,
+    10
+   ]
+  },
+  {
+   "id": "robo",
+   "pos": [
+    7,
+    10
+   ]
+  },
+  {
+   "id": "wendy",
+   "pos": [
+    9,
+    10
+   ]
+  }
+ ],
+ "enemies": [
+  {
+   "id": "kugelblitz",
+   "pos": [
+    6,
+    1
+   ],
+   "idle": true,
+   "untouchable": true
+  },
+  {
+   "id": "maja",
+   "pos": [
+    5,
+    2
+   ],
+   "guard": true
+  },
+  {
+   "id": "oskar",
+   "pos": [
+    7,
+    2
+   ],
+   "guard": true
+  },
+  {
+   "id": "soldat_infanterie",
+   "pos": [
+    5,
+    3
+   ],
+   "guard": true
+  },
+  {
+   "id": "soldat_infanterie",
+   "pos": [
+    7,
+    3
+   ],
+   "guard": true
+  },
+  {
+   "id": "soldat_bogenschuetze",
+   "pos": [
+    4,
+    1
+   ],
+   "guard": true
+  },
+  {
+   "id": "soldat_infanterie",
+   "pos": [
+    11,
+    5
+   ]
+  },
+  {
+   "id": "soldat_bogenschuetze",
+   "pos": [
+    12,
+    8
+   ]
+  },
+  {
+   "id": "soldat_beritten",
+   "pos": [
+    3,
+    3
+   ],
+   "guard": true
+  },
+  {
+   "id": "soldat_infanterie",
+   "pos": [
+    9,
+    3
+   ],
+   "guard": true
+  }
+ ],
+ "objects": [
+  {
+   "id": "kaefig_sack",
+   "type": "hostage",
+   "pos": [
+    2,
+    1
+   ],
+   "figure": "haendler",
+   "look": "fx_kaefig_sack",
+   "locked": true,
+   "replace": true
+  },
+  {
+   "id": "kaefig_xiulan",
+   "type": "hostage",
+   "pos": [
+    10,
+    1
+   ],
+   "figure": "xiulan",
+   "look": "fx_kaefig_xiulan",
+   "replace": true
+  },
+  {
+   "id": "honigmaschine",
+   "type": "honigmaschine",
+   "pos": [
+    13,
+    6
+   ]
+  },
+  {
+   "id": "geraet_k1",
+   "type": "geraet",
+   "pos": [
+    3,
+    6
+   ],
+   "look": "fx_konsole"
+  },
+  {
+   "id": "geraet_s1",
+   "type": "geraet",
+   "pos": [
+    9,
+    7
+   ],
+   "look": "fx_serverschrank"
+  },
+  {
+   "id": "geraet_r1",
+   "type": "geraet",
+   "pos": [
+    10,
+    4
+   ],
+   "look": "fx_reaktor"
+  }
+ ],
+ "decor": [
+  {
+   "sprite": "fx_thron",
+   "pos": [
+    6,
+    1
+   ],
+   "size": 2.4,
+   "light": [
+    1.0,
+    0.75,
+    0.3
+   ],
+   "back": 0.45
+  },
+  {
+   "sprite": "fx_monitorwand",
+   "pos": [
+    1,
+    0
+   ],
+   "size": 2.0,
+   "light": [
+    0.75,
+    0.35,
+    1.0
+   ]
+  },
+  {
+   "sprite": "fx_monitorwand",
+   "pos": [
+    11,
+    0
+   ],
+   "size": 2.0,
+   "light": [
+    0.75,
+    0.35,
+    1.0
+   ]
+  },
+  {
+   "sprite": "fx_reaktor",
+   "pos": [
+    0,
+    4
+   ],
+   "size": 1.7,
+   "light": [
+    0.6,
+    0.3,
+    1.0
+   ]
+  },
+  {
+   "sprite": "fx_serverschrank",
+   "pos": [
+    0,
+    8
+   ],
+   "size": 1.6
+  },
+  {
+   "sprite": "fx_serverschrank",
+   "pos": [
+    13,
+    10
+   ],
+   "size": 1.6
+  },
+  {
+   "sprite": "fx_roboterarm",
+   "pos": [
+    13,
+    2
+   ],
+   "size": 1.7
+  }
+ ],
+ "rewards": {
+  "gold": 600
+ },
+ "objectives": [
+  {
+   "id": "alle_leben",
+   "text": "Keine Figur fällt",
+   "reward": {
+    "gold": 150
+   }
+  },
+  {
+   "id": "schnell",
+   "text": "In 12 Runden gewonnen",
+   "turns": 12,
+   "reward": {
+    "items": {
+     "heilhonig": 2
+    }
+   }
+  }
+ ]
+}

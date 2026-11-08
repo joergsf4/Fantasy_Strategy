@@ -112,9 +112,6 @@
     8
    ],
    "reward": {
-    "materials": {
-     "kraut": 1
-    },
     "gold": 25
    }
   },
@@ -137,10 +134,6 @@
     3
    ],
    "reward": {
-    "materials": {
-     "kraut": 2,
-     "hopfen": 1
-    },
     "gold": 40
    }
   }

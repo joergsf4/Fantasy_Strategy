@@ -1,0 +1,346 @@
+{
+ "id": "ch22",
+ "title": "Die Zwergenmine",
+ "map": "res://data/map_ch22.json",
+ "briefing": "Am Fuß des Vulkans hat Wart einen Stollen in den Berg treiben lassen. Drei Zwerge schuften dort in Ketten: im Westen, im Osten und im Norden. Wart selbst steht am Stolleneingang, kämpft nicht und ist nicht zu erreichen, aber er schickt immer neue Wachen, sobald eine Welle besiegt ist. Gewinnen könnt ihr nur, indem ihr die drei Zwerge befreit. Das geht diesmal in einem Zug, wenn keine Wache neben dem Zwerg steht.",
+ "goals": [
+  {
+   "type": "free_all",
+   "text": "Ziel: Befreit die drei Bergleute (Wart schickt immer neue Wellen)"
+  }
+ ],
+ "triggers": [
+  {
+   "when": {
+    "enemies_left": 1
+   },
+   "note": "Die erste Welle ist besiegt",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "$hero",
+       "right": "cyborg_wart",
+       "speaker": "cyborg_wart",
+       "text": "Ihr glaubt, das war's? Da unten wohnen noch Hunderte.",
+       "right_expr": "lachend",
+       "story": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "enemies_left": 1
+   },
+   "repeat": true,
+   "note": "Wart schickt die nächste Welle (wiederholt sich)",
+   "do": [
+    {
+     "waves": [
+      [
+       {
+        "id": "hogsmeat_krieger",
+        "pos": [
+         3,
+         1
+        ]
+       },
+       {
+        "id": "hogsmeat_krieger",
+        "pos": [
+         5,
+         1
+        ]
+       },
+       {
+        "id": "hogsmeat_speerwerfer",
+        "pos": [
+         4,
+         2
+        ]
+       }
+      ],
+      [
+       {
+        "id": "soldat_infanterie",
+        "pos": [
+         3,
+         1
+        ]
+       },
+       {
+        "id": "soldat_beritten",
+        "pos": [
+         5,
+         1
+        ]
+       },
+       {
+        "id": "soldat_bogenschuetze",
+        "pos": [
+         4,
+         2
+        ]
+       },
+       {
+        "id": "soldat_infanterie",
+        "pos": [
+         6,
+         1
+        ]
+       }
+      ],
+      [
+       {
+        "id": "hogsmeat_krieger",
+        "pos": [
+         3,
+         1
+        ]
+       },
+       {
+        "id": "hogsmeat_speerwerfer",
+        "pos": [
+         5,
+         1
+        ]
+       },
+       {
+        "id": "hogsmeat_krieger",
+        "pos": [
+         1,
+         3
+        ]
+       },
+       {
+        "id": "hogsmeat_speerwerfer",
+        "pos": [
+         10,
+         3
+        ]
+       }
+      ],
+      [
+       {
+        "id": "soldat_beritten",
+        "pos": [
+         3,
+         1
+        ]
+       },
+       {
+        "id": "hogsmeat_krieger",
+        "pos": [
+         5,
+         1
+        ]
+       },
+       {
+        "id": "soldat_bogenschuetze",
+        "pos": [
+         6,
+         2
+        ]
+       }
+      ]
+     ],
+     "caller": "cyborg_wart",
+     "calls": [
+      "Mehr Leute!",
+      "Schneller!",
+      "Nachschub!",
+      "Kämpfen, nicht gucken!"
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 2
+   },
+   "if": {
+    "present": [
+     "ritter"
+    ]
+   },
+   "note": "Fluff: ritter",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "ritter",
+       "right": "",
+       "speaker": "ritter",
+       "text": "Zwerge in Ketten. In meiner Jugend hat man so etwas noch mit einem Duell geregelt."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 2
+   },
+   "if": {
+    "present": [
+     "elisabeth"
+    ]
+   },
+   "note": "Fluff: elisabeth",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "elisabeth",
+       "right": "",
+       "speaker": "elisabeth",
+       "text": "Ein Stollen ist wie ein Schiffsbauch. Nur ohne Meer. Und ohne Rum."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 3
+   },
+   "if": {
+    "present": [
+     "robo"
+    ]
+   },
+   "note": "Fluff: robo",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "robo",
+       "right": "",
+       "speaker": "robo",
+       "text": "Gestein: Basalt. Luft: schlecht. Laune der Zwerge: berechtigt."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 3
+   },
+   "if": {
+    "present": [
+     "wendy"
+    ]
+   },
+   "note": "Fluff: wendy",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "wendy",
+       "right": "",
+       "speaker": "wendy",
+       "text": "Mäh … hier unten wächst nicht mal Moos. Wovon leben die denn?"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 2
+   },
+   "if": {
+    "present": [
+     "braumeisterin"
+    ]
+   },
+   "note": "Fluff: braumeisterin",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "braumeisterin",
+       "right": "",
+       "speaker": "braumeisterin",
+       "text": "Zwerge ohne Bier unter Tage. Das ist das eigentliche Verbrechen."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 3
+   },
+   "if": {
+    "present": [
+     "museklaugust"
+    ]
+   },
+   "note": "Fluff: museklaugust",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "museklaugust",
+       "right": "",
+       "speaker": "museklaugust",
+       "text": "Spitzhacken! Endlich Werkzeug in meiner Gewichtsklasse."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "victory": true
+   },
+   "note": "Abschlussszene: Wart bläst zum Rückzug",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "maedchen_baer",
+       "right": "cyborg_wart",
+       "speaker": "cyborg_wart",
+       "text": "Meine Arbeiter! Wer gräbt jetzt den Berg aus?",
+       "right_expr": "wuetend",
+       "story": true
+      },
+      {
+       "left": "maedchen_baer",
+       "right": "cyborg_wart",
+       "speaker": "maedchen_baer",
+       "text": "Du. Viel Spaß.",
+       "left_expr": "lachend",
+       "story": true
+      },
+      {
+       "left": "maedchen_baer",
+       "right": "cyborg_wart",
+       "speaker": "cyborg_wart",
+       "text": "Das melde ich dem Meister! RÜCKZUG! Alle in den Stollen!",
+       "right_expr": "wuetend",
+       "story": true
+      }
+     ]
+    },
+    {
+     "retreat_all": [
+      "hogsmeat_krieger",
+      "hogsmeat_speerwerfer",
+      "soldat_infanterie",
+      "soldat_beritten",
+      "soldat_bogenschuetze"
+     ]
+    },
+    {
+     "retreat": "cyborg_wart"
+    }
+   ]
+  }
+ ]
+}

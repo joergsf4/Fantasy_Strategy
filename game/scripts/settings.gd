@@ -7,10 +7,10 @@ const PATH := "user://settings.cfg"
 const OPTIONS := [
 	{"key": "window", "label": "Anzeige", "values": ["Fenster", "Vollbild"], "default": 1},
 	{"key": "vsync", "label": "V-Sync", "values": ["Aus", "An"], "default": 1},
-	{"key": "fps", "label": "Bildrate", "values": ["30", "60", "120", "Unbegrenzt"], "default": 3},
+	{"key": "fps", "label": "Bildrate", "values": ["30", "60", "120", "Unbegrenzt"], "default": 1},      # 60: Rundenspiel, schont Laptops (Lüfter, Hitze)
 	{"key": "scale", "label": "Renderauflösung", "values": ["50 %", "75 %", "100 %"], "default": 2},
 	{"key": "aa", "label": "Kantenglättung", "values": ["Aus", "FXAA", "MSAA 2x", "MSAA 4x"], "default": 0},
-	{"key": "shadows", "label": "Schatten", "values": ["Aus", "Niedrig", "Mittel", "Hoch"], "default": 3},
+	{"key": "shadows", "label": "Schatten", "values": ["Aus", "Niedrig", "Mittel", "Hoch"], "default": 2},
 	{"key": "glow", "label": "Leuchteffekt", "values": ["Aus", "An"], "default": 1},
 	{"key": "tilt", "label": "Tiefenunschärfe", "values": ["Aus", "An"], "default": 1},
 	{"key": "particles", "label": "Partikel und Regen", "values": ["Wenig", "Normal", "Viel"], "default": 1},
@@ -25,6 +25,8 @@ const SHADOW_SIZE := [0, 1024, 2048, 4096]
 const FPS := [30, 60, 120, 0]
 const SCALE := [0.5, 0.75, 1.0]
 const PARTICLES := [0.4, 1.0, 1.6]
+const VERSION := 2            # Einstellungsdatei: 2 = Bildrate ab Werk 60, Schatten ab Werk Mittel (alte Werkswerte werden einmal umgestellt)
+const BACKGROUND_FPS := 10    # Fenster nicht im Vordergrund (Alt-Tab, minimiert): kaum Last
 
 static var values: Dictionary = {}
 
@@ -87,21 +89,28 @@ static func cycle_preset() -> void:
 	apply_preset(names[(names.find(cur) + 1) % names.size()] if cur != "Eigene" else names[0])
 
 
-static func load_file() -> void:
+static func load_file(path := PATH) -> void:
 	_ensure()
 	var cf := ConfigFile.new()
-	if cf.load(PATH) != OK:
+	if cf.load(path) != OK:
 		return
 	for o: Dictionary in OPTIONS:
 		set_value(o["key"], int(cf.get_value("grafik", o["key"], o["default"])))
+	if int(cf.get_value("grafik", "version", 1)) < VERSION:      # alte Werkswerte (unbegrenzte Bildrate, hohe Schatten) einmal auf die neuen setzen
+		if get_value("fps") == 3:
+			set_value("fps", 1)
+		if get_value("shadows") == 3:
+			set_value("shadows", 2)
+		save_file(path)
 
 
-static func save_file() -> void:
+static func save_file(path := PATH) -> void:
 	_ensure()
 	var cf := ConfigFile.new()
 	for o: Dictionary in OPTIONS:
 		cf.set_value("grafik", o["key"], values[o["key"]])
-	cf.save(PATH)
+	cf.set_value("grafik", "version", VERSION)
+	cf.save(path)
 
 
 ## Einstellungen auf Fenster und Renderer anwenden (Kampfszenen lesen shadows, glow, tilt und particles beim Aufbau selbst).
@@ -111,7 +120,7 @@ static func apply(vp: Viewport = null) -> void:
 		return
 	PauseHost.set_fullscreen(get_value("window") == 1)
 	DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED if get_value("vsync") == 1 else DisplayServer.VSYNC_DISABLED)
-	Engine.max_fps = FPS[get_value("fps")]
+	Engine.max_fps = FPS[get_value("fps")] if focused else BACKGROUND_FPS
 	var v: Viewport = vp if vp != null else (Engine.get_main_loop() as SceneTree).root
 	v.scaling_3d_mode = Viewport.SCALING_3D_MODE_BILINEAR
 	v.scaling_3d_scale = SCALE[get_value("scale")]
@@ -121,6 +130,15 @@ static func apply(vp: Viewport = null) -> void:
 	var sz: int = SHADOW_SIZE[get_value("shadows")]
 	if sz > 0:
 		RenderingServer.directional_shadow_atlas_set_size(sz, true)
+
+
+## Fenster im Vorder- oder Hintergrund (main.gd ruft das bei Fokuswechsel): im Hintergrund nur BACKGROUND_FPS Bilder pro Sekunde.
+static var focused := true
+
+static func set_focused(f: bool) -> void:
+	focused = f
+	if DisplayServer.get_name() != "headless":
+		Engine.max_fps = FPS[get_value("fps")] if focused else BACKGROUND_FPS
 
 
 static func shadows_on() -> bool:

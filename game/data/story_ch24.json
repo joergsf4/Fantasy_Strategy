@@ -1,0 +1,43 @@
+{
+ "intro": [
+  {
+   "left": "maedchen_baer",
+   "right": "hund",
+   "speaker": "maedchen_baer",
+   "text": "Die Zwerge hatten recht. Der Schacht führt mitten in die Basis.",
+   "story": true
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "hund",
+   "speaker": "hund",
+   "text": "Ein Labor. Und niemand da.",
+   "story": true,
+   "right_expr": "wuetend"
+  }
+ ],
+ "outro": [
+  {
+   "left": "maedchen_baer",
+   "right": "hund",
+   "speaker": "maedchen_baer",
+   "text": "Ist das … ein Gebiss?",
+   "story": true
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "hund",
+   "speaker": "hund",
+   "text": "Xiùlán war hier. Und sie ist nicht freiwillig gegangen.",
+   "story": true,
+   "right_expr": "wuetend"
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "hund",
+   "speaker": "maedchen_baer",
+   "text": "Dann suchen wir sie. Brumm hat ihre Fährte.",
+   "story": true
+  }
+ ]
+}

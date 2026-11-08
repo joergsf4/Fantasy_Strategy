@@ -5,7 +5,8 @@ extends RefCounted
 ## Ziele (goals): {type: "rout"} alle Gegner besiegen | {type: "survive", turns: N} N Runden durchhalten
 ##                | {type: "reach", tile: [x, y]} ein Held erreicht das Feld.
 ## Verloren ist immer: alle Helden gefallen.
-## Ausloeser (triggers): {when: {turn: N} | {enter: [x, y]}, do: [{popup: "Text"}, {dialogue: [...]}, {spawn: [{id, pos, carry}]}]}
+## Ausloeser (triggers): {when: {turn: N} | {enter: [x, y]} | {flee: id}, do: [{popup: "Text"}, {dialogue: [...]}, {spawn: [{id, pos, carry}]}]}
+## flee feuert nach dem Rueckzug einer im Kampf besiegten Figur, bevor das Kampfziel geprueft wird.
 ## Jeder Ausloeser feuert hoechstens einmal. Verstaerkung ist immer fest geskriptet, nie zufaellig.
 
 const DIR := "res://data/missions/"
@@ -63,6 +64,8 @@ static func dialogue_ids(id: String) -> Array:
 	add_lines.call(story.get("intro", []))
 	add_lines.call(story.get("outro", []))
 	var m := load_mission(id)
+	for guest: Dictionary in m.get("guests", []):
+		ids[guest["id"]] = true
 	for t: Dictionary in m.get("triggers", []):
 		for step: Dictionary in t.get("do", []):
 			add_lines.call(step.get("dialogue", []))
@@ -96,6 +99,6 @@ static func goal_text(goal: Dictionary, enemies_left: int, turn: int, extra := {
 		"free":
 			return "Ziel: Befreit die Geisel"
 		"reach":
-			return "Ziel: Erreicht das markierte Feld"
+			return str(goal.get("text", "Ziel: Erreicht das markierte Feld"))
 		_:
 			return "Ziel: Besiegt alle Gegner (%d übrig)" % enemies_left

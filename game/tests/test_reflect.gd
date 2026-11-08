@@ -5,6 +5,7 @@ extends SceneTree
 var fails := 0
 var b: Battle
 var scenes: Array = []
+var music_events: Array[bool] = []
 
 
 func check(cond: bool, msg: String) -> void:
@@ -42,7 +43,7 @@ func _initialize() -> void:
 	b = Battle.new()
 	b.setup(map, defs)
 	b.secret_runner = func(sec: Dictionary) -> void: scenes.append(sec["id"])
-	b.super_music = func(_on: bool) -> void: pass
+	b.super_music = func(on: bool) -> void: music_events.append(on)
 	root.add_child(b)
 	await process_frame
 	b.rng.seed = 3
@@ -75,17 +76,24 @@ func _initialize() -> void:
 	check(tak["hp"] == tak["maxhp"] and robo["hp"] == robo["maxhp"], "Die Reflexion trifft keine Verbuendeten")
 	check(scenes == ["laser_reflektor"], "beim ersten Mal laeuft die Szene")
 	check(b.secrets_seen.has("laser_reflektor"), "Szene ist gemerkt")
+	check(music_events == [true, false] and b._super_player == null, "erster Reflektor startet und beendet die Musik")
 	check(int(robo["cd"]["roter_laser"]) == 3, "Abklingzeit gesetzt")
 	check(robo["st"]["dealt"] > 0 and robo["st"]["abs"] == 1, "Statistik zaehlt fuer Robo")
 	check(abs((100 - nahe["hp"]) - expected) <= 3, "Schaden ~ 75 %% der Normalwirkung (%d, erwartet %d)" % [100 - nahe["hp"], expected])
 
 	# --- Zweites Mal: keine Szene mehr, Effekt bleibt
 	scenes.clear()
+	music_events.clear()
 	Secrets.fired.clear()      # naechster Kampf (Szene ist schon gesehen)
 	robo["cd"] = {}
 	var hp_before: int = nahe["hp"]
 	await b._run_ability(robo, "roter_laser", target)
 	check(scenes.is_empty() and nahe["hp"] < hp_before, "spaeter: keine Szene, Effekt weiter")
+	check(music_events == [true, false] and b._super_player == null, "auch ohne Dialogszene wird die Reflektor-Musik beendet")
+	await create_timer(1.1).timeout
+	var remaining_music := b.get_children().filter(func(node: Node) -> bool:
+		return node is AudioStreamPlayer and (node as AudioStreamPlayer).stream != null and (node as AudioStreamPlayer).stream.resource_path == "res://assets/audio/super_attack.mp3")
+	check(remaining_music.is_empty(), "Reflektor-Musikspieler werden nach dem Ausblenden entfernt")
 
 	# --- ohne Takeda auf der Linie: normale Wirkung (Linie trifft alle Gegner)
 	clear()
@@ -290,7 +298,7 @@ func _initialize() -> void:
 	await b._run_ability(o_hum, "tonikum", {"pos": Vector2i(5, 5), "tile": true})
 	check(not Status.has(o_rob, "treibstoff"), "zweites Mal im selben Kampf: kein Treibstoff mehr")
 
-	# --- Sexy Jutsu: Kage-Schwestern schleichen sich von hinten an Maja heran
+	# --- Sexy Jutsu: direkt neben Maja, unabhaengig von ihrer Blickrichtung
 	clear()
 	scenes.clear()
 	var oi_maja := spawn("maja", "e", Vector2i(5, 5))
@@ -298,7 +306,14 @@ func _initialize() -> void:
 	var oi_nin := spawn("ninjas", "p", Vector2i(4, 5))
 	var oi_hero := spawn("ritter", "p", Vector2i(5, 6))       # Ziel fuer Majas Angriff
 	oi_maja["hp"] = oi_maja["maxhp"]
-	check(not b._foe_secret_available(oi_nin, "hinterhalt", oi_nin["pos"]).is_empty(), "Menue bietet das Jutsu an (Maja von hinten)")
+	for facing: Vector2i in [Vector2i.RIGHT, Vector2i.LEFT, Vector2i.UP, Vector2i.DOWN]:
+		oi_maja["dir"] = facing
+		check(not b._foe_secret_available(oi_nin, "hinterhalt", oi_nin["pos"]).is_empty(), "Menue bietet das Jutsu bei Blickrichtung %s" % facing)
+		check(b._ab_targets(oi_nin, "hinterhalt", oi_nin["pos"]).has(oi_maja), "Maja ist ein gueltiges Ziel bei Blickrichtung %s" % facing)
+	oi_maja["dir"] = Vector2i.LEFT
+	b.sel = oi_nin
+	b._begin_ability("hinterhalt")
+	check(b._target_units.has(oi_maja), "Maja vor den Schwestern ist im Zielauswahlmodus waehlbar")
 	var oi_hp: int = oi_maja["hp"]
 	await b._run_ability(oi_nin, "hinterhalt", oi_maja)
 	check(Status.has(oi_maja, "verwirrt") and int(Status.get_status(oi_maja, "verwirrt")["turns"]) == 3 and oi_maja["hp"] == oi_hp, "Maja ist 3 Runden verwirrt, ohne Schaden")
@@ -309,11 +324,24 @@ func _initialize() -> void:
 	check(oi_hero["hp"] == hero_hp, "verwirrte Maja greift nicht an")
 	Status.remove(oi_maja, "verwirrt")
 	check(b._foe_secret_available(oi_nin, "hinterhalt", oi_nin["pos"]).is_empty(), "pro Level nur einmal: Menue zeigt wieder den Hinterhalt")
+	check(not b._ab_targets(oi_nin, "hinterhalt", oi_nin["pos"]).has(oi_maja), "nach Ausloesen gilt fuer Maja wieder die normale Hinterhalt-Regel")
 	clear()
 	var oi2_maja := spawn("maja", "e", Vector2i(5, 5))
-	oi2_maja["dir"] = Vector2i(-1, 0)                         # Schwestern stehen vor ihr: kein Hinterhalt moeglich
+	oi2_maja["dir"] = Vector2i(-1, 0)
 	var oi2_nin := spawn("ninjas", "p", Vector2i(4, 5))
-	check(b._foe_secret_available(oi2_nin, "hinterhalt", oi2_nin["pos"]).is_empty(), "nicht von hinten: kein Jutsu im Menue")
+	check(not b._foe_secret_available(oi2_nin, "hinterhalt", oi2_nin["pos"]).is_empty(), "vor Maja ist das Jutsu moeglich")
+	check(b._foe_secret_available(oi2_nin, "hinterhalt", Vector2i(3, 5)).is_empty(), "zwei Felder Abstand: kein Jutsu")
+	var old_range: Array = b.abilities["hinterhalt"]["range"]
+	b.abilities["hinterhalt"]["range"] = [1, 2]
+	oi2_nin["pos"] = Vector2i(3, 5)
+	oi2_maja["dir"] = Vector2i.RIGHT
+	check(b._ab_targets(oi2_nin, "hinterhalt", oi2_nin["pos"]).has(oi2_maja), "erweiterter normaler Hinterhalt kann Maja aus zwei Feldern Entfernung treffen")
+	check(b._foe_secret_available(oi2_nin, "hinterhalt", oi2_nin["pos"]).is_empty() and b._foe_secret(oi2_nin, "hinterhalt", oi2_maja, oi2_nin["pos"]).is_empty(), "auch bei erhoehter Reichweite kein Jutsu aus zwei Feldern")
+	b.abilities["hinterhalt"]["range"] = old_range
+	oi2_nin["pos"] = Vector2i(4, 5)
+	Status.add(oi2_maja, "stealth", 2)
+	check(b._foe_secret_available(oi2_nin, "hinterhalt", oi2_nin["pos"]).is_empty(), "versteckte Maja bleibt ungueltiges Ziel")
+	Status.remove(oi2_maja, "stealth")
 
 	# --- Heiliges Licht: Mira faellt, Wendy steht hoechstens 2 Felder entfernt
 	clear()

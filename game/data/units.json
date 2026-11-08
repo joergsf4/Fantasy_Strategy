@@ -285,6 +285,43 @@
   "body": "armor",
   "intro": 1
  },
+ "hogsmeat_krieger": {
+  "name": "Wildschwein-Krieger",
+  "hp": 16,
+  "atk": 5,
+  "def": 3,
+  "res": 1,
+  "move": 3,
+  "range_min": 1,
+  "range": 1,
+  "role": "soldier",
+  "dmg_type": "body",
+  "tags": [
+   "standard"
+  ],
+  "passives": [
+   "schildwall"
+  ],
+  "weapon": "wood",
+  "body": "armor"
+ },
+ "hogsmeat_speerwerfer": {
+  "name": "Wildschwein-Speerwerfer",
+  "hp": 12,
+  "atk": 6,
+  "def": 1,
+  "res": 1,
+  "move": 3,
+  "range_min": 2,
+  "range": 3,
+  "role": "ranged",
+  "dmg_type": "body",
+  "tags": [
+   "standard"
+  ],
+  "weapon": "wood",
+  "body": "flesh"
+ },
  "soldat_beritten": {
   "name": "Reiter des Regenten",
   "hp": 20,
@@ -693,7 +730,7 @@
   "size": 1.7,
   "recruit_only": true,
   "hero": true,
-  "from": 18,
+  "from": 19,
   "intro": 17
  },
  "fuerst_lumpen": {
@@ -714,5 +751,117 @@
   "weapon": "fist",
   "body": "flesh",
   "size": 1.6
+ },
+ "frischling_feuer": {
+  "hp": 24,
+  "atk": 8,
+  "def": 3,
+  "res": 2,
+  "move": 4,
+  "range_min": 1,
+  "range": 1,
+  "role": "damage",
+  "dmg_type": "body",
+  "weapon": "metal",
+  "body": "armor",
+  "name": "Robo-Frischling (Feuer)",
+  "abilities": [
+   "flammenkanone"
+  ],
+  "tags": [
+   "standard",
+   "robo"
+  ],
+  "size": 1.25
+ },
+ "frischling_blitz": {
+  "hp": 24,
+  "atk": 8,
+  "def": 3,
+  "res": 2,
+  "move": 4,
+  "range_min": 1,
+  "range": 1,
+  "role": "damage",
+  "dmg_type": "body",
+  "weapon": "metal",
+  "body": "armor",
+  "name": "Robo-Frischling (Blitz)",
+  "abilities": [
+   "blitzkanone"
+  ],
+  "tags": [
+   "standard",
+   "robo"
+  ],
+  "size": 1.25
+ },
+ "frischling_eis": {
+  "hp": 24,
+  "atk": 8,
+  "def": 3,
+  "res": 2,
+  "move": 4,
+  "range_min": 1,
+  "range": 1,
+  "role": "damage",
+  "dmg_type": "body",
+  "weapon": "metal",
+  "body": "armor",
+  "name": "Robo-Frischling (Eis)",
+  "abilities": [
+   "frostkanone"
+  ],
+  "tags": [
+   "standard",
+   "robo"
+  ],
+  "size": 1.25
+ },
+ "sack_boss": {
+  "name": "Sack",
+  "hp": 80,
+  "atk": 8,
+  "def": 6,
+  "res": 4,
+  "move": 3,
+  "range_min": 1,
+  "range": 3,
+  "role": "support",
+  "dmg_type": "body",
+  "tags": [
+   "boss"
+  ],
+  "abilities": [
+   "wurfmesser",
+   "trankwurf"
+  ],
+  "ranged_mult": 0.9,
+  "weapon": "metal",
+  "body": "flesh",
+  "size": 1.5,
+  "flees": false
+ },
+ "xiulan_gast": {
+  "name": "Xiùlán",
+  "hp": 38,
+  "atk": 8,
+  "def": 3,
+  "res": 3,
+  "move": 4,
+  "range_min": 1,
+  "range": 1,
+  "role": "damage",
+  "dmg_type": "body",
+  "tags": [
+   "standard"
+  ],
+  "abilities": [
+   "gebiss"
+  ],
+  "flees": false,
+  "weapon": "fist",
+  "body": "flesh",
+  "portrait": "xiulan"
  }
 }

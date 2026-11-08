@@ -1,0 +1,73 @@
+{
+ "id": "ch20",
+ "title": "Hogsmeat",
+ "map": "res://data/map_ch20.json",
+ "squad_from": "ch19",
+ "interlude_after": {
+  "scene": "volcano",
+  "duration": 16,
+  "title": "Der Berg"
+ },
+ "briefing": "Der Weg zum flammenden Berg führt durch Hogsmeat, das Dorf der Wildschweine. In den bewaldeten Bergen warten Robowart, die Frischlinge und ihre Kämpfer. Besiegt die Gegner und bahnt euch einen Weg zum Berg.",
+ "goals": [
+  {
+   "type": "rout"
+  }
+ ],
+ "triggers": [
+  {
+   "when": {
+    "flee": "frischlinge"
+   },
+   "do": [
+    {
+     "spawn": [
+      {
+       "id": "cyborg_wart",
+       "pos": [
+        7,
+        2
+       ],
+       "dust": true,
+       "label": "Robowart!"
+      }
+     ]
+    },
+    {
+     "dialogue": [
+      {
+       "left": "cyborg_wart",
+       "right": "maedchen_baer",
+       "speaker": "cyborg_wart",
+       "text": "Ihr habt die Frischlinge vertrieben. Jetzt bekommt ihr es mit mir zu tun!",
+       "story": true,
+       "left_expr": "wuetend"
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "flee": {
+  "cyborg_wart": [
+   {
+    "left": "$hero",
+    "right": "cyborg_wart",
+    "speaker": "cyborg_wart",
+    "right_expr": "wuetend",
+    "text": "Rückzug. Der Berg wird euch aufhalten, wenn ich es nicht kann.",
+    "story": true
+   }
+  ],
+  "frischlinge": [
+   {
+    "left": "$hero",
+    "right": "frischlinge",
+    "speaker": "frischlinge",
+    "right_expr": "wuetend",
+    "text": "Das war unfair! In unserem eigenen Dorf! Boss, hilf uns!",
+    "story": true
+   }
+  ]
+ }
+}

@@ -89,6 +89,7 @@
  "_basic": {
   "default": "fx_bolt",
   "soldat_bogenschuetze": "fx_arrow",
+  "hogsmeat_speerwerfer": "fx_hogsmeat_speer",
   "ninjas": "fx_shuriken",
   "elisabeth": "fx_cannonball"
  },
@@ -218,5 +219,11 @@
  },
  "kehlbiss": {
   "lunge": true
+ },
+ "wurfmesser": {
+  "lunge": false
+ },
+ "trankwurf": {
+  "lunge": false
  }
 }

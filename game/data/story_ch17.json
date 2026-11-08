@@ -4,90 +4,65 @@
    "left": "maedchen_baer",
    "right": "",
    "speaker": "maedchen_baer",
-   "text": "Schnee. Überall Schnee.",
-   "story": true
+   "text": "Der Sack! Sie haben den Sack mitgenommen!",
+   "story": true,
+   "voices": [
+    {
+     "id": "ritter",
+     "text": "Der Sack! Gestohlen von Wildschweinen! Beim Barte meines Vaters!"
+    }
+   ]
   },
   {
-   "left": "bienenmaedchen",
+   "left": "maedchen_baer",
    "right": "",
-   "speaker": "bienenmaedchen",
-   "text": "Es ist eiskalt. Meine Flügel sind steif, meine Fühler gefroren. Wer hatte die Idee, in die Berge zu gehen?",
-   "left_expr": "wuetend",
-   "story": true
+   "speaker": "maedchen_baer",
+   "text": "Habt ihr gesehen, wie schnell die waren?",
+   "voices": [
+    {
+     "id": "hund",
+     "text": "Ich hab sie gerochen. Etwa eine Minute vorher. Ich dachte, das wäre Wart."
+    },
+    {
+     "id": "elisabeth",
+     "text": "Schnell, schmutzig und schweinisch. Ich bewundere sie fast."
+    },
+    {
+     "id": "robo",
+     "text": "Geschwindigkeit der Gegner: zu hoch. Meine Sensoren sind beleidigt."
+    }
+   ]
   },
   {
-   "left": "hund",
+   "left": "maedchen_baer",
    "right": "",
-   "speaker": "hund",
-   "text": "Der Meister versteckt sich im Norden, Stachelia. Das war der Plan, und du warst dabei.",
+   "speaker": "maedchen_baer",
+   "text": "Und wer bezahlt jetzt die Heiltränke?",
+   "voices": [
+    {
+     "id": "elisabeth",
+     "text": "Und wer kauft jetzt unsere Beute?"
+    },
+    {
+     "id": "museklaugust",
+     "text": "Ohne Sack kein Laden. Ohne Laden kein Bier. Ohne Bier keine Kraft!"
+    }
+   ]
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "",
+   "speaker": "maedchen_baer",
+   "text": "Wir holen ihn zurück. Er gehört zu uns. Aber erst müssen wir da hinauf.",
    "story": true
   },
   {
    "left": "maedchen_baer",
    "right": "",
    "speaker": "maedchen_baer",
-   "text": "Keine Sorge, ich habe vorgesorgt! Für jeden ein dicker Mantel, Mütze und Handschuhe. Aus dem Waisenhaus geborgt.",
-   "story": true,
-   "voices": [
-    {
-     "id": "wendy",
-     "text": "Keine Sorge, ich habe vorgesorgt! Für jeden ein dicker Mantel, Mütze und Handschuhe. Ich habe einfach alles gestrickt, was ich hatte.",
-     "expr": "lachend"
-    }
-   ]
-  },
-  {
-   "left": "maedchen_baer",
-   "right": "bienenmaedchen",
-   "speaker": "maedchen_baer",
-   "text": "Für dich gibt es auch einen Pullover, Stachelia. Mit Flügellöchern!",
-   "story": true,
-   "voices": [
-    {
-     "id": "wendy",
-     "text": "Für dich gibt es auch einen Pullover, Stachelia. Mit Flügellöchern!",
-     "expr": "lachend"
-    }
-   ]
-  },
-  {
-   "left": "",
-   "right": "bienenmaedchen",
-   "speaker": "bienenmaedchen",
-   "text": "Ich trage keine Wolle. ...Doch. Gib her. Aber nur, weil mir kalt ist.",
-   "right_expr": "wuetend",
-   "story": true
-  },
-  {
-   "left": "hund",
-   "right": "maedchen_baer",
-   "speaker": "hund",
-   "text": "Es wird Nacht. Hört ihr das? Da heult etwas. Mehr als eines.",
-   "left_expr": "wuetend",
+   "text": "Bis dahin müssen wir mit dem auskommen, was wir haben. Teilt die Vorräte gut ein.",
    "story": true
   }
  ],
- "outro": [
-  {
-   "left": "maedchen_baer",
-   "right": "",
-   "speaker": "maedchen_baer",
-   "text": "Die Nacht ist überstanden. Weiter über den Pass, der Meister ist nicht mehr weit.",
-   "story": true
-  },
-  {
-   "left": "hund",
-   "right": "maedchen_baer",
-   "speaker": "hund",
-   "text": "Gut, dass wir die Mäntel hatten.",
-   "story": true,
-   "voices": [
-    {
-     "id": "wendy",
-     "text": "Gut, dass ich genug Wolle hatte.",
-     "expr": "lachend"
-    }
-   ]
-  }
- ]
+ "outro": []
 }

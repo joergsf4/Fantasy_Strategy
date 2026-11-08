@@ -1,0 +1,388 @@
+{
+ "id": "ch24",
+ "title": "Das leere Labor",
+ "map": "res://data/map_ch24.json",
+ "no_flee": [
+  "cyborg_wart"
+ ],
+ "briefing": "Die Zwerge haben verraten, dass der Minenschacht in die Basis des Meisters führt. Die Gruppe steigt im Labor von Professor Kugelblitz aus, doch der Professor und seine Leute sind schon fort. Nur die Glasbehälter blubbern noch. Nähert ihr euch, platzen sie: Drei Robo-Frischlinge mit Elementarkanonen (Feuer: Brand, Blitz: springt über, Eis: unterkühlt) greifen an. Danach kommt Robo-Wart selbst, und diesmal flieht er nicht. Besiegt ihn.",
+ "goals": [
+  {
+   "type": "defeat",
+   "unit": "cyborg_wart",
+   "text": "Ziel: Besiegt die Robo-Frischlinge und Robo-Wart"
+  }
+ ],
+ "triggers": [
+  {
+   "when": {
+    "near_object": {
+     "id": "geraet_z2",
+     "dist": 3
+    }
+   },
+   "note": "Die Behälter platzen: drei Robo-Frischlinge",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "maedchen_baer",
+       "right": "",
+       "speaker": "maedchen_baer",
+       "text": "Brumm mag diese grünen Gläser nicht.",
+       "story": true,
+       "voices": [
+        {
+         "id": "robo",
+         "text": "Scan: drei Behälter. Inhalt: warm. Und er bewegt sich."
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "world": {
+      "id": "geraet_z2",
+      "effect": "break"
+     }
+    },
+    {
+     "world": {
+      "id": "geraet_z3",
+      "effect": "break"
+     }
+    },
+    {
+     "world": {
+      "id": "geraet_z4",
+      "effect": "break"
+     }
+    },
+    {
+     "spawn": [
+      {
+       "id": "frischling_feuer",
+       "pos": [
+        6,
+        5
+       ],
+       "label": "Robo-Frischling (Feuer)",
+       "dust": true
+      },
+      {
+       "id": "frischling_blitz",
+       "pos": [
+        5,
+        3
+       ],
+       "label": "Robo-Frischling (Blitz)"
+      },
+      {
+       "id": "frischling_eis",
+       "pos": [
+        5,
+        1
+       ],
+       "label": "Robo-Frischling (Eis)"
+      }
+     ]
+    },
+    {
+     "dialogue": [
+      {
+       "left": "maedchen_baer",
+       "right": "frischlinge_robo",
+       "speaker": "frischlinge_robo",
+       "text": "Überraschung! Papa hat uns aufgerüstet!",
+       "story": true,
+       "right_expr": "lachend"
+      },
+      {
+       "left": "maedchen_baer",
+       "right": "frischlinge_robo",
+       "speaker": "frischlinge_robo",
+       "text": "Feuer, Blitz und Eis! Wer will zuerst?",
+       "story": true,
+       "right_expr": "lachend"
+      },
+      {
+       "left": "maedchen_baer",
+       "right": "hund",
+       "speaker": "hund",
+       "text": "Ferkel mit Kanonen. Natürlich.",
+       "story": true,
+       "right_expr": "wuetend"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "enemies_left": 0
+   },
+   "if": {
+    "object": {
+     "id": "geraet_z2",
+     "state": "broken"
+    }
+   },
+   "note": "Robo-Wart kommt",
+   "do": [
+    {
+     "spawn": [
+      {
+       "id": "cyborg_wart",
+       "pos": [
+        6,
+        1
+       ],
+       "label": "Robo-Wart",
+       "dust": true
+      }
+     ]
+    },
+    {
+     "dialogue": [
+      {
+       "left": "maedchen_baer",
+       "right": "cyborg_wart",
+       "speaker": "cyborg_wart",
+       "text": "Wer hat meine Jungs kaputt gemacht?!",
+       "story": true,
+       "right_expr": "wuetend"
+      },
+      {
+       "left": "maedchen_baer",
+       "right": "cyborg_wart",
+       "speaker": "maedchen_baer",
+       "text": "Du hast sie in Gläser gesteckt, Wart.",
+       "story": true
+      },
+      {
+       "left": "maedchen_baer",
+       "right": "cyborg_wart",
+       "speaker": "cyborg_wart",
+       "text": "Zur Verbesserung! Und jetzt verbessere ich euch!",
+       "story": true,
+       "right_expr": "wuetend"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 2
+   },
+   "if": {
+    "present": [
+     "ritter"
+    ]
+   },
+   "note": "Fluff: ritter",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "ritter",
+       "right": "",
+       "speaker": "ritter",
+       "text": "Ein Labor ohne Fenster. Wer hier arbeitet, hat etwas zu verbergen."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 2
+   },
+   "if": {
+    "present": [
+     "elisabeth"
+    ]
+   },
+   "note": "Fluff: elisabeth",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "elisabeth",
+       "right": "",
+       "speaker": "elisabeth",
+       "text": "Lauter blinkende Knöpfe. Ich drücke keinen. Fast keinen."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 3
+   },
+   "if": {
+    "present": [
+     "wendy"
+    ]
+   },
+   "note": "Fluff: wendy",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "wendy",
+       "right": "",
+       "speaker": "wendy",
+       "text": "Mäh … hier riecht es nach Strom und schlechten Ideen."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 3
+   },
+   "if": {
+    "present": [
+     "braumeisterin"
+    ]
+   },
+   "note": "Fluff: braumeisterin",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "braumeisterin",
+       "right": "",
+       "speaker": "braumeisterin",
+       "text": "Wer so viel Glas hat, könnte wenigstens Bier darin brauen."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 3
+   },
+   "if": {
+    "present": [
+     "magical_girl"
+    ]
+   },
+   "note": "Fluff: magical_girl",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "magical_girl",
+       "right": "",
+       "speaker": "magical_girl",
+       "text": "Das blinkt fast so schön wie mein Glitzer. Fast."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "victory": true
+   },
+   "note": "Abschlussszene: Wart hat genug vom Verlieren und verschwindet mit seinen Frischlingen (ihr Abgang aus der Geschichte)",
+   "do": [
+    {
+     "spawn": [
+      {
+       "id": "cyborg_wart",
+       "near": "cyborg_wart",
+       "label": "Robo-Wart rappelt sich auf"
+      },
+      {
+       "id": "frischling_feuer",
+       "near": "cyborg_wart",
+       "label": "Robo-Frischling"
+      },
+      {
+       "id": "frischling_blitz",
+       "near": "cyborg_wart",
+       "label": "Robo-Frischling"
+      },
+      {
+       "id": "frischling_eis",
+       "near": "cyborg_wart",
+       "label": "Robo-Frischling"
+      }
+     ]
+    },
+    {
+     "dialogue": [
+      {
+       "left": "maedchen_baer",
+       "right": "frischlinge_robo",
+       "speaker": "frischlinge_robo",
+       "text": "Papa … meine Kanone qualmt.",
+       "story": true
+      },
+      {
+       "left": "maedchen_baer",
+       "right": "cyborg_wart",
+       "speaker": "cyborg_wart",
+       "text": "Aus! Schluss! Ich hab genug vom Verlieren!",
+       "story": true,
+       "right_expr": "wuetend"
+      },
+      {
+       "left": "maedchen_baer",
+       "right": "cyborg_wart",
+       "speaker": "cyborg_wart",
+       "text": "Im Hohlweg verloren. In der Bucht verloren. Im Sumpf, in der Mine … und jetzt sogar mit Blech!",
+       "story": true,
+       "right_expr": "wuetend"
+      },
+      {
+       "left": "maedchen_baer",
+       "right": "cyborg_wart",
+       "speaker": "cyborg_wart",
+       "text": "Soll der Meister seine Helden doch selbst verhauen. Jungs, wir gehen. Für immer!",
+       "story": true
+      },
+      {
+       "left": "maedchen_baer",
+       "right": "cyborg_wart",
+       "speaker": "maedchen_baer",
+       "text": "Und wohin?",
+       "story": true
+      },
+      {
+       "left": "maedchen_baer",
+       "right": "cyborg_wart",
+       "speaker": "cyborg_wart",
+       "text": "Irgendwohin, wo keiner gewinnt. Angeln vielleicht.",
+       "story": true
+      },
+      {
+       "left": "maedchen_baer",
+       "right": "frischlinge_robo",
+       "speaker": "frischlinge_robo",
+       "text": "Angeln! Angeln! Angeln!",
+       "story": true,
+       "right_expr": "lachend"
+      }
+     ]
+    },
+    {
+     "retreat_all": [
+      "frischling_feuer",
+      "frischling_blitz",
+      "frischling_eis"
+     ]
+    },
+    {
+     "retreat": "cyborg_wart"
+    }
+   ]
+  }
+ ]
+}

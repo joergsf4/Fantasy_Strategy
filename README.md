@@ -65,7 +65,7 @@ Manche Fähigkeiten wirken auf Verbündete anders, als man denkt. Wer es herausf
 
 <table>
 <tr>
-<td width="33%"><img src="docs/img/lager.jpg" alt="Lager mit Händler Sack"><br><b>Lager.</b> Händler Sack (ein lebender Wollsack) mit Ausrüstung in vier Stufen und Verkauf, Brauen, Aufstellung und Talente.</td>
+<td width="33%"><img src="docs/img/lager.jpg" alt="Lager mit Händler Sack"><br><b>Lager.</b> Händler Sack (ein lebender Wollsack) mit Ausrüstung in vier Stufen und Verkauf, Aufstellung und Talente.</td>
 <td width="33%"><img src="docs/img/gruppenwahl.jpg" alt="Gruppenwahl"><br><b>Gruppenwahl.</b> Vor jeder Runde wählst du deine Helden. Wer in der Geschichte gebraucht wird, ist gesperrt.</td>
 <td width="33%"><img src="docs/img/statistik.jpg" alt="Siegbildschirm mit Statistik"><br><b>Statistik.</b> Beute, Bonusziele und Auszeichnungen, nach dem Sieg mit fröhlicher, nach der Niederlage mit trauriger Musik.</td>
 </tr>

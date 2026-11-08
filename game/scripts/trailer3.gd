@@ -104,7 +104,7 @@ func _stats_screen() -> void:
 	layer.layer = 6
 	add_child(layer)
 	var rs := RewardScreen.new()
-	rs.setup({"gold": 205, "items": {"heiltrank": 1, "gegengift": 1}, "materials": {"kraut": 3}, "equipment": [],
+	rs.setup({"gold": 205, "items": {"heiltrank": 1, "gegengift": 1}, "equipment": [],
 		"objectives": [{"id": "a", "text": "Kein Held fällt", "done": true, "reward": {"gold": 60}}],
 		"turns": 7, "stats": {"rows": [
 			{"id": "kungfu", "name": "Meister Lin", "alive": true, "hp": 12, "maxhp": 24, "dealt": 41, "taken": 22, "healed": 0, "kills": 3, "abs": 2, "bonus": 1},

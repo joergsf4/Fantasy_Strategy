@@ -11,7 +11,7 @@ const T5_SEA_TALK := [
 const T5_SACK := [
 	{"left": "haendler", "right": "", "speaker": "haendler", "text": "Ich bin ein Sack. Ich bleibe überall liegen."},
 ]
-const T5_BATTLE_SNOW := {"map": "ch17", "fire": false, "cam": [0.0, 6.0, 6.2], "fov": 38, "max_heroes": 3, "max_foes": 2, "speed": 1.5,
+const T5_BATTLE_SNOW := {"map": "ch18", "fire": false, "cam": [0.0, 6.0, 6.2], "fov": 38, "max_heroes": 3, "max_foes": 2, "speed": 1.5,
 	"p": [["hund", "p", [3, 6]], ["samurai", "p", [3, 7]], ["robo", "p", [2, 6]], ["elisabeth", "p", [2, 7]]],
 	"e": [["wolf", "e", [7, 6]], ["wolf", "e", [7, 7]], ["wolf", "e", [8, 6]], ["wolf", "e", [8, 7]], ["soldat_infanterie", "e", [8, 5]]]}
 const T5_RAIN := {"throw": true, "u": ["museklaugust", "p", [2, 7]], "t": ["ninjas", "p", [3, 7]], "dest": [6, 7],

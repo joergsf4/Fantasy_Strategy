@@ -230,9 +230,17 @@ func run_tests() -> void:
 	check(ally["hp"] == ally["maxhp"], "Gruener Laser heilt 12")
 	var dog := spawn("hund", "p", Vector2i(6, 6))
 	var bt := spawn("soldat_beritten", "e", Vector2i(7, 6))
+	dog["atk"] = 8
+	bt["def"] = 4
+	bt["hp"] = 100
+	bt["maxhp"] = 100
+	var bone_effect: Dictionary = b.abilities["knochenwurf"]["effects"][0]
+	check(int(bone_effect["hits"]) == 3 and float(bone_effect["mult"]) == 0.75 and float(bone_effect["ignore_def"]) == 0.5, "Knochenwurf: drei Treffer mit 50 Prozent Durchdringung")
+	check(Combat.damage(dog, bt, 0, 0.0, 0.75, 0.5) * 3 == 12, "Knochenwurf bei Angriff 8 gegen Verteidigung 4: 12 Schaden")
+	var bone_hit: int = b.forecast(dog, bt, dog["pos"], 0.75, 0.5)["dmg"]
 	var hb: int = bt["hp"]
 	await b._run_ability(dog, "knochenwurf", bt)
-	check(bt["hp"] < hb, "Knochenwurf trifft")
+	check(hb - int(bt["hp"]) == bone_hit * 3, "Knochenwurf wendet den durchdringenden Schaden auf alle drei Treffer an")
 	var bru := spawn("braumeisterin", "p", Vector2i(5, 6))
 	var barrel := spawn("soldat_infanterie", "e", Vector2i(8, 6))
 	await b._run_ability(bru, "fasswurf", barrel)

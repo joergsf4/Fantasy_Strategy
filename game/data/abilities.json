@@ -238,7 +238,7 @@
  },
  "knochenwurf": {
   "name": "Knochenwurf",
-  "text": "Serie von 3 Knochen (je ×0,5) auf ein Ziel bis 2 Felder entfernt.",
+  "text": "Serie von 3 Knochen (je ×0,75, ignoriert 50 % Verteidigung) auf ein Ziel bis 2 Felder entfernt.",
   "cd": 2,
   "target": "enemy",
   "range": [
@@ -248,7 +248,8 @@
   "effects": [
    {
     "type": "damage",
-    "mult": 0.5,
+    "mult": 0.75,
+    "ignore_def": 0.5,
     "hits": 3
    }
   ],
@@ -987,5 +988,131 @@
    "rally"
   ],
   "solo": true
+ },
+ "flammenkanone": {
+  "name": "Flammenkanone",
+  "text": "Schießt einen Feuerball (×1,1, Reichweite 2–3). Das Ziel brennt 2 Runden (3 Schaden pro Runde).",
+  "cd": 2,
+  "target": "enemy",
+  "range": [
+   2,
+   3
+  ],
+  "caps": [
+   "ranged_hit"
+  ],
+  "effects": [
+   {
+    "type": "damage",
+    "mult": 1.1
+   },
+   {
+    "type": "status",
+    "id": "brennen",
+    "turns": 2,
+    "to": "target"
+   }
+  ],
+  "ai_bonus": 3
+ },
+ "blitzkanone": {
+  "name": "Blitzkanone",
+  "text": "Ein Blitz (×1,0, Reichweite 2–3) springt auf Gegner neben dem Ziel über (50 % Schaden).",
+  "cd": 2,
+  "target": "enemy",
+  "range": [
+   2,
+   3
+  ],
+  "caps": [
+   "ranged_hit",
+   "blast"
+  ],
+  "effects": [
+   {
+    "type": "damage",
+    "mult": 1.0
+   },
+   {
+    "type": "splash",
+    "mult": 0.5
+   }
+  ],
+  "ai_bonus": 3
+ },
+ "frostkanone": {
+  "name": "Frostkanone",
+  "text": "Ein Eisstrahl (×0,9, Reichweite 2–3): Das Ziel ist 2 Runden unterkühlt (Bewegung −2, Verteidigung −1).",
+  "cd": 2,
+  "target": "enemy",
+  "range": [
+   2,
+   3
+  ],
+  "caps": [
+   "ranged_hit"
+  ],
+  "effects": [
+   {
+    "type": "damage",
+    "mult": 0.9
+   },
+   {
+    "type": "status",
+    "id": "unterkuehlt",
+    "turns": 2,
+    "mods": {
+     "move": -2,
+     "def": -1
+    },
+    "to": "target"
+   }
+  ],
+  "ai_bonus": 3
+ },
+ "wurfmesser": {
+  "name": "Spitze Sachen",
+  "text": "Wirft Messer und Dolche aus dem Beutel (×1,1, Reichweite 2–4). Helden neben dem Ziel erhalten 40 % Schaden.",
+  "cd": 2,
+  "target": "enemy",
+  "range": [
+   2,
+   4
+  ],
+  "effects": [
+   {
+    "type": "damage",
+    "mult": 1.1
+   },
+   {
+    "type": "splash",
+    "mult": 0.4
+   }
+  ],
+  "ai_bonus": 4,
+  "caps": [
+   "ranged_hit"
+  ]
+ },
+ "trankwurf": {
+  "name": "Trank aus dem Beutel",
+  "text": "Wirft einem Verbündeten einen Heiltrank zu: heilt 16 Leben und entfernt Gift (Reichweite 1–4).",
+  "cd": 2,
+  "target": "ally",
+  "range": [
+   1,
+   4
+  ],
+  "effects": [
+   {
+    "type": "heal",
+    "amount": 16,
+    "cleanse": true,
+    "to": "target"
+   }
+  ],
+  "caps": [
+   "heal"
+  ]
  }
 }

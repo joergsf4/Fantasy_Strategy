@@ -1,0 +1,102 @@
+{
+ "rows": [
+  "MMMMGGGGGGMM",
+  "MGGGFGGGGGGM",
+  "GGGFFGGMMGGG",
+  "GGGGGGGMGGFG",
+  "GGGGGGGGGGGG",
+  "GGFGGGGGGGGG",
+  "GGGGGMGGGGGG",
+  "GGGGGGGGGGFG",
+  "GGGGGGGGGGGG",
+  "GGGGGGGGGGGG"
+ ],
+ "biome": "schnee",
+ "mood": "nacht_schnee",
+ "weather": [
+  "fog"
+ ],
+ "walls": [
+  "n",
+  "w",
+  "e"
+ ],
+ "players": [
+  {
+   "id": "maedchen_baer",
+   "pos": [
+    5,
+    7
+   ]
+  },
+  {
+   "id": "hund",
+   "pos": [
+    4,
+    7
+   ]
+  },
+  {
+   "id": "ritter",
+   "pos": [
+    6,
+    7
+   ]
+  },
+  {
+   "id": "elisabeth",
+   "pos": [
+    3,
+    7
+   ]
+  },
+  {
+   "id": "robo",
+   "pos": [
+    5,
+    8
+   ]
+  },
+  {
+   "id": "wendy",
+   "pos": [
+    4,
+    8
+   ]
+  }
+ ],
+ "enemies": [],
+ "objects": [
+  {
+   "id": "huette",
+   "type": "huette",
+   "pos": [
+    1,
+    3
+   ]
+  }
+ ],
+ "decor": [],
+ "rewards": {
+  "gold": 380
+ },
+ "objectives": [
+  {
+   "id": "alle_leben",
+   "text": "Kein Held fällt",
+   "reward": {
+    "gold": 120
+   }
+  },
+  {
+   "id": "schnell",
+   "text": "In 10 Runden gewonnen",
+   "turns": 10,
+   "reward": {
+    "items": {
+     "heilhonig": 2
+    }
+   }
+  }
+ ]
+}

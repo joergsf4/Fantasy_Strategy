@@ -16,6 +16,8 @@ var arc := 12.0                     # Dauer des Kamerabogens in Sekunden (bei la
 var hold := false                   # Szene laeuft, bis end() gerufen wird (Dialog darueber), kein Ueberspringen
 var heading := -1.0                # Fahrtrichtung im 3D-Meer: -1 nach links, 1 nach rechts (Sprite wird gespiegelt)
 var scene3d := ""                  # "sea": Schiff faehrt in 3D ueber das Wasser (statt Standbild mit Ken Burns)
+var music_path := ""               # Datenfeld "music": Musik zur Szene, blendet mit dem Bild ein und aus
+var _music: AudioStreamPlayer
 var _pic: TextureRect
 var _cam: Camera3D
 var _ship: MeshInstance3D
@@ -39,6 +41,7 @@ func setup(data: Dictionary) -> void:
 	heading = 1.0 if data.get("dir", "left") == "right" else -1.0
 	duration = float(data.get("duration", duration))
 	zoom_to = float(data.get("zoom", zoom_to))
+	music_path = str(data.get("music", ""))
 	if data.has("pan"):
 		pan = Vector2(data["pan"][0], data["pan"][1])
 
@@ -78,6 +81,13 @@ func _ready() -> void:
 	add_child(_black)
 	var tw := create_tween()
 	tw.tween_property(_black, "modulate:a", 0.0, 1.2).from(1.0)
+	if music_path != "" and ResourceLoader.exists(music_path):
+		_music = AudioStreamPlayer.new()
+		_music.stream = load(music_path)
+		_music.volume_db = -30.0
+		add_child(_music)
+		_music.play()
+		create_tween().tween_property(_music, "volume_db", -7.0, 1.5)
 	if _pic != null:
 		var kb := create_tween().set_parallel(true)
 		kb.tween_property(_pic, "scale", Vector2(zoom_to, zoom_to), duration).from(Vector2.ONE).set_trans(Tween.TRANS_SINE)
@@ -92,6 +102,10 @@ func _ready() -> void:
 		out.tween_interval(duration - 1.2)
 		out.tween_property(_black, "modulate:a", 1.0, 1.2)
 		out.tween_callback(_finish)
+		if _music != null:
+			var mo := create_tween()
+			mo.tween_interval(maxf(0.0, duration - 2.0))
+			mo.tween_property(_music, "volume_db", -40.0, 2.0)
 
 
 func _process(delta: float) -> void:
@@ -106,6 +120,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if (event is InputEventMouseButton and event.pressed) or (event is InputEventKey and event.pressed and not event.echo):
 		get_viewport().set_input_as_handled()
+		_fade_music(0.3)
 		_finish()
 
 
@@ -237,9 +252,22 @@ func _sail() -> void:
 
 ## Szene mit hold: ausblenden und beenden.
 func end() -> void:
+	_fade_music(1.0)
 	var out := create_tween()
 	out.tween_property(_black, "modulate:a", 1.0, 1.0)
 	out.tween_callback(_finish)
+
+
+## Musik ausblenden; sie lebt in einem eigenen Knoten weiter, damit sie nicht abreisst, wenn die Szene geloescht wird.
+func _fade_music(t: float) -> void:
+	if _music == null or not _music.playing:
+		return
+	var m := _music
+	_music = null
+	m.reparent(get_tree().root)
+	var tw := m.create_tween()
+	tw.tween_property(m, "volume_db", -50.0, t)
+	tw.tween_callback(m.queue_free)
 
 
 func _finish() -> void:

@@ -1,0 +1,87 @@
+{
+ "intro": [
+  {
+   "left": "maedchen_baer",
+   "right": "hund",
+   "speaker": "maedchen_baer",
+   "text": "Brumm hat ihre Fährte bis hierher verfolgt. Das ist … ein Thronsaal?",
+   "story": true
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "kugelblitz",
+   "speaker": "kugelblitz",
+   "text": "Willkommen, willkommen! Ihr kommt genau rechtzeitig, um zu verlieren.",
+   "story": true,
+   "right_expr": "lachend"
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "haendler",
+   "speaker": "haendler",
+   "text": "Psst! Hier drüben! Im Käfig! Ich bin's, euer Sack!",
+   "story": true
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "haendler",
+   "speaker": "maedchen_baer",
+   "text": "Sack? Was machst du denn hier?",
+   "story": true
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "haendler",
+   "speaker": "haendler",
+   "text": "Lange Geschichte. Hört zu: Den Professor schützt ein Schild. Füllt den magischen Honig in die Maschine an der Ostwand, dann bricht er zusammen!",
+   "story": true
+  },
+  {
+   "left": "bienenmaedchen",
+   "right": "haendler",
+   "speaker": "bienenmaedchen",
+   "text": "Mein Honig? Na schön. Aber nur, weil du mir mal Rabatt gegeben hast.",
+   "story": true
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "maja",
+   "speaker": "maja",
+   "text": "Die Bärin und ihre Freunde. Oskar, die gehören uns.",
+   "story": true,
+   "right_expr": "lachend"
+  }
+ ],
+ "outro": [
+  {
+   "left": "maedchen_baer",
+   "right": "hund",
+   "speaker": "maedchen_baer",
+   "text": "Er ist … leer. Nur noch Wolle.",
+   "story": true
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "hund",
+   "speaker": "hund",
+   "text": "Und der Professor ist weg. Mit allem, was er weiß.",
+   "story": true,
+   "right_expr": "wuetend"
+  },
+  {
+   "left": "bienenmaedchen",
+   "right": "hund",
+   "speaker": "bienenmaedchen",
+   "text": "Mein ganzer Honig. Verbraucht für einen Wollsack.",
+   "story": true,
+   "left_expr": "wuetend"
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "hund",
+   "speaker": "maedchen_baer",
+   "text": "Brumm schnüffelt. Er hat eine neue Spur.",
+   "story": true
+  }
+ ]
+}

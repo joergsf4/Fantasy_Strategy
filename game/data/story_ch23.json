@@ -1,0 +1,20 @@
+{
+ "intro": [
+  {
+   "left": "xiulan",
+   "right": "",
+   "speaker": "xiulan",
+   "text": "So, so. Der Professor wohnt also im Keller des Bösen.",
+   "story": true
+  },
+  {
+   "left": "xiulan",
+   "right": "",
+   "speaker": "xiulan",
+   "text": "Mal sehen, wer hier die Rechnungen nicht bezahlt.",
+   "story": true,
+   "left_expr": "lachend"
+  }
+ ],
+ "outro": []
+}

@@ -21,8 +21,8 @@ func _initialize() -> void:
 	# Eigene kleine Beute-Karte
 	map["players"] = []
 	map["enemies"] = []
-	map["chests"] = [{"pos": [4, 7], "reward": {"items": {"heiltrank": 1}, "materials": {"kraut": 2}, "gold": 30}}]
-	map["villages"] = [{"pos": [0, 3], "reward": {"materials": {"hopfen": 1}, "gold": 40}}]
+	map["chests"] = [{"pos": [4, 7], "reward": {"items": {"heiltrank": 1}, "gold": 30}}]
+	map["villages"] = [{"pos": [0, 3], "reward": {"gold": 40}}]
 	map["rewards"] = {"gold": 100}
 	map["objectives"] = [
 		{"id": "alle_leben", "text": "Kein Held faellt", "reward": {"gold": 60}},
@@ -46,14 +46,14 @@ func run_tests() -> void:
 	await b._collect(hero, chest, "chest")
 	check(chest["open"], "Truhe ist offen")
 	check(b.inventory["heiltrank"] == 2, "Truhe: Heiltrank im Rucksack (1+1)")
-	check(b.loot["materials"].get("kraut", 0) == 2 and b.loot["gold"] == 30, "Truhe: 2 Kraut, 30 Gold in der Beute")
+	check(b.loot["items"].get("heiltrank", 0) >= 1 and b.loot["gold"] == 30, "Truhe: Heiltrank, 30 Gold in der Beute")
 	check(hero["done"], "Aktion verbraucht: Figur ist fertig")
 	# Dorf
 	b._spawn("kungfu", "p", Vector2i(0, 3))
 	var runner: Dictionary = b.units.back()
 	var vil := b._village_at(Vector2i(0, 3))
 	await b._collect(runner, vil, "village")
-	check(vil["visited"] and b.loot["materials"].get("hopfen", 0) == 1 and b.loot["gold"] == 70, "Dorf: Hopfen und Gold, nur einmal")
+	check(vil["visited"] and b.loot["gold"] == 70, "Dorf: Gold, nur einmal")
 	# Menue bietet bereits geoeffnete Truhe nicht mehr an
 	check(b._chest_at(Vector2i(4, 7))["open"], "Truhe bleibt offen")
 	# Beute-Traeger
@@ -86,11 +86,11 @@ func run_tests() -> void:
 	var p := Party.new_game()
 	check(p.inventory.get("heiltrank", 0) == 2 and p.equipment.has("ritter"), "Neues Spiel: Startausstattung")
 	p.absorb(res)
-	check(p.gold == res["gold"] and p.materials.get("kraut", 0) == 2 and p.inventory["aether"] == 1 and p.chapter == 2, "Party uebernimmt Beute und Rucksack")
+	check(p.gold == res["gold"] and p.inventory["aether"] == 1 and p.chapter == 2, "Party uebernimmt Beute und Rucksack")
 	var path := "user://test_party.json"
 	p.save(path)
 	var q := Party.load_from(path)
-	check(q != null and q.gold == p.gold and q.inventory == p.inventory and q.materials == p.materials and q.equipment == p.equipment and q.chapter == 2, "Speichern und Laden ergibt dasselbe")
+	check(q != null and q.gold == p.gold and q.inventory == p.inventory and q.equipment == p.equipment and q.chapter == 2, "Speichern und Laden ergibt dasselbe")
 	check(Party.load_from("user://gibt_es_nicht.json") == null, "Fehlende Datei: null")
 	check(not q.spend(99999) and q.spend(10) and q.gold == p.gold - 10, "Bezahlen: nur mit genug Gold")
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(path))

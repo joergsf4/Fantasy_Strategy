@@ -51,6 +51,6 @@ func _initialize() -> void:
 	graf.pressed.emit()
 	await process_frame
 	var texts := m.find_children("*", "Button", true, false).map(func(b: Button) -> String: return b.text)
-	check(texts.has("Schatten: Hoch") and texts.has("Anzeige: Vollbild"), "Grafik-Reiter zeigt Optionen: %s" % [texts])
+	check(texts.has("Schatten: Mittel") and texts.has("Bildrate: 60") and texts.has("Anzeige: Vollbild"), "Grafik-Reiter zeigt Optionen: %s" % [texts])
 	print("settings: ", "OK" if fails == 0 else "%d Fehler" % fails)
 	quit(fails)

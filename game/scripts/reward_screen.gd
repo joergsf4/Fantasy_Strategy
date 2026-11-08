@@ -121,8 +121,6 @@ func _reward_text(r: Dictionary) -> String:
 		parts.append("%d Gold" % int(r["gold"]))
 	for id: String in r.get("items", {}):
 		parts.append(Items.item_name(id))
-	for id: String in r.get("materials", {}):
-		parts.append(Items.item_name(id))
 	return ", ".join(parts)
 
 
@@ -132,8 +130,6 @@ func _loot_lines() -> Array[String]:
 		out.append("%d Gold" % int(results["gold"]))
 	for id: String in results.get("items", {}):
 		out.append("%s ×%d" % [Items.item_name(id), int(results["items"][id])])
-	for id: String in results.get("materials", {}):
-		out.append("%s ×%d" % [Items.item_name(id), int(results["materials"][id])])
 	for id: String in results.get("equipment", []):
 		out.append(Items.item_name(id))
 	return out

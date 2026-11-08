@@ -8,7 +8,8 @@
   "kicker": "Kapitel 2",
   "title": "Die Suche nach der wahren Gefahr",
   "duration": 8.0,
-  "scene": "sea"
+  "scene": "sea",
+  "music": "res://assets/audio/seefahrt.mp3"
  },
  "briefing": "Noch keine Kampfmission: Reise zurück nach Möwenbucht und Gespräch im Hafen.",
  "goals": [

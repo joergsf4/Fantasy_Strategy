@@ -19,6 +19,9 @@ const WT := {
 var grid: Grid
 var wall_sides: Array = []    # Kartenfeld "walls": ["n","e","w","s"]: dort steigt das Gelaende hinter der Karte zur Felswand an (Sackgasse)
 var biome := "wiese"          # "schnee": Schneelandschaft mit Schneefichten und Eisfelsen; "sumpf": Moor mit Schlamm, Schilf und toten Baeumen; "wueste": Sand statt Gras, keine Baeume und Blumen (Karten-Feld "biome")
+var curated_volcano := false
+var carpet: Array = []       # Kartenfeld "carpet": [x0, y0, x1, y1] roter Teppich (Biom Thronsaal)
+var curated_trees: Array = []
 var _noise := FastNoiseLite.new()
 var _noise_hills := FastNoiseLite.new()
 var _noise_forest := FastNoiseLite.new()
@@ -107,6 +110,9 @@ func dist_outside(x: float, z: float) -> float:
 
 
 func height_at(x: float, z: float) -> float:
+	if biome == "basis" or biome == "thronsaal":      # Schurkenbasis (und Thronsaal): flacher Laborboden, ausserhalb steile Metallwaende (ohne Huegel)
+		var db := dist_outside(x, z)
+		return 0.0 if db <= 0.0 else smoothstep(0.3, 1.2, db) * 3.2
 	var h := _sample_f(x, z, H) + _noise.get_noise_2d(x, z) * _sample_f(x, z, AMP)
 	var d := dist_outside(x, z)
 	if d > 0.0:
@@ -235,6 +241,12 @@ func _build_ground() -> void:
 	mat.set_shader_parameter("desert", 1.0 if biome == "wueste" else 0.0)
 	mat.set_shader_parameter("swamp", 1.0 if biome == "sumpf" else 0.0)
 	mat.set_shader_parameter("snowland", 1.0 if biome == "schnee" else 0.0)
+	mat.set_shader_parameter("volcano", 1.0 if biome == "vulkan" else 0.0)
+	mat.set_shader_parameter("lava_flow", 1.0 if biome == "vulkan" and curated_volcano else 0.0)
+	mat.set_shader_parameter("base_floor", 1.0 if biome == "basis" or biome == "thronsaal" else 0.0)
+	mat.set_shader_parameter("throne_hall", 1.0 if biome == "thronsaal" else 0.0)
+	if carpet.size() == 4:
+		mat.set_shader_parameter("carpet_rect", Vector4(carpet[0] - 0.5, carpet[1] - 0.5, carpet[2] + 0.5, carpet[3] + 0.5))
 	if biome == "sumpf":
 		var mimg := Image.create(grid.width, grid.height, false, Image.FORMAT_R8)
 		for y in grid.height:
@@ -422,11 +434,30 @@ func _tree(x: float, z: float, scale: float, prefer_pine := 0.45) -> void:
 
 
 func _scatter() -> void:
+	if biome == "basis" or biome == "thronsaal":      # Schurkenbasis: Metallboden, keine Pflanzen und Steine (Geraete setzt die Karte als Objekte und Deko)
+		return
+	if biome == "vulkan" and curated_volcano:
+		for tree: Dictionary in curated_trees:
+			var pos: Array = tree["pos"]
+			var tint: Array = tree["tint"]
+			_place(tree["kind"], float(pos[0]), float(pos[1]), float(tree["scale"]), Color(tint[0], tint[1], tint[2]))
+		return
 	for tj in range(-MARGIN, grid.height + MARGIN):
 		for ti in range(-MARGIN, grid.width + MARGIN):
 			var inside := ti >= 0 and tj >= 0 and ti < grid.width and tj < grid.height
 			var t := _tt(ti, tj)
 			var d := dist_outside(ti, tj)
+			if biome == "vulkan":
+				if height_at(ti, tj) > WATER_LEVEL + 0.03:
+					if _rng.randf() < (0.28 if inside else 0.42):
+						var x := _jit(ti, 0.4)
+						var z := _jit(tj, 0.4)
+						_place("rock%d" % _rng.randi_range(0, 1), x, z, _rng.randf_range(0.6, 1.5), Color(0.68, 0.58, 0.54))
+						if _rng.randf() < 0.45:
+							_place("rock%d" % _rng.randi_range(0, 1), x + _rng.randf_range(-0.25, 0.25), z + _rng.randf_range(-0.25, 0.25), _rng.randf_range(0.3, 0.55), Color(0.58, 0.50, 0.47))
+					if not inside and _rng.randf() < 0.035:
+						_place("dead", _jit(ti, 0.35), _jit(tj, 0.35), _rng.randf_range(0.8, 1.25), Color(0.65, 0.57, 0.54))
+				continue
 			if biome == "schnee":     # Schnee: Schneefichten (dicht am Rand und auf F-Feldern), Eisfelsen, Schneehaufen
 				var hh := height_at(ti, tj)
 				if hh <= WATER_LEVEL + 0.03:
@@ -577,6 +608,10 @@ func _flush_instances() -> void:
 			var pm := ShaderMaterial.new()
 			pm.shader = _prop_shader
 			pm.set_shader_parameter("tex", load("res://assets/fx/%s.png" % SPRITES[kind][0]))
+			if kind in ["rock0", "rock1", "snowrock", "snowmound", "dead"]:
+				pm.set_shader_parameter("sway", 0.0)
+			if biome == "vulkan" and curated_volcano and kind in ["pine0", "pine1", "oak0", "oak1", "oak2"]:
+				pm.set_shader_parameter("desaturate", 0.85)
 			mmi.material_override = pm
 		else:
 			mmi.material_override = _grass_mat if is_plant else _foliage_mat

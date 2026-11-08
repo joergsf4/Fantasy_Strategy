@@ -198,5 +198,26 @@
   ],
   "hp": 0,
   "solutions": {}
+ },
+ "geraet": {
+  "name": "Gerät",
+  "start": "intact",
+  "active": "",
+  "blocks": [
+   "intact"
+  ],
+  "hp": 0,
+  "solutions": {}
+ },
+ "honigmaschine": {
+  "name": "Honigmaschine",
+  "start": "empty",
+  "active": "",
+  "blocks": [
+   "empty",
+   "filled"
+  ],
+  "hp": 0,
+  "solutions": {}
  }
 }

@@ -1,0 +1,115 @@
+{
+ "intro": [
+  {
+   "left": "maedchen_baer",
+   "right": "",
+   "speaker": "maedchen_baer",
+   "text": "Hogsmeat. Zwischen den Bäumen stehen Häuser – und da oben ist schon der Berg.",
+   "story": true,
+   "voices": [
+    {
+     "id": "hund",
+     "text": "Hogsmeat. Ich rieche Holzrauch, Wildschweine … und Ärger."
+    },
+    {
+     "id": "elisabeth",
+     "text": "Hogsmeat voraus. Hütten im Wald und Berge dahinter – beinahe wie ein Hafen, nur ohne Wasser."
+    }
+   ]
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "frischlinge",
+   "speaker": "frischlinge",
+   "text": "Das ist unser Dorf! Und hier kennen wir jeden Stein. Also fast jeden!",
+   "story": true,
+   "right_expr": "lachend"
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "frischlinge",
+   "speaker": "maedchen_baer",
+   "text": "Ihr Schweinchen! Gebt uns unseren Sack wieder!",
+   "story": true
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "frischlinge",
+   "speaker": "frischlinge",
+   "text": "Ha! Den blauen Wollbeutel seht ihr nie wieder!",
+   "right_expr": "lachend",
+   "story": true
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "frischlinge",
+   "speaker": "maedchen_baer",
+   "text": "Er ist kein Wollbeutel. Er ist unser Freund!",
+   "story": true
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "frischlinge",
+   "speaker": "frischlinge",
+   "text": "Euer Freund? Aber er hat doch Preise auf allem!",
+   "right_expr": "lachend",
+   "story": true
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "frischlinge",
+   "speaker": "frischlinge",
+   "text": "Außerdem ist er längst beim Meister auf dem Berg! … Oh. Das sollten wir nicht verraten.",
+   "story": true
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "frischlinge",
+   "speaker": "maedchen_baer",
+   "text": "Dann gehen wir zum Berg. Brumm, bleib dicht bei mir.",
+   "story": true
+  }
+ ],
+ "outro": [
+  {
+   "left": "maedchen_baer",
+   "right": "",
+   "speaker": "maedchen_baer",
+   "text": "Der Weg durch Hogsmeat ist frei. Seht ihr den Schein dort oben? Das muss der flammende Berg sein.",
+   "story": true,
+   "voices": [
+    {
+     "id": "hund",
+     "text": "Hogsmeat liegt hinter uns. Dort oben leuchtet der Berg. Ggrrr … der Meister ist nicht mehr weit."
+    }
+   ]
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "",
+   "speaker": "maedchen_baer",
+   "text": "Der Sack ist also beim Meister. Dann haben wir noch einen Grund, zum Berg zu gehen.",
+   "story": true
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "",
+   "speaker": "maedchen_baer",
+   "text": "Halt durch, Sack. Wir kommen dich holen.",
+   "story": true,
+   "voices": [
+    {
+     "id": "hund",
+     "text": "Halt durch, Sack. Wir kommen dich holen."
+    }
+   ]
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "",
+   "speaker": "maedchen_baer",
+   "text": "Dann gehen wir weiter. Aber diesmal passen wir besonders gut auf, wohin wir treten.",
+   "story": true
+  }
+ ]
+}

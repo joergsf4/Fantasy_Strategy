@@ -36,6 +36,7 @@ NAMES = {
 ENEMY_POOL = ["soldat_infanterie"] * 4 + ["soldat_beritten"] * 2 + ["soldat_bogenschuetze", "soldat_priester"]
 
 SCALE = 1.0
+ONLY_MISSIONS: list = []      # --missions 18,19,20,21: E17 nur fuer diese Missionen (eigener Bericht)
 WORKERS = max(1, (os.cpu_count() or 4) - 1)
 
 
@@ -631,7 +632,9 @@ def e17_squads():
     prog = json.loads((GAME / "data" / "progression.json").read_text())["missions"]
     units = json.loads((GAME / "data" / "units.json").read_text())
     jm = lambda d: d.get("from", d.get("intro", 9999))
-    missions = [1, 3, 5, 6, 7, 8, 9, 12, 14, 15, 16, 17]      # Missionen, die der Simulator abbilden kann (2, 4, 13 haben Sonderziele)
+    missions = [1, 3, 5, 6, 7, 8, 9, 12, 14, 15, 16, 18]      # Missionen, die der Simulator abbilden kann (2, 4, 13 haben Sonderziele)
+    if ONLY_MISSIONS:
+        missions = ONLY_MISSIONS
     squads_per, fights = 60, 16
     cells, meta = [], {}
     for c in missions:
@@ -706,9 +709,11 @@ def e17_squads():
             else:
                 row.append("")
         L.append(f"| {names[h]} | " + " | ".join(row) + " |")
-    (ROOT / "docs" / "balance_missionsgruppen.md").write_text("\n".join(L) + "\n")
-    save("e17", {"missions": missions})
-    print("docs/balance_missionsgruppen.md geschrieben")
+    doc = "balance_missionsgruppen.md" if not ONLY_MISSIONS else "balance_missionen_%s.md" % "_".join(str(c) for c in missions)
+    (ROOT / "docs" / doc).write_text("\n".join(L) + "\n")
+    if not ONLY_MISSIONS:
+        save("e17", {"missions": missions})
+    print("docs/%s geschrieben" % doc)
 
 
 def e7_fire():
@@ -1220,7 +1225,9 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("steps", nargs="+", choices=list(STEPS))
     ap.add_argument("--scale", type=float, default=1.0, help="Anteil der Kämpfe (0.2 = schneller Probelauf)")
+    ap.add_argument("--missions", default="", help="E17 nur fuer diese Missionen, z. B. 18,19,20,21")
     a = ap.parse_args()
     SCALE = a.scale
+    ONLY_MISSIONS = [int(x) for x in a.missions.split(",") if x.strip()]
     for s in a.steps:
         STEPS[s]()

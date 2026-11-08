@@ -30,6 +30,10 @@ var capture_turns := 3
 var capture_progress := 0
 var capture_squad := 2                     # so viele Helden schickt die Spieler-KI zum Panzer (die uebrigen kaempfen normal)
 var late: Array = []                      # Missions-Spawns nach Runde: {turn, id, team, pos, hp, atk}
+var win_left := -1                         # Sieg, sobald hoechstens so viele Gegner uebrig sind (Ausloeser "enemies_left" mit "win")
+var flee_below: Dictionary = {}            # Missionsfeld "flee_below": {id: Anteil}, Gegner fliehen schon unter diesem Lebensanteil
+var lose_id := ""                          # Missionsfeld "lose_if_fallen": faellt diese Figur, ist die Mission verloren
+var flee_spawns: Array = []               # Verstaerkung nach dem Rueckzug eines besiegten Gegners
 var kids_stung := 0                       # Kapitel 5: Bienen am Waisenhaus
 var retreated: Array = []                 # Gegner, die sich zurueckgezogen haben (Stachelia)
 var bell_rung_turn := -1                  # Kapitel 5: Runde, in der die Glocke geläutet wurde
@@ -387,6 +391,12 @@ func _ab_stat(u: Dictionary, tag: String) -> Dictionary:
 func _kill(by: Dictionary, def: Dictionary, tag: String) -> void:
 	units.erase(def)
 	away.erase(def)
+	if def["team"] == "e" and defs()[def["id"]].get("flees", false):
+		for reinforcement: Dictionary in flee_spawns.duplicate():
+			if reinforcement["flee"] == def["id"]:
+				flee_spawns.erase(reinforcement)
+				var pos := free_tile_near(reinforcement["pos"], {"flying": false})
+				spawn(reinforcement["id"], reinforcement["team"], pos, reinforcement["hp"], reinforcement["atk"])
 	if not by.is_empty():
 		by["st"]["kills"] += 1
 		_ab_stat(by, tag)["kills"] += 1
@@ -402,7 +412,7 @@ func strike(att: Dictionary, def: Dictionary, mult := 1.0, ignore_def := 0.0, tu
 		turn_towards(att, def["pos"])
 		turn_towards(def, att["pos"])
 	_credit(att, def, dmg, tag)
-	if def["hp"] <= 0:
+	if def["hp"] <= 0 or (def["team"] == "e" and def["hp"] <= float(flee_below.get(def["id"], 0.0)) * def["maxhp"]):
 		_kill(att, def, tag)
 	return dmg
 
@@ -702,8 +712,7 @@ func begin_phase(team: String) -> void:
 				u["hp"] -= dmg
 				u["st"]["taken"] += dmg
 				if u["hp"] <= 0:
-					units.erase(u)
-					away.erase(u)
+					_kill({}, u, "")
 					break
 			elif ev["type"] == "expire" and ev["id"] == "polymorph":
 				away.erase(u)
@@ -714,7 +723,7 @@ func begin_phase(team: String) -> void:
 			u["hp"] -= fd
 			u["st"]["taken"] += fd
 			if u["hp"] <= 0:
-				units.erase(u)
+				_kill({}, u, "")
 				continue
 		if units.has(u) and stunned:
 			u["done"] = true
@@ -723,6 +732,8 @@ func begin_phase(team: String) -> void:
 func winner() -> String:
 	var p := 0
 	var e := 0
+	if lose_id != "" and everyone.any(func(x: Dictionary) -> bool: return x["id"] == lose_id) and not units.any(func(x: Dictionary) -> bool: return x["id"] == lose_id):
+		return "e"
 	if capture_id != "" and capture_progress >= capture_turns:
 		return "p"
 	for u in units + away:
@@ -733,6 +744,8 @@ func winner() -> String:
 		else:
 			e += 1
 	if e == 0 and goal_tile.x < 0 and capture_id == "":
+		return "p"
+	if win_left >= 0 and e <= win_left and goal_tile.x < 0 and capture_id == "":
 		return "p"
 	if p == 0:
 		return "e"

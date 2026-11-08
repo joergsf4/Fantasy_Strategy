@@ -10,7 +10,7 @@ Rundenbasiert auf dem Raster. Pro Runde zieht erst der Spieler mit all seinen Fi
 ## Schaden (immer vorhersehbar, kein Zufall)
 `Angriff × Fähigkeitsfaktor × (1 + Positionsbonus) − Verteidigung − Deckung`, mindestens 1.
 - Magie zählt gegen **RES**, Körperangriffe gegen **DEF**.
-- **Rücken +30 %**, **Flanke +15 %** (die Blickrichtung zeigt der kleine Pfeil auf dem Ring der Figur).
+- **Rücken +30 %**, **Flanke +15 %** (die Blickrichtung zeigt der kleine Pfeil auf dem Ring der Figur; beim Auswählen eines Helden färben sich die Bewegungsfelder rot-orange, von denen aus er einen Gegner im Rücken trifft, und orange für die Flanke; im Schnee deckender, `Battle._side_from`).
   Eine Figur blickt in die Richtung ihrer letzten Bewegung bzw. ihres letzten Angriffs.
 - **Höhe +15 %**, wenn der Angreifer deutlich höher steht (Hügel, Berg).
 - **Deckung**: Wald +1, Dorf +1, Berg +2, Burg +2.
@@ -47,7 +47,7 @@ Jede Fähigkeit hat eine Abklingzeit in Runden (steht im Menü, z. B. „Todeswi
 | Muskelaugust | Wurf | Gegner 4 Felder in zufällige Richtung, benommen | 4 |
 | Robo | Roter Laser | Reichweite 2–4, ×1,8, ignoriert 50 % DEF | 3 |
 | | Grüner Laser | heilt 12, entfernt Gift, Reichweite 1–3 | 2 |
-| Blauer Hundsfreund | Knochenwurf | Reichweite 1–2, 3 × ×0,5 | 2 |
+| Blauer Hundsfreund | Knochenwurf | Reichweite 1–2, 3 × ×0,75, ignoriert 50 % Verteidigung | 2 |
 | Wendy Wolle | Heilen | 8 HP, entfernt Gift (Aktion „Heilen“, ohne Abklingzeit) | – |
 | | Gruppenheilung | Umkreis 1 um ein Ziel, 6 HP, entfernt Gift | 3 |
 | Claude | Polymorph | normale Einheit 3 Runden aus dem Spiel | 5 |
@@ -64,6 +64,8 @@ Daten: `game/data/items.json`, Regeln: `game/scripts/items.gd` (gemeinsam für S
 
 ### Ausrüstung
 Drei Plätze: **Waffe, Rüstung, Talisman**. Pro Platz zählt ein Stück. Die Werte gelten ab Kampfbeginn und stehen auf der Figurenkarte.
+
+Im Lager füllt **Automatisch ausrüsten** freie Plätze der aktuellen Gruppe aus dem Vorrat. Bereits angelegte Gegenstände bleiben erhalten. Die Auswahl berücksichtigt Tragevoraussetzungen, Rollen, Werte und Fähigkeiten; sie ist ein Vorschlag und lässt sich anschließend manuell ändern.
 
 | Stück | Platz | Wirkung |
 |---|---|---|
@@ -101,9 +103,9 @@ Im Kampf: Menü **Gegenstand** neben **Angriff / Fähigkeit / Warten**. Nicht be
 ## Beute, Lager und Händler (Stand: Phase 2 und 3)
 
 - **Quellen (alle fest, kein Zufall):** Truhen („Truhe öffnen“) und Dörfer („Dorf besuchen“) auf der Karte kosten die Aktion und gehen einmal; Gegner mit Beutesack über dem Kopf geben ihren Gegenstand beim Besiegen; Kapitelbelohnung und Bonusziele (Kein Held fällt, schnell gewonnen) nach dem Sieg.
-- **Gold** nur aus diesen Quellen. Zutaten: Kraut, Hopfen, Kristall.
-- **Lager** nach jedem Kapitel (`game/scripts/camp.gd`): **Händler** (lebender Wollsack „Sack“, fester Vorrat pro Kapitel, `data/shop.json`; Preise noch Platzhalter bis zum Balancing-Lauf E5), **Brauen** (`data/recipes.json`: Brunhilde braut Bier, Wendy Heiltrank und Gegengift, Claude Äther), **Ausrüstung**, **Aufstellung**.
-- **Speichern:** `user://save.json` (Gold, Rucksack, Zutaten, Ausrüstung, Vorrat des Händlers).
+- **Gold** nur aus diesen Quellen.
+- **Lager** nach jedem Kapitel (`game/scripts/camp.gd`): **Händler** (lebender Wollsack „Sack“, fester Vorrat pro Kapitel, `data/shop.json`; Preise noch Platzhalter bis zum Balancing-Lauf E5), **Ausrüstung**, **Aufstellung**.
+- **Speichern:** `user://save.json` (Gold, Rucksack, Ausrüstung, Vorrat des Händlers).
 
 
 ## Warten (wachsam) und Verteidigen

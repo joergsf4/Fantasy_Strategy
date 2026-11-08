@@ -1,0 +1,27 @@
+{
+ "id": "ch21",
+ "title": "Die Rechnung der Xiùlán",
+ "map": "res://data/map_ch21.json",
+ "squad_from": "ch20",
+ "squad_resize": true,
+ "select_before_intro": true,
+ "briefing": "In der Aschelandschaft vor dem Berg stellen Oskar und Maja die Söldnerin Xiùlán. Nach Oskars überstürztem Rückzug schickt Maja ihre Soldaten. Mira und die Kage-Schwestern greifen mit zwei gewählten Gefährten ein; Xiùlán kämpft diesmal an ihrer Seite.",
+ "goals": [
+  {
+   "type": "rout"
+  }
+ ],
+ "triggers": [],
+ "flee": {
+  "maja": [
+   {
+    "left": "maedchen_baer",
+    "right": "maja",
+    "speaker": "maja",
+    "right_expr": "wuetend",
+    "text": "Das ist noch nicht vorbei! Oskar, wart auf mich!",
+    "story": true
+   }
+  ]
+ }
+}

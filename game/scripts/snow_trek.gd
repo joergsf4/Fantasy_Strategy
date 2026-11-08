@@ -12,6 +12,7 @@ const SINK := 0.34                             # so tief stecken die Figuren im 
 const WIND := Vector3(-1.0, -0.10, 0.28)       # Richtung der Schneeflocken (von rechts hinten nach links vorn)
 
 var duration := 16.0
+var cam_ang := Vector2(-0.18, 0.62)     # Kamerawinkel um die Gruppe am Anfang und am Ende der Fahrt (Bogenmass)
 var kicker := ""
 var title := "Der Pass im Schneesturm"
 var party_ids: Array = PARTY.duplicate()       # wer mitlaeuft (Standard: feste Liste, im Spiel die gewaehlte Truppe)
@@ -454,7 +455,7 @@ func _step(delta: float) -> void:
 	var k := clampf(_t / duration, 0.0, 1.0)
 	var mid_x := lead_x - 2.2
 	var side := lerpf(9.0, 7.0, smoothstep(0.0, 0.5, k))
-	var ang := lerpf(-0.18, 0.62, smoothstep(0.25, 0.9, k))      # Winkel um die Gruppe
+	var ang := lerpf(cam_ang.x, cam_ang.y, smoothstep(0.25, 0.9, k))      # Winkel um die Gruppe
 	var cx := mid_x + sin(ang) * side * 1.5
 	var cz := cos(ang) * side
 	var cy := _height(cx, cz) + lerpf(0.7, 1.05, k)

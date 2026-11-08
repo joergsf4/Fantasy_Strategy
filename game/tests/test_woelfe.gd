@@ -1,6 +1,6 @@
 extends SceneTree
 ## godot --headless --path game --script tests/test_woelfe.gd
-## Mission 17 (Schnee, Woelfe): Angst bei allen Woelfen schickt das Rudel weg und der Alphawolf schliesst sich an; faellt vorher ein Wolf, bleibt der Kampf normal.
+## Mission 18 (Schnee, Woelfe): Angst bei allen Woelfen schickt das Rudel weg und der Alphawolf schliesst sich an; faellt vorher ein Wolf, bleibt der Kampf normal.
 ## Geheimnis Klebekanone: Kanone neben Stachelias Bienenkorb klebt Gegner im Umkreis 2 Runden fest.
 
 var fails := 0
@@ -26,9 +26,9 @@ func _make(defs: Dictionary, mission: Dictionary) -> Battle:
 func _initialize() -> void:
 	Engine.time_scale = 10.0
 	var defs: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/units.json"))
-	var m := Mission.load_mission("ch17")
+	var m := Mission.load_mission("ch18")
 	check(m.get("biome", "") == "schnee" and m.get("mood", "") == "nacht_schnee", "Schnee-Biom, Nacht mit Schneefall")
-	for id: String in Mission.dialogue_ids("ch17"):
+	for id: String in Mission.dialogue_ids("ch18"):
 		check(defs.has(id), "Sprecher %s existiert" % id)
 	for id in ["alphawolf", "alphawolf_lachend", "alphawolf_wuetend"]:
 		check(ResourceLoader.exists("res://assets/portraits/%s.png" % id), "Portrait %s" % id)
@@ -36,7 +36,7 @@ func _initialize() -> void:
 		check(ResourceLoader.exists("res://assets/fx/%s.png" % id), "Sprite %s" % id)
 	check(ResourceLoader.exists("res://assets/tokens/wolf.png") and ResourceLoader.exists("res://assets/tokens/alphawolf.png"), "Karten-Figuren Wolf und Alphawolf")
 	# Alphawolf: nur waehlbar, wenn gewonnen
-	check(not Party.roster(defs, 18, true).has("alphawolf") and Party.roster(defs, 18, true, ["alphawolf"]).has("alphawolf"), "Alphawolf nur waehlbar, wenn er sich angeschlossen hat")
+	check(not Party.roster(defs, 19, true).has("alphawolf") and Party.roster(defs, 19, true, ["alphawolf"]).has("alphawolf"), "Alphawolf nur waehlbar, wenn er sich angeschlossen hat")
 	check((defs["alphawolf"]["abilities"] as Array).size() == 2, "Alphawolf hat zwei Faehigkeiten")
 	# --- Friedlicher Weg: alle Woelfe erschrecken
 	var b := _make(defs, m)
@@ -74,7 +74,7 @@ func _initialize() -> void:
 	check((res["recruited"] as Array).has("alphawolf") and res["objectives"][1]["done"] == true, "Ergebnis: rekrutiert, Bonus friedlich")
 	var q := Party.new_game()
 	q.absorb(res)
-	check(q.recruited.has("alphawolf") and Party.roster(defs, 18, true, q.recruited).has("alphawolf") and Party.from_dict(q.to_dict()).recruited.has("alphawolf"), "Rekrutierung wird verbucht und gespeichert")
+	check(q.recruited.has("alphawolf") and Party.roster(defs, 19, true, q.recruited).has("alphawolf") and Party.from_dict(q.to_dict()).recruited.has("alphawolf"), "Rekrutierung wird verbucht und gespeichert")
 	# --- Normaler Weg: ein Wolf faellt, danach geht es nicht mehr friedlich
 	said.clear()
 	var b2 := _make(defs, m)
