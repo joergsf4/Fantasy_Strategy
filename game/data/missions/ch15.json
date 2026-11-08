@@ -46,7 +46,7 @@
        "left": "hund",
        "right": "frischlinge",
        "speaker": "frischlinge",
-       "text": "Der Boss ist stärker als je zuvor! Jetzt kriegt ihr's!",
+       "text": "Papa ist stärker als je zuvor! Jetzt kriegt ihr's!",
        "right_expr": "lachend",
        "story": true
       },
@@ -131,7 +131,8 @@
        "left": "ritter",
        "right": "",
        "speaker": "ritter",
-       "text": "Mein Harnisch quietscht im Schlamm. Das ist keine Rüstung mehr, das ist eine Schlammpackung."
+       "text": "Mein Harnisch quietscht im Schlamm. Das ist keine Rüstung mehr, das ist eine Schlammpackung.",
+       "left_expr": "wuetend"
       }
      ]
     }
@@ -223,7 +224,8 @@
        "left": "elisabeth",
        "right": "",
        "speaker": "elisabeth",
-       "text": "Dreckwasser, Gestank und Nebel. Ich liebe es. Nur das Salz fehlt."
+       "text": "Dreckwasser, Gestank und Nebel. Ich liebe es. Nur das Salz fehlt.",
+       "left_expr": "lachend"
       }
      ]
     }
@@ -246,7 +248,8 @@
        "left": "museklaugust",
        "right": "",
        "speaker": "museklaugust",
-       "text": "Ich weigere mich zu waten. Tragt mich! Kurfürsten waten nicht!"
+       "text": "Ich weigere mich zu waten. Tragt mich! Kurfürsten waten nicht!",
+       "left_expr": "wuetend"
       }
      ]
     }
@@ -269,7 +272,8 @@
        "left": "robo",
        "right": "",
        "speaker": "robo",
-       "text": "Methangehalt: bedenklich. Ich schlage vor, niemand zündet etwas an. Ich schaue Elisabeth an."
+       "text": "Methangehalt: bedenklich. Ich schlage vor, niemand zündet etwas an. Ich schaue Elisabeth an.",
+       "left_expr": "lachend"
       }
      ]
     }
@@ -315,7 +319,8 @@
        "left": "braumeisterin",
        "right": "",
        "speaker": "braumeisterin",
-       "text": "Moorgeruch und Bierduft. Man gewöhnt sich an beides."
+       "text": "Moorgeruch und Bierduft. Man gewöhnt sich an beides.",
+       "left_expr": "lachend"
       }
      ]
     }
@@ -361,7 +366,8 @@
        "left": "quacksalber",
        "right": "",
        "speaker": "quacksalber",
-       "text": "Sumpfgas! Das ist gesund. Behaupte ich. Vorsichtshalber atme ich nicht ein."
+       "text": "Sumpfgas! Das ist gesund. Behaupte ich. Vorsichtshalber atme ich nicht ein.",
+       "left_expr": "lachend"
       }
      ]
     }

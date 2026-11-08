@@ -19,7 +19,8 @@
      "text": "Rauch am Horizont. Mühlbach brennt. Der Weg des Kriegers führt heute durchs Wasser."
     }
    ],
-   "story": true
+   "story": true,
+   "left_expr": "wuetend"
   },
   {
    "left": "maedchen_baer",
@@ -49,7 +50,8 @@
    "right": "",
    "speaker": "quacksalber",
    "text": "Halt, halt! Das ist meine Praxis dort hinten, Dr. Humbugs äußerst seriöse Heilanstalt! Wer hat das Dorf angezündet?",
-   "story": true
+   "story": true,
+   "left_expr": "wuetend"
   },
   {
    "left": "quacksalber",
@@ -111,7 +113,8 @@
    "right": "maedchen_baer",
    "speaker": "quacksalber",
    "text": "Praxis hin oder her: Ich komme mit. Wundersalbe wirkt im Feld am besten, und die Nebenwirkungen sind überschaubar.",
-   "story": true
+   "story": true,
+   "left_expr": "lachend"
   }
  ]
 }

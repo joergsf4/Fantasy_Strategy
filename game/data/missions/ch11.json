@@ -74,7 +74,8 @@
        "right": "maja",
        "speaker": "maja",
        "text": "Nicht nur für uns. Der Meister wird sehr zufrieden sein.",
-       "story": true
+       "story": true,
+       "right_expr": "lachend"
       },
       {
        "left": "bienenmaedchen",

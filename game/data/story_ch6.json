@@ -39,7 +39,8 @@
      "id": "elisabeth",
      "text": "Immer. Meistens. Fast."
     }
-   ]
+   ],
+   "right_expr": "lachend"
   },
   {
    "left": "maedchen_baer",
@@ -114,7 +115,8 @@
      "text": "Dann bitte nur über die Reling, und auf der windabgewandten Seite. Und der Eimer steht dort, der ist am Ende immer ruhig.",
      "expr": "lachend"
     }
-   ]
+   ],
+   "right_expr": "lachend"
   },
   {
    "left": "hund",

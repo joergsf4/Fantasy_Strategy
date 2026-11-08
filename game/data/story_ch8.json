@@ -46,7 +46,8 @@
    "right": "maedchen_baer",
    "speaker": "maedchen_baer",
    "text": "Xiùlán. Die Alte mit dem Gebiss.",
-   "story": true
+   "story": true,
+   "right_expr": "wuetend"
   }
  ],
  "outro": [
@@ -70,14 +71,16 @@
    "right": "panzer",
    "speaker": "robo",
    "text": "Du fährst jetzt mit uns?",
-   "story": true
+   "story": true,
+   "left_expr": "lachend"
   },
   {
    "left": "robo",
    "right": "panzer",
    "speaker": "panzer",
    "text": "Es wird Zeit, dem Regenten mal eine Kanone zu zeigen.",
-   "story": true
+   "story": true,
+   "right_expr": "lachend"
   },
   {
    "left": "maedchen_baer",
@@ -90,7 +93,8 @@
      "id": "ritter",
      "text": "Willkommen, Robina. Darf ein alter Ritter auf Euch mitfahren?"
     }
-   ]
+   ],
+   "left_expr": "lachend"
   },
   {
    "left": "maedchen_baer",

@@ -15,7 +15,8 @@
      "id": "elisabeth",
      "text": "Land in Sicht! Na ja, Hütte in Sicht. Das ist fast dasselbe."
     }
-   ]
+   ],
+   "left_expr": "lachend"
   },
   {
    "left": "hund",
@@ -29,7 +30,8 @@
    "right": "",
    "speaker": "maedchen_baer",
    "text": "Brumm, du klopfst.",
-   "story": true
+   "story": true,
+   "left_expr": "lachend"
   }
  ],
  "outro": [
@@ -68,7 +70,8 @@
    "right": "fuerst_lumpen",
    "speaker": "hund",
    "text": "Ggrrr … blau, was?",
-   "story": true
+   "story": true,
+   "left_expr": "wuetend"
   },
   {
    "left": "hund",
@@ -83,7 +86,8 @@
    "right": "fuerst_lumpen",
    "speaker": "maedchen_baer",
    "text": "Du willst uns etwas verkaufen? Du? Der Regent, der uns die ganze Zeit Büttel hinterhergeschickt hat?",
-   "story": true
+   "story": true,
+   "left_expr": "wuetend"
   },
   {
    "left": "maedchen_baer",
@@ -129,7 +133,8 @@
      "id": "elisabeth",
      "text": "Auf dem Weg liegt Hogsmeat, das Dorf der Wildschweine. Na wunderbar. Ich hoffe, sie haben nichts gegen Besuch."
     }
-   ]
+   ],
+   "left_expr": "lachend"
   },
   {
    "left": "maedchen_baer",
@@ -142,7 +147,7 @@
    "left": "maedchen_baer",
    "right": "fuerst_lumpen",
    "speaker": "fuerst_lumpen",
-   "text": "Wenn ihr da wirklich durchwollt, solltet ihr euch gut ausrüsten. Ich hätte da zufällig eine Truhe voller Waren …",
+   "text": "Wenn ihr da wirklich durchwollt, rüstet euch gut aus. Ihr wisst ja, wo meine Truhe steht.",
    "story": true
   }
  ]

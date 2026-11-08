@@ -128,14 +128,16 @@
        "right": "sack_boss",
        "speaker": "maedchen_baer",
        "text": "Du? Die ganze Zeit? Du hast uns Heiltränke verkauft!",
-       "story": true
+       "story": true,
+       "left_expr": "wuetend"
       },
       {
        "left": "maedchen_baer",
        "right": "sack_boss",
        "speaker": "sack_boss",
        "text": "Und ihr habt bezahlt. Ihr sucht den Meister? Hier sitzt er.",
-       "story": true
+       "story": true,
+       "right_expr": "lachend"
       },
       {
        "left": "maedchen_baer",
@@ -258,7 +260,8 @@
        "left": "hund",
        "right": "",
        "speaker": "hund",
-       "text": "Der Regent hat was von einem blauen Pelz gefaselt. Und ich dachte die ganze Zeit, er meint mich."
+       "text": "Der Regent hat was von einem blauen Pelz gefaselt. Und ich dachte die ganze Zeit, er meint mich.",
+       "left_expr": "lachend"
       }
      ]
     }
@@ -304,7 +307,8 @@
        "left": "elisabeth",
        "right": "",
        "speaker": "elisabeth",
-       "text": "Ein roter Teppich! Endlich empfängt man mich standesgemäß."
+       "text": "Ein roter Teppich! Endlich empfängt man mich standesgemäß.",
+       "left_expr": "lachend"
       }
      ]
     }
@@ -373,7 +377,8 @@
        "left": "braumeisterin",
        "right": "",
        "speaker": "braumeisterin",
-       "text": "Wer hier gewinnt, gibt die erste Runde aus."
+       "text": "Wer hier gewinnt, gibt die erste Runde aus.",
+       "left_expr": "lachend"
       }
      ]
     }

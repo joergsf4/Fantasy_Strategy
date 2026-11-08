@@ -576,7 +576,7 @@
  },
  "wollmantel": {
   "name": "Wollmantel",
-  "text": "Wirft einen Wollmantel auf einen Verbündeten: 2 Runden nur halber Schaden.",
+  "text": "Wirft einen Wollmantel auf einen Verbündeten: 3 Runden nur halber Schaden.",
   "cd": 3,
   "target": "ally",
   "range": [
@@ -587,7 +587,7 @@
    {
     "type": "status",
     "id": "schild",
-    "turns": 2
+    "turns": 3
    }
   ],
   "caps": [

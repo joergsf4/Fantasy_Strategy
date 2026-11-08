@@ -35,7 +35,8 @@
      "text": "Mäh, das Baby schläft. Ich glaube, es hat uns gewinnen lassen.",
      "expr": "lachend"
     }
-   ]
+   ],
+   "left_expr": "lachend"
   },
   {
    "left": "",

@@ -11,7 +11,8 @@
      "id": "ritter",
      "text": "Der Sack! Gestohlen von Wildschweinen! Beim Barte meines Vaters!"
     }
-   ]
+   ],
+   "left_expr": "wuetend"
   },
   {
    "left": "maedchen_baer",
@@ -37,7 +38,7 @@
    "left": "maedchen_baer",
    "right": "",
    "speaker": "maedchen_baer",
-   "text": "Und wer bezahlt jetzt die Heiltränke?",
+   "text": "Und wer verkauft uns jetzt Heiltränke?",
    "voices": [
     {
      "id": "elisabeth",
@@ -54,7 +55,8 @@
    "right": "",
    "speaker": "maedchen_baer",
    "text": "Wir holen ihn zurück. Er gehört zu uns. Aber erst müssen wir da hinauf.",
-   "story": true
+   "story": true,
+   "left_expr": "wuetend"
   },
   {
    "left": "maedchen_baer",

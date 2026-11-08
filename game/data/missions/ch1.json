@@ -67,7 +67,8 @@
        "right": "wendy",
        "speaker": "ritter",
        "text": "Drei auf einen Streich! Das war meisterhaft, Wendy.",
-       "right_expr": "lachend"
+       "right_expr": "lachend",
+       "left_expr": "lachend"
       },
       {
        "left": "ritter",
@@ -125,7 +126,8 @@
        "left": "$hero",
        "right": "ritter",
        "speaker": "$hero",
-       "text": "Einer weniger! Das war leichter, als es aussah."
+       "text": "Einer weniger! Das war leichter, als es aussah.",
+       "left_expr": "lachend"
       },
       {
        "left": "$hero",
@@ -200,7 +202,8 @@
        "left": "elisabeth",
        "right": "",
        "speaker": "elisabeth",
-       "text": "Ein Dorf ohne Hafen. Wo soll ich hier meine Kanone festmachen? Egal, ich improvisiere."
+       "text": "Ein Dorf ohne Hafen. Wo soll ich hier meine Kanone festmachen? Egal, ich improvisiere.",
+       "left_expr": "lachend"
       }
      ]
     }
@@ -223,7 +226,8 @@
        "left": "braumeisterin",
        "right": "",
        "speaker": "braumeisterin",
-       "text": "Steuern aufs Bier? Das ist keine Politik mehr, das ist ein Verbrechen."
+       "text": "Steuern aufs Bier? Das ist keine Politik mehr, das ist ein Verbrechen.",
+       "left_expr": "wuetend"
       }
      ]
     }

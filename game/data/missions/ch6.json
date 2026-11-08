@@ -154,7 +154,8 @@
          "id": "elisabeth",
          "text": "Dann hast du dich in der Größe vertan. Mein Schiff hat die größeren Kanonen."
         }
-       ]
+       ],
+       "left_expr": "lachend"
       }
      ]
     },
@@ -309,7 +310,8 @@
        "left": "museklaugust",
        "right": "",
        "speaker": "museklaugust",
-       "text": "Ein Hafen! Ich erkläre ihn zu meinem Hafen. Und die Möwen zu meinen Untertanen."
+       "text": "Ein Hafen! Ich erkläre ihn zu meinem Hafen. Und die Möwen zu meinen Untertanen.",
+       "left_expr": "lachend"
       }
      ]
     }
@@ -355,7 +357,8 @@
        "left": "braumeisterin",
        "right": "",
        "speaker": "braumeisterin",
-       "text": "Hafenkneipe ahoi! Ich suche nur schnell die gute Seite des Stegs. Die mit dem Fass."
+       "text": "Hafenkneipe ahoi! Ich suche nur schnell die gute Seite des Stegs. Die mit dem Fass.",
+       "left_expr": "lachend"
       }
      ]
     }
@@ -378,7 +381,8 @@
        "left": "quacksalber",
        "right": "",
        "speaker": "quacksalber",
-       "text": "Seekrank? Mein Elixier hilft! Nebenwirkung: Man hält sich für einen Fisch. Das erleichtert das Schwimmen."
+       "text": "Seekrank? Mein Elixier hilft! Nebenwirkung: Man hält sich für einen Fisch. Das erleichtert das Schwimmen.",
+       "left_expr": "lachend"
       }
      ]
     }
@@ -400,7 +404,8 @@
     "right": "wart",
     "speaker": "$hero",
     "text": "Er schwimmt davon. Hoffentlich nicht zu unserem Schiff.",
-    "story": true
+    "story": true,
+    "left_expr": "lachend"
    },
    {
     "left": "$hero",

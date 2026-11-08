@@ -189,8 +189,8 @@ static func best_action_at(b: SimBattle, u: Dictionary, t: Vector2i, targets: Ar
 			best_s = s
 			best = {"kind": "attack", "target": e}
 	if u["heal"] > 0:
-		for a in friends:
-			if not Combat.in_range(u, Grid.dist(t, a["pos"])):
+		for a in friends + [u]:      # Heiler heilen auch sich selbst
+			if a != u and not Combat.in_range(u, Grid.dist(t, a["pos"])):
 				continue
 			var missing: int = a["maxhp"] - a["hp"]
 			var poisoned := Status.has(a, "poison")

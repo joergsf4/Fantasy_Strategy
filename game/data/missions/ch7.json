@@ -32,7 +32,8 @@
        "left": "magical_girl",
        "right": "maedchen_baer",
        "speaker": "maedchen_baer",
-       "text": "Das klingt nach einer Menge Glitzer."
+       "text": "Das klingt nach einer Menge Glitzer.",
+       "right_expr": "lachend"
       }
      ]
     }
@@ -97,7 +98,8 @@
        "left": "quacksalber",
        "right": "elisabeth",
        "speaker": "elisabeth",
-       "text": "Das Zeug riecht wie 10 Monate alter Fisch."
+       "text": "Das Zeug riecht wie 10 Monate alter Fisch.",
+       "right_expr": "wuetend"
       }
      ]
     }
@@ -130,7 +132,8 @@
        "left": "elisabeth",
        "right": "oskar",
        "speaker": "elisabeth",
-       "text": "Käpt'n Elisabeth hat noch nie vor einem Schönling gekniet."
+       "text": "Käpt'n Elisabeth hat noch nie vor einem Schönling gekniet.",
+       "left_expr": "wuetend"
       }
      ]
     }
@@ -239,7 +242,8 @@
        "left": "hund",
        "right": "",
        "speaker": "hund",
-       "text": "Festes Land! Und kein Schwanken mehr. Ich küsse den Sand."
+       "text": "Festes Land! Und kein Schwanken mehr. Ich küsse den Sand.",
+       "left_expr": "lachend"
       },
       {
        "left": "hund",
@@ -268,7 +272,8 @@
        "left": "ritter",
        "right": "",
        "speaker": "ritter",
-       "text": "Sand im Helm, Sand im Stiefel, Sand in der Ehre. Ich bin untröstlich."
+       "text": "Sand im Helm, Sand im Stiefel, Sand in der Ehre. Ich bin untröstlich.",
+       "left_expr": "wuetend"
       }
      ]
     }
@@ -383,7 +388,8 @@
        "left": "robo",
        "right": "",
        "speaker": "robo",
-       "text": "Sand im Gelenk: 4,2 Kilo. Ich klinge wie ein Rasselspieler. Ich bin kein Rasselspieler."
+       "text": "Sand im Gelenk: 4,2 Kilo. Ich klinge wie ein Rasselspieler. Ich bin kein Rasselspieler.",
+       "left_expr": "wuetend"
       }
      ]
     }
@@ -406,7 +412,8 @@
        "left": "wendy",
        "right": "",
        "speaker": "wendy",
-       "text": "Mäh… die Sonne brät meine Wolle. Ich bin ein Schafsbraten auf vier Beinen."
+       "text": "Mäh… die Sonne brät meine Wolle. Ich bin ein Schafsbraten auf vier Beinen.",
+       "left_expr": "wuetend"
       }
      ]
     }
@@ -429,7 +436,8 @@
        "left": "braumeisterin",
        "right": "",
        "speaker": "braumeisterin",
-       "text": "Sand und Sonne – ein Fass Bier kühlt keiner im Schatten. Außer meins. Ich habe es vergraben."
+       "text": "Sand und Sonne – ein Fass Bier kühlt keiner im Schatten. Außer meins. Ich habe es vergraben.",
+       "left_expr": "lachend"
       }
      ]
     }

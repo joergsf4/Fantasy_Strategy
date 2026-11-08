@@ -12,7 +12,8 @@
      "text": "Anker werfen! Das ist der Sandhafen. Hier versteckt sich der miese Regent!",
      "expr": "lachend"
     }
-   ]
+   ],
+   "left_expr": "wuetend"
   },
   {
    "left": "magical_girl",
@@ -48,7 +49,8 @@
      "id": "quacksalber",
      "text": "Hallo gnädiges Fräulein! Wer heilt, sollte sich kennen: Ich mit Salbe, du mit Sternen."
     }
-   ]
+   ],
+   "left_expr": "lachend"
   },
   {
    "left": "",
@@ -62,7 +64,8 @@
      "text": "Ich nehme trotzdem zwei Flaschen.",
      "expr": "lachend"
     }
-   ]
+   ],
+   "right_expr": "lachend"
   },
   {
    "left": "maedchen_baer",
@@ -93,7 +96,8 @@
    "right": "",
    "speaker": "magical_girl",
    "text": "Hat jemand gesehen, wie ich geglitzert habe? Bitte sagt ja.",
-   "story": true
+   "story": true,
+   "left_expr": "lachend"
   },
   {
    "left": "magical_girl",
@@ -107,7 +111,8 @@
      "text": "Ich heile immer. Ob es hilft, ist eine andere Frage.",
      "expr": "lachend"
     }
-   ]
+   ],
+   "right_expr": "lachend"
   },
   {
    "left": "maedchen_baer",

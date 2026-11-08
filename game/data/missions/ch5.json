@@ -55,7 +55,8 @@
          "id": "wendy",
          "text": "Mäh, klein seid ihr wirklich. Ich stell mich auf die Zehenspitzen."
         }
-       ]
+       ],
+       "left_expr": "lachend"
       }
      ]
     }
@@ -128,7 +129,8 @@
        "right": "waisenkinder",
        "speaker": "hund",
        "text": "Wer wagt es, meine Kinder zu bedrohen? Ich bin gleich da!",
-       "story": true
+       "story": true,
+       "left_expr": "wuetend"
       },
       {
        "left": "hund",
@@ -185,7 +187,8 @@
        "right": "bienenmaedchen",
        "speaker": "maedchen_baer",
        "text": "Das sind Kinder!",
-       "story": true
+       "story": true,
+       "left_expr": "wuetend"
       },
       {
        "left": "maedchen_baer",
@@ -213,7 +216,8 @@
        "left": "elisabeth",
        "right": "bienenmaedchen",
        "speaker": "elisabeth",
-       "text": "Ein Stock weniger! Käpt'n Elisabeth lässt keine Honigdiebe an Bord."
+       "text": "Ein Stock weniger! Käpt'n Elisabeth lässt keine Honigdiebe an Bord.",
+       "left_expr": "lachend"
       },
       {
        "left": "elisabeth",
@@ -353,7 +357,8 @@
        "left": "museklaugust",
        "right": "",
        "speaker": "museklaugust",
-       "text": "Kinder retten! Das sieht gut aus auf einem Gemälde. Vorher bitte meine Frisur richten."
+       "text": "Kinder retten! Das sieht gut aus auf einem Gemälde. Vorher bitte meine Frisur richten.",
+       "left_expr": "lachend"
       }
      ]
     }
@@ -376,7 +381,8 @@
        "left": "robo",
        "right": "",
        "speaker": "robo",
-       "text": "Bienen: ungefähr 340. Meine Verteidigung gegen Stiche: Blech. Ich fühle mich überlegen."
+       "text": "Bienen: ungefähr 340. Meine Verteidigung gegen Stiche: Blech. Ich fühle mich überlegen.",
+       "left_expr": "lachend"
       }
      ]
     }
@@ -399,7 +405,8 @@
        "left": "braumeisterin",
        "right": "",
        "speaker": "braumeisterin",
-       "text": "Honig? Daraus macht man Met! Ich sage nur: Geschäftsidee. Nach der Schlacht."
+       "text": "Honig? Daraus macht man Met! Ich sage nur: Geschäftsidee. Nach der Schlacht.",
+       "left_expr": "lachend"
       }
      ]
     }
@@ -422,7 +429,8 @@
        "left": "quacksalber",
        "right": "",
        "speaker": "quacksalber",
-       "text": "Bienenstiche behandle ich mit Wundersalbe. Gegen die Bienen. Oder gegen die Salbe. Eins von beidem hilft."
+       "text": "Bienenstiche behandle ich mit Wundersalbe. Gegen die Bienen. Oder gegen die Salbe. Eins von beidem hilft.",
+       "left_expr": "lachend"
       }
      ]
     }

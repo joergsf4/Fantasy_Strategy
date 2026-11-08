@@ -1356,8 +1356,8 @@ func _heal_targets(u: Dictionary, pos: Vector2i) -> Array[Dictionary]:
 	if u["heal"] <= 0:
 		return out
 	for o in units:
-		if o != u and o["team"] == u["team"] and Combat.in_range(u, Grid.dist(pos, o["pos"])) \
-				and (o["hp"] < o["maxhp"] or Status.has(o, "poison")):
+		if o["team"] == u["team"] and (o == u or Combat.in_range(u, Grid.dist(pos, o["pos"]))) \
+				and (o["hp"] < o["maxhp"] or Status.has(o, "poison")):      # Heiler heilen auch sich selbst
 			out.append(o)
 	return out
 
@@ -3728,7 +3728,8 @@ func _ab_targets(u: Dictionary, id: String, pos: Vector2i) -> Array[Dictionary]:
 	var r: Array = ab["range"]
 	for o in units:
 		var dd := Grid.dist(pos, o["pos"])
-		if dd < r[0] or dd > r[1]:
+		var self_heal: bool = o == u and ab["target"] == "ally" and not _first_effect(ab, "heal").is_empty()      # Heiler heilen auch sich selbst
+		if (dd < r[0] and not self_heal) or dd > r[1]:
 			continue
 		if ab["target"] == "enemy":
 			if o["team"] == u["team"]:
@@ -3751,8 +3752,8 @@ func _ab_targets(u: Dictionary, id: String, pos: Vector2i) -> Array[Dictionary]:
 					continue
 			out.append(o)
 		else:
-			if o["team"] != u["team"] or (o == u and ab["target"] == "ally"):
-				continue
+			if o["team"] != u["team"] or (o == u and ab["target"] == "ally" and _first_effect(ab, "heal").is_empty()):
+				continue      # Heilfaehigkeiten duerfen den Heiler selbst treffen, andere Verbuendeten-Faehigkeiten nicht
 			if ab["target"] == "ally" and not _first_effect(ab, "heal").is_empty() \
 					and not (o["hp"] < o["maxhp"] or Status.has(o, "poison")):
 				continue

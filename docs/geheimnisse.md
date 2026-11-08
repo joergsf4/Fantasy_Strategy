@@ -50,7 +50,7 @@ Der große Auftritt mit Polarlicht-Himmel, vergrößerter Figur und Super-Musik 
 - Code: `Battle._throw_with_rain`, `FxNew.shuriken_rain`. Tests: `tests/test_reflect.gd`, `test_geheimnis_wurf_regen`.
 
 ### Vierter Auslöser-Typ: Reaktion einer Figur in der Nähe (`ability_near_ally`): Woll im Überfluss
-**Woll im Überfluss** (Elisabeth und Wendy): Feuert Elisabeth die **Kanone** ab, während Wendy auf einem **Nachbarfeld** steht, erschrickt Wendy und wirkt **Wollmantel auf alle Verbündeten im Umkreis von 2 Feldern um sich** (sie selbst, Elisabeth und wer sonst dort steht: zwei Runden halber Schaden). Das kostet Wendys normale Abklingzeit (sie muss Wollmantel bereit haben, sonst passiert nichts). Die Kanone trifft wie sonst. Beim ersten Mal Szene (Wolle fliegt durchs Bild) und Polarlicht-Auftritt, danach nur ein „Mäh!“ mit Wollkugeln zu allen im Umkreis.
+**Woll im Überfluss** (Elisabeth und Wendy): Feuert Elisabeth die **Kanone** ab, während Wendy auf einem **Nachbarfeld** steht, erschrickt Wendy und wirkt **Wollmantel auf alle Verbündeten im Umkreis von 2 Feldern um sich** (sie selbst, Elisabeth und wer sonst dort steht: drei Runden halber Schaden). Das kostet Wendys normale Abklingzeit (sie muss Wollmantel bereit haben, sonst passiert nichts). Die Kanone trifft wie sonst. Beim ersten Mal Szene (Wolle fliegt durchs Bild) und Polarlicht-Auftritt, danach nur ein „Mäh!“ mit Wollkugeln zu allen im Umkreis.
 - **Daten:** `trigger: {type: "ability_near_ally", by, ability, near}`, `effects: {react_ability, radius, cutin}`. Die Reaktion nutzt die erste Statuswirkung der Fähigkeit `react_ability` (hier Wollmantel).
 - Code: `Battle._near_reactions`, `_run_near` (am Ende von `_run_ability`). Test: `tests/test_reflect.gd`, `test_geheimnis_reaktion_in_der_naehe`.
 

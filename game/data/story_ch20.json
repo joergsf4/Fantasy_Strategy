@@ -30,7 +30,8 @@
    "right": "frischlinge",
    "speaker": "maedchen_baer",
    "text": "Ihr Schweinchen! Gebt uns unseren Sack wieder!",
-   "story": true
+   "story": true,
+   "left_expr": "wuetend"
   },
   {
    "left": "maedchen_baer",
@@ -45,7 +46,8 @@
    "right": "frischlinge",
    "speaker": "maedchen_baer",
    "text": "Er ist kein Wollbeutel. Er ist unser Freund!",
-   "story": true
+   "story": true,
+   "left_expr": "wuetend"
   },
   {
    "left": "maedchen_baer",
@@ -103,13 +105,6 @@
      "text": "Halt durch, Sack. Wir kommen dich holen."
     }
    ]
-  },
-  {
-   "left": "maedchen_baer",
-   "right": "",
-   "speaker": "maedchen_baer",
-   "text": "Dann gehen wir weiter. Aber diesmal passen wir besonders gut auf, wohin wir treten.",
-   "story": true
   }
  ]
 }

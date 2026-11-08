@@ -18,7 +18,8 @@
    "right": "",
    "speaker": "maedchen_baer",
    "text": "Und ich kenne dieses Summen. Stachelia.",
-   "story": true
+   "story": true,
+   "left_expr": "wuetend"
   },
   {
    "left": "maedchen_baer",
@@ -32,7 +33,8 @@
      "text": "Ein Waisenhaus zu bedrohen. Das ist selbst für dieses Gesindel nicht zu glauben.",
      "expr": "wuetend"
     }
-   ]
+   ],
+   "left_expr": "wuetend"
   },
   {
    "left": "",
@@ -63,14 +65,16 @@
    "right": "maedchen_baer",
    "speaker": "maedchen_baer",
    "text": "Jetzt reicht's. Wir gehen zum Regenten.",
-   "story": true
+   "story": true,
+   "right_expr": "wuetend"
   },
   {
    "left": "hund",
    "right": "maedchen_baer",
    "speaker": "hund",
    "text": "Dann komme ich mit. Die Kinder sind bei der Nachbarin sicher. Der Regent bekommt meine Knochen zu spüren.",
-   "story": true
+   "story": true,
+   "left_expr": "wuetend"
   }
  ]
 }

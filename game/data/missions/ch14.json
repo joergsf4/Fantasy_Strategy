@@ -49,14 +49,16 @@
        "speaker": "hund",
        "text": "Das Dach! Schnell, bevor es einstürzt!",
        "left_expr": "wuetend",
-       "story": true
+       "story": true,
+       "right_expr": "wuetend"
       },
       {
        "left": "maedchen_baer",
        "right": "hund",
        "speaker": "maedchen_baer",
        "text": "Wasser, Bier, egal! Alles drauf!",
-       "story": true
+       "story": true,
+       "left_expr": "wuetend"
       }
      ]
     }
@@ -109,7 +111,8 @@
        "right": "bienenmaedchen",
        "speaker": "maedchen_baer",
        "text": "Stachelia?! Du hilfst uns?",
-       "story": true
+       "story": true,
+       "left_expr": "lachend"
       },
       {
        "left": "maedchen_baer",
@@ -267,7 +270,8 @@
        "left": "ninjas",
        "right": "",
        "speaker": "ninjas",
-       "text": "Wir haben die Hintertür gesichert. – Und die Vordertür. – Und die Katzenklappe."
+       "text": "Wir haben die Hintertür gesichert. – Und die Vordertür. – Und die Katzenklappe.",
+       "left_expr": "lachend"
       }
      ]
     }
@@ -290,7 +294,8 @@
        "left": "elisabeth",
        "right": "",
        "speaker": "elisabeth",
-       "text": "Oskar und Maja mit Fackeln. Ich hätte sie gleich in Mühlbach versenken sollen."
+       "text": "Oskar und Maja mit Fackeln. Ich hätte sie gleich in Mühlbach versenken sollen.",
+       "left_expr": "wuetend"
       }
      ]
     }
@@ -313,7 +318,8 @@
        "left": "museklaugust",
        "right": "",
        "speaker": "museklaugust",
-       "text": "Ich trage Kinder! Zwei pro Arm! Wer will noch? Es ist Training für meinen Bizeps."
+       "text": "Ich trage Kinder! Zwei pro Arm! Wer will noch? Es ist Training für meinen Bizeps.",
+       "left_expr": "lachend"
       }
      ]
     }
@@ -382,7 +388,8 @@
        "left": "braumeisterin",
        "right": "",
        "speaker": "braumeisterin",
-       "text": "Ich habe Feuerlöscher dabei: dreißig Liter Bier. Nein, nicht trinken! Kippen!"
+       "text": "Ich habe Feuerlöscher dabei: dreißig Liter Bier. Nein, nicht trinken! Kippen!",
+       "left_expr": "lachend"
       }
      ]
     }
@@ -405,7 +412,8 @@
        "left": "magical_girl",
        "right": "",
        "speaker": "magical_girl",
-       "text": "Ein Regen aus Sternenstaub! Löscht nichts, sieht aber toll aus."
+       "text": "Ein Regen aus Sternenstaub! Löscht nichts, sieht aber toll aus.",
+       "left_expr": "lachend"
       }
      ]
     }
@@ -428,7 +436,8 @@
        "left": "quacksalber",
        "right": "",
        "speaker": "quacksalber",
-       "text": "Brandsalbe! Auf die Wunde reiben. Oder aufs Haus. Das wirkt vermutlich besser."
+       "text": "Brandsalbe! Auf die Wunde reiben. Oder aufs Haus. Das wirkt vermutlich besser.",
+       "left_expr": "lachend"
       }
      ]
     }
@@ -451,7 +460,8 @@
        "left": "panzer",
        "right": "",
        "speaker": "panzer",
-       "text": "Feuer? Ich bin aus Stahl. Ich stelle mich einfach davor. Hitze: angenehm."
+       "text": "Feuer? Ich bin aus Stahl. Ich stelle mich einfach davor. Hitze: angenehm.",
+       "left_expr": "lachend"
       }
      ]
     }

@@ -157,7 +157,8 @@
        "right": "cyborg_wart",
        "speaker": "maedchen_baer",
        "text": "Du hast sie in Gläser gesteckt, Wart.",
-       "story": true
+       "story": true,
+       "left_expr": "wuetend"
       },
       {
        "left": "maedchen_baer",
@@ -211,7 +212,8 @@
        "left": "elisabeth",
        "right": "",
        "speaker": "elisabeth",
-       "text": "Lauter blinkende Knöpfe. Ich drücke keinen. Fast keinen."
+       "text": "Lauter blinkende Knöpfe. Ich drücke keinen. Fast keinen.",
+       "left_expr": "lachend"
       }
      ]
     }
@@ -257,7 +259,8 @@
        "left": "braumeisterin",
        "right": "",
        "speaker": "braumeisterin",
-       "text": "Wer so viel Glas hat, könnte wenigstens Bier darin brauen."
+       "text": "Wer so viel Glas hat, könnte wenigstens Bier darin brauen.",
+       "left_expr": "lachend"
       }
      ]
     }
@@ -280,7 +283,8 @@
        "left": "magical_girl",
        "right": "",
        "speaker": "magical_girl",
-       "text": "Das blinkt fast so schön wie mein Glitzer. Fast."
+       "text": "Das blinkt fast so schön wie mein Glitzer. Fast.",
+       "left_expr": "lachend"
       }
      ]
     }

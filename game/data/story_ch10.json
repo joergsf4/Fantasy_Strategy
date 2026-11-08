@@ -11,7 +11,8 @@
      "id": "elisabeth",
      "text": "Die Barrikaden am Kai sind weg, und in den Häusern brennt Licht. Ohne die Büttel ist es hier richtig langweilig."
     }
-   ]
+   ],
+   "left_expr": "lachend"
   },
   {
    "left": "",
@@ -76,7 +77,8 @@
    "right": "hund",
    "speaker": "maedchen_baer",
    "text": "Wir kommen mit. Kinder klaut man nicht.",
-   "story": true
+   "story": true,
+   "left_expr": "wuetend"
   }
  ],
  "outro": []

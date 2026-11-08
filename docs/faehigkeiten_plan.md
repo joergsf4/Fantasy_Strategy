@@ -15,7 +15,7 @@ Quelle: `game/data/ability_notes.json` (zweites Feld je Figur). Ziel: jede Fähi
 
 | Figur | Fähigkeit | Wirkung (so umgesetzt) | Neue Technik | Aufwand |
 |---|---|---|---|---|
-| Wendy | **Wollmantel** | Verbündeter (Reichweite 1–3): 2 Runden −50 % erlittener Schaden | Status `schild`, Hook in `Combat.damage` | S |
+| Wendy | **Wollmantel** | Verbündeter (Reichweite 1–3): 3 Runden −50 % erlittener Schaden | Status `schild`, Hook in `Combat.damage` | S |
 | Brumm | **Bärengebrüll** | Ein Gegner (Reichweite 1–2): 2 Runden eingeschüchtert, läuft weg | Status `scared` nutzen, Fluchtlogik in KI | M |
 | Lin | **Stabwirbel** | Alle 8 Nachbarfelder (wie Todeswirbel), ohne Erschöpfung | nur Daten (`ring8`) | S |
 | Elisabeth | **Arrr (Wutanfall)** | Selbst: 2 Runden ×2 Schaden, nicht steuerbar, greift zufällige Ziele an | Status `wut`, Auto-Aktion in der Spielerphase | L |

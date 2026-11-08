@@ -59,7 +59,8 @@
    "right": "maedchen_baer",
    "speaker": "maedchen_baer",
    "text": "Brumm ist trotzdem stolz.",
-   "story": true
+   "story": true,
+   "left_expr": "lachend"
   },
   {
    "left": "maedchen_baer",

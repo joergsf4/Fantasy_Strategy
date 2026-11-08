@@ -20,7 +20,7 @@ const T4_LASER := {"ab": "roter_laser", "u": ["robo", "p", [2, 7]], "t": ["solda
 	"cam": [1.0, 3.2, 5.8], "fov": 38}
 const T4_TALK_WART := [
 	{"left": "ritter", "right": "wart", "speaker": "wart", "right_expr": "lachend", "text": "Na, wen haben wir denn da? Diesmal bin ich nicht allein, ich hab meine Jungs mitgebracht."},
-	{"left": "ritter", "right": "frischlinge", "speaker": "frischlinge", "right_expr": "wuetend", "text": "Chef, dürfen wir sie hauen? Bitte!"},
+	{"left": "ritter", "right": "frischlinge", "speaker": "frischlinge", "right_expr": "wuetend", "text": "Papa, dürfen wir sie hauen? Bitte!"},
 ]
 
 

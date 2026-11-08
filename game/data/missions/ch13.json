@@ -40,7 +40,7 @@
        "right": "kugelblitz",
        "speaker": "kugelblitz",
        "text": "Prof. Kugelblitz, zu Ihren Diensten. Sie werden gleich verstehen, wie sehr man elektrisiert sein kann!",
-       "right_expr": "wuetend",
+       "right_expr": "lachend",
        "story": true
       },
       {
@@ -90,7 +90,8 @@
        "left": "robo",
        "right": "kugelblitz",
        "speaker": "robo",
-       "text": "Puls des Professors: hoch. Frisur: höher."
+       "text": "Puls des Professors: hoch. Frisur: höher.",
+       "left_expr": "lachend"
       }
      ]
     }
@@ -183,7 +184,7 @@
        "left": "hund",
        "right": "frischlinge",
        "speaker": "frischlinge",
-       "text": "Boss!! Du lebst! Jetzt geht es euch an den Kragen!",
+       "text": "Papa!! Du lebst! Jetzt geht es euch an den Kragen!",
        "right_expr": "lachend",
        "story": true
       }
@@ -392,7 +393,8 @@
        "left": "samurai",
        "right": "",
        "speaker": "samurai",
-       "text": "Maschinen ohne Seele. Ich verneige mich nicht. Ich schneide."
+       "text": "Maschinen ohne Seele. Ich verneige mich nicht. Ich schneide.",
+       "left_expr": "wuetend"
       }
      ]
     }
@@ -415,7 +417,8 @@
        "left": "kungfu",
        "right": "",
        "speaker": "kungfu",
-       "text": "Kinder als Batterie. Das ist keine Wissenschaft. Das ist Unhöflichkeit mit Kabeln."
+       "text": "Kinder als Batterie. Das ist keine Wissenschaft. Das ist Unhöflichkeit mit Kabeln.",
+       "left_expr": "wuetend"
       }
      ]
     }
@@ -461,7 +464,8 @@
        "left": "museklaugust",
        "right": "",
        "speaker": "museklaugust",
-       "text": "Eine Maschine! Die will ich haben. Als Thron. Mit Armlehnen."
+       "text": "Eine Maschine! Die will ich haben. Als Thron. Mit Armlehnen.",
+       "left_expr": "lachend"
       }
      ]
     }
@@ -484,7 +488,8 @@
        "left": "wendy",
        "right": "",
        "speaker": "wendy",
-       "text": "Mäh… ich mag keinen Strom. Meine Wolle wird davon so… kraus. Mäh!"
+       "text": "Mäh… ich mag keinen Strom. Meine Wolle wird davon so… kraus. Mäh!",
+       "left_expr": "wuetend"
       }
      ]
     }
@@ -507,7 +512,8 @@
        "left": "braumeisterin",
        "right": "",
        "speaker": "braumeisterin",
-       "text": "Kugelblitz. Der Name klingt nach einem Bier. Leider nach einem schlechten."
+       "text": "Kugelblitz. Der Name klingt nach einem Bier. Leider nach einem schlechten.",
+       "left_expr": "lachend"
       }
      ]
     }
@@ -530,7 +536,8 @@
        "left": "magical_girl",
        "right": "",
        "speaker": "magical_girl",
-       "text": "Das ist doch kein Zauber, das ist nur Strom! Mein Glitzer ist viel hübscher."
+       "text": "Das ist doch kein Zauber, das ist nur Strom! Mein Glitzer ist viel hübscher.",
+       "left_expr": "wuetend"
       }
      ]
     }
@@ -553,7 +560,8 @@
        "left": "quacksalber",
        "right": "",
        "speaker": "quacksalber",
-       "text": "Ein Kollege! Wissenschaftlich, dubios, ein bisschen verrückt. Ich sehe Potenzial. Und Haftungsprobleme."
+       "text": "Ein Kollege! Wissenschaftlich, dubios, ein bisschen verrückt. Ich sehe Potenzial. Und Haftungsprobleme.",
+       "left_expr": "lachend"
       }
      ]
     }
@@ -599,7 +607,7 @@
     "left": "$hero",
     "right": "frischlinge",
     "speaker": "frischlinge",
-    "text": "Der Boss kriegt euch! Der Boss kriegt euch alle!",
+    "text": "Papa kriegt euch! Papa kriegt euch alle!",
     "right_expr": "wuetend",
     "story": true
    }

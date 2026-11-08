@@ -5,7 +5,8 @@
    "right": "waisenkinder",
    "speaker": "maedchen_baer",
    "text": "Die Kinder sind in Sicherheit, und zum ersten Mal seit Tagen scheint wieder die Sonne.",
-   "story": true
+   "story": true,
+   "left_expr": "lachend"
   },
   {
    "left": "maedchen_baer",
@@ -136,7 +137,8 @@
    "right": "hund",
    "speaker": "hund",
    "text": "Garstig wie immer.",
-   "story": true
+   "story": true,
+   "right_expr": "lachend"
   },
   {
    "left": "bienenmaedchen",

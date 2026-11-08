@@ -498,7 +498,8 @@ func ab_targets(u: Dictionary, id: String, pos: Vector2i) -> Array[Dictionary]:
 	var r: Array = ab["range"]
 	for o in units:
 		var dd := Grid.dist(pos, o["pos"])
-		if dd < r[0] or dd > r[1]:
+		var self_heal: bool = o == u and ab["target"] == "ally" and not first_effect(ab, "heal").is_empty()      # Heiler heilen auch sich selbst
+		if (dd < r[0] and not self_heal) or dd > r[1]:
 			continue
 		if ab["target"] == "enemy":
 			if o["team"] == u["team"] or Status.has(o, "stealth") or untouchable(o):
@@ -515,7 +516,7 @@ func ab_targets(u: Dictionary, id: String, pos: Vector2i) -> Array[Dictionary]:
 					continue
 			out.append(o)
 		else:
-			if o["team"] != u["team"] or (o == u and ab["target"] == "ally"):
+			if o["team"] != u["team"] or (o == u and ab["target"] == "ally" and first_effect(ab, "heal").is_empty()):
 				continue
 			if ab["target"] == "ally" and not first_effect(ab, "heal").is_empty() \
 					and not (o["hp"] < o["maxhp"] or Status.has(o, "poison")):

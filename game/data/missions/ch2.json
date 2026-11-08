@@ -256,7 +256,8 @@
        "right": "wart",
        "speaker": "museklaugust",
        "text": "Ein Wildschwein! Ich dachte, die gibt es nur im Eintopf.",
-       "story": true
+       "story": true,
+       "left_expr": "lachend"
       },
       {
        "left": "museklaugust",
@@ -343,7 +344,8 @@
        "left": "wendy",
        "right": "",
        "speaker": "wendy",
-       "text": "Mäh… dieser Hohlweg hallt so schön. MÄÄÄH! …Mäh. Mäh. Mäh. Herrlich."
+       "text": "Mäh… dieser Hohlweg hallt so schön. MÄÄÄH! …Mäh. Mäh. Mäh. Herrlich.",
+       "left_expr": "lachend"
       }
      ]
     }
@@ -388,7 +390,8 @@
     "right": "wart",
     "speaker": "$hero",
     "text": "Er rennt wie ein Ferkel, dem man das Futter wegnimmt.",
-    "story": true
+    "story": true,
+    "left_expr": "lachend"
    },
    {
     "left": "$hero",

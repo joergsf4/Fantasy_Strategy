@@ -28,7 +28,8 @@
    "right": "cyborg_wart",
    "speaker": "maedchen_baer",
    "text": "Wart. Hast du nichts Besseres zu tun?",
-   "story": true
+   "story": true,
+   "left_expr": "wuetend"
   },
   {
    "left": "maedchen_baer",
@@ -43,7 +44,8 @@
    "right": "hund",
    "speaker": "hund",
    "text": "Lass ihn rufen. Wir holen die Zwerge, dann hat er niemanden mehr zum Anschreien.",
-   "story": true
+   "story": true,
+   "right_expr": "lachend"
   }
  ],
  "outro": [

@@ -54,7 +54,8 @@
        "right": "fuerst_lumpen",
        "speaker": "maedchen_baer",
        "text": "Du bist doch der Regent! Du siehst aus wie ein nasser Teppich, den man draußen vergessen hat.",
-       "story": true
+       "story": true,
+       "left_expr": "lachend"
       },
       {
        "left": "maedchen_baer",
@@ -111,7 +112,7 @@
        "left": "frischlinge",
        "right": "fuerst_lumpen",
        "speaker": "frischlinge",
-       "text": "Boss, dürfen wir ihn zuerst hauen? Bitte, bitte, bitte! Er hat gar keine Rüstung mehr!",
+       "text": "Papa, dürfen wir ihn zuerst hauen? Bitte, bitte, bitte! Er hat gar keine Rüstung mehr!",
        "story": true,
        "left_expr": "lachend"
       },

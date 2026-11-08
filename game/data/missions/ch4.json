@@ -201,7 +201,8 @@
          "id": "kungfu",
          "text": "Der Regent hat sie als Geisel genommen. Du bist seine Wache."
         }
-       ]
+       ],
+       "left_expr": "wuetend"
       },
       {
        "left": "",
@@ -255,7 +256,8 @@
          "text": "Mäh, der Kleine hat ja eine Stimme. Die haben sie bis zum Tal gehört.",
          "expr": "lachend"
         }
-       ]
+       ],
+       "left_expr": "lachend"
       },
       {
        "left": "",
@@ -285,7 +287,8 @@
        "left": "ritter",
        "right": "",
        "speaker": "ritter",
-       "text": "Eine Geisel mit Baby. Ritterpflicht ruft! …Und bitte hält jemand dem Kleinen die Ohren zu."
+       "text": "Eine Geisel mit Baby. Ritterpflicht ruft! …Und bitte hält jemand dem Kleinen die Ohren zu.",
+       "left_expr": "lachend"
       }
      ]
     }
@@ -377,7 +380,8 @@
        "left": "museklaugust",
        "right": "",
        "speaker": "museklaugust",
-       "text": "Ein Baby hat mehr Stimme als ein ganzer Hofstaat. Ich bin beeindruckt. Und neidisch."
+       "text": "Ein Baby hat mehr Stimme als ein ganzer Hofstaat. Ich bin beeindruckt. Und neidisch.",
+       "left_expr": "lachend"
       }
      ]
     }
@@ -446,7 +450,8 @@
        "left": "quacksalber",
        "right": "",
        "speaker": "quacksalber",
-       "text": "Für Säuglinge habe ich ein Elixier! Hilft gegen Schreien, Zahnen und Erbschaftssteuer. Wirkung nicht garantiert."
+       "text": "Für Säuglinge habe ich ein Elixier! Hilft gegen Schreien, Zahnen und Erbschaftssteuer. Wirkung nicht garantiert.",
+       "left_expr": "lachend"
       }
      ]
     }
@@ -468,7 +473,8 @@
     "right": "xiulan",
     "speaker": "$hero",
     "text": "Eine Großmutter mit Gebiss-Geschoss. Das erzähle ich keinem.",
-    "story": true
+    "story": true,
+    "left_expr": "lachend"
    },
    {
     "left": "$hero",

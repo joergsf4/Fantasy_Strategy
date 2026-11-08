@@ -59,7 +59,8 @@
          "text": "Du hast deine kleinen Ferkel in eine Schlacht mitgebracht?",
          "expr": "wuetend"
         }
-       ]
+       ],
+       "left_expr": "lachend"
       },
       {
        "left": "",
@@ -112,7 +113,7 @@
        "left": "ritter",
        "right": "wart",
        "speaker": "wart",
-       "text": "Ich kämpfe bis zum Ende! Es gibt größere Schrecken als eure Klingen, die mich sonst erwarten.",
+       "text": "Ich kämpfe bis zum Ende! Was mich erwartet, wenn ich verliere, ist schlimmer als eure Klingen.",
        "right_expr": "wuetend"
       }
      ]
@@ -168,7 +169,8 @@
          "text": "Das ist ja wie bei Shakespeare.",
          "expr": "lachend"
         }
-       ]
+       ],
+       "left_expr": "lachend"
       },
       {
        "left": "maedchen_baer",
@@ -259,7 +261,8 @@
        "right": "fuerst",
        "speaker": "maedchen_baer",
        "text": "Du bist der Regent? Du siehst aus wie ein nasser Teppich.",
-       "story": true
+       "story": true,
+       "left_expr": "lachend"
       },
       {
        "left": "maedchen_baer",
@@ -352,7 +355,8 @@
        "left": "kungfu",
        "right": "",
        "speaker": "kungfu",
-       "text": "Wer hoch steigt, fällt tief. Wer tief steigt, hat einen guten Aufzug."
+       "text": "Wer hoch steigt, fällt tief. Wer tief steigt, hat einen guten Aufzug.",
+       "left_expr": "lachend"
       }
      ]
     }
@@ -375,7 +379,8 @@
        "left": "ninjas",
        "right": "",
        "speaker": "ninjas",
-       "text": "Die Mauer hat vierzehn Fenster. – Elf davon kennen wir schon. – Von innen."
+       "text": "Die Mauer hat vierzehn Fenster. – Elf davon kennen wir schon. – Von innen.",
+       "left_expr": "lachend"
       }
      ]
     }
@@ -398,7 +403,8 @@
        "left": "museklaugust",
        "right": "",
        "speaker": "museklaugust",
-       "text": "Ich fordere ein größeres Tor! Mit meinem Namen drauf. In Gold. Mit Ausrufezeichen."
+       "text": "Ich fordere ein größeres Tor! Mit meinem Namen drauf. In Gold. Mit Ausrufezeichen.",
+       "left_expr": "lachend"
       }
      ]
     }
@@ -421,7 +427,8 @@
        "left": "hund",
        "right": "",
        "speaker": "hund",
-       "text": "Frischlinge, Bergluft und schlechte Laune. Ich fühle mich fast heimisch."
+       "text": "Frischlinge, Bergluft und schlechte Laune. Ich fühle mich fast heimisch.",
+       "left_expr": "lachend"
       }
      ]
     }
@@ -444,7 +451,8 @@
        "left": "wendy",
        "right": "",
        "speaker": "wendy",
-       "text": "Mäh… so viele Treppen. Ich habe vier Beine und bin trotzdem müde."
+       "text": "Mäh… so viele Treppen. Ich habe vier Beine und bin trotzdem müde.",
+       "left_expr": "wuetend"
       }
      ]
     }
@@ -467,7 +475,8 @@
        "left": "braumeisterin",
        "right": "",
        "speaker": "braumeisterin",
-       "text": "Für Bergluft ein Bier, für Treppen zwei. Das ist die Faustregel."
+       "text": "Für Bergluft ein Bier, für Treppen zwei. Das ist die Faustregel.",
+       "left_expr": "lachend"
       }
      ]
     }
@@ -490,7 +499,8 @@
        "left": "magical_girl",
        "right": "",
        "speaker": "magical_girl",
-       "text": "Die Sterne scheinen hier ganz nah! Ich glaube, die gucken sogar zu."
+       "text": "Die Sterne scheinen hier ganz nah! Ich glaube, die gucken sogar zu.",
+       "left_expr": "lachend"
       }
      ]
     }
@@ -513,7 +523,8 @@
        "left": "quacksalber",
        "right": "",
        "speaker": "quacksalber",
-       "text": "Höhenluft! Perfekt für mein Elixier: Je dünner die Luft, desto weniger fragt jemand nach den Zutaten."
+       "text": "Höhenluft! Perfekt für mein Elixier: Je dünner die Luft, desto weniger fragt jemand nach den Zutaten.",
+       "left_expr": "lachend"
       }
      ]
     }
@@ -536,7 +547,8 @@
        "left": "panzer",
        "right": "",
        "speaker": "panzer",
-       "text": "Treppen. Robo, du hast mir nie gesagt, dass es Treppen gibt."
+       "text": "Treppen. Robo, du hast mir nie gesagt, dass es Treppen gibt.",
+       "left_expr": "wuetend"
       }
      ]
     }

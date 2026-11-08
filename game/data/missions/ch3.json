@@ -130,7 +130,8 @@
        "left": "samurai",
        "right": "soldat_beritten",
        "speaker": "samurai",
-       "text": "Pferde. Ich hasse es, nach oben zu schauen."
+       "text": "Pferde. Ich hasse es, nach oben zu schauen.",
+       "left_expr": "wuetend"
       },
       {
        "left": "samurai",
@@ -154,7 +155,8 @@
        "right": "wendy",
        "speaker": "wendy",
        "left_expr": "wuetend",
-       "text": "Nein! Das Feuer ist schon schlimm genug. Haltet durch!"
+       "text": "Nein! Das Feuer ist schon schlimm genug. Haltet durch!",
+       "right_expr": "wuetend"
       }
      ]
     }
@@ -246,7 +248,8 @@
        "left": "ritter",
        "right": "maja",
        "speaker": "ritter",
-       "text": "Ich habe gegen Dämonen aus der Hölle gekämpft. Du bist hübscher und gruseliger."
+       "text": "Ich habe gegen Dämonen aus der Hölle gekämpft. Du bist hübscher und gruseliger.",
+       "left_expr": "lachend"
       }
      ]
     }
@@ -278,7 +281,8 @@
        "left": "samurai",
        "right": "oskar",
        "speaker": "samurai",
-       "text": "Er lobt seine Haare im Gefecht. Das ist würdelos."
+       "text": "Er lobt seine Haare im Gefecht. Das ist würdelos.",
+       "left_expr": "wuetend"
       }
      ]
     }
@@ -366,7 +370,7 @@
        "right": "wart",
        "speaker": "wart",
        "right_expr": "wuetend",
-       "text": "Erst brennen wir euer Dorf nieder, dann seid ihr dran!",
+       "text": "Erst brennt das Dorf, dann seid ihr dran!",
        "story": true
       }
      ]
@@ -539,7 +543,8 @@
        "left": "museklaugust",
        "right": "",
        "speaker": "museklaugust",
-       "text": "Wasser holen? Ich bin Kurfürst und König! …Gut. Aber nur, wenn alle zusehen."
+       "text": "Wasser holen? Ich bin Kurfürst und König! …Gut. Aber nur, wenn alle zusehen.",
+       "left_expr": "lachend"
       }
      ]
     }
@@ -562,7 +567,8 @@
        "left": "robo",
        "right": "",
        "speaker": "robo",
-       "text": "Warnung: Brandgeruch. Ich habe keine Nase, aber ich bin trotzdem empört."
+       "text": "Warnung: Brandgeruch. Ich habe keine Nase, aber ich bin trotzdem empört.",
+       "left_expr": "wuetend"
       }
      ]
     }
@@ -584,7 +590,8 @@
     "right": "oskar",
     "speaker": "$hero",
     "text": "Er läuft davon. Sein Haar ist ihm wichtiger als sein Heer.",
-    "story": true
+    "story": true,
+    "left_expr": "lachend"
    },
    {
     "left": "$hero",

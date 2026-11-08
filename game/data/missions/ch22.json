@@ -173,7 +173,8 @@
        "left": "ritter",
        "right": "",
        "speaker": "ritter",
-       "text": "Zwerge in Ketten. In meiner Jugend hat man so etwas noch mit einem Duell geregelt."
+       "text": "Zwerge in Ketten. In meiner Jugend hat man so etwas noch mit einem Duell geregelt.",
+       "left_expr": "wuetend"
       }
      ]
     }
@@ -265,7 +266,8 @@
        "left": "braumeisterin",
        "right": "",
        "speaker": "braumeisterin",
-       "text": "Zwerge ohne Bier unter Tage. Das ist das eigentliche Verbrechen."
+       "text": "Zwerge ohne Bier unter Tage. Das ist das eigentliche Verbrechen.",
+       "left_expr": "wuetend"
       }
      ]
     }
@@ -288,7 +290,8 @@
        "left": "museklaugust",
        "right": "",
        "speaker": "museklaugust",
-       "text": "Spitzhacken! Endlich Werkzeug in meiner Gewichtsklasse."
+       "text": "Spitzhacken! Endlich Werkzeug in meiner Gewichtsklasse.",
+       "left_expr": "lachend"
       }
      ]
     }

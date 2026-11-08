@@ -11,7 +11,8 @@
      "id": "ritter",
      "text": "Fahnen und Hufschläge im Tal… Das sind die Büttel des Regenten, und sie halten auf Eichenfurt zu! Kind, lauf zurück und warne die anderen."
     }
-   ]
+   ],
+   "right_expr": "wuetend"
   },
   {
    "left": "maedchen_baer",
@@ -129,7 +130,8 @@
      "id": "ritter",
      "text": "Ein sprechender Wollsack. In vierzig Jahren habe ich viel gesehen, aber das hier fehlte mir noch."
     }
-   ]
+   ],
+   "left_expr": "lachend"
   },
   {
    "left": "",
@@ -156,7 +158,8 @@
    "right": "haendler",
    "speaker": "haendler",
    "text": "Verkaufen! Ihr kämpft, ihr werdet verletzt, ihr verliert Schwerter. Ich habe Heiltränke, Gegengift und Rüstung, und alles passt in mich hinein.",
-   "story": true
+   "story": true,
+   "right_expr": "lachend"
   },
   {
    "left": "maedchen_baer",

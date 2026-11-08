@@ -297,7 +297,8 @@
        "left": "samurai",
        "right": "",
        "speaker": "samurai",
-       "text": "Ein Streit um Geld. Ehre kennt keinen Lohn. …Aber ein Trinkgeld nehme ich gern."
+       "text": "Ein Streit um Geld. Ehre kennt keinen Lohn. …Aber ein Trinkgeld nehme ich gern.",
+       "left_expr": "lachend"
       }
      ]
     }
@@ -343,7 +344,8 @@
        "left": "ninjas",
        "right": "",
        "speaker": "ninjas",
-       "text": "Wir haben die Truhen schon gezählt. – Vierhundert Taler. – Die Hälfte davon Knöpfe."
+       "text": "Wir haben die Truhen schon gezählt. – Vierhundert Taler. – Die Hälfte davon Knöpfe.",
+       "left_expr": "lachend"
       }
      ]
     }
@@ -366,7 +368,8 @@
        "left": "elisabeth",
        "right": "",
        "speaker": "elisabeth",
-       "text": "Zwei Truhen! Mein Piratenherz schlägt höher. Wir brauchen kein Gold, wir brauchen ein Fest!"
+       "text": "Zwei Truhen! Mein Piratenherz schlägt höher. Wir brauchen kein Gold, wir brauchen ein Fest!",
+       "left_expr": "lachend"
       }
      ]
     }
@@ -389,7 +392,8 @@
        "left": "museklaugust",
        "right": "",
        "speaker": "museklaugust",
-       "text": "Gold! Wenn Xiùlán es nicht will, nehme ich es. Für die Perückenpflege."
+       "text": "Gold! Wenn Xiùlán es nicht will, nehme ich es. Für die Perückenpflege.",
+       "left_expr": "lachend"
       }
      ]
     }
@@ -435,7 +439,8 @@
        "left": "braumeisterin",
        "right": "",
        "speaker": "braumeisterin",
-       "text": "Streit ums Geld? Bei mir regelt das ein Fass. Aufmachen, einschenken, vertragen."
+       "text": "Streit ums Geld? Bei mir regelt das ein Fass. Aufmachen, einschenken, vertragen.",
+       "left_expr": "lachend"
       }
      ]
     }
@@ -458,7 +463,8 @@
        "left": "magical_girl",
        "right": "",
        "speaker": "magical_girl",
-       "text": "Habt ihr es schon mit Sternenglitzer versucht? Wirkt gegen Wut, Hunger und Steuererklärungen."
+       "text": "Habt ihr es schon mit Sternenglitzer versucht? Wirkt gegen Wut, Hunger und Steuererklärungen.",
+       "left_expr": "lachend"
       }
      ]
     }
@@ -481,7 +487,8 @@
        "left": "quacksalber",
        "right": "",
        "speaker": "quacksalber",
-       "text": "Ein Arbeitnehmer im Streik! Ich verkaufe ihm ein Mittel gegen Lohnausfall. Die Flasche ist leer, aber teuer."
+       "text": "Ein Arbeitnehmer im Streik! Ich verkaufe ihm ein Mittel gegen Lohnausfall. Die Flasche ist leer, aber teuer.",
+       "left_expr": "lachend"
       }
      ]
     }

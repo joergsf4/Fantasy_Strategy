@@ -48,7 +48,8 @@
      "text": "Keine Sorge, ich habe vorgesorgt! Für jeden ein dicker Mantel, Mütze und Handschuhe. Ich habe einfach alles gestrickt, was ich hatte.",
      "expr": "lachend"
     }
-   ]
+   ],
+   "left_expr": "lachend"
   },
   {
    "left": "maedchen_baer",
@@ -62,7 +63,8 @@
      "text": "Für dich gibt es auch einen Pullover, Stachelia. Mit Flügellöchern!",
      "expr": "lachend"
     }
-   ]
+   ],
+   "left_expr": "lachend"
   },
   {
    "left": "",
@@ -101,7 +103,8 @@
      "text": "Gut, dass ich genug Wolle hatte.",
      "expr": "lachend"
     }
-   ]
+   ],
+   "left_expr": "lachend"
   }
  ]
 }

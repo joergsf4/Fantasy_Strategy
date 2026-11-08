@@ -41,13 +41,14 @@
      "text": "Ihr kleinen Plagegeister. Zieht die Brücke sofort wieder herunter!",
      "expr": "wuetend"
     }
-   ]
+   ],
+   "left_expr": "wuetend"
   },
   {
    "left": "hund",
    "right": "frischlinge",
    "speaker": "frischlinge",
-   "text": "Das ist für unseren Boss! Ihr habt Wart umgehauen, jetzt zahlt ihr! Wir sind jetzt die Chefs!",
+   "text": "Das ist für unseren Papa! Ihr habt ihn umgehauen, jetzt zahlt ihr! Wir sind jetzt die Chefs!",
    "right_expr": "wuetend",
    "story": true
   }
@@ -65,7 +66,7 @@
    "left": "hund",
    "right": "maedchen_baer",
    "speaker": "maedchen_baer",
-   "text": "Die Frischlinge sind geflohen. Seht ihr die Reifenspuren? Metallisch.",
+   "text": "Die Frischlinge sind geflohen. Seht ihr die Spuren? Metallisch.",
    "story": true,
    "voices": [
     {

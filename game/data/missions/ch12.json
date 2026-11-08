@@ -21,14 +21,16 @@
        "left": "elisabeth",
        "right": "robo",
        "speaker": "robo",
-       "text": "Scan: Hebel. Beschriftung: ‚NICHT ZIEHEN‘. Ich empfehle Ziehen."
+       "text": "Scan: Hebel. Beschriftung: ‚NICHT ZIEHEN‘. Ich empfehle Ziehen.",
+       "right_expr": "lachend"
       },
       {
        "left": "elisabeth",
        "right": "robo",
        "speaker": "elisabeth",
        "text": "Dann treffen wir ihn von hier aus. Ein Kanonenschuss löst jedes Problem!",
-       "right_expr": ""
+       "right_expr": "",
+       "left_expr": "lachend"
       }
      ]
     }
@@ -82,7 +84,8 @@
        "left": "maedchen_baer",
        "right": "",
        "speaker": "maedchen_baer",
-       "text": "Brumm will schwimmen. Brumm will immer schwimmen. Brumm hat keine Ahnung von Zugbrücken."
+       "text": "Brumm will schwimmen. Brumm will immer schwimmen. Brumm hat keine Ahnung von Zugbrücken.",
+       "left_expr": "lachend"
       }
      ]
     }
@@ -105,7 +108,8 @@
        "left": "samurai",
        "right": "",
        "speaker": "samurai",
-       "text": "Ein hochgezogener Steg. Wie unhöflich. Man lässt Gäste nicht vor dem Tor stehen."
+       "text": "Ein hochgezogener Steg. Wie unhöflich. Man lässt Gäste nicht vor dem Tor stehen.",
+       "left_expr": "wuetend"
       }
      ]
     }
@@ -174,7 +178,8 @@
        "left": "museklaugust",
        "right": "",
        "speaker": "museklaugust",
-       "text": "Ich werfe Steine über den Fluss! Oder Frischlinge! Oder beides!"
+       "text": "Ich werfe Steine über den Fluss! Oder Frischlinge! Oder beides!",
+       "left_expr": "lachend"
       }
      ]
     }
@@ -220,7 +225,8 @@
        "left": "braumeisterin",
        "right": "",
        "speaker": "braumeisterin",
-       "text": "Ein Fluss! Ich würde ja Bier hineinkippen, aber der Fluss hat es nicht verdient."
+       "text": "Ein Fluss! Ich würde ja Bier hineinkippen, aber der Fluss hat es nicht verdient.",
+       "left_expr": "wuetend"
       }
      ]
     }
@@ -243,7 +249,8 @@
        "left": "magical_girl",
        "right": "",
        "speaker": "magical_girl",
-       "text": "Keine Sorge, ich zaubere uns eine Brücke! …Gleich. Hoffentlich. Wo ist mein Zauberstab?"
+       "text": "Keine Sorge, ich zaubere uns eine Brücke! …Gleich. Hoffentlich. Wo ist mein Zauberstab?",
+       "left_expr": "lachend"
       }
      ]
     }
@@ -266,7 +273,8 @@
        "left": "quacksalber",
        "right": "",
        "speaker": "quacksalber",
-       "text": "Wer ins Wasser fällt, bekommt von mir ein Elixier. Es schmeckt nach Fluss. Verdächtig."
+       "text": "Wer ins Wasser fällt, bekommt von mir ein Elixier. Es schmeckt nach Fluss. Verdächtig.",
+       "left_expr": "lachend"
       }
      ]
     }
@@ -310,7 +318,7 @@
     "left": "$hero",
     "right": "frischlinge",
     "speaker": "frischlinge",
-    "text": "Wart wird gerächt! ...Wartet, wo ist eigentlich unser nächster Chef?",
+    "text": "Papa wird gerächt! ...Wartet, wer ist jetzt eigentlich der Chef?",
     "right_expr": "wuetend",
     "story": true
    }
