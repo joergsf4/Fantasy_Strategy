@@ -32,7 +32,7 @@ Rundenstrategie im Stil von **Fire Emblem** und **Advance Wars**, gebaut mit **G
 </tr>
 <tr>
 <td width="50%"><img src="docs/img/stern.jpg" alt="Sternschnuppe"><br><b>Spezialfähigkeiten mit Auftritt.</b> Jede Fähigkeit hat eine eigene Animation, eigene Effekte und eigenen Sound.</td>
-<td width="50%"><img src="docs/img/quak.jpg" alt="Polymorph verwandelt einen Soldaten in einen Frosch"><br><b>Mit Humor.</b> Fässer, Frösche, Gebisse, Bärenumarmungen und ein Hund, der ganze Armeen anbellt.</td>
+<td width="50%"><img src="docs/img/ferkel.jpg" alt="Robo-Frischling mit Feuerkanone"><br><b>Mit Humor.</b> Fässer, Gebisse, Bärenumarmungen, Ferkel mit Kanonen und ein Hund, der ganze Armeen anbellt.</td>
 </tr>
 <tr>
 <td width="50%"><img src="docs/img/wurf.jpg" alt="Muskelaugust wirft Lin über die Mauer"><br><b>Rätsel im Gelände.</b> Mauern, Tore, Schalter, Feuer, Geiseln und Glocken: Fähigkeiten lösen sie. Hier wirft Muskelaugust einen Freund über die Mauer.</td>
@@ -47,6 +47,16 @@ Rundenstrategie im Stil von **Fire Emblem** und **Advance Wars**, gebaut mit **G
 <td width="33%"><img src="docs/img/hafen_nacht.jpg" alt="Hafen bei Nacht und Regen"><br><b>Hafen bei Nacht.</b> Regen, Mondlicht, Lichter in den Häusern; die Überfahrt mit dem Schiff läuft in der Engine über ein bewegtes Meer.</td>
 <td width="33%"><img src="docs/img/labor.jpg" alt="Labor von Professor Kugelblitz im Gewitter"><br><b>Labor im Gewitter.</b> Blitz und Donner, Professor Kugelblitz, eine Energiemaschine, die Kinder in Gefahr und Cyborg-Wart im Glasbehälter.</td>
 <td width="33%"><img src="docs/img/sumpf.jpg" alt="Neues Biom Sumpf"><br><b>Neues Biom Sumpf.</b> Morast, der doppelte Bewegung kostet und Sumpfgas ausatmet, tote Bäume, Schilf und leuchtende Pilze.</td>
+</tr>
+</table>
+
+### Kapitel 3: Berge, Wildschweine, Vulkan
+
+<table>
+<tr>
+<td width="33%"><img src="docs/img/kapitel3.jpg" alt="Kapitelkarte im Schneesturm"><br><b>Zwischensequenzen.</b> Wanderungen durch Schneesturm und Ödland, der Überfall am Pass und eine Prügelei in Comic-Wolke.</td>
+<td width="33%"><img src="docs/img/hogsmeat.jpg" alt="Kamerafahrt über Hogsmeat"><br><b>Hogsmeat.</b> Das Dorf der Wildschweine bei Nacht, mit filmischer Kamerafahrt vor dem Kampf.</td>
+<td width="33%"><img src="docs/img/zwergenmine.jpg" alt="Die Zwergenmine im Vulkan"><br><b>Vulkan.</b> Lava, Asche und eine Mine voller versklavter Zwerge. Dahinter wartet noch mehr.</td>
 </tr>
 </table>
 
@@ -67,7 +77,7 @@ Manche Fähigkeiten wirken auf Verbündete anders, als man denkt. Wer es herausf
 <tr>
 <td width="33%"><img src="docs/img/lager.jpg" alt="Lager mit Händler Sack"><br><b>Lager.</b> Händler Sack (ein lebender Wollsack) mit Ausrüstung in vier Stufen und Verkauf, Aufstellung und Talente.</td>
 <td width="33%"><img src="docs/img/gruppenwahl.jpg" alt="Gruppenwahl"><br><b>Gruppenwahl.</b> Vor jeder Runde wählst du deine Helden. Wer in der Geschichte gebraucht wird, ist gesperrt.</td>
-<td width="33%"><img src="docs/img/statistik.jpg" alt="Siegbildschirm mit Statistik"><br><b>Statistik.</b> Beute, Bonusziele und Auszeichnungen, nach dem Sieg mit fröhlicher, nach der Niederlage mit trauriger Musik.</td>
+<td width="33%"><img src="docs/img/statistik.jpg" alt="Siegbildschirm mit Statistik"><br><b>Statistik.</b> Beute, Bonusziele, Auszeichnungen und der Verlauf der Schlacht Runde für Runde, nach dem Sieg mit fröhlicher, nach der Niederlage mit trauriger Musik. Jede Mission legt die Werte zusätzlich als JSON im Nutzerordner ab.</td>
 </tr>
 <tr>
 <td colspan="3"><img src="docs/img/talente.jpg" alt="Aufstiegsbildschirm mit Talentpunkten" width="560"><br><b>Talente.</b> Die Gruppe steigt je Mission eine Stufe auf, alle drei Stufen gibt es einen Talentpunkt für jeden Helden der Gruppe. Du verteilst ihn selbst auf Leben, Angriff und die zwei Fähigkeiten (Rang 1 bis 3: mehr Wirkung, mehr Reichweite). Neue Helden werden vor ihrer ersten Mission aufgelevelt.</td>
@@ -89,7 +99,7 @@ Manche Fähigkeiten wirken auf Verbündete anders, als man denkt. Wer es herausf
 ## Spielen
 
 ### Fertige Testversion
-Unter [Releases](https://github.com/joergsf4/Fantasy_Strategy/releases) liegen ZIPs für macOS (`FuzaketaTactics-macOS.zip`) und Windows (`FuzaketaTactics-Windows.zip`). Aktuell: **Testversion 0.10.0** mit 22 Kampfmissionen bis zum Finale (Kapitel 1 und 2), Zwischensequenzen, Talentpunkten, gestufter Ausrüstung, Grafikoptionen, Sumpf-, Schnee-, Vulkan-, Labor- und Thronsaal-Biom, vierzehn geheimen Interaktionen, Gruppenwahl mit wechselnden Sprechern und Wetter in den Missionen.
+Unter [Releases](https://github.com/joergsf4/Fantasy_Strategy/releases) liegen ZIPs für macOS (`FuzaketaTactics-macOS.zip`) und Windows (`FuzaketaTactics-Windows.zip`). Aktuell: **Testversion 0.11.0** mit 22 Kampfmissionen in drei Kapiteln bis zum Finale samt Epilog, Zwischensequenzen, Talentpunkten, gestufter Ausrüstung, Grafikoptionen, Sumpf-, Schnee-, Vulkan-, Labor- und Thronsaal-Biom, vierzehn geheimen Interaktionen, Gruppenwahl mit wechselnden Sprechern und Wetter in den Missionen.
 - **macOS:** ZIP entpacken, Rechtsklick auf die App, „Öffnen“ (nicht notarisiert). Falls macOS sie sperrt: `xattr -cr "Fuzaketa Tactics.app"`.
 - **Windows:** ZIP entpacken, `game.exe` starten. SmartScreen warnt eventuell („Weitere Informationen“, „Trotzdem ausführen“).
 
@@ -102,9 +112,9 @@ Benötigt Godot 4.7 (Compatibility-Renderer).
 ### Steuerung
 - **Start im Vollbild.** F11 oder das Pause-Menü schalten zwischen Vollbild und Fenster um.
 - **Maus:** Figur wählen, Feld wählen, Menü neben der Figur. Rechtsklick geht zurück.
-- **Dialoge:** Linksklick, Enter oder Leertaste schaltet weiter.
+- **Dialoge:** Linksklick, Enter oder Leertaste schaltet weiter. Kamerafahrten vor einem Kampf überspringt ein Klick.
 - **Alt (gedrückt halten):** zeigt über allen Figuren Lebenszahl und alle Status mit Restdauer. Sonst steht über jeder Figur nur ein schmaler Lebensbalken, Details zeigen Auswahl und Hover.
-- **Esc:** öffnet das Pause-Menü (Weiter, Mission neu starten, Speichern, Grafik, Vollbild, Zum Hauptmenü, Beenden). Beim Beenden bleibt der Stand nach der letzten geschafften Mission erhalten. **Grafik:** Voreinstellungen und Einzelwerte (Anzeige, V-Sync, Bildrate, Renderauflösung, Kantenglättung, Schatten, Leuchteffekt, Tiefenunschärfe, Partikel und Regen).
+- **Esc:** öffnet das Pause-Menü (Weiter, Mission neu starten, Speichern, Grafik, Ton und Spiel, Vollbild, Zum Hauptmenü, Beenden). Beim Beenden bleibt der Stand nach der letzten geschafften Mission erhalten. **Grafik:** Voreinstellungen und Einzelwerte (Anzeige, V-Sync, Bildrate, Renderauflösung, Kantenglättung, Schatten, Leuchteffekt, Tiefenunschärfe, Partikel und Regen, Helligkeit, Kontrast). **Ton und Spiel:** Lautstärke von Musik und Effekten, Schwierigkeit (Leicht, Normal, Schwer).
 - **Hauptmenü:** *Fortfahren* (nur mit Spielstand, geht im Lager vor dem nächsten Kapitel weiter), *Neues Spiel* (mit Rückfrage, löscht den Spielstand) und *Beenden*. Bedienung mit Maus oder Pfeiltasten und Enter.
 - **Speichern:** automatisch nach jeder geschafften Mission (Meldung „Spielstand automatisch gespeichert“), zusätzlich von Hand im Pause-Menü. Der Spielstand liegt im Nutzerordner `Strategy Adventure` (der Ordnername blieb bei der Umbenennung des Spiels, damit alte Spielstände weiter gelten).
 - **Testmenü:** Im Hauptmenü kleingeschrieben `brumm` tippen („Kapitelwahl freigeschaltet“), dann gibt es nach dem Start die Kapitelwahl (mit oder ohne Einleitung), das Soundlabor, das **Testlabor** (Arena mit beliebigem Helden gegen Gegner, Aufstiegs-, Lager-, Belohnungs- und Reisebild direkt aufrufbar) und „Spielstand zurücksetzen“. Für Entwickler: `START_CH=ch14 godot --path game` startet direkt in einer Mission mit der dort üblichen Ausstattung.
@@ -161,5 +171,5 @@ Dazu viele weitere in `game/tests/` (Fähigkeiten, Missionen, Feuer, Gruppenwahl
 
 ## Hinweise
 - **KI-generierte Inhalte:** Alle Figuren-, Effekt- und Hintergrundbilder (`strategie/`, `game/assets/portraits|tokens|fx`) und die Musik (`game/assets/audio/`) wurden mit Google Gemini erzeugt, die Soundeffekte synthetisch. Programmcode und Daten entstanden mit Claude Code. Das Projekt ist ein nicht kommerzielles Hobbyprojekt.
-- **Stand:** Testversion 0.10.0. Werte und Balancing sind vorläufig, Fehler bitte als Issue melden.
+- **Stand:** Testversion 0.11.0. Werte und Balancing sind vorläufig, Fehler bitte als Issue melden.
 - **Schriften:** Cinzel Decorative, IM Fell English und Dela Gothic One (für die Katakana des Namens, nur ein Auszug; SIL Open Font License, Lizenztexte im Ordner `game/assets/fonts/`).
