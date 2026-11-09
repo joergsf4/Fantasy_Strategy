@@ -203,24 +203,6 @@
   "hero": true,
   "intro": 1
  },
- "claude": {
-  "name": "Claude",
-  "hp": 16,
-  "atk": 9,
-  "def": 1,
-  "res": 6,
-  "move": 3,
-  "range_min": 1,
-  "range": 3,
-  "role": "mage",
-  "dmg_type": "magic",
-  "abilities": [
-   "polymorph"
-  ],
-  "weapon": "fist",
-  "body": "flesh",
-  "hero": true
- },
  "bienenmaedchen": {
   "name": "Stachelia",
   "hp": 18,
@@ -863,5 +845,95 @@
   "weapon": "fist",
   "body": "flesh",
   "portrait": "xiulan"
+ },
+ "kind_mia": {
+  "name": "Mia",
+  "hp": 8,
+  "atk": 1,
+  "def": 0,
+  "res": 0,
+  "move": 3,
+  "range_min": 1,
+  "range": 1,
+  "role": "support",
+  "dmg_type": "body",
+  "tags": [
+   "npc"
+  ],
+  "abilities": [],
+  "weapon": "fist",
+  "body": "flesh"
+ },
+ "kind_pip": {
+  "name": "Pip",
+  "hp": 8,
+  "atk": 1,
+  "def": 0,
+  "res": 0,
+  "move": 3,
+  "range_min": 1,
+  "range": 1,
+  "role": "support",
+  "dmg_type": "body",
+  "tags": [
+   "npc"
+  ],
+  "abilities": [],
+  "weapon": "fist",
+  "body": "flesh"
+ },
+ "morgrim": {
+  "name": "Morgrim",
+  "hp": 30,
+  "atk": 4,
+  "def": 0,
+  "res": 0,
+  "move": 3,
+  "range_min": 1,
+  "range": 1,
+  "role": "support",
+  "dmg_type": "body",
+  "tags": [
+   "npc"
+  ],
+  "abilities": [],
+  "weapon": "fist",
+  "body": "flesh"
+ },
+ "kind_lotte": {
+  "name": "Lotte",
+  "hp": 8,
+  "atk": 1,
+  "def": 0,
+  "res": 0,
+  "move": 3,
+  "range_min": 1,
+  "range": 1,
+  "role": "support",
+  "dmg_type": "body",
+  "tags": [
+   "npc"
+  ],
+  "abilities": [],
+  "weapon": "fist",
+  "body": "flesh"
+ },
+ "mutter": {
+  "name": "Bianca",
+  "hp": 8,
+  "atk": 1,
+  "def": 0,
+  "res": 0,
+  "move": 3,
+  "range_min": 1,
+  "range": 1,
+  "role": "support",
+  "dmg_type": "body",
+  "tags": [
+   "npc"
+  ],
+  "abilities": [],
+  "weapon": "fist",
+  "body": "flesh"
  }
 }

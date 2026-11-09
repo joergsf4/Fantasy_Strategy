@@ -287,6 +287,7 @@ func _start_wind() -> void:
 	st.loop_mode = AudioStreamWAV.LOOP_FORWARD
 	st.loop_end = int(st.get_length() * st.mix_rate)
 	_wind = AudioStreamPlayer.new()
+	_wind.bus = Sfx.BUS      # Windrauschen zaehlt zu den Effekten
 	_wind.stream = st
 	_wind.volume_db = -40.0
 	add_child(_wind)
@@ -659,6 +660,8 @@ func _input(event: InputEvent) -> void:
 ## Frischlinge-Thema: beginnt leise und schleichend unter der Wanderung, der grosse Schlag faellt auf den Ausbruch.
 func _start_music() -> void:
 	_music = AudioStreamPlayer.new()
+	_music.bus = Settings.MUSIC_BUS
+	Settings.music_bus()
 	add_child(_music)
 	if not ResourceLoader.exists(music_path):
 		return

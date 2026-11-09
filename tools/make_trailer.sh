@@ -4,6 +4,7 @@
 #            tools/make_trailer.sh trailer2   -> Trailer 2 (ca. 2 min)  out/trailer/trailer2.mp4
 #            tools/make_trailer.sh trailer4   -> Trailer 4 (ca. 80 s)  out/trailer/trailer4.mp4
 #            tools/make_trailer.sh trailer5   -> Trailer 5, Hollywood-Trailer (ca. 2 min)  out/trailer/trailer5.mp4
+#            tools/make_trailer.sh trailer6   -> Trailer 6, Pseudo-Dokumentarfilm mit Interviews  out/trailer/trailer6.mp4
 set -e
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 NAME="${1:-trailer}"

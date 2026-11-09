@@ -29,7 +29,6 @@ NAMES = {
     "btb16a": "hund",
     "kq5h0v": "braumeisterin",
     "o9escf": "maedchen_baer",
-    "yh4g19": "claude",
 }
 
 

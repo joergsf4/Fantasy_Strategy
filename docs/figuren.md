@@ -145,19 +145,6 @@ Gruppenheilung(fläche)
 Heiler
 ---
 
-### Claude
-*Flaschengeist, kämpft als Magier*  
-`claude` · Chibi: `game/assets/tokens/claude.png`  
-Aktuell: HP 16 · Angriff 9 · Verteidigung 1 · Bewegung 3 · Reichweite 2
-
-**Typ:** 
-Fernkampf
-**Spezialattacke / Fähigkeit:** 
-Polymporph > nimmt standardeinheiten aus dem Spiel für 3 Runden.
-**Sonstiges (Rolle, Story, Kombos):** 
-
----
-
 ### Stachelia
 *Bienenmädchen (gruselig), fliegt, kann vergiften*  
 `bienenmaedchen` · Chibi: `game/assets/tokens/bienenmaedchen.png`  

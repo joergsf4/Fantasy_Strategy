@@ -86,8 +86,7 @@ class EditorTest(unittest.TestCase):
         self.assertEqual(by["quacksalber"]["first"]["chapter"], 3)      # stößt in Mühlbach zur Gruppe
         self.assertEqual(by["quacksalber"]["intro"], 3)
         self.assertEqual(by["fuerst"]["first"]["chapter"], 9)       # der Regent tritt erstmals in Mission 9 auf
-        for uid in ("claude", "dummy"):
-            self.assertIsNone(by[uid]["first"], uid)       # noch in keiner Mission
+        self.assertIsNone(by["dummy"]["first"], "dummy")       # noch in keiner Mission
         self.assertEqual(by["wart"]["abilities"][0]["name"], "Raketenwerfer")
         eli = {a["id"]: a["source"] for a in by["elisabeth"]["abilities"]}
         self.assertEqual(eli["kanone"], "Einheit")
@@ -116,7 +115,7 @@ class EditorTest(unittest.TestCase):
         m = by["ch2"]
         taken = {tuple(e["pos"]) for e in m["players"] + m["enemies"]} | {tuple(o["pos"]) for o in m["objects"]}
         spot = next([x, y] for y, row in enumerate(m["rows"]) for x, ch in enumerate(row) if ch == "G" and (x, y) not in taken)
-        server.save_mission("ch2", {"players": m["players"] + [{"id": "claude", "pos": spot}], "enemies": m["enemies"]})
+        server.save_mission("ch2", {"players": m["players"] + [{"id": "dummy", "pos": spot}], "enemies": m["enemies"]})
         self.assertEqual(len(server.missions()["missions"][1]["players"]), len(m["players"]) + 1)
         server.save_mission("ch2", {"players": m["players"], "enemies": m["enemies"]})
         self.assertEqual(path.read_bytes(), before)
@@ -127,13 +126,13 @@ class EditorTest(unittest.TestCase):
         taken = m["players"][0]["pos"]
         cases = [
             {"players": m["players"] + [{"id": "gibtsnicht", "pos": [0, 0]}], "enemies": m["enemies"]},
-            {"players": m["players"] + [{"id": "claude", "pos": [99, 99]}], "enemies": m["enemies"]},
-            {"players": m["players"] + [{"id": "claude", "pos": taken}], "enemies": m["enemies"]},
+            {"players": m["players"] + [{"id": "dummy", "pos": [99, 99]}], "enemies": m["enemies"]},
+            {"players": m["players"] + [{"id": "dummy", "pos": taken}], "enemies": m["enemies"]},
             {"players": m["players"] + [m["players"][0]], "enemies": m["enemies"]},
             {"players": [], "enemies": m["enemies"]},
         ]
         if water:
-            cases.append({"players": m["players"] + [{"id": "claude", "pos": water}], "enemies": m["enemies"]})
+            cases.append({"players": m["players"] + [{"id": "dummy", "pos": water}], "enemies": m["enemies"]})
         before = server.map_path("ch2").read_bytes()
         for body in cases:
             with self.assertRaises(ValueError):
@@ -146,8 +145,8 @@ class EditorTest(unittest.TestCase):
         self.assertTrue(ritter[0].startswith("Schlachtruf") and ritter[1].startswith("Verspotten"))     # zwei Faehigkeiten: beide Felder gefuellt
         ninjas = by["ninjas"]["ability_notes"]["defaults"]
         self.assertTrue(ninjas[0].startswith("Versteck") and ninjas[1].startswith("Hinterh"))           # zwei Faehigkeiten (seit den neuen Faehigkeiten)
-        claude = by["claude"]["ability_notes"]["defaults"]
-        self.assertTrue(claude[0].startswith("Polymorph") and claude[1] == "")                          # eine Faehigkeit: zweites Feld leer
+        dummy = by["dummy"]["ability_notes"]["defaults"]
+        self.assertTrue(dummy[0].startswith("Wirbel") and dummy[1] == "")                               # eine Faehigkeit: zweites Feld leer
         self.assertEqual(by["soldat_infanterie"]["ability_notes"]["defaults"], ["", ""])                # keine: beide leer
         server.save_ability_note("ninjas", 1, "  Rauchbombe: legt eine Nebelwand.  ")
         n = {c["id"]: c for c in server.characters()["characters"]}["ninjas"]["ability_notes"]

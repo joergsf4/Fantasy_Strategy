@@ -53,6 +53,8 @@ class FlowProbe extends "res://scripts/main.gd":
 		events.append("camp")
 
 	func _play_interlude(data: Dictionary) -> void:
+		if not data.has("party"):
+			return      # Titelkarten ohne mitlaufende Gruppe (z. B. Epilog) zaehlen hier nicht als Reise
 		events.append("travel")
 		travel_party = data["party"].duplicate()
 

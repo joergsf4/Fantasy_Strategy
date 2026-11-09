@@ -483,14 +483,6 @@
    ],
    "db": 0
   },
-  "claude": {
-   "s": "v_magic",
-   "pitch": [
-    0.85,
-    1.15
-   ],
-   "db": 0
-  },
   "bienenmaedchen": {
    "s": "v_buzz",
    "pitch": [

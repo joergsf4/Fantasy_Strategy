@@ -4,6 +4,7 @@ extends Control
 
 signal chosen(index: int, skip_story: bool)
 signal new_game_requested
+signal finale_end_requested      # Testmenue: Finale direkt am Ende des Kampfs gegen den Sack (bis zum Abspann ansehen)
 
 var lab_runner := Callable()      # Main: func(kind, hero, foe, maxed) -> Coroutine (Testlabor)
 var lab_heroes: Array = []
@@ -52,6 +53,11 @@ func _ready() -> void:
 	row.add_child(_button("Mit Einleitung", func() -> void: pick(dd.selected, false)))
 	row.add_child(_button("Direkt in den Kampf", func() -> void: pick(dd.selected, true)))
 	col.add_child(row)
+	var fin := chapters.map(func(c: Dictionary) -> String: return c["id"]).find("ch25")
+	if fin >= 0:
+		col.add_child(_button("Finale: Sieg über den Sack (bis zum Schluss)", func() -> void:
+			finale_end_requested.emit()
+			pick(fin, true)))
 	col.add_child(_button("Soundlabor", _open_lab))
 	col.add_child(_button("Testlabor (Arena, Bildschirme, Lager)", _open_test_lab))
 	col.add_child(_button("Spielstand zurücksetzen", func() -> void: new_game_requested.emit()))

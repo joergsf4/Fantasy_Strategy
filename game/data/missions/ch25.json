@@ -82,7 +82,8 @@
        "right": "haendler",
        "speaker": "haendler",
        "text": "Ich habe dir gesagt: Nenn mich nicht Sohn, wenn jemand zuhört.",
-       "story": true
+       "story": true,
+       "right_expr": "wuetend"
       },
       {
        "left": "bienenmaedchen",
@@ -388,5 +389,18 @@
  "flee_below": {
   "maja": 0.3,
   "oskar": 0.3
+ },
+ "intro_flight": {
+  "from": [
+   6,
+   12
+  ],
+  "to": [
+   6,
+   4
+  ],
+  "height": 3.0,
+  "fov": 42,
+  "seconds": 7
  }
 }

@@ -1,0 +1,16 @@
+{
+ "id": "ch26",
+ "title": "Epilog: Heimkehr",
+ "map": "res://data/map_ch26.json",
+ "stub": true,
+ "briefing": "Kein Kampf mehr: Die Gruppe kehrt ins Waisenhaus zurück.",
+ "goals": [
+  {
+   "type": "rout"
+  }
+ ],
+ "triggers": [],
+ "flight": 8.0,
+ "random_pick": 4,
+ "dedication": "Für Elisabeth"
+}

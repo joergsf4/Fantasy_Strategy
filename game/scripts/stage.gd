@@ -12,6 +12,7 @@ var dialogue_runner := Callable()   # von main gesetzt: async func(lines)
 var party: Party         # Zustand der Heldengruppe (Rucksack, Ausruestung); null = Standardausstattung
 var mode := "title"
 var _t := 22.0
+var _flight_t := 0.0      # Epilog-Kamerafahrt (dialog_cam "waisenhaus"), beginnt beim Wechsel in den Dialogmodus
 var _fx_layer: CanvasLayer
 var _fx_mat: ShaderMaterial
 var _dim: ColorRect
@@ -59,6 +60,7 @@ func new_battle() -> void:
 
 func set_mode(m: String) -> void:
 	mode = m
+	_flight_t = 0.0
 	match m:
 		"title":
 			_dim.color.a = 0.0
@@ -130,6 +132,32 @@ func _create_night_sky() -> void:
 	for c: Array in spots:
 		var w: float = c[1]
 		_night_sky.add_child(_sky_quad(clouds, c[0], Vector2(w, w * clouds.get_height() / clouds.get_width()), Color(0.3, 0.34, 0.48, c[2])))
+
+
+## Sommerhimmel fuer den Epilog (flacher Blick nach Norden ueber das Waisenhaus): fest in der Welt hinter der Karte,
+## Farbverlauf von tiefem Blau zu warmem, hellem Horizont, davor Schaefchenwolken wie im ersten Level.
+var _day_sky: Node3D
+
+func _create_day_sky() -> void:
+	_day_sky = Node3D.new()
+	battle.add_child(_day_sky)
+	_day_sky.position = Vector3(5.5, 24.0, -75.0)      # Vorderseite (lokal +z) zeigt zur Karte
+	var grad := Gradient.new()
+	grad.set_color(0, Color(0.2, 0.5, 1.0))
+	grad.set_color(1, Color(0.98, 0.9, 0.74))
+	grad.add_point(0.55, Color(0.45, 0.75, 1.0))
+	grad.add_point(0.82, Color(0.85, 0.88, 0.86))
+	var gt := GradientTexture2D.new()
+	gt.gradient = grad
+	gt.fill_from = Vector2(0.5, 0.0)
+	gt.fill_to = Vector2(0.5, 1.0)
+	_day_sky.add_child(_sky_quad(gt, Vector3(0, 0, 0), Vector2(360.0, 110.0), Color.WHITE))
+	var clouds: Texture2D = load("res://assets/fx/fx_schaefchenwolken.png")
+	var spots := [[Vector3(-46.0, 6.0, 2.0), 46.0, 0.95], [Vector3(-6.0, 14.0, 2.4), 54.0, 0.9], [Vector3(36.0, 4.0, 2.2), 48.0, 0.95],
+		[Vector3(72.0, 12.0, 2.6), 40.0, 0.85], [Vector3(16.0, -6.0, 3.0), 30.0, 0.7], [Vector3(-26.0, -10.0, 3.2), 26.0, 0.6]]
+	for c: Array in spots:
+		var w: float = c[1]
+		_day_sky.add_child(_sky_quad(clouds, c[0], Vector2(w, w * clouds.get_height() / clouds.get_width()), Color(1, 1, 1, c[2])))
 
 
 const MOON_X := 20.0      # Mond auf der Himmelsflaeche (lokal): rechts oberhalb der Gruppe
@@ -215,6 +243,19 @@ func _update_camera(delta: float) -> void:
 		cam.fov = 32.0
 		cam.position = focus + Vector3(sin(_t * 0.11) * 0.8, 8.4 + sin(_t * 0.07) * 0.5, 8.2)
 		cam.look_at(focus + Vector3(0, 0.2, 0))
+	elif battle.map_data.get("dialog_cam", "") == "waisenhaus":
+		# Kartenfeld "dialog_cam": "waisenhaus" (Epilog): flache Kamerafahrt vom Teich im Sueden auf die Gruppe vor dem Waisenhaus zu,
+		# in den ersten Sekunden heran (weich abgebremst), danach ein ruhiges Pendeln
+		if _day_sky == null or not is_instance_valid(_day_sky):
+			_create_day_sky()
+		_flight_t += delta
+		var k := clampf(_flight_t / 8.0, 0.0, 1.0)
+		k = k * k * (3.0 - 2.0 * k)
+		var sway := sin(_flight_t * 0.12) * 0.9 * k
+		var focus4 := Vector3(lerpf(8.0, 5.5 + sway, k), 0.0, lerpf(7.0, 2.6, k))
+		cam.fov = 40.0
+		cam.position = focus4 + Vector3(lerpf(-1.5, 0.3, k), lerpf(1.5, 2.6, k), lerpf(3.5, 6.6, k))
+		cam.look_at(focus4 + Vector3(0, lerpf(1.4, 1.6, k), -1.4))
 	elif battle.map_data.get("dialog_cam", "") == "flach":
 		# Kartenfeld "dialog_cam": "flach" (Hafen in Kapitel 2): flacher Blick wie beim Einstieg in Mission 1,
 		# von Westen ueber das Dorf aufs Meer und den Horizont, langsamer Schwenk entlang der Kueste

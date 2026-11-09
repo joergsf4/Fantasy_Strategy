@@ -14,7 +14,17 @@ const OPTIONS := [
 	{"key": "glow", "label": "Leuchteffekt", "values": ["Aus", "An"], "default": 1},
 	{"key": "tilt", "label": "Tiefenunschärfe", "values": ["Aus", "An"], "default": 1},
 	{"key": "particles", "label": "Partikel und Regen", "values": ["Wenig", "Normal", "Viel"], "default": 1},
+	{"key": "brightness", "label": "Helligkeit", "values": ["−20 %", "−10 %", "Normal", "+10 %", "+20 %"], "default": 2},
+	{"key": "contrast", "label": "Kontrast", "values": ["−20 %", "−10 %", "Normal", "+10 %", "+20 %"], "default": 2},
+	# Reiter "Ton und Spiel"
+	{"key": "music", "label": "Musik", "values": ["Aus", "10 %", "20 %", "30 %", "40 %", "50 %", "60 %", "70 %", "80 %", "90 %", "100 %"], "default": 8, "tab": "ton"},
+	{"key": "sfx", "label": "Effekte", "values": ["Aus", "10 %", "20 %", "30 %", "40 %", "50 %", "60 %", "70 %", "80 %", "90 %", "100 %"], "default": 8, "tab": "ton"},
+	{"key": "difficulty", "label": "Schwierigkeit", "values": ["Leicht", "Normal", "Schwer"], "default": 1, "tab": "ton"},
 ]
+const ADJUST := [0.8, 0.9, 1.0, 1.1, 1.2]       # Helligkeit und Kontrast (Environment-Anpassung im Kampf)
+const DIFFICULTY := [0.8, 1.0, 1.2]             # Faktor auf Leben und Angriff der Gegner, zusaetzlich zu data/progression.json (data/difficulty.json ist eine alte Messung, E3)
+const MUSIC_BUS := "Musik"
+const SFX_BASE_DB := -2.0                       # Grundlautstaerke des Effekt-Busses (wie data/sfx.json "volume_db")
 ## Voreinstellungen: Werte fuer scale, aa, shadows, glow, tilt, particles (Anzeige, V-Sync und Bildrate bleiben).
 const PRESETS := {
 	"Niedrig": {"scale": 0, "aa": 0, "shadows": 1, "glow": 0, "tilt": 0, "particles": 0},
@@ -130,6 +140,47 @@ static func apply(vp: Viewport = null) -> void:
 	var sz: int = SHADOW_SIZE[get_value("shadows")]
 	if sz > 0:
 		RenderingServer.directional_shadow_atlas_set_size(sz, true)
+	(Engine.get_main_loop() as SceneTree).call_group("env_adjust", "apply_adjustments")      # Helligkeit und Kontrast der laufenden Szene
+
+
+## Lautstaerke von Musik und Effekten auf die Busse legen (legt den Musik-Bus bei Bedarf an). Auch im Headless-Betrieb harmlos.
+static func apply_audio() -> void:
+	_ensure()
+	var mb := music_bus()
+	AudioServer.set_bus_volume_db(mb, _vol_db(get_value("music")))
+	AudioServer.set_bus_mute(mb, get_value("music") == 0)
+	var sb := AudioServer.get_bus_index(Sfx.BUS)
+	if sb >= 0:
+		AudioServer.set_bus_volume_db(sb, SFX_BASE_DB + _vol_db(get_value("sfx")))
+		AudioServer.set_bus_mute(sb, get_value("sfx") == 0)
+
+
+static func _vol_db(step: int) -> float:
+	return linear_to_db(maxf(0.001, float(step) / 10.0))
+
+
+## Index des Musik-Busses (wird beim ersten Aufruf angelegt). Musik-Player setzen bus = Settings.MUSIC_BUS.
+static func music_bus() -> int:
+	var i := AudioServer.get_bus_index(MUSIC_BUS)
+	if i < 0:
+		AudioServer.add_bus()
+		i = AudioServer.bus_count - 1
+		AudioServer.set_bus_name(i, MUSIC_BUS)
+		AudioServer.set_bus_volume_db(i, _vol_db(get_value("music")))
+		AudioServer.set_bus_mute(i, get_value("music") == 0)
+	return i
+
+
+static func brightness() -> float:
+	return ADJUST[get_value("brightness")]
+
+
+static func contrast() -> float:
+	return ADJUST[get_value("contrast")]
+
+
+static func difficulty_mult() -> float:
+	return DIFFICULTY[get_value("difficulty")]
 
 
 ## Fenster im Vorder- oder Hintergrund (main.gd ruft das bei Fokuswechsel): im Hintergrund nur BACKGROUND_FPS Bilder pro Sekunde.

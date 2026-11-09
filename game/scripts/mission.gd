@@ -13,6 +13,18 @@ const DIR := "res://data/missions/"
 
 
 ## Mission laden: die Karte aus "map" wird mit den Missionsfeldern zusammengefuehrt (Mission gewinnt).
+## Zufallsauswahl fuer Gespraeche (Missionsfeld "random_pick", Epilog): Zeilen mit Feld "group" bilden Gruppen, davon bleiben n zufaellige
+## (in der urspruenglichen Reihenfolge); Zeilen ohne "group" bleiben immer.
+static func pick_groups(lines: Array, n: int) -> Array:
+	var groups: Array = []
+	for l: Dictionary in lines:
+		if l.has("group") and not groups.has(l["group"]):
+			groups.append(l["group"])
+	groups.shuffle()
+	var keep := groups.slice(0, n)
+	return lines.filter(func(l: Dictionary) -> bool: return not l.has("group") or keep.has(l["group"]))
+
+
 static func load_mission(id: String) -> Dictionary:
 	var m: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(DIR + id + ".json"))
 	var map: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(m["map"]))

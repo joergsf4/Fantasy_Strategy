@@ -94,6 +94,13 @@ func _build_stats() -> void:
 		grid.add_child(nm)
 		for k in ["dealt", "taken", "healed", "kills"]:
 			grid.add_child(_label(str(int(r[k])), UiTheme.F_BODY, 19, UiTheme.CREAM, HORIZONTAL_ALIGNMENT_RIGHT))
+	var hist: Array = results.get("history", [])
+	if hist.size() >= 2:
+		col.add_child(_label("Verlauf: Leben der Gruppe (gold) und Gegner (rot) je Runde", UiTheme.F_BODY, 16, Color(0.85, 0.8, 0.55)))
+		var chart := HistoryChart.new()
+		chart.history = hist
+		chart.custom_minimum_size = Vector2(520, 70)
+		col.add_child(chart)
 	var awards: Array = st.get("awards", [])
 	if not awards.is_empty():
 		col.add_child(_label("Auszeichnungen", UiTheme.F_HEAD, 20, UiTheme.GOLD))

@@ -102,7 +102,7 @@ func run_tests() -> void:
 	await ability_case("Verspotten", "verspotten", [["ritter", "p", [4, 7]], [inf, "e", [6, 7]], [inf, "e", [9, 7]]], 0, 0)
 	await ability_case("Gruener Laser", "gruener_laser", [["robo", "p", [3, 7]], ["ritter", "p", [5, 7], {"hp": 14, "status": ["poison"]}]], 0, 1)
 	await ability_case("Versteck", "versteck", [["ninjas", "p", [5, 7]], [inf, "e", [7, 7]]], 0, 0)
-	await ability_case("Polymorph", "polymorph", [["claude", "p", [3, 7]], [inf, "e", [6, 7]]], 0, 1)
+	await ability_case("Polymorph", "polymorph", [["wendy", "p", [3, 7]], [inf, "e", [6, 7]]], 0, 1)
 
 	# Normaler Angriff samt Gegenschlag, Ruecken-/Flankenbonus, Sturmangriff, Deckung (Wald)
 	var r := build([["ritter", "p", [4, 7]], [inf, "e", [5, 7]]])

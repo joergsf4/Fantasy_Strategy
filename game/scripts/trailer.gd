@@ -13,7 +13,7 @@ const SHOWCASE := [
 	[["ninjas", "", "Kage-Schwestern", "Ninja-Duo"], ["elisabeth", "lachend", "Käpt’n Elisabeth", "Piratin mit Kanone"]],
 	[["museklaugust", "wuetend", "Muskelaugust", "Kurfürst und König"], ["robo", "", "Robo", "Dampfroboter"]],
 	[["hund", "wuetend", "Blauer Hundsfreund", "Knochenkämpfer"], ["wendy", "lachend", "Wendy Wolle", "Schaf-Heilerin"]],
-	[["claude", "lachend", "Claude", "Flaschengeist-Magier"], ["bienenmaedchen", "wuetend", "Stachelia", "Giftige Fliegerin"]],
+	[["magical_girl", "lachend", "Lumi Sternenglanz", "Magical Girl"], ["bienenmaedchen", "wuetend", "Stachelia", "Giftige Fliegerin"]],
 	[["braumeisterin", "lachend", "Brunhilde Bräu", "Braumeisterin mit Fass"], []],
 ]
 
@@ -27,8 +27,6 @@ const ABILITY_SCENES := [
 		"more": [["soldat_beritten", "e", [6, 7]], ["soldat_infanterie", "e", [7, 7]], ["kungfu", "p", [4, 7]]], "cam": [1.2, 3.6, 5.6], "fov": 40, "look": [5.0, 0.5, 7.0]},
 	{"ab": "stabsprung", "u": ["kungfu", "p", [4, 7]], "t": ["soldat_infanterie", "e", [5, 7]],
 		"more": [["soldat_beritten", "e", [7, 7]]], "cam": [0.6, 3.8, 5.6], "fov": 40},
-	{"ab": "polymorph", "u": ["claude", "p", [3, 7]], "t": ["soldat_infanterie", "e", [6, 7]],
-		"more": [["soldat_infanterie", "e", [7, 7]]], "cam": [-0.4, 2.8, 5.4], "fov": 36},
 ]
 
 var map_data: Dictionary

@@ -11,7 +11,7 @@ Ideen und offene Punkte, noch nicht gebaut. Stand: 2026-10-31. Entscheidungen de
 - **Mechanik-Idee:** Sandsturm verdeckt Sicht (Stealth-ähnlich), Oase als Ziel, Zwillinge nutzen Befehl (Oskar) und Eisigen Blick (Maja), die Gruppe braucht gegenseitige Deckung.
 - Offen: Rolle der Trainingsattrappe (aktuell unbenutzt, Einheit liegt in den Daten), Finale auf der Regenten-Insel als Mission 8.
 
-## 2. Statistik am Ende eines Kampfes — umgesetzt (Belohnungsbildschirm: Tabelle je Figur, Auszeichnungen; Rest der Ideen offen: Verlaufskurve, JSON-Export)
+## 2. Statistik am Ende eines Kampfes — umgesetzt (Belohnungsbildschirm: Tabelle je Figur, Auszeichnungen, Verlaufsgrafik und JSON-Export seit 2026-11-09)
 Anzeige im Belohnungsbildschirm (`reward_screen.gd`). Der Simulator führt solche Zähler schon je Figur (`SimBattle` `st`: Schaden, erlittener Schaden, Heilung, Besiegte, Fähigkeits-Einsätze). Im Spiel müssten sie in `_strike`, `_deal`, `_apply_effect`, Heilung und Verteidigen mitgezählt werden.
 
 Vorschläge, nach Nutzen sortiert:
@@ -45,7 +45,7 @@ Vorschläge des Nutzers: **Magical Girl** und/oder **Quaksalber-Arzt**. Heute he
 - **Sexy Jutsu — umgesetzt:** Die Kage-Schwestern können das Geheimnis direkt neben Maja unabhängig von ihrer Blickrichtung auslösen. Der normale Hinterhalt bleibt unverändert.
 - ~~Spielstand laden~~ umgesetzt: Das Spiel lädt beim Start den Spielstand, die Kapitelwahl zeigt ihn und kann ihn zurücksetzen.
 - **Stachelias Spezialfähigkeit:** Bienen rufen und Heilhonig fallen lassen, später im Team (Entscheidung offen: tritt sie nach Kapitel 5 bei?).
-- **Schwierigkeitswahl** (`difficulty.json` ist gemessen, aber nicht verdrahtet) und **Lautstärkeregler** für Musik und Effekte.
+- ~~Schwierigkeitswahl und Lautstärkeregler~~ umgesetzt (2026-11-09): Pause-Menü, Reiter „Ton und Spiel“ (Musik, Effekte, Schwierigkeit Leicht/Normal/Schwer = ×0,8/×1,0/×1,2 auf Leben und Angriff der Gegner).
 - **Brabbel-Laute** beim Dialogtext (Charakter-Laute statt Sprache), Lichtstimmung der Karte überarbeiten.
 - **Verwundeter Drache** (Schützling-Mission), **Brückenmission**, **Wachen/Schleichen**, Xiùlán kehrt zurück.
 - **Trainingsattrappe:** Einheit samt Wirbel liegt unbenutzt in den Daten, Emotions-Porträts fehlen.
@@ -140,7 +140,7 @@ Fünfter Auslöser-Typ `hit_near_ally`: Lumis Sternschnuppe trifft einen Gegner,
 Der frühere Punkt „Simulator kennt Geheimnisse nicht“ ist **gestrichen**: Geheimnisse gehören absichtlich nicht ins Balancing (Spieler müssen sie nicht entdecken). Ungleiche Stärke (Laser-Reflektor sehr stark, Shuriken Regen schwach) ist vorerst okay. Siehe `docs/geheimnisse.md`.
 
 ## Erledigt: Nur kennengelernte Helden wählbar (2026-11-02)
-In Gruppenwahl und Lager-Aufstellung sind nur Helden wählbar, die man schon kennengelernt hat (`Party.join_mission`): zählt `from` (wenn gesetzt), sonst `intro` (erstes Auftreten in der Geschichte). Gruppenwahl (nach der Einleitung) zählt auch Helden, die in der Einleitung dieser Mission auftreten; das Lager vor der Mission nur frühere Auftritte. Kapitel 1: nur die sechs Startfiguren, also keine Wahl; Takeda ab 3, Kage-Schwestern ab 4. **Claude (Flaschengeist)** ist in der Geschichte noch nie aufgetreten und deshalb nicht mehr wählbar, bis er eingeführt ist (`intro` oder `from` in `units.json` setzen).
+In Gruppenwahl und Lager-Aufstellung sind nur Helden wählbar, die man schon kennengelernt hat (`Party.join_mission`): zählt `from` (wenn gesetzt), sonst `intro` (erstes Auftreten in der Geschichte). Gruppenwahl (nach der Einleitung) zählt auch Helden, die in der Einleitung dieser Mission auftreten; das Lager vor der Mission nur frühere Auftritte. Kapitel 1: nur die sechs Startfiguren, also keine Wahl; Takeda ab 3, Kage-Schwestern ab 4. Die nie eingeführte Figur **Claude (Flaschengeist)** wurde entfernt (2026-11-08); seine Fähigkeit Polymorph bleibt als unbenutzter Baustein in den Daten.
 
 ## Mission 9 (Festung im Gebirge)
 Gebaut (`ch9`): Wart ohne Flucht, Frischlinge als eine Figur, Regent als Strohmann in weinerlicher Grafik. Offen: Balancing im Simulator (Ziel `defeat`), Gruppenwahl und Sprecher-Sperre prüfen, Anschluss-Mission zur größeren Bedrohung.
@@ -166,7 +166,7 @@ Gebaut (`ch9`): Wart ohne Flucht, Frischlinge als eine Figur, Regent als Strohma
 - **Ideen:** Sortiment je Kapitel (Stufe 1 bis 4, `items.json` mit `from`), Aufwertung statt Neukauf (Schmiede-Stufen gegen Material), Preise steigen, alte Ausrüstung lässt sich verkaufen (Teilbetrag), seltene Angebote nur einmal, Beute- und Geheimnis-Belohnungen als Ausrüstung. Balancing mit dem Simulator prüfen (Gold-Einnahmen je Mission aus `docs/balance.md`).
 
 ## Grafikoptionen (umgesetzt, Compatibility-Renderer bleibt)
-Esc-Menü, Reiter „Grafik“ (`PauseMenu._show_graphics`, `Settings` in `scripts/settings.gd`, gespeichert in `user://settings.cfg`): Voreinstellung (Niedrig/Mittel/Hoch), Anzeige (Fenster/Vollbild), V-Sync, Bildrate (30/60/120/unbegrenzt), Renderauflösung (50/75/100 %), Kantenglättung (Aus/FXAA/MSAA 2x/4x), Schatten (Aus bis Hoch), Leuchteffekt, Tiefenunschärfe (Tilt-Shift), Partikel und Regen. Entscheidung des Nutzers: **kein Wechsel auf Forward+**, kein Raytracing. Test: `tests/test_settings.gd`. Offen: Helligkeit/Kontrast-Regler, Lautstärkeregler im selben Menü.
+Esc-Menü, Reiter „Grafik“ (`PauseMenu._show_graphics`, `Settings` in `scripts/settings.gd`, gespeichert in `user://settings.cfg`): Voreinstellung (Niedrig/Mittel/Hoch), Anzeige (Fenster/Vollbild), V-Sync, Bildrate (30/60/120/unbegrenzt), Renderauflösung (50/75/100 %), Kantenglättung (Aus/FXAA/MSAA 2x/4x), Schatten (Aus bis Hoch), Leuchteffekt, Tiefenunschärfe (Tilt-Shift), Partikel und Regen. Entscheidung des Nutzers: **kein Wechsel auf Forward+**, kein Raytracing. Test: `tests/test_settings.gd`. Helligkeit und Kontrast sind im Reiter „Grafik“ (2026-11-09), die Lautstärke im Reiter „Ton und Spiel“.
 
 ### Aufgehoben: Wachturm der Frischlinge
 Das Sprite `fx_wachturm` (Holzturm auf Stelzen mit Eberschädel-Banner) ist fertig, passte aber nicht in Mission 12. Für eine spätere Schweine-Mission oder ein Lager der Frischlinge nutzen (als `decor` mit `sprite: "fx_wachturm"`).
@@ -194,7 +194,7 @@ Mit rund 14 wählbaren Helden lief die Auswahlliste über den Bildschirm. Die **
 - Umsetzung später (Rest): Zeilen in `story_ch9.json`/`missions/ch9.json` (Regent + Hundsfreund, Story-Flag und Rückfallstimmen beachten), weitere dezente Hinweise in späteren Missionen, Kampf mit dem Sack als letzter Gegner. Vorher klären: Wie wird der Sack zum Gegner (Rolle des Meisters? Verrat?), und die Rolle des Händlers in Lager und Shop.
 - Konflikt zum Meister-Plot (Professor Kugelblitz, „der Meister“ im Norden): Der Sack könnte der Meister sein oder dahinterstehen; mit dem Nutzer abstimmen, bevor Missionen 19+ geschrieben werden.
 
-## Idee (später): Filmische Kamerafahrt als Einleitung eines Levels (notiert 2026-11-04)
+## Umgesetzt (2026-11-09): Filmische Kamerafahrt als Einleitung eines Levels (Missionsfeld `intro_flight`, siehe `docs/missionen.md`)
 Im Trailer 5 (`game/scripts/trailer5.gd`, `_dusk_shot`, `_lab_shot`) gibt es **filmische Kamerafahrten mit flacherem Blickwinkel** (niedrige Kamera, geringes FOV, langsames Schieben/Schwenken über die Karte, mit Kinobalken). Das soll als **Einleitung einzelner Level** ins Spiel:
 - **Wann:** Vor der Gruppenwahl oder dem Kampfbeginn (zum Beispiel nach der Einleitungs-Geschichte), pro Mission **optional** per Missionsfeld (zum Beispiel `"intro_flight": {"from": [...], "to": [...], "fov": 34, "height": 2.4, "seconds": 6}`), mit Rückfall auf die normale Karte. Überspringbar (Klick oder Esc), im Testlabor einzeln aufrufbar.
 - **Bausteine zum Wiederverwenden:** die Kamerafahrt per Tween auf `b.cam` (Position und `look_at`, siehe `_dusk_shot`: `set_cam`-Callable mit `t` von 0 bis 1) und die Kinobalken (`_bars`, 92 Pixel oben und unten) aus Trailer 5; im Spiel als eigene Klasse (zum Beispiel `LevelFlyover`), die vor `Stage.start_battle` läuft und danach die normale Spielkamera wiederherstellt (`_enter_close_view` / Standardkamera).

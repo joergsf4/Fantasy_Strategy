@@ -43,7 +43,7 @@ func _run() -> void:
 	_prep_battle()
 	Engine.time_scale = 1.4
 	await _scene(SCENES_A[0])      # Fasswurf
-	await _scene(SCENES_A[2])      # Polymorph (Frosch)
+	await _scene(SCENES_A[2])      # Gebiss (der Frosch entfiel mit Claude)
 	Engine.time_scale = 1.0
 
 	# --- geheime Attacke

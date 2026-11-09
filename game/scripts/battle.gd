@@ -75,6 +75,7 @@ var villages: Array[Dictionary] = []   # {pos, reward, visited}
 var loot := {"gold": 0, "items": {}, "equipment": []}   # Beute dieses Kampfes (Gegenstaende gehen direkt in den Rucksack)
 var all_units: Array[Dictionary] = []     # alle je gespawnten Figuren (fuer die Statistik, auch gefallene)
 var fallen: Array[String] = []         # gefallene Helden (fuer Bonusziele)
+var history: Array = []               # Verlauf je Spielerrunde: {turn, hp, maxhp, foes} (Statistik-Grafik, JSON-Export)
 var _start_inventory: Dictionary = {}
 var _results: Dictionary = {}
 var goal: Dictionary = {"type": "rout"}
@@ -228,6 +229,40 @@ func _apply_desert_light(env: Environment, sun: DirectionalLight3D) -> void:
 		mat.set_shader_parameter("contrast", 1.22)
 		mat.set_shader_parameter("haze", 0.03)
 		mat.set_shader_parameter("vignette", 0.55)
+	elif map_data.get("mood", "") == "morgen":   # Wuestenmorgen (Mission 7): tiefe, rosig-goldene Sonne von Osten, lange Schatten, kuehle Luft, kaum Flimmern
+		sun.rotation_degrees = Vector3(-18, -100, 0)
+		sun.light_color = Color(1.0, 0.8, 0.6)
+		sun.light_energy = 0.95
+		sun.shadow_opacity = 0.75
+		env.ambient_light_color = Color(0.78, 0.76, 0.8)
+		env.ambient_light_energy = 0.45
+		var skm := (env.sky.sky_material as ProceduralSkyMaterial)
+		skm.sky_top_color = Color(0.42, 0.58, 0.85)
+		skm.sky_horizon_color = Color(1.0, 0.82, 0.68)
+		skm.ground_horizon_color = Color(0.78, 0.66, 0.52)
+		mat.set_shader_parameter("tint", Vector3(1.04, 0.97, 0.9))
+		mat.set_shader_parameter("saturation", 0.9)
+		mat.set_shader_parameter("contrast", 1.06)
+		mat.set_shader_parameter("haze", 0.08)
+		mat.set_shader_parameter("vignette", 0.3)
+		mat.set_shader_parameter("shimmer", 0.0002)
+	elif map_data.get("mood", "") == "mittagshitze":   # Wuesten-Mittag (Mission 8): Sonne fast senkrecht, kurze Schatten, ausgebleichte Farben, starkes Flimmern
+		sun.rotation_degrees = Vector3(-74, -40, 0)
+		sun.light_color = Color(1.0, 0.94, 0.82)
+		sun.light_energy = 1.1
+		sun.shadow_opacity = 0.85
+		env.ambient_light_color = Color(1.0, 0.9, 0.74)
+		env.ambient_light_energy = 0.42
+		var skh := (env.sky.sky_material as ProceduralSkyMaterial)
+		skh.sky_top_color = Color(0.5, 0.66, 0.88)
+		skh.sky_horizon_color = Color(0.98, 0.94, 0.84)
+		skh.ground_horizon_color = Color(0.9, 0.82, 0.66)
+		mat.set_shader_parameter("tint", Vector3(1.06, 0.99, 0.84))
+		mat.set_shader_parameter("saturation", 0.74)
+		mat.set_shader_parameter("contrast", 1.06)
+		mat.set_shader_parameter("haze", 0.16)
+		mat.set_shader_parameter("vignette", 0.3)
+		mat.set_shader_parameter("shimmer", 0.0016)
 
 
 ## Kartenfeld "mood": "sumpf": fahles gelbgruenes Licht, dichter Dunst und ein kuehler Filter (Mission 15).
@@ -499,6 +534,10 @@ const LIGHT_PRESETS := {
 		"sky": [Color(0.55, 0.65, 0.8), Color(0.8, 0.85, 0.9), Color(0.65, 0.7, 0.7)], "grade": [Vector3(0.93, 0.98, 1.04), 0.85, 1.0, 0.08, 0.35]},
 	"sommer": {"sun": [Vector3(-38, -35, 0), Color(1.0, 0.86, 0.6), 1.1], "amb": [Color(0.9, 0.85, 0.7), 0.5], "fog": [],
 		"sky": [Color(0.35, 0.58, 0.9), Color(0.95, 0.9, 0.75), Color(0.6, 0.7, 0.45)], "grade": [Vector3(1.06, 1.0, 0.88), 1.1, 1.06, 0.03, 0.3]},
+	"mittag": {"sun": [Vector3(-68, -30, 0), Color(1.0, 0.97, 0.9), 1.2], "amb": [Color(0.85, 0.88, 0.92), 0.55], "fog": [],
+		"sky": [Color(0.3, 0.55, 0.95), Color(0.85, 0.9, 0.95), Color(0.55, 0.65, 0.45)], "grade": [Vector3(1.02, 1.0, 0.98), 1.04, 1.04, 0.0, 0.2]},
+	"abend": {"sun": [Vector3(-20, -55, 0), Color(1.0, 0.74, 0.48), 1.05], "amb": [Color(0.74, 0.66, 0.66), 0.58], "fog": [],
+		"sky": [Color(0.36, 0.44, 0.74), Color(1.0, 0.74, 0.5), Color(0.6, 0.55, 0.42)], "grade": [Vector3(1.05, 0.98, 0.9), 1.02, 1.05, 0.02, 0.38]},
 	"hafen": {"sun": [Vector3(-20, -65, 0), Color(1.0, 0.72, 0.5), 0.95], "amb": [Color(0.6, 0.65, 0.8), 0.55], "fog": [],
 		"sky": [Color(0.38, 0.52, 0.8), Color(0.95, 0.75, 0.6), Color(0.5, 0.6, 0.55)], "grade": [Vector3(0.98, 0.96, 0.98), 0.92, 1.08, 0.0, 0.4]},
 }
@@ -806,6 +845,17 @@ func _mesh(mesh: Mesh, color: Color, pos: Vector3, parent: Node3D) -> MeshInstan
 func to_world(p: Vector2i) -> Vector3:
 	return Vector3(p.x, terrain.tile_height(p), p.y)
 
+var _env: Environment
+
+## Helligkeit und Kontrast aus den Einstellungen (Settings.apply ruft das ueber die Gruppe "env_adjust" auf).
+func apply_adjustments() -> void:
+	if _env == null:
+		return
+	_env.adjustment_enabled = Settings.brightness() != 1.0 or Settings.contrast() != 1.0
+	_env.adjustment_brightness = Settings.brightness()
+	_env.adjustment_contrast = Settings.contrast()
+	_env.adjustment_saturation = 1.0
+
 
 func _build_environment() -> void:
 	var sky_mat := ProceduralSkyMaterial.new()
@@ -832,6 +882,9 @@ func _build_environment() -> void:
 	env.tonemap_exposure = 0.9
 	env.adjustment_enabled = true
 	env.adjustment_saturation = 1.05
+	_env = env
+	add_to_group("env_adjust")
+	apply_adjustments()
 	var we := WorldEnvironment.new()
 	we.environment = env
 	add_child(we)
@@ -844,9 +897,10 @@ func _build_environment() -> void:
 	sun.shadow_blur = 1.5
 	sun.shadow_opacity = 0.65
 	add_child(sun)
-	if map_data.get("biome", "") == "wueste" and map_data.get("grade", "mexiko") != "none":
+	var desert: bool = map_data.get("biome", "") == "wueste" and map_data.get("grade", "mexiko") != "none"
+	if desert:      # Wuestenlicht mit eigenem Farbfilter; Wuesten-Stimmungen (morgen, mittagshitze, duester) stecken dort
 		_apply_desert_light(env, sun)
-	if LIGHT_PRESETS.has(map_data.get("mood", "")):
+	if LIGHT_PRESETS.has(map_data.get("mood", "")) and not desert:
 		_apply_light_preset(env, sun, LIGHT_PRESETS[map_data["mood"]])
 	if map_data.get("mood", "") == "sumpf":
 		_apply_swamp(env, sun)
@@ -915,6 +969,8 @@ func _spawn(id: String, team: String, pos: Vector2i, extra := {}) -> void:
 		Items.apply_equipment(u, (loadout.get("equipment", {}) as Dictionary).get(id, []))
 	else:     # Gegnerstaerke der Mission (data/progression.json): ab spaeteren Kapiteln wachsen Leben und Angriff mit
 		var sc := Progression.enemy_scale(str(map_data.get("id", "")))
+		sc["hp"] = float(sc["hp"]) * Settings.difficulty_mult()      # Schwierigkeit (Reiter "Ton und Spiel")
+		sc["atk"] = float(sc["atk"]) * Settings.difficulty_mult()
 		if sc["hp"] != 1.0:
 			u["maxhp"] = maxi(1, roundi(float(u["maxhp"]) * float(sc["hp"])))
 			u["hp"] = u["maxhp"]
@@ -989,6 +1045,9 @@ func _spawn(id: String, team: String, pos: Vector2i, extra := {}) -> void:
 	arrow.rotation_degrees = Vector3(0, 0, -90)
 	node.add_child(pivot)
 	u["arrow"] = pivot
+	if map_data.get("no_markers", false):      # Kartenfeld "no_markers" (Epilog): keine Kampfmarkierungen (Ring, Blickpfeil) unter den Figuren
+		(u["ring"] as Node3D).visible = false
+		pivot.visible = false
 	_face_step(u, Vector2i(-1 if pos.x > (grid.width - 1) / 2.0 else 1, 0))
 	u["label"] = lbl
 	units.append(u)
@@ -2047,13 +2106,49 @@ func results() -> Dictionary:
 	gained["recruited"] = recruited.duplicate()
 	gained["secrets_seen"] = secrets_seen.duplicate()
 	gained["stats"] = stats()
+	_record_history()
+	gained["history"] = history.duplicate(true)
+	_export_stats(gained, true)
 	_results = gained
 	return gained
 
 
 ## Bilanz einer verlorenen Mission: nur die Statistik (keine Beute, keine Belohnungen), fuer den Niederlage-Bildschirm.
 func defeat_summary() -> Dictionary:
-	return {"defeat": true, "stats": stats(), "turns": turn, "objectives": [], "gold": 0, "items": {}, "equipment": []}
+	_record_history()
+	var r := {"defeat": true, "stats": stats(), "turns": turn, "objectives": [], "gold": 0, "items": {}, "equipment": [], "history": history.duplicate(true)}
+	_export_stats(r, false)
+	return r
+
+
+## Verlauf: Leben der Gruppe und Zahl der Gegner zu Beginn jeder Spielerrunde (und am Ende), je Runde nur ein Eintrag.
+func _record_history() -> void:
+	var hp := 0
+	var mx := 0
+	for u in units:
+		if u["team"] == "p":
+			hp += int(u["hp"])
+			mx += int(u["maxhp"])
+	var e := {"turn": turn, "hp": hp, "maxhp": mx, "foes": _count_team("e")}
+	if not history.is_empty() and int(history.back()["turn"]) == turn:
+		history[history.size() - 1] = e
+	else:
+		history.append(e)
+
+
+## Statistik einer Mission als JSON nach user://statistik/ (fuer den Abgleich mit dem Simulator). Nicht im Headless-Betrieb (Tests).
+func _export_stats(r: Dictionary, won: bool) -> void:
+	if DisplayServer.get_name() == "headless":
+		return
+	DirAccess.make_dir_recursive_absolute("user://statistik")
+	var t := Time.get_datetime_dict_from_system()
+	var path := "user://statistik/%s_%04d-%02d-%02d_%02d%02d%02d.json" % [str(map_data.get("id", "mission")), t["year"], t["month"], t["day"], t["hour"], t["minute"], t["second"]]
+	var out := {"mission": map_data.get("id", ""), "won": won, "turns": turn, "difficulty": Settings.value_text("difficulty"),
+		"stats": r.get("stats", {}), "history": history, "fled": fled, "objectives": r.get("objectives", [])}
+	var f := FileAccess.open(path, FileAccess.WRITE)
+	if f != null:
+		f.store_string(JSON.stringify(out, "\t"))
+		f.close()
 
 
 # ------------------------------------------------------------------ Weltobjekte
@@ -3915,6 +4010,8 @@ func _super_cutin(u: Dictionary, ab: Dictionary, title := "", sub := "") -> void
 	var stream: AudioStreamMP3 = load("res://assets/audio/super_attack.mp3")
 	stream.loop = false
 	_super_player = AudioStreamPlayer.new()
+	_super_player.bus = Settings.MUSIC_BUS
+	Settings.music_bus()
 	_super_player.stream = stream
 	_super_player.volume_db = -4.0
 	add_child(_super_player)
@@ -4930,6 +5027,7 @@ func _return_from_polymorph(u: Dictionary) -> void:
 ## Beginn der Phase eines Teams: Gift tickt, Status laufen ab, Abklingzeiten sinken, Benommene setzen aus.
 func _begin_phase(team: String) -> void:
 	if team == "p":
+		_record_history()
 		Sfx.event("turn_start")
 		await _retie_check()
 	for u in (units + _away):

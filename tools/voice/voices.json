@@ -10,7 +10,6 @@
   "robo":           {"speaker": "Dionisio Schuyler",   "speed": 0.9,  "line": "Analyse abgeschlossen. Ihre Überlebenschance beträgt vierzehn Prozent."},
   "hund":           {"speaker": "Andrew Chipper",      "speed": 1.05, "line": "Knochen sind zum Werfen da. Oder zum Schlagen. Oder zum Knabbern."},
   "wendy":          {"speaker": "Annmarie Nele",       "speed": 0.95, "line": "Mäh, das Feuer ist aus. Seid ihr verletzt? Ich habe Kräutertee dabei."},
-  "claude":         {"speaker": "Badr Odhiambo",       "speed": 1.0,  "line": "Dein Wunsch sei mir Befehl. Naja, zumindest die ersten drei Wünsche."},
   "bienenmaedchen": {"speaker": "Brenda Stern",        "speed": 0.95, "line": "Bsssss. Der Honig des Dorfes gehört jetzt der Königin. Und ihr gehört dem Stachel."},
   "braumeisterin":  {"speaker": "Alison Dietlinde",    "speed": 1.0,  "line": "Ich hab was zu trinken mitgebracht. Und ein Fass zum Werfen."},
   "soldat_infanterie": {"speaker": "Ludvig Milivoj",   "speed": 1.0,  "line": "Der Hauptmann schickt Nachschub! Für den Fürsten!"},

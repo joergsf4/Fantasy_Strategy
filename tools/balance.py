@@ -23,12 +23,12 @@ OUT = ROOT / "out" / "sim"
 RESULTS = OUT / "results.json"
 
 HEROES = ["maedchen_baer", "ritter", "samurai", "kungfu", "ninjas", "elisabeth", "museklaugust",
-          "robo", "hund", "wendy", "claude", "bienenmaedchen", "braumeisterin"]
+          "robo", "hund", "wendy", "bienenmaedchen", "braumeisterin"]
 SOLDIERS = ["soldat_infanterie", "soldat_beritten", "soldat_bogenschuetze", "soldat_priester"]
 NAMES = {
     "maedchen_baer": "Mira & Brumm", "ritter": "Ser Albrecht", "samurai": "Takeda", "kungfu": "Meister Lin",
     "ninjas": "Kage-Schwestern", "elisabeth": "Käpt’n Elisabeth", "museklaugust": "Muskelaugust", "robo": "Robo",
-    "hund": "Blauer Hundsfreund", "wendy": "Wendy Wolle", "claude": "Claude", "bienenmaedchen": "Stachelia",
+    "hund": "Blauer Hundsfreund", "wendy": "Wendy Wolle", "bienenmaedchen": "Stachelia",
     "braumeisterin": "Brunhilde Bräu", "soldat_infanterie": "Infanterie", "soldat_beritten": "Reiter",
     "soldat_bogenschuetze": "Bogenschütze", "soldat_priester": "Priester",
 }
@@ -430,7 +430,7 @@ def e13_river():
 
 
 HEROES_ALL = ["maedchen_baer", "ritter", "samurai", "kungfu", "ninjas", "elisabeth", "museklaugust", "robo", "hund", "wendy",
-              "claude", "braumeisterin", "magical_girl", "quacksalber", "panzer", "bienenmaedchen"]
+              "braumeisterin", "magical_girl", "quacksalber", "panzer", "bienenmaedchen"]
 BOSSES_ALL = ["wart", "xiulan", "oskar", "maja", "fuerst", "bienenmaedchen", "frischlinge", "kugelblitz", "cyborg_wart"]
 
 
@@ -645,7 +645,7 @@ def e17_squads():
         fixed = story_fixed(c, base)
         if json.loads((GAME / "data" / "missions" / f"ch{c}.json").read_text()).get("fixed_squad"):
             fixed = base
-        pool = [h for h, u in units.items() if u.get("hero") and not u.get("recruit_only") and h != "claude" and jm(u) <= c]
+        pool = [h for h, u in units.items() if u.get("hero") and not u.get("recruit_only") and jm(u) <= c]
         rnd = random.Random(1700 + c)
         seen, squads = set(), []
         free = [h for h in pool if h not in fixed]

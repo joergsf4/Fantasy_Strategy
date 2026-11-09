@@ -253,5 +253,10 @@
  "sack_boss_chibi": true,
  "fx_kaefig_v2": true,
  "fx_kaefig_v3": true,
- "xiulan_bewusstlos": true
+ "xiulan_bewusstlos": true,
+ "morgrim": true,
+ "morgrim_lachend": true,
+ "morgrim_chibi": true,
+ "bg_heimkehr": true,
+ "haendler_wuetend": true
 }

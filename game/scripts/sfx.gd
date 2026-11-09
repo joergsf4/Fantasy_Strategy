@@ -38,6 +38,7 @@ func _init() -> void:
 		AudioServer.add_bus()
 		AudioServer.set_bus_name(AudioServer.bus_count - 1, BUS)
 	AudioServer.set_bus_volume_db(AudioServer.get_bus_index(BUS), float(cfg.get("volume_db", -2.0)))
+	Settings.apply_audio()      # Lautstaerkeregler (Reiter "Ton und Spiel")
 	for i in POOL:
 		var p := AudioStreamPlayer.new()
 		p.bus = BUS

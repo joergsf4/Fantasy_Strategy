@@ -5,7 +5,7 @@ extends Trailer2
 
 const T3_HEROES := [
 	[["elisabeth", "lachend", "Käpt’n Elisabeth", "Piratin mit Kanone"], ["samurai", "wuetend", "Takeda", "Samurai"]],
-	[["wendy", "lachend", "Wendy Wolle", "Schaf-Heilerin"], ["claude", "lachend", "Claude", "Flaschengeist-Magier"]],
+	[["wendy", "lachend", "Wendy Wolle", "Schaf-Heilerin"], ["panzer", "", "Robina", "Dampfpanzer"]],
 	[["robo", "", "Robo", "Dampfroboter"], ["hund", "wuetend", "Blauer Hundsfreund", "Knochenkämpfer"]],
 	[["quacksalber", "lachend", "Dr. Humbug", "Äußerst seriöser Arzt"], ["magical_girl", "lachend", "Lumi Sternenglanz", "Magical Girl"]],
 	[["bienenmaedchen", "wuetend", "Stachelia", "Giftige Fliegerin"], ["braumeisterin", "lachend", "Brunhilde Bräu", "Braumeisterin mit Fass"]],
@@ -45,7 +45,7 @@ func _run() -> void:
 	_prep_battle()
 	Engine.time_scale = 1.5
 	await _scene(SCENES_A[0])      # Fasswurf
-	await _scene(SCENES_A[2])      # Polymorph
+	await _scene(SCENES_A[2])      # Gebiss (der Frosch entfiel mit Claude)
 	await _scene(SCENES_B[0])      # Bellen
 	await _scene(SCENES_B[2])      # Tonikum
 	Engine.time_scale = 1.0

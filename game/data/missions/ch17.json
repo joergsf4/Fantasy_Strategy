@@ -1,16 +1,16 @@
 {
  "id": "ch17",
- "title": "Zwischenspiel: Überfall am Pass",
+ "title": "Kapitel 3: Der flammende Berg",
  "map": "res://data/map_ch17.json",
  "stub": true,
  "camp_after": true,
  "interlude": {
   "scene": "berge",
-  "kicker": "Zwischenspiel",
-  "title": "Am Fuß der Berge",
+  "kicker": "Kapitel 3",
+  "title": "Der flammende Berg",
   "duration": 27.0
  },
- "briefing": "Keine Kampfmission: Die Gruppe erreicht die Berge, die Frischlinge entführen den Sack.",
+ "briefing": "Kapitel 3 beginnt, keine Kampfmission: Die Gruppe erreicht die Berge, die Frischlinge entführen den Sack.",
  "goals": [
   {
    "type": "rout"

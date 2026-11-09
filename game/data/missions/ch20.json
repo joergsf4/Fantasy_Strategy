@@ -69,5 +69,18 @@
     "story": true
    }
   ]
+ },
+ "intro_flight": {
+  "from": [
+   5,
+   11
+  ],
+  "to": [
+   5,
+   4
+  ],
+  "height": 3.4,
+  "fov": 40,
+  "seconds": 7
  }
 }

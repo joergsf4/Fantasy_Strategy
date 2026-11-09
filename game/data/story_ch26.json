@@ -1,0 +1,225 @@
+{
+ "intro": [
+  {
+   "left": "hund",
+   "right": "waisenkinder",
+   "speaker": "waisenkinder",
+   "text": "Sie kommen! Sie kommen den Hügel herauf! HUNDSFREUND!!!",
+   "right_expr": "lachend"
+  },
+  {
+   "left": "hund",
+   "right": "waisenkinder",
+   "speaker": "hund",
+   "text": "Langsam, langsam! Ich habe nur zwei Arme. … Na gut. Dann eben alle auf einmal.",
+   "left_expr": "lachend",
+   "right_expr": "lachend"
+  },
+  {
+   "left": "hund",
+   "right": "lotte",
+   "speaker": "lotte",
+   "text": "Du hast versprochen, dass du wiederkommst. Und du hast alle mitgebracht!",
+   "right_expr": "lachend"
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "mutter",
+   "speaker": "mutter",
+   "text": "Die Suppe steht seit drei Tagen auf dem Herd. Jeden Tag ist sie ein bisschen dicker geworden.",
+   "right_expr": "lachend"
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "morgrim",
+   "speaker": "morgrim",
+   "text": "Ähm … darf ich mich vorstellen? Morgrim. Früher Regent. Heute Kartoffelschäler.",
+   "right_expr": ""
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "morgrim",
+   "speaker": "maedchen_baer",
+   "text": "Morgrim? Du siehst ja aus wie früher. Nur … netter.",
+   "left_expr": "lachend"
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "morgrim",
+   "speaker": "morgrim",
+   "text": "Die Decke habe ich behalten. Und ich möchte hierbleiben und helfen. Ich habe so viel kaputt gemacht. Jetzt will ich endlich mal etwas aufbauen.",
+   "right_expr": ""
+  },
+  {
+   "left": "hund",
+   "right": "morgrim",
+   "speaker": "hund",
+   "text": "Dann fang beim Dach an. Und beim Abwasch. Und bei den Gutenachtgeschichten.",
+   "left_expr": "lachend"
+  },
+  {
+   "left": "hund",
+   "right": "morgrim",
+   "speaker": "morgrim",
+   "text": "Mit Vergnügen. Ich kenne viele Geschichten. Die meisten gehen schlecht für den Regenten aus.",
+   "right_expr": "lachend"
+  },
+  {
+   "left": "ritter",
+   "right": "waisenkinder",
+   "speaker": "ritter",
+   "text": "Vierzig Jahre trage ich diese Rüstung. Heute zum ersten Mal ohne Grund. Es fühlt sich gut an.",
+   "left_expr": "lachend",
+   "right_expr": "lachend",
+   "group": "ritter"
+  },
+  {
+   "left": "samurai",
+   "right": "waisenkinder",
+   "speaker": "samurai",
+   "text": "Ein Haus voller Kinderlachen. Dafür zieht man das Schwert. Und dafür steckt man es wieder ein.",
+   "left_expr": "lachend",
+   "right_expr": "lachend",
+   "group": "samurai"
+  },
+  {
+   "left": "kungfu",
+   "right": "waisenkinder",
+   "speaker": "kungfu",
+   "text": "Ich koche Tee für alle. Auch für die Kinder. Mit sehr viel Honig.",
+   "left_expr": "lachend",
+   "right_expr": "lachend",
+   "group": "kungfu"
+  },
+  {
+   "left": "ninjas",
+   "right": "waisenkinder",
+   "speaker": "ninjas",
+   "text": "Wir haben unter jedem Bett nachgesehen. – Keine Feinde. – Nur Socken. – Sehr viele Socken.",
+   "left_expr": "lachend",
+   "right_expr": "lachend",
+   "group": "ninjas"
+  },
+  {
+   "left": "elisabeth",
+   "right": "waisenkinder",
+   "speaker": "elisabeth",
+   "text": "Wer will, kommt morgen mit an Bord. Die Möwe nimmt jeden mit, der ein Seemannslied singen kann.",
+   "left_expr": "lachend",
+   "right_expr": "lachend",
+   "group": "elisabeth"
+  },
+  {
+   "left": "museklaugust",
+   "right": "waisenkinder",
+   "speaker": "museklaugust",
+   "text": "Kinder! Wer will auf die Schultern eines Kurfürsten? Einer pro Muskel, bitte anstellen!",
+   "left_expr": "lachend",
+   "right_expr": "lachend",
+   "group": "museklaugust"
+  },
+  {
+   "left": "robo",
+   "right": "waisenkinder",
+   "speaker": "robo",
+   "text": "Analyse abgeschlossen. Ergebnis: Ich bin … glücklich. Diese Rechnung geht ohne Rest auf.",
+   "left_expr": "lachend",
+   "right_expr": "lachend",
+   "group": "robo"
+  },
+  {
+   "left": "panzer",
+   "right": "waisenkinder",
+   "speaker": "panzer",
+   "text": "Ich fahre die Kinder spazieren. Ganz langsam. Alle ausweichen … aber nur ein bisschen.",
+   "left_expr": "lachend",
+   "right_expr": "lachend",
+   "group": "panzer"
+  },
+  {
+   "left": "wendy",
+   "right": "waisenkinder",
+   "speaker": "wendy",
+   "text": "Mäh … ich habe genug Wolle für alle. Jeder bekommt einen Pullover. Auch Brumm.",
+   "left_expr": "lachend",
+   "right_expr": "lachend",
+   "group": "wendy"
+  },
+  {
+   "left": "braumeisterin",
+   "right": "waisenkinder",
+   "speaker": "braumeisterin",
+   "text": "Für die Großen ein Bier, für die Kleinen Apfelsaft. Und für Brumm ein Fass Honig.",
+   "left_expr": "lachend",
+   "right_expr": "lachend",
+   "group": "braumeisterin"
+  },
+  {
+   "left": "magical_girl",
+   "right": "waisenkinder",
+   "speaker": "magical_girl",
+   "text": "Heute Abend zeige ich euch die Sterne. Die echten. Die haben uns die ganze Zeit zugeguckt.",
+   "left_expr": "lachend",
+   "right_expr": "lachend",
+   "group": "magical_girl"
+  },
+  {
+   "left": "quacksalber",
+   "right": "waisenkinder",
+   "speaker": "quacksalber",
+   "text": "Für jedes Kind ein Elixier! Reiner Himbeersaft, ganz ohne Nebenwirkungen. Ehrlich. Ausnahmsweise.",
+   "left_expr": "lachend",
+   "right_expr": "lachend",
+   "group": "quacksalber"
+  },
+  {
+   "left": "xiulan",
+   "right": "waisenkinder",
+   "speaker": "xiulan",
+   "text": "Ich bleibe zum Essen. Und die Kinder bekommen meinen Ersatz-Kaugummi. Den guten.",
+   "left_expr": "lachend",
+   "right_expr": "lachend",
+   "group": "xiulan"
+  },
+  {
+   "left": "alphawolf",
+   "right": "waisenkinder",
+   "speaker": "alphawolf",
+   "text": "*Die Alphawölfin legt sich quer vor die Tür. Heute Nacht hält sie Wache.*",
+   "right_expr": "lachend",
+   "group": "alphawolf"
+  },
+  {
+   "left": "bienenmaedchen",
+   "right": "waisenkinder",
+   "speaker": "waisenkinder",
+   "text": "Frau Biene! Magst du mit uns spielen?",
+   "right_expr": "lachend",
+   "group": "stachelia"
+  },
+  {
+   "left": "bienenmaedchen",
+   "right": "waisenkinder",
+   "speaker": "bienenmaedchen",
+   "text": "Nein. Zu laut. Zu klebrig. Zu viele Kinder. … Ich bleibe nur bis zum Nachtisch.",
+   "left_expr": "wuetend",
+   "right_expr": "lachend",
+   "group": "stachelia"
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "hund",
+   "speaker": "maedchen_baer",
+   "text": "Brumm sagt, das hier ist jetzt auch sein Zuhause. Und ich glaube, meins auch.",
+   "left_expr": "lachend"
+  },
+  {
+   "left": "hund",
+   "right": "maedchen_baer",
+   "speaker": "hund",
+   "text": "Willkommen daheim. Alle.",
+   "left_expr": "lachend"
+  }
+ ],
+ "outro": []
+}

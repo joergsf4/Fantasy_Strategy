@@ -4,7 +4,7 @@ extends RefCounted
 ## spec = {map: "open"|"ch1", players: [{id, hp, atk}], enemies: [...], disabled: {...}, p_ai: {...}, e_ai: {...}}
 
 const HEROES := ["maedchen_baer", "ritter", "samurai", "kungfu", "ninjas", "elisabeth", "museklaugust",
-	"robo", "hund", "wendy", "claude", "bienenmaedchen", "braumeisterin"]
+	"robo", "hund", "wendy", "bienenmaedchen", "braumeisterin"]
 const SOLDIERS := ["soldat_infanterie", "soldat_beritten", "soldat_bogenschuetze", "soldat_priester"]
 
 static var _ch1: Dictionary = {}

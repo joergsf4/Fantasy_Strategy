@@ -3,6 +3,10 @@ extends SceneTree
 
 
 func _initialize() -> void:
+	if DisplayServer.get_name() == "headless":      # braucht einen echten Renderer; ohne Fenster ueberspringen statt haengen
+		print("uebersprungen (ohne Fenster): ", get_script().resource_path.get_file())
+		quit(0)
+		return
 	var viewport := SubViewport.new()
 	viewport.size = Vector2i(320, 320)
 	viewport.own_world_3d = true

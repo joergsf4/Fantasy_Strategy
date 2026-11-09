@@ -16,7 +16,7 @@ func _initialize() -> void:
 	Engine.time_scale = 20.0
 	var defs: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/units.json"))
 	var main_src := FileAccess.get_file_as_string("res://scripts/main.gd")
-	check(main_src.contains('"ch16", "ch17", "ch18", "ch19", "ch20", "ch21", "ch22", "ch23", "ch24", "ch25"]'), "Kapitelliste bis ch25")
+	check(main_src.contains('"ch16", "ch17", "ch18", "ch19", "ch20", "ch21", "ch22", "ch23", "ch24", "ch25", "ch26"]'), "Kapitelliste bis ch26")
 	var m := Mission.load_mission("ch17")
 	check(m.get("stub", false) and m.get("camp_after", false) and m["interlude"]["scene"] == "berge", "ch17: Zwischenspiel ohne Kampf, Lager danach, Bergszene")
 	check(Mission.load_mission("ch18")["title"] == "Die Wölfe der Nacht" and Mission.load_mission("ch19")["title"] == "Der Regent im Schnee", "Wölfe sind 18, Regent 19")

@@ -171,6 +171,14 @@
    "enemy_hp": 2.0,
    "enemy_atk": 2.0,
    "note": "Finale: der Sack"
+  },
+  "ch26": {
+   "points": 6,
+   "gear_tier": 3.5,
+   "target_win": 0.9,
+   "enemy_hp": 1.0,
+   "enemy_atk": 1.0,
+   "note": "Epilog ohne Kampf (Waisenhaus, Abspann)"
   }
  },
  "talents": {

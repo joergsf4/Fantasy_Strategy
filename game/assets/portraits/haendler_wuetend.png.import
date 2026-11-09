@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c517bcqxn7gu8"
-path="res://.godot/imported/claude_lachend.png-6065a479537bb7233379e68d956d19de.ctex"
+uid="uid://b6yw8smoc7i78"
+path="res://.godot/imported/haendler_wuetend.png-fcdf60c79f4d093f48e5b9dc7b262b92.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/portraits/claude_lachend.png"
-dest_files=["res://.godot/imported/claude_lachend.png-6065a479537bb7233379e68d956d19de.ctex"]
+source_file="res://assets/portraits/haendler_wuetend.png"
+dest_files=["res://.godot/imported/haendler_wuetend.png-fcdf60c79f4d093f48e5b9dc7b262b92.ctex"]
 
 [params]
 

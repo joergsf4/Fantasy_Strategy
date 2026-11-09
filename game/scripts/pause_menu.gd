@@ -74,6 +74,7 @@ func _show_main() -> void:
 	_panel.position = Vector2(440, 150)
 	_clear()
 	_col.add_child(_label("Pause", UiTheme.F_TITLE, 40, UiTheme.GOLD))
+	_panel.reset_size.call_deferred()
 	var first := _button("Weiter", close)
 	_col.add_child(first)
 	var save := _button("Speichern", _on_save)
@@ -84,6 +85,7 @@ func _show_main() -> void:
 		_fs_button.text = _fullscreen_text())
 	_col.add_child(_fs_button)
 	_col.add_child(_button("Grafik", _show_graphics))
+	_col.add_child(_button("Ton und Spiel", _show_sound))
 	if can_restart:
 		_col.add_child(_button("Mission neu starten", _confirm_restart))
 	if can_save:      # im Hauptmenue selbst gibt es keinen Weg dorthin zurueck
@@ -116,40 +118,74 @@ func _confirm_quit() -> void:
 	back.grab_focus.call_deferred()
 
 
+## Reiter "Ton und Spiel": Lautstaerke von Musik und Effekten, Schwierigkeit (gilt ab dem naechsten Kampf). Wirkt sofort, wird gespeichert.
+func _show_sound() -> void:
+	_panel.position = Vector2(440, 150)
+	_clear()
+	_col.add_child(_label("Ton und Spiel", UiTheme.F_TITLE, 36, UiTheme.GOLD))
+	_panel.reset_size.call_deferred()      # Panel auf den (kuerzeren) Inhalt schrumpfen
+	var buttons: Dictionary = {}
+	var refresh := func() -> void:
+		for o: Dictionary in Settings.OPTIONS:
+			if buttons.has(o["key"]):
+				(buttons[o["key"]] as Button).text = "%s: %s" % [o["label"], Settings.value_text(o["key"])]
+	for o: Dictionary in Settings.OPTIONS:
+		if o.get("tab", "") != "ton":
+			continue
+		var key: String = o["key"]
+		var b := _button("", func() -> void:
+			Settings.cycle(key)
+			Settings.apply_audio()
+			Settings.save_file()
+			if key == "sfx":
+				Sfx.event("coin")      # Probeklang in der neuen Lautstaerke
+			refresh.call())
+		buttons[key] = b
+		_col.add_child(b)
+	refresh.call()
+	_col.add_child(_label("Die Schwierigkeit gilt ab dem nächsten Kampf.", UiTheme.F_BODY, 17, Color(0.8, 0.8, 0.75), 340))
+	var back := _button("Zurück", _show_main)
+	_col.add_child(back)
+	back.grab_focus.call_deferred()
+
+
 ## Reiter "Grafik": jede Option ist ein Knopf, der beim Klicken den naechsten Wert waehlt (Settings.OPTIONS); wirkt sofort und wird gespeichert.
 func _show_graphics() -> void:
-	_panel.position = Vector2(440, 22)
+	_panel.position = Vector2(440, 14)
 	_clear()
-	_col.add_theme_constant_override("separation", 7)
+	_col.add_theme_constant_override("separation", 5)
 	_col.add_child(_label("Grafik", UiTheme.F_TITLE, 36, UiTheme.GOLD))
 	var buttons: Dictionary = {}
 	var refresh := func() -> void:
 		for o: Dictionary in Settings.OPTIONS:
-			(buttons[o["key"]] as Button).text = "%s: %s" % [o["label"], Settings.value_text(o["key"])]
+			if buttons.has(o["key"]):
+				(buttons[o["key"]] as Button).text = "%s: %s" % [o["label"], Settings.value_text(o["key"])]
 		(buttons["_preset"] as Button).text = "Voreinstellung: " + Settings.preset_name()
 	var preset := _button("", func() -> void:
 		Settings.cycle_preset()
 		Settings.apply()
 		Settings.save_file()
 		refresh.call())
-	preset.custom_minimum_size = Vector2(320, 38)
+	preset.custom_minimum_size = Vector2(320, 35)
 	buttons["_preset"] = preset
 	_col.add_child(preset)
 	for o: Dictionary in Settings.OPTIONS:
+		if o.get("tab", "") == "ton":
+			continue
 		var key: String = o["key"]
 		var b := _button("", func() -> void:
 			Settings.cycle(key)
 			Settings.apply()
 			Settings.save_file()
 			refresh.call())
-		b.custom_minimum_size = Vector2(320, 38)
+		b.custom_minimum_size = Vector2(320, 35)
 		buttons[key] = b
 		_col.add_child(b)
 	refresh.call()
 	var back := _button("Zurück", func() -> void:
 		_col.add_theme_constant_override("separation", 10)
 		_show_main())
-	back.custom_minimum_size = Vector2(320, 38)
+	back.custom_minimum_size = Vector2(320, 35)
 	_col.add_child(back)
 	back.grab_focus.call_deferred()
 

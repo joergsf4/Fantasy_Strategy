@@ -52,8 +52,8 @@ func _initialize() -> void:
 	check(not r.equip("braumeisterin", "nicht_im_lager", br), "Nur Stuecke aus dem Lager")
 	r.unequip("braumeisterin", "waffe")
 	check(r.worn_in("braumeisterin", "waffe") == "" and r.pool.has("schwere_axt"), "Ablegen: zurueck ins Lager")
-	var cl: Dictionary = defs["claude"]
-	check(r.equip("claude", "kristallstab", cl), "Claude (Magier) traegt den Kristallstab")
+	var cl: Dictionary = defs["magical_girl"]
+	check(r.equip("magical_girl", "kristallstab", cl), "Lumi (Magierin) traegt den Kristallstab")
 	# Speichern behaelt Vorrat und Ausruestung
 	var path := "user://test_camp.json"
 	p.save(path)

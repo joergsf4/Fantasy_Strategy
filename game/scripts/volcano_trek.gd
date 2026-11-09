@@ -26,6 +26,8 @@ func _start_wind() -> void:
 	if not ResourceLoader.exists(MUSIC):
 		return
 	_wind = AudioStreamPlayer.new()
+	_wind.bus = Settings.MUSIC_BUS
+	Settings.music_bus()
 	_wind.stream = load(MUSIC)
 	_wind.volume_db = -40.0
 	add_child(_wind)

@@ -157,7 +157,7 @@ func run_tests() -> void:
 
 	# --- Polymorph: weg fuer 3 Runden, dann zurueck
 	clear()
-	var cl := spawn("claude", "p", Vector2i(6, 7))
+	var cl := spawn("wendy", "p", Vector2i(6, 7))      # Polymorph hat keine Figur mehr (Claude entfernt), Wendy als Wirkerin
 	spawn("ritter", "p", Vector2i(1, 8))
 	var sold := spawn("soldat_infanterie", "e", Vector2i(8, 7))
 	var other := spawn("soldat_infanterie", "e", Vector2i(2, 2))

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cn05maqh382kd"
-path="res://.godot/imported/claude.png-d58d8ebfb955297f4c7744d8d8fc1de1.ctex"
+uid="uid://doahd5lspoucy"
+path="res://.godot/imported/morgrim.png-c0de78b2b6180c58168104c5ec34a665.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/tokens/claude.png"
-dest_files=["res://.godot/imported/claude.png-d58d8ebfb955297f4c7744d8d8fc1de1.ctex"]
+source_file="res://assets/portraits/morgrim.png"
+dest_files=["res://.godot/imported/morgrim.png-c0de78b2b6180c58168104c5ec34a665.ctex"]
 
 [params]
 

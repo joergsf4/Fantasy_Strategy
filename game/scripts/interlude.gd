@@ -83,6 +83,8 @@ func _ready() -> void:
 	tw.tween_property(_black, "modulate:a", 0.0, 1.2).from(1.0)
 	if music_path != "" and ResourceLoader.exists(music_path):
 		_music = AudioStreamPlayer.new()
+		_music.bus = Settings.MUSIC_BUS
+		Settings.music_bus()
 		_music.stream = load(music_path)
 		_music.volume_db = -30.0
 		add_child(_music)

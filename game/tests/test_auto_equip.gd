@@ -18,13 +18,13 @@ func _run() -> void:
 	var p := Party.new()
 	p.equipment = {"robo": ["eisenschwert"], "ritter": ["kettenhemd"]}
 	p.pool = ["fernrohr", "kristallstab", "stahlklinge", "lederwams", "lederwams", "zauberlampe"]
-	var squad := ["ritter", "claude", "robo", "wendy"]
+	var squad := ["ritter", "magical_girl", "robo", "wendy"]
 	var original_count := p.pool.size()
 	var count := p.auto_equip(squad, defs)
 	check(count == original_count and p.pool.is_empty(), "Vorhandene Gegenstaende einmalig verteilt")
 	check(p.worn_in("robo", "waffe") == "eisenschwert" and p.worn_in("ritter", "ruestung") == "kettenhemd", "Bereits angelegte Stuecke bleiben unveraendert")
-	check(p.worn_in("robo", "talisman") == "fernrohr" or p.worn_in("claude", "talisman") == "fernrohr", "Fernrohr geht an geeigneten Fernkaempfer")
-	check(p.worn_in("claude", "waffe") == "kristallstab", "Magierstab geht an passenden Magier")
+	check(p.worn_in("robo", "talisman") == "fernrohr" or p.worn_in("magical_girl", "talisman") == "fernrohr", "Fernrohr geht an geeigneten Fernkaempfer")
+	check(p.worn_in("magical_girl", "waffe") == "kristallstab" or p.worn_in("wendy", "waffe") == "kristallstab", "Magierstab geht an passenden Magier")
 	check(p.worn_in("ritter", "waffe") == "stahlklinge", "Allgemeine Waffe bleibt fuer Nichtmagier")
 	check(p.auto_equip(squad, defs) == 0, "Wiederholter Aufruf veraendert nichts")
 

@@ -78,7 +78,7 @@ func _run() -> void:
 	stage.new_battle()
 	stage.set_mode("battle")
 	_prep_battle()
-	for sc: Dictionary in [SCENES_A[0], SCENES_B[0], SCENES_A[2]]:      # Fasswurf, Bellen, Frosch
+	for sc: Dictionary in [SCENES_A[0], SCENES_B[0], SCENES_A[1]]:      # Fasswurf, Bellen, Wurf (Frosch entfiel mit Claude)
 		Engine.time_scale = 1.6
 		await _scene(sc)
 	Engine.time_scale = 1.0
@@ -88,7 +88,7 @@ func _run() -> void:
 	stage.new_battle()
 	stage.set_mode("battle")
 	_prep_battle()
-	for sc: Dictionary in [SCENES_A[3], SCENES_B[1], SCENES_B[2]]:      # Gebiss, Bearhug, Tonikum
+	for sc: Dictionary in [SCENES_A[2], SCENES_B[1], SCENES_B[2]]:      # Gebiss, Bearhug, Tonikum
 		Engine.time_scale = 1.6
 		await _scene(sc)
 	Engine.time_scale = 1.0

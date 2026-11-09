@@ -9,7 +9,7 @@ const HEROES := [
 	[["kungfu", "lachend", "Meister Lin", "Kung-Fu mit Stab"], ["ninjas", "", "Kage-Schwestern", "Ninja-Duo"]],
 	[["elisabeth", "lachend", "Käpt’n Elisabeth", "Piratin mit Kanone"], ["museklaugust", "wuetend", "Muskelaugust", "Kurfürst und König"]],
 	[["robo", "", "Robo", "Dampfroboter"], ["hund", "wuetend", "Blauer Hundsfreund", "Knochenkämpfer"]],
-	[["wendy", "lachend", "Wendy Wolle", "Schaf-Heilerin"], ["claude", "lachend", "Claude", "Flaschengeist-Magier"]],
+	[["wendy", "lachend", "Wendy Wolle", "Schaf-Heilerin"], ["panzer", "", "Robina", "Dampfpanzer"]],
 	[["bienenmaedchen", "wuetend", "Stachelia", "Giftige Fliegerin"], ["braumeisterin", "lachend", "Brunhilde Bräu", "Braumeisterin mit Fass"]],
 	[["quacksalber", "lachend", "Dr. Humbug", "Äußerst seriöser Arzt"], ["magical_girl", "lachend", "Lumi Sternenglanz", "Magical Girl"]],
 ]
@@ -18,7 +18,6 @@ const HEROES := [
 const SCENES_A := [
 	{"ab": "fasswurf", "u": ["braumeisterin", "p", [3, 7]], "t": ["soldat_infanterie", "e", [6, 7]], "more": [["soldat_beritten", "e", [7, 7]]], "cam": [0.4, 3.0, 5.6], "fov": 38},
 	{"ab": "wurf", "u": ["museklaugust", "p", [4, 7]], "t": ["soldat_infanterie", "e", [5, 7]], "more": [["soldat_beritten", "e", [7, 6]]], "cam": [1.2, 3.6, 5.2], "fov": 38},
-	{"ab": "polymorph", "u": ["claude", "p", [3, 7]], "t": ["soldat_infanterie", "e", [6, 7]], "more": [["soldat_infanterie", "e", [7, 7]]], "cam": [-0.4, 2.8, 5.4], "fov": 36},
 	{"ab": "gebiss", "u": ["xiulan", "p", [3, 7]], "t": ["soldat_infanterie", "e", [6, 7]], "more": [["soldat_beritten", "e", [7, 7]]], "cam": [0.2, 2.8, 5.4], "fov": 36},
 ]
 const SCENES_B := [

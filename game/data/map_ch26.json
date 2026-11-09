@@ -1,0 +1,186 @@
+{
+ "rows": [
+  "GGFGGGGGGFGG",
+  "GFFGGGGGGGFG",
+  "GGGGGGGGGGGG",
+  "GGGGGGGGGGGG",
+  "GGGGGGWWGGGG",
+  "GGGFGGWWGGGG",
+  "GGGGGGGGGGFF",
+  "GGGGGGGGGGGG",
+  "GGGGGGGGGGGG",
+  "GGGGGGGGGGGG"
+ ],
+ "mood": "sommer",
+ "players": [
+  {
+   "id": "hund",
+   "pos": [
+    5,
+    3
+   ]
+  },
+  {
+   "id": "kind_lotte",
+   "pos": [
+    4,
+    3
+   ]
+  },
+  {
+   "id": "kind_mia",
+   "pos": [
+    6,
+    3
+   ]
+  },
+  {
+   "id": "kind_pip",
+   "pos": [
+    5,
+    4
+   ]
+  },
+  {
+   "id": "mutter",
+   "pos": [
+    3,
+    2
+   ]
+  },
+  {
+   "id": "morgrim",
+   "pos": [
+    7,
+    2
+   ]
+  },
+  {
+   "id": "alphawolf",
+   "pos": [
+    4,
+    2
+   ]
+  },
+  {
+   "id": "maedchen_baer",
+   "pos": [
+    3,
+    3
+   ]
+  },
+  {
+   "id": "xiulan_gast",
+   "pos": [
+    1,
+    2
+   ]
+  },
+  {
+   "id": "ritter",
+   "pos": [
+    2,
+    3
+   ]
+  },
+  {
+   "id": "samurai",
+   "pos": [
+    1,
+    3
+   ]
+  },
+  {
+   "id": "ninjas",
+   "pos": [
+    2,
+    4
+   ]
+  },
+  {
+   "id": "kungfu",
+   "pos": [
+    1,
+    4
+   ]
+  },
+  {
+   "id": "wendy",
+   "pos": [
+    7,
+    3
+   ]
+  },
+  {
+   "id": "magical_girl",
+   "pos": [
+    8,
+    3
+   ]
+  },
+  {
+   "id": "elisabeth",
+   "pos": [
+    9,
+    3
+   ]
+  },
+  {
+   "id": "museklaugust",
+   "pos": [
+    8,
+    2
+   ]
+  },
+  {
+   "id": "robo",
+   "pos": [
+    9,
+    2
+   ]
+  },
+  {
+   "id": "quacksalber",
+   "pos": [
+    10,
+    3
+   ]
+  },
+  {
+   "id": "braumeisterin",
+   "pos": [
+    8,
+    4
+   ]
+  },
+  {
+   "id": "panzer",
+   "pos": [
+    11,
+    4
+   ]
+  },
+  {
+   "id": "bienenmaedchen",
+   "pos": [
+    11,
+    1
+   ]
+  }
+ ],
+ "enemies": [],
+ "objects": [
+  {
+   "id": "waisenhaus",
+   "type": "house",
+   "pos": [
+    5,
+    1
+   ],
+   "look": "fx_waisenhaus"
+  }
+ ],
+ "decor": [],
+ "dialog_cam": "waisenhaus",
+ "no_markers": true
+}
