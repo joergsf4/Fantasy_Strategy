@@ -133,3 +133,12 @@ Der **Stabsprung** verbraucht die Aktion nicht: Springen und danach Verteidigen 
 | Maja | Eisiger Blick | Helden im Umkreis 2: −3 ATK, −1 DEF, 2 Runden (Status „Eingeschüchtert“) | 3 |
 
 Fähigkeiten auf sich selbst (Befehl, Blick) setzt die Gegner-KI ein, wenn genug Ziele im Umkreis sind (`ai_self` in `abilities.json`).
+
+
+## Gefahrenzone, Tempo und sichtbare Bonusziele (2026-11-10)
+- **Gefahrenzone:** Ein Klick auf einen Gegner färbt rot ein, wo er in seiner nächsten Phase angreifen kann (erst laufen wie die Gegner-KI, dann Waffe oder Schadens-Fähigkeit mit `ai_bonus`, deren Abklingzeit bis dahin abgelaufen ist). Noch ein Klick blendet die Zone aus. Die Taste **G** oder der Knopf „Gefahrenzone (G)“ zeigt alle Gegner zusammen. Bei Wachen (`guard`) ist die Weckzone gelb (Alarmradius 3), rot nur, was sie nach dem Wecken erreichen. Benommene, verängstigte, verwirrte und untätige Gegner bedrohen nichts. Bewegungsfelder in der Zone erscheinen violett.
+- **Feldauskunft:** Ist ein Held gewählt, steht unten links zu jedem erreichbaren Feld, welche Gegner ihn dort erreichen („Gefahr: in Reichweite von …“) oder dass es außer Reichweite liegt.
+- **Grenzen:** Es ist eine Näherung. Verstärkung, Flächenschaden auf Nachbarfelder und Spott sind nicht eingerechnet (`Battle._threat_of`).
+- **Tempo der Gegnerphase:** Leertaste halten beschleunigt die Gegnerphase (×3,5). Dauerhaft geht es im Pause-Menü unter „Ton und Spiel“ mit **Gegnerzüge: Normal / Schnell (×2) / Sehr schnell (×3,5)** (`Settings` `enemy_speed`, `Battle._apply_speed`). Dialoge, Geheimnis-Szenen und Super-Auftritte laufen immer in normalem Tempo.
+- **Bonusziele im Kampf:** Die Bonusziele der Mission stehen oben rechts unter dem Knopf der Gefahrenzone. Vorher erfuhr man sie erst im Belohnungsbildschirm.
+- Test: `tests/test_spielspass.gd`. Bildschirmfoto: `SHOT=gefahr` (optional `SHOT_CH=chN`, `SHOT_PICK=1` für nur einen Gegner).

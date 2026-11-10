@@ -58,8 +58,8 @@ class FlowProbe extends "res://scripts/main.gd":
 		events.append("travel")
 		travel_party = data["party"].duplicate()
 
-	func _reward(_res: Dictionary, _fade := true) -> void:
-		pass
+	func _reward(_res: Dictionary, _fade := true) -> bool:
+		return false
 
 	func _talent_screen(_ids: Array) -> void:
 		pass

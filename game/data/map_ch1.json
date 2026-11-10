@@ -151,9 +151,10 @@
    }
   },
   {
-   "id": "schnell",
-   "text": "In 6 Runden gewonnen",
-   "turns": 6,
+   "id": "taktik",
+   "kind": "taktik",
+   "count": 3,
+   "text": "Drei Treffer von hinten, von der Seite oder von oben",
    "reward": {
     "items": {
      "aether": 1

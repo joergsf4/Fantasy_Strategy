@@ -50,8 +50,7 @@ func _run() -> void:
 	var camp := Camp.new()
 	camp.setup(ui_party, defs, ["robo"])
 	root.add_child(camp)
-	camp._tab = 1
-	camp._refresh()
+	camp.show_page("ausruestung")
 	await process_frame
 	var auto_button: Button
 	for node: Node in camp.find_children("*", "Button", true, false):

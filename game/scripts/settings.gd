@@ -20,6 +20,7 @@ const OPTIONS := [
 	{"key": "music", "label": "Musik", "values": ["Aus", "10 %", "20 %", "30 %", "40 %", "50 %", "60 %", "70 %", "80 %", "90 %", "100 %"], "default": 8, "tab": "ton"},
 	{"key": "sfx", "label": "Effekte", "values": ["Aus", "10 %", "20 %", "30 %", "40 %", "50 %", "60 %", "70 %", "80 %", "90 %", "100 %"], "default": 8, "tab": "ton"},
 	{"key": "difficulty", "label": "Schwierigkeit", "values": ["Leicht", "Normal", "Schwer"], "default": 1, "tab": "ton"},
+	{"key": "enemy_speed", "label": "Gegnerzüge", "values": ["Normal", "Schnell", "Sehr schnell"], "default": 0, "tab": "ton"},      # Zeitraffer der Gegnerphase (Battle.ENEMY_SPEED); Leertaste halten beschleunigt immer
 ]
 const ADJUST := [0.8, 0.9, 1.0, 1.1, 1.2]       # Helligkeit und Kontrast (Environment-Anpassung im Kampf)
 const DIFFICULTY := [0.8, 1.0, 1.2]             # Faktor auf Leben und Angriff der Gegner, zusaetzlich zu data/progression.json (data/difficulty.json ist eine alte Messung, E3)

@@ -12,6 +12,7 @@ var unit_defs: Dictionary
 var heroes: Array = []
 var _hero := ""
 var _abilities: Dictionary = {}
+var text_w := 0      # > 0: schmale Fassung (Lager): Textbreite der rechten Spalte, Name und freie Punkte in zwei Zeilen
 
 
 func setup(p: Party, defs: Dictionary, hero_ids: Array) -> void:
@@ -96,8 +97,12 @@ func rebuild() -> void:
 	right.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	add_child(right)
 	var d: Dictionary = unit_defs[_hero]
-	right.add_child(_label("%s   –   freie Talentpunkte: %d" % [d["name"], party.points(_hero)], UiTheme.F_HEAD, 22, GOLD))
-	right.add_child(_text("Einen Punkt gibt es alle %d Stufen, aber nur für Helden, die in der Gruppe sind. Punkte lassen sich zurückholen und neu verteilen." % int(Talents.cfg()["levels_per_point"]), 16, Color(0.8, 0.85, 0.75), 520))
+	if text_w > 0:
+		right.add_child(_label(str(d["name"]), UiTheme.F_HEAD, 22, GOLD))
+		right.add_child(_label("Freie Talentpunkte: %d" % party.points(_hero), UiTheme.F_HEAD, 16, Color(0.7, 0.95, 1.0) if party.points(_hero) > 0 else Color(0.78, 0.76, 0.68)))
+	else:
+		right.add_child(_label("%s   –   freie Talentpunkte: %d" % [d["name"], party.points(_hero)], UiTheme.F_HEAD, 22, GOLD))
+	right.add_child(_text("Einen Punkt gibt es alle %d Stufen, aber nur für Helden, die in der Gruppe sind. Punkte lassen sich zurückholen und neu verteilen." % int(Talents.cfg()["levels_per_point"]), 16, Color(0.8, 0.85, 0.75), text_w if text_w > 0 else 520))
 	var rk := party.ranks(_hero)
 	var rows := [["hp", "Leben", "+%d Leben je Rang" % int(Talents.cfg()["hp_per_rank"])], ["atk", "Angriff", "+%d Angriff je Rang" % int(Talents.cfg()["atk_per_rank"])]]
 	for key in ["a1", "a2"]:
@@ -135,8 +140,8 @@ func rebuild() -> void:
 			eff = ("Nächster Rang: " + str(r[2])) if int(rk[key]) < Talents.max_rank() else "Höchster Rang"
 		else:
 			eff = str(r[2])
-		right.add_child(_text(eff, 16, Color(0.75, 0.85, 0.95), 560))
-	right.add_child(_text(_effective(_hero), 17, Color(0.85, 0.9, 0.75), 600))
+		right.add_child(_text(eff, 16, Color(0.75, 0.85, 0.95), text_w if text_w > 0 else 560))
+	right.add_child(_text(_effective(_hero), 17, Color(0.85, 0.9, 0.75), text_w if text_w > 0 else 600))
 
 
 func _effective(hero: String) -> String:

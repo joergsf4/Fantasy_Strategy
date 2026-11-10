@@ -52,6 +52,15 @@ Vorschläge des Nutzers: **Magical Girl** und/oder **Quaksalber-Arzt**. Heute he
 - **Trainingsattrappe:** Einheit samt Wirbel liegt unbenutzt in den Daten, Emotions-Porträts fehlen.
 - ~~Windows-Version~~ ist getestet: läuft (laut Nutzer „works like a charm“).
 
+## Erledigt: Sechs Verbesserungen für den Spielspaß (2026-11-10)
+1. **Gefahrenzone der Gegner** (Klick auf Gegner, Taste G, Feldauskunft beim Bewegen) und **Bonusziele im Kampf sichtbar**: `docs/kampfsystem.md`, letzter Abschnitt.
+2. **Album der Geheimnisse** im Lager (Seite „Geheimnisse“): entdeckte in Farbe mit Wirkung, unentdeckte als Schattenriss mit einem Gerücht. Texte in `game/data/secret_hints.json` (eigene Datei, damit der Editor-Tab „Geheimnisse“ sie nicht überschreibt). Neue Geheimnisse brauchen dort einen Eintrag (`tests/test_spielspass.gd` prüft das).
+3. **Bonusziele mit Charakter und mehr Truhen**: `docs/missionen.md`, letzter Abschnitt.
+4. **Gegnerphase beschleunigen** (Leertaste halten, Option „Gegnerzüge“).
+5. **Chronik** (`game/scripts/chronicle.gd`, `Main._chronicle_loop`, `Main._replay`): Nach dem Epilog steht im Hauptmenü „Chronik“. Jede Kampfmission lässt sich erneut spielen, ohne Einleitung und Lager, mit einer zur Mission passenden Gruppe (`Party.for_chapter`, wird nie gespeichert). Medaillen je Mission: Sieg, jedes Bonusziel, Sieg auf „Schwer“ (`Party.records`, auch der erste Durchgang zählt ab jetzt mit). Neu entdeckte Geheimnisse landen im echten Spielstand. Im Testlabor: „Chronik“. Bildschirmfoto: `SHOT=chronik`, Ablauf `SHOT=replay SHOT_CH=ch7`.
+6. **Lager neu aufgebaut** (`game/scripts/camp.gd`): Kopfzeile (nächste Mission, Gold), Seitenleiste mit sechs Bereichen und Zählern (freie Talentpunkte, füllbare Ausrüstungsplätze, Geheimnisse), Knopf „Aufbrechen“. Neue Startseite **Übersicht**: Einsatzbesprechung und Bonusziele der nächsten Mission, Liste „Vor dem Aufbruch“ mit Sprung zu offenen Punkten, Gruppe mit Ausrüstungs-Punkten. Händler nach Warengruppen mit Besitz und Vorrat, Verkauf als eigene Liste. Ausrüstung: alle drei Plätze nebeneinander, Lagerstücke direkt anklickbar. Bildschirmfoto: `SHOT=camp SHOT_TAB=0..5`.
+- Offen: Medaillen für alte Spielstände fehlen (vor dem 2026-11-10 gewonnene Missionen haben keinen Eintrag), Hinweise des Albums nur als Text (keine Szene mit dem Händler), neue Bonusziele und Truhen nicht gespielt.
+
 ## Erledigt: Dörfer als Sprites (2026-11-01)
 Dorf-Felder (`V`) zeigen den Dorfplatz-Sprite (Wiese `fx_dorf`, Wüste `fx_dorf_wueste`), brennbare Häuser (`house`) sind Sprites (`fx_haus1..3`, Wüste `fx_haus_wueste1..2`) mit Ruinen (`fx_ruine1..2`). Brennen = dunkler getönter Sprite plus die vorhandenen Flammen, die Spiellogik (Feuer, Löschen, Ruine) ist unverändert. Die alten Klotz-Modelle (`TerrainView._village`, `_house`) sind entfernt.
 

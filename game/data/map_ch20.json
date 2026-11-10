@@ -188,9 +188,9 @@
    }
   },
   {
-   "id": "schnell",
-   "text": "In 10 Runden gewonnen",
-   "turns": 10,
+   "id": "truhen",
+   "kind": "truhen",
+   "text": "Beide Truhen geöffnet",
    "reward": {
     "items": {
      "aether": 1

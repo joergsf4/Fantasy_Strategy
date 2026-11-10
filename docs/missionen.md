@@ -448,3 +448,20 @@ Weitere Wetter-Namen für neue Karten: `rain`, `pollen`, `petals`, `embers`, `sm
 - **Professor angreifbarer, Mira stärker (2026-11-10):** Der Professor hat Vert 2 und Res 2 statt 4 und 5. Mira hat Grundangriff 5 statt 3. Voll ausgerüstet trifft Mira ihn in Mission 16 von vorn für 11 statt 6, mit der Sternschnuppe für 14 statt 8. Wendy trifft ihn für 9 statt 6.
 - **Mission 16, Lohn-Gespräch:** Die Zeilen in Runde 4 („Und wo bleibt mein Lohn, Professor?!“) zeigen jetzt den Professor links und Xiùlán rechts, statt Ser Albrecht, der oft gar nicht dabei ist.
 - **Heiler +10 % (2026-11-10):** Gruppenheilung (Wendy) 7 statt 6, Sternensegen (Mira) 8 statt 7, Wundersalbe (Quacksalber) 15 statt 14. Die Talent-Ränge rechnen auf den neuen Grundwert.
+- **Mission überspringen (2026-11-10):** Ab der zweiten Niederlage in einer Mission zeigt der Niederlage-Bildschirm zusätzlich „Mission überspringen“ (`Main.SKIP_AFTER_DEFEATS`). Dann laufen auf frischem Schlachtfeld die Abschlussszenen (`"when": {"victory": true}`, `Battle.skip_to_victory`), danach geht es weiter wie nach einem Sieg: Belohnungsbild „Übersprungen“ mit der festen Missionsbelohnung und Stufe, aber ohne Bonusziele und Statistik, dann Abschlussdialog und Lager. Test: `tests/test_mission_skip.gd`.
+
+## Bonusziele mit eigener Art und zusätzliche Truhen (2026-11-10)
+Ein Bonusziel (`objectives` in der Karte) kann neben `id` ein Feld **`kind`** tragen. Dann ist die `id` frei wählbar (sie muss je Mission eindeutig sein, die Chronik merkt sich erfüllte Ziele darüber), und `kind` bestimmt die Prüfung in `Battle.results`. Ohne `kind` gilt wie bisher die `id`.
+
+| `kind` | Erfüllt, wenn | Felder |
+|---|---|---|
+| `taktik` | so viele Treffer mit Positionsbonus (Rücken, Flanke, Höhe, Hinterhalt) | `count` |
+| `ruecken` | Gegner mit einem Treffer in den Rücken besiegt | `count` oder `unit` (ein bestimmter Gegner) |
+| `zuerst` | dieser Gegner fällt oder flieht als erster | `unit` |
+| `faehigkeit` | so viele Gegner mit einer Fähigkeit besiegt | `count` |
+| `ohne_traenke` | kein Gegenstand aus dem Rucksack benutzt | – |
+| `truhen` | alle Truhen geöffnet und Dörfer besucht | – |
+
+Die Zähler dafür führt `Battle.feats`. In diesen Missionen ersetzt ein solches Ziel „In X Runden gewonnen“ (Belohnung unverändert): 1 (drei Positions-Treffer), 2 und 20 (beide Truhen), 7 (Oskar von hinten), 8 (ohne Gegenstände), 9 (drei Gegner mit Fähigkeiten), 12 (sechs Positions-Treffer), 15 (drei Gegner von hinten). Das Rundenziel bleibt, wo Zeitdruck zur Mission gehört (3, 6, 19, 22, 24, 25).
+
+**Neue Truhen abseits des Wegs** (nur Verbrauchsgegenstände, kein Gold, damit die Zielkurve des Goldes bleibt): Mission 6 (1,9), 7 (0,3), 8 (0,1), 9 (1,1), 12 (11,9), 15 (0,4), 18 (11,5). Nicht gespielt und nicht im Simulator gemessen; Lage und Inhalt bei Bedarf in `map_chN.json` ändern.

@@ -180,9 +180,10 @@
    }
   },
   {
-   "id": "schnell",
-   "text": "In 10 Runden gewonnen",
-   "turns": 10,
+   "id": "oskar_ruecken",
+   "kind": "ruecken",
+   "unit": "oskar",
+   "text": "Oskar mit einem Treffer in den Rücken besiegt",
    "reward": {
     "items": {
      "heilhonig": 1
@@ -193,5 +194,18 @@
  "weather": [
   "sand"
  ],
- "mood": "morgen"
+ "mood": "morgen",
+ "chests": [
+  {
+   "pos": [
+    0,
+    3
+   ],
+   "reward": {
+    "items": {
+     "heiltrank": 1
+    }
+   }
+  }
+ ]
 }

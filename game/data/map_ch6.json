@@ -260,5 +260,19 @@
  "mood": "hafen",
  "weather": [
   "rain"
+ ],
+ "chests": [
+  {
+   "pos": [
+    1,
+    9
+   ],
+   "reward": {
+    "items": {
+     "heiltrank": 1,
+     "rauchbombe": 1
+    }
+   }
+  }
  ]
 }

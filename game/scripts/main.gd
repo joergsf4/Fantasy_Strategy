@@ -84,6 +84,10 @@ func _run() -> void:
 		stage.party = party
 		resumed = false
 	_in_game = true
+	if choice["action"] == "chronik":      # Missionen erneut spielen; danach zurueck ins Hauptmenue
+		await _chronicle_loop()
+		get_tree().reload_current_scene()
+		return
 	var cheat: bool = choice["cheat"]
 	if cheat:
 		resumed = false          # Testmenue: die Kapitelwahl bestimmt, wo es weitergeht
@@ -95,6 +99,9 @@ func _run() -> void:
 		var nxt: String = CHAPTERS[i + 1] if i + 1 < CHAPTERS.size() else ""
 		var direct_arrival: bool = cheat and i == int(pick[0]) and CHAPTERS[i] == "ch21" and not bool(pick[1])
 		await _chapter(CHAPTERS[i], bool(pick[1]) and i == int(pick[0]), nxt, direct_arrival)
+	if not party.test_run:      # durchgespielt: ab jetzt steht die Chronik im Hauptmenue
+		party.completed = true
+		party.save()
 	if Mission.load_mission(CHAPTERS[CHAPTERS.size() - 1]).has("dedication"):      # nach der Widmung zurueck zum Hauptmenue
 		get_tree().reload_current_scene()
 		return
@@ -278,12 +285,100 @@ func _title(save_chapter := 0) -> Dictionary:
 	var t := TitleScreen.new()
 	t.interactive = true
 	t.save_chapter = save_chapter
+	t.chronicle = party.completed or party.chapter >= CHAPTERS.size()      # durchgespielt (oder im Epilog): Chronik im Menue
 	add_child(t)
 	t.fading_out.connect(func() -> void: _fade_music())
 	var action: String = await t.chosen
 	var cheat := t.cheat
 	t.queue_free()
 	return {"action": action, "cheat": cheat}
+
+
+## Missionen der Chronik: alle Kampfmissionen (ohne Zwischenspiele), mit Einsatzbesprechung und Bonuszielen.
+func _chronicle_missions() -> Array:
+	var list: Array = []
+	for cid: String in CHAPTERS:
+		var m := Mission.load_mission(cid)
+		if m.get("stub", false) or m.get("no_rewards", false):
+			continue
+		list.append({"id": cid, "title": m["title"], "briefing": m.get("briefing", ""), "objectives": m.get("objectives", [])})
+	return list
+
+
+## Chronik: Mission waehlen, spielen, zurueck zur Liste. Der echte Spielstand bleibt, wie er ist; nur Medaillen und
+## neu entdeckte Geheimnisse werden darin vermerkt. "" in der Auswahl beendet die Chronik.
+func _chronicle_loop(real: Party = null) -> void:
+	if real == null:
+		real = party
+	var last := ""
+	while true:
+		_play_music(TITLE_MUSIC, 1.0)
+		var layer := CanvasLayer.new()
+		layer.layer = 6
+		add_child(layer)
+		var c := Chronicle.new()
+		c.setup(_chronicle_missions(), real.records, last)
+		layer.add_child(c)
+		_cover_out(0.5)
+		var cid: String = await c.chosen
+		layer.queue_free()
+		if cid == "":
+			break
+		last = cid
+		await _replay(cid, real)
+	party = real
+	stage.party = real
+
+
+## Eine Mission aus der Chronik spielen: ohne Einleitung und Lager, mit einer zur Mission passenden Gruppe (Party.for_chapter,
+## wird nie gespeichert). Nach dem Sieg zaehlen die Medaillen fuer den echten Spielstand.
+func _replay(cid: String, real: Party) -> void:
+	_fade_music(0.8)
+	await _cover_in(0.4)
+	party = Party.for_chapter(units, CHAPTERS.find(cid) + 1)
+	party.secrets_seen = real.secrets_seen.duplicate()      # bekannte Geheimnis-Szenen nicht noch einmal zeigen
+	stage.party = party
+	var m := _mission_with_squad(cid)
+	stage.map_data = m
+	stage.new_battle()
+	stage.set_mode("dialog")
+	_cover_out(0.5)
+	if SquadSelect.has_choice(party, units, m):
+		await _squad_select(m)
+		m = _mission_with_squad(cid)
+		stage.map_data = m
+		stage.new_battle()
+	_play_music(BATTLE_MUSIC, 1.5)
+	while true:
+		_battle_active = true
+		await stage.start_battle()
+		var won: bool = await stage.battle.finished
+		_battle_active = false
+		if _restart_requested:
+			_restart_requested = false
+			stage.new_battle()
+			_play_music(BATTLE_MUSIC, 1.5)
+			continue
+		if won:
+			var res := stage.battle.results()
+			await _reward(res)
+			real.record(cid, res, Settings.get_value("difficulty"))
+			for sid: String in res.get("secrets_seen", []):
+				if not real.secrets_seen.has(sid):
+					real.secrets_seen.append(sid)
+			real.save()
+			break
+		var summary := stage.battle.defeat_summary()
+		summary["can_skip"] = true
+		summary["skip_label"] = "Zurück zur Chronik"
+		var leave: bool = await _reward(summary)
+		stage.new_battle()
+		if leave:
+			break
+		_play_music(BATTLE_MUSIC, 2.0)
+	await _cover_in(0.4)
+	get_tree().call_group("blackout", "queue_free")
+	stage.backdrop_again()
 
 
 ## Kapitelwahl und START_CH verwenden denselben unabhaengigen Teststand.
@@ -369,6 +464,14 @@ func _lab_run(kind: String, hero: String, foe: String, maxed: bool) -> void:
 		return
 	if kind == "schneesturm":
 		await _play_snow_trek()
+		return
+	if kind == "chronik":      # Testlabor: Chronik mit dem aktuellen Spielstand (Medaillen werden dort vermerkt)
+		stage.set_mode("dialog")
+		await _chronicle_loop()
+		stage.map_data = Mission.load_mission("ch1")
+		stage.new_battle()
+		stage.set_mode("dialog")
+		_cover_out(0.4)
 		return
 	if kind == "berge":      # Testlabor: Zwischenspiel Ueberfall am Pass (ch17)
 		var bi: Dictionary = (Mission.load_mission("ch17")["interlude"] as Dictionary).duplicate()
@@ -586,6 +689,7 @@ func _chapter(cid: String, skip_intro := false, next_cid := "", direct_arrival :
 		_play_music(BATTLE_MUSIC, 2.5)
 	if m.has("intro_flight") and not skip_intro:      # filmische Kamerafahrt ueber die Karte vor dem Kampf
 		await _intro_flight(m["intro_flight"])
+	var defeats := 0
 	while true:
 		_battle_active = true
 		await stage.start_battle()
@@ -601,8 +705,15 @@ func _chapter(cid: String, skip_intro := false, next_cid := "", direct_arrival :
 			continue
 		if won:
 			break
-		await _reward(stage.battle.defeat_summary())     # Niederlage: Statistik mit trauriger Musik, dann neuer Versuch
+		defeats += 1
+		var summary := stage.battle.defeat_summary()
+		summary["can_skip"] = defeats >= SKIP_AFTER_DEFEATS
+		var skip: bool = await _reward(summary)          # Niederlage: Statistik mit trauriger Musik, dann neuer Versuch
 		stage.new_battle()                               # frisches Schlachtfeld
+		if skip:                                         # Mission ueberspringen: Abschlussszenen wie nach einem Sieg
+			await stage.start_battle()
+			await stage.battle.skip_to_victory()
+			break
 		_play_music(BATTLE_MUSIC, 2.0)
 	_fade_music(3.0)
 	stage.backdrop_again()
@@ -617,6 +728,7 @@ func _chapter(cid: String, skip_intro := false, next_cid := "", direct_arrival :
 		res["point_gain"] = Party.points_for(party.earned + 1) > Party.points_for(party.earned)
 		await _reward(res, false)
 		party.absorb(res)
+		party.record(cid, res, Settings.get_value("difficulty"))      # Medaillen fuer die Chronik
 		if m.has("interlude_after"):
 			party.pending_interlude = (m["interlude_after"] as Dictionary).duplicate(true)
 			party.pending_interlude["party"] = party.squad_for(m)
@@ -922,7 +1034,8 @@ func _camp(m: Dictionary) -> void:
 	layer.queue_free()
 
 
-func _reward(res: Dictionary, fade := true) -> void:
+## Belohnungs- bzw. Niederlage-Bildschirm. true = Spieler hat "Mission ueberspringen" gewaehlt (nur nach Niederlagen mit can_skip).
+func _reward(res: Dictionary, fade := true) -> bool:
 	_play_music(DEFEAT_MUSIC if res.get("defeat", false) else WIN_MUSIC, 1.0)      # froehlich nach dem Sieg, traurig nach der Niederlage
 	var layer := CanvasLayer.new()
 	layer.layer = 6
@@ -934,6 +1047,7 @@ func _reward(res: Dictionary, fade := true) -> void:
 	layer.queue_free()
 	if fade:
 		_fade_music(1.2)
+	return r.skip_chosen
 
 
 ## Aufstiegs-Bildschirm fuer diese Helden (Talentpunkte verteilen); nichts zu tun, wenn niemand einen freien Punkt hat.
@@ -962,6 +1076,7 @@ func _talent_screen(hero_ids: Array) -> void:
 
 
 ## Dialog mitten im Kampf: ueber der abgedunkelten Karte, ohne die Buehne zu wechseln.
+const SKIP_AFTER_DEFEATS := 2      # ab so vielen Niederlagen in einer Mission bietet der Niederlage-Bildschirm "Mission ueberspringen" an
 var _finale_end := false      # Testmenue: Mission 25 beginnt direkt vor dem letzten Schlag gegen den Sack
 var _auto_dialogue := 0.0      # Aufnahmen (SHOT=cutscene): Dialoge schalten nach so vielen Sekunden selbst weiter
 
@@ -1395,6 +1510,7 @@ func _screenshot_mode() -> void:
 			var tm := TitleScreen.new()
 			tm.interactive = true
 			tm.save_chapter = int(OS.get_environment("SHOT_CH")) if OS.get_environment("SHOT_CH") != "" else 3
+			tm.chronicle = OS.get_environment("SHOT_PICK") == "chronik"
 			add_child(tm)
 			await get_tree().create_timer(7.0).timeout
 		else:
@@ -1505,7 +1621,7 @@ func _screenshot_mode() -> void:
 		dl.layer = 6
 		add_child(dl)
 		var ds := RewardScreen.new()
-		ds.setup({"defeat": true, "turns": 5, "objectives": [], "stats": {"rows": [
+		ds.setup({"defeat": true, "can_skip": OS.get_environment("SHOT_SKIP") == "1", "turns": 5, "objectives": [], "stats": {"rows": [
 				{"id": "ritter", "name": "Ser Albrecht", "alive": false, "hp": 0, "maxhp": 34, "dealt": 18, "taken": 34, "healed": 0, "kills": 1, "abs": 1, "bonus": 0},
 				{"id": "wendy", "name": "Wendy Wolle", "alive": false, "hp": 0, "maxhp": 18, "dealt": 2, "taken": 18, "healed": 14, "kills": 0, "abs": 2, "bonus": 0}],
 				"awards": [{"title": "Prügelknabe", "name": "Ser Albrecht", "text": "34 Schaden eingesteckt"}]}})
@@ -1683,7 +1799,44 @@ func _screenshot_mode() -> void:
 		get_viewport().get_texture().get_image().save_png(OS.get_environment("SHOT_OUT"))
 		get_tree().quit()
 		return
-	if mode == "camp":   # Lager: SHOT_TAB=0..3, SHOT_GOLD=n
+	if mode == "replay":   # Chronik-Ablauf: Mission SHOT_CH aus der Chronik starten (Gruppenwahl, dann Kampf); SHOT_DELAY = Sekunden bis zum Bild
+		party = Party.new_game()
+		party.test_run = true
+		stage = Stage.new()
+		stage.setup(map, units)
+		stage.party = party
+		stage.dialogue_runner = _battle_dialogue
+		stage.secret_runner = _secret_scene
+		add_child(stage)
+		_replay(OS.get_environment("SHOT_CH"), party)
+		await get_tree().create_timer(float(OS.get_environment("SHOT_DELAY")) if OS.get_environment("SHOT_DELAY") != "" else 3.0).timeout
+		for sq in get_tree().root.find_children("*", "SquadSelect", true, false):      # Gruppenwahl bestaetigen, falls sie offen ist
+			if OS.get_environment("SHOT_PICK") == "go":
+				(sq as SquadSelect).closed.emit()
+		await get_tree().create_timer(4.0 if OS.get_environment("SHOT_PICK") == "go" else 0.1).timeout
+		get_viewport().get_texture().get_image().save_png(OS.get_environment("SHOT_OUT"))
+		get_tree().quit()
+		return
+	if mode == "chronik":   # Chronik: SHOT_PICK=Mission (z. B. ch7)
+		stage = Stage.new()
+		stage.setup(map, units)
+		add_child(stage)
+		var kp := Party.new_game()
+		kp.records = {"ch1": {"won": true, "goals": ["alle_leben", "taktik"], "turns": 5, "hard": true}, "ch2": {"won": true, "goals": ["alle_leben"], "turns": 9, "hard": false},
+			"ch3": {"won": true, "goals": [], "turns": 8, "hard": false}, "ch7": {"won": true, "goals": ["oskar_ruecken"], "turns": 11, "hard": false}}
+		var kl := CanvasLayer.new()
+		kl.layer = 6
+		add_child(kl)
+		var kc := Chronicle.new()
+		party = kp
+		kc.setup(_chronicle_missions(), kp.records, OS.get_environment("SHOT_PICK"))
+		kl.add_child(kc)
+		for i in 40:
+			await get_tree().process_frame
+		get_viewport().get_texture().get_image().save_png(OS.get_environment("SHOT_OUT"))
+		get_tree().quit()
+		return
+	if mode == "camp":   # Lager: SHOT_TAB=0..5 (Camp.PAGES), SHOT_GOLD=n, SHOT_CH=naechste Mission, SHOT_SELL=1 Verkaufsliste, SHOT_PICK=Platz
 		var bc := Battle.new()
 		bc.setup(map, units)
 		add_child(bc)
@@ -1694,7 +1847,9 @@ func _screenshot_mode() -> void:
 		pc.pool = ["eisenschwert", "schwere_axt", "plattenpanzer", "rubinring"]
 		pc.earned = 5
 		pc.talents = {"kungfu": {"hp": 1, "atk": 0, "a1": 2, "a2": 0}}
-		var cm := Mission.load_mission("ch5")
+		pc.secrets_seen = ["betrunkener_meister", "woll_im_ueberfluss", "heiliges_licht"]
+		var cm := Mission.load_mission(OS.get_environment("SHOT_CH") if OS.get_environment("SHOT_CH") != "" else "ch5")
+		pc.chapter = int(str(cm["id"]).substr(2))
 		var sq: Array = pc.squad_for(cm)
 		var cl := CanvasLayer.new()
 		cl.layer = 6
@@ -1704,10 +1859,8 @@ func _screenshot_mode() -> void:
 		if OS.get_environment("SHOT_PICK") != "":
 			cp._pick = int(OS.get_environment("SHOT_PICK"))
 		cl.add_child(cp)
-		cp._tab = int(OS.get_environment("SHOT_TAB"))
-		if cp._tab == 2:
-			cp._hero = "braumeisterin"
-			cp._slot = "waffe"
+		cp._page = Camp.PAGES[int(OS.get_environment("SHOT_TAB"))]      # 0 Uebersicht, 1 Haendler, 2 Ausruestung, 3 Aufstellung, 4 Talente, 5 Geheimnisse
+		cp._sell = OS.get_environment("SHOT_SELL") == "1"
 		cp._refresh()
 		for i in 40:
 			await get_tree().process_frame
@@ -2052,8 +2205,17 @@ func _screenshot_mode() -> void:
 		get_tree().quit()
 		return
 	var b := Battle.new()
-	b.setup(Mission.load_mission(OS.get_environment("SHOT_CH")) if mode == "flanke" and OS.get_environment("SHOT_CH") != "" else map, units)
+	b.setup(Mission.load_mission(OS.get_environment("SHOT_CH")) if (mode == "flanke" or mode == "gefahr") and OS.get_environment("SHOT_CH") != "" else map, units)
 	add_child(b)
+	if mode == "gefahr":  # Gefahrenzone aller Gegner (SHOT_PICK=1: nur der erste Gegner), dazu ein gewaehlter Held mit Feldauskunft (SHOT_CH=chN)
+		await get_tree().process_frame
+		var gf_hero: Dictionary = b.units.filter(func(x: Dictionary) -> bool: return x["team"] == "p")[0]
+		if OS.get_environment("SHOT_PICK") != "":
+			b._toggle_threat(b.units.filter(func(x: Dictionary) -> bool: return x["team"] == "e")[0])
+		else:
+			b._toggle_threat_all()
+		b._select(gf_hero)
+		b._hover((gf_hero["pos"] as Vector2i) + Vector2i(1, 0))
 	if mode == "select":  # Figur waehlen, Reichweite zeigen
 		await get_tree().process_frame
 		b._select(b.unit_at(Vector2i(2, 8)))

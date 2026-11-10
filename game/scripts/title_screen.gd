@@ -25,6 +25,7 @@ var _hint: Label
 var _typed := ""
 var cheat := false            # Kapitelwahl freigeschaltet
 var save_chapter := 0         # >0: es gibt einen Spielstand (das Kapitel, in dem man weiterspielt)
+var chronicle := false         # Geschichte durchgespielt: Menue zeigt zusaetzlich die Chronik (Missionen erneut spielen)
 var interactive := false      # Menue (Fortfahren, Neues Spiel, Beenden) statt "Press Start" (Trailer und Screenshots lassen es aus)
 var _menu: VBoxContainer
 var _confirm: PanelContainer
@@ -165,13 +166,15 @@ func _show_hint(text: String) -> void:
 ## Menue: Fortfahren (nur mit Spielstand), Neues Spiel, Beenden. Auswahl per Maus oder Pfeiltasten und Enter.
 func _build_menu(ui: CanvasLayer) -> void:
 	_menu = VBoxContainer.new()
-	_menu.position = Vector2(470, 520)
+	_menu.position = Vector2(470, 520 if not (chronicle and save_chapter > 0) else 498)
 	_menu.size = Vector2(340, 150)
 	_menu.add_theme_constant_override("separation", 8)
 	_menu.modulate.a = 0.0
 	ui.add_child(_menu)
 	if save_chapter > 0:
 		_menu.add_child(_menu_button("Fortfahren (Kapitel %d)" % save_chapter, func() -> void: _choose("continue")))
+	if chronicle:
+		_menu.add_child(_menu_button("Chronik", func() -> void: _choose("chronik")))
 	_menu.add_child(_menu_button("Neues Spiel", func() -> void: _choose("new")))
 	_menu.add_child(_menu_button("Beenden", func() -> void: _choose("quit")))
 

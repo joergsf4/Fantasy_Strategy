@@ -189,9 +189,9 @@
    }
   },
   {
-   "id": "schnell",
-   "text": "In 11 Runden gewonnen",
-   "turns": 11,
+   "id": "ohne_traenke",
+   "kind": "ohne_traenke",
+   "text": "Ohne Tränke und andere Gegenstände gewonnen",
    "reward": {
     "items": {
      "heilhonig": 1
@@ -202,5 +202,18 @@
  "weather": [
   "sandstorm"
  ],
- "mood": "mittagshitze"
+ "mood": "mittagshitze",
+ "chests": [
+  {
+   "pos": [
+    0,
+    1
+   ],
+   "reward": {
+    "items": {
+     "aether": 1
+    }
+   }
+  }
+ ]
 }

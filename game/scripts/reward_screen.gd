@@ -3,6 +3,7 @@ extends Control
 ## Belohnungsbildschirm nach einem gewonnenen Kampf: Beute, Gold, Bonusziele, Statistik. "Weiter" schliesst ihn.
 ## Nach einer Niederlage (results["defeat"]) zeigt er nur die Statistik mit dem Knopf "Noch einmal versuchen".
 
+var skip_chosen := false      # Niederlage-Bildschirm: Spieler hat "Mission ueberspringen" gewaehlt
 signal closed
 
 var results: Dictionary = {}
@@ -24,17 +25,24 @@ func _ready() -> void:
 	panel.custom_minimum_size = Vector2(560, 0)
 	panel.position = Vector2(60, 90)
 	add_child(panel)
-	_build_stats()
+	var skipped: bool = results.get("skipped", false)
+	if not skipped:
+		_build_stats()
 	var col := VBoxContainer.new()
 	col.add_theme_constant_override("separation", 6)
 	panel.add_child(col)
 	var defeat: bool = results.get("defeat", false)
-	col.add_child(_label("Niederlage …" if defeat else "Sieg!", UiTheme.F_TITLE, 44, Color(0.72, 0.78, 0.95) if defeat else UiTheme.GOLD, HORIZONTAL_ALIGNMENT_CENTER))
+	col.add_child(_label("Niederlage …" if defeat else ("Übersprungen" if skipped else "Sieg!"), UiTheme.F_TITLE, 44, Color(0.72, 0.78, 0.95) if defeat else UiTheme.GOLD, HORIZONTAL_ALIGNMENT_CENTER))
 	if defeat:
 		var sad := _label("Die Gruppe ist gefallen. Ein neuer Versuch auf frischem Schlachtfeld wartet. Die Statistik zeigt, was schiefging.", UiTheme.F_BODY, 22, Color(0.82, 0.82, 0.9))
 		sad.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		sad.custom_minimum_size = Vector2(500, 0)
 		col.add_child(sad)
+		if results.get("can_skip", false) and str(results.get("skip_label", "")) == "":
+			var hint := _label("Zu schwer? Ihr könnt die Mission auch überspringen. Die Geschichte geht weiter, als hättet ihr gewonnen, nur ohne Bonusziele.", UiTheme.F_BODY, 20, Color(0.95, 0.85, 0.6))
+			hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			hint.custom_minimum_size = Vector2(500, 0)
+			col.add_child(hint)
 	else:
 		col.add_child(_label("Beute", UiTheme.F_HEAD, 22, UiTheme.GOLD))
 		var lines := _loot_lines()
@@ -63,6 +71,19 @@ func _ready() -> void:
 		closed.emit()
 		queue_free())
 	col.add_child(b)
+	if defeat and results.get("can_skip", false):      # nach zwei Niederlagen: Mission ueberspringen
+		var sk := Button.new()
+		sk.text = str(results.get("skip_label", "Mission überspringen"))      # Chronik: "Zurück zur Chronik"
+		sk.custom_minimum_size = Vector2(260, 38)
+		sk.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+		sk.focus_mode = Control.FOCUS_NONE
+		for st in ["normal", "hover", "pressed", "disabled"]:
+			sk.add_theme_stylebox_override(st, UiTheme.soft_button(st))
+		sk.pressed.connect(func() -> void:
+			skip_chosen = true
+			closed.emit()
+			queue_free())
+		col.add_child(sk)
 
 
 ## Rechte Seite: Statistik der Gruppe (Tabelle je Figur) und Auszeichnungen.

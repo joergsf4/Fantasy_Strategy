@@ -142,12 +142,27 @@
    }
   },
   {
-   "id": "schnell",
-   "text": "In 12 Runden gewonnen",
-   "turns": 12,
+   "id": "ruecken",
+   "kind": "ruecken",
+   "count": 3,
+   "text": "Drei Gegner mit einem Treffer in den Rücken besiegt",
    "reward": {
     "items": {
      "heilhonig": 2
+    }
+   }
+  }
+ ],
+ "chests": [
+  {
+   "pos": [
+    0,
+    4
+   ],
+   "reward": {
+    "items": {
+     "gegengift": 1,
+     "heiltrank": 1
     }
    }
   }

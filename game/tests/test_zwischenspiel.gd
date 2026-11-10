@@ -62,7 +62,7 @@ func _initialize() -> void:
 	camp.setup(camp_party, defs, ["maedchen_baer", "hund", "ritter"], Mission.load_mission("ch18"))
 	root.add_child(camp)
 	await process_frame
-	check(not camp._tab_buttons[0].visible and camp._tab == 1 and camp._tab_buttons[1].visible, "Lager ohne Haendler: Haendlerseite fehlt, Ausruestung ist die erste Seite")
+	check(not camp._nav["haendler"].visible and camp._page == "uebersicht" and camp._nav["ausruestung"].visible, "Lager ohne Haendler: Haendlerseite fehlt, die Uebersicht ist die erste Seite")
 	camp.queue_free()
 	var camp2 := Camp.new()
 	var cp2 := Party.new_game()
@@ -70,7 +70,8 @@ func _initialize() -> void:
 	camp2.setup(cp2, defs, ["maedchen_baer"], Mission.load_mission("ch19"))
 	root.add_child(camp2)
 	await process_frame
-	check(camp2._tab_buttons[0].visible and camp2._tab == 0, "Lager mit Morgrim: Haendlerseite da")
+	camp2.show_page("haendler")
+	check(camp2._nav["haendler"].visible and camp2._page == "haendler", "Lager mit Morgrim: Haendlerseite da")
 	camp2.queue_free()
 
 	# Sequenz laeuft bis zum Ende

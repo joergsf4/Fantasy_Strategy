@@ -22,6 +22,8 @@ var earned := 0                    # geschaffte Kampfmissionen; daraus ergeben s
 var prompted: Dictionary = {}      # {Held: Stufe}, ab der der Aufstiegsbildschirm fuer ihn schon gezeigt wurde
 var talents: Dictionary = {}       # verteilte Punkte je Held {id: {hp, atk, a1, a2}} (Talents)
 var bought: Dictionary = {}        # im aktuellen Lager gekauft {id: Anzahl} (Haendler hat nur festen Vorrat)
+var records: Dictionary = {}       # Chronik: {Mission: {"won": bool, "goals": [erfuellte Bonusziele], "turns": beste Rundenzahl, "hard": auf Schwer gewonnen}}
+var completed := false             # Geschichte durchgespielt: das Hauptmenue zeigt die Chronik
 
 
 ## Testgruppe: bisherige feste Belohnungen und ein Teil optionaler Goldbeute finanzieren Einkaeufe beim jeweils verfuegbaren Haendler.
@@ -178,6 +180,24 @@ func absorb(results: Dictionary) -> void:
 	bought = {}
 
 
+## Chronik: Ergebnis einer gewonnenen Mission festhalten. Es zaehlt jeweils das Beste aus allen Versuchen
+## (erfuellte Bonusziele sammeln sich, kleinste Rundenzahl, einmal auf Schwer gewonnen bleibt).
+func record(cid: String, results: Dictionary, difficulty: int) -> void:
+	if results.get("skipped", false):
+		return
+	var r: Dictionary = records.get(cid, {"won": false, "goals": [], "turns": 0, "hard": false})
+	r["won"] = true
+	for o: Dictionary in results.get("objectives", []):
+		if o["done"] and not (r["goals"] as Array).has(o["id"]):
+			(r["goals"] as Array).append(o["id"])
+	var t := int(results.get("turns", 0))
+	if t > 0 and (int(r["turns"]) == 0 or t < int(r["turns"])):
+		r["turns"] = t
+	if difficulty >= 2:
+		r["hard"] = true
+	records[cid] = r
+
+
 ## Gold ausgeben. false = nicht moeglich (zu wenig).
 func can_afford(price: int) -> bool:
 	return gold >= price
@@ -191,7 +211,7 @@ func spend(price: int) -> bool:
 
 
 func to_dict() -> Dictionary:
-	return {"order": ORDER, "chapter": chapter, "gold": gold, "inventory": inventory, "equipment": equipment, "pool": pool, "bought": bought, "nemesis": nemesis, "squads": squads, "secrets_seen": secrets_seen, "earned": earned, "talents": talents, "prompted": prompted, "recruited": recruited, "pending_interlude": pending_interlude, "auto_gear": auto_gear}
+	return {"order": ORDER, "chapter": chapter, "gold": gold, "inventory": inventory, "equipment": equipment, "pool": pool, "bought": bought, "nemesis": nemesis, "squads": squads, "secrets_seen": secrets_seen, "earned": earned, "talents": talents, "prompted": prompted, "recruited": recruited, "pending_interlude": pending_interlude, "auto_gear": auto_gear, "records": records, "completed": completed}
 
 
 static func from_dict(d: Dictionary) -> Party:
@@ -211,6 +231,8 @@ static func from_dict(d: Dictionary) -> Party:
 	p.nemesis = (d.get("nemesis", []) as Array).duplicate()
 	p.squads = (d.get("squads", {}) as Dictionary).duplicate(true)
 	p.secrets_seen = (d.get("secrets_seen", []) as Array).duplicate()
+	p.records = (d.get("records", {}) as Dictionary).duplicate(true)
+	p.completed = bool(d.get("completed", false))
 	if int(d.get("order", 0)) < 1:      # alter Spielstand: Kapitel ab dem alten 17 (Woelfe) ruecken um eins nach hinten
 		_migrate_order0(p)
 	return p

@@ -146,9 +146,10 @@
    }
   },
   {
-   "id": "schnell",
-   "text": "In 10 Runden gewonnen",
-   "turns": 10,
+   "id": "faehigkeit",
+   "kind": "faehigkeit",
+   "count": 3,
+   "text": "Drei Gegner mit Fähigkeiten besiegt",
    "reward": {
     "items": {
      "heilhonig": 1
@@ -165,5 +166,18 @@
  "weather": [
   "ash",
   "lightning_far"
+ ],
+ "chests": [
+  {
+   "pos": [
+    1,
+    1
+   ],
+   "reward": {
+    "items": {
+     "rauchbombe": 1
+    }
+   }
+  }
  ]
 }

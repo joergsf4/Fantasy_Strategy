@@ -45,6 +45,17 @@ var _detail := false              # Alt gedrueckt: alle Lebenszahlen und Statusn
 var _hover_unit: Dictionary = {}  # Figur unter dem Mauszeiger
 var _clock := 0.0                 # Spielzeit fuer die Meldungs-Warteschlange (laeuft wie die Timer mit Engine.time_scale)
 var _popup_next := {}             # Figur -> fruehester Start der naechsten Meldung
+var _enemy_phase := false         # Gegnerphase laeuft: Option "Gegnerzuege" und gehaltene Leertaste beschleunigen sie
+var _talk := 0                    # laufende Szenen (Geheimnis, Super-Auftritt): solange kein Zeitraffer
+var _sped := false                # dieser Kampf hat Engine.time_scale gesetzt (wird wieder zurueckgestellt)
+var _threat_root: Node3D          # Kacheln der Gefahrenzone (liegen knapp ueber den Bewegungsfeldern: Blau wird dort violett)
+var _threat_all := false          # Gefahrenzone aller Gegner (Taste G oder Knopf)
+var _threat_pick: Dictionary = {} # einzeln angeklickte Gegner (uid -> true)
+var _threat_by: Dictionary = {}   # uid -> {"hit": {Feld: true}, "wake": {Feld: true}}, berechnet in _refresh_threat
+var _threat_btn: Button
+var feats := {"back_kills": 0, "back_ids": [], "ability_kills": 0, "items": 0, "order": []}      # Zaehler fuer Bonusziele (results)
+var _cur_ability := ""            # laufende Faehigkeit eines Helden (Bonusziel "faehigkeit")
+var _last_hit: Dictionary = {}    # letzter Treffer: {"def": Figur, "back": bool}
 var _popup_count := {}            # Figur -> Anzahl bisheriger Meldungen (wechselnde Seite)
 var _popup_live := {}             # Figur -> laufende Meldungen [{label, base, n, t0}]
 var _banner_label: Label
@@ -164,6 +175,8 @@ func _ready() -> void:
 		pulse.tween_property(gm, "transparency", 0.5, 0.8).set_trans(Tween.TRANS_SINE)
 		pulse.tween_property(gm, "transparency", 0.0, 0.8).set_trans(Tween.TRANS_SINE)
 	triggers = (map_data.get("triggers", []) as Array).duplicate(true)
+	_threat_root = Node3D.new()
+	add_child(_threat_root)
 	_hl_root = Node3D.new()
 	add_child(_hl_root)
 	_cursor = MeshInstance3D.new()
@@ -1182,6 +1195,27 @@ func _build_hud() -> void:
 	_end_btn.focus_mode = Control.FOCUS_NONE
 	_end_btn.pressed.connect(_end_player_turn)
 	root.add_child(_end_btn)
+	_threat_btn = Button.new()
+	_threat_btn.text = "Gefahrenzone (G)"
+	_threat_btn.tooltip_text = "Zeigt, wo die Gegner in ihrer nächsten Phase angreifen können. Ein Klick auf einen Gegner zeigt nur dessen Zone."
+	_threat_btn.position = Vector2(1126, 48)
+	_threat_btn.custom_minimum_size = Vector2(146, 28)
+	_threat_btn.add_theme_font_size_override("font_size", 12)
+	for st in ["normal", "hover", "pressed", "disabled"]:
+		_threat_btn.add_theme_stylebox_override(st, UiTheme.soft_button(st))
+	_threat_btn.focus_mode = Control.FOCUS_NONE
+	_threat_btn.pressed.connect(_toggle_threat_all)
+	root.add_child(_threat_btn)
+	var objs: Array = map_data.get("objectives", [])      # Bonusziele von Anfang an sichtbar (vorher standen sie erst im Belohnungsbildschirm)
+	if not objs.is_empty():
+		var bonus := TextBox.new(14, false, true)
+		var lines: PackedStringArray = ["[color=#ffd36b]Bonusziele[/color]"]
+		for o: Dictionary in objs:
+			lines.append("– " + str(o["text"]))
+		bonus.text = "\n".join(lines)
+		bonus.position = Vector2(1000, 84)
+		bonus.resized.connect(func() -> void: bonus.position = Vector2(1272.0 - bonus.size.x, 84))
+		root.add_child(bonus)
 
 
 func _build_card(root: Control) -> void:
@@ -1263,7 +1297,7 @@ func _update_status() -> void:
 	_goal.text = Mission.goal_text(goal, _count_team("e"), turn, _capture_info())
 	match state:
 		State.IDLE:
-			_hint.text = "Wähle eine blaue Figur."
+			_hint.text = "Wähle eine blaue Figur. Klick auf einen Gegner zeigt seine Gefahrenzone."
 		State.SELECTED:
 			if _hide_allowed.size() > 1:
 				_hint.text = "Versteck wählen (golden). Rechtsklick = abbrechen."
@@ -1274,7 +1308,8 @@ func _update_status() -> void:
 		State.TARGETING:
 			_hint.text = "Ziel wählen (Vorschau unten). Rechtsklick = zurück zum Menü."
 		_:
-			_hint.text = ""
+			_hint.text = "Leertaste halten: Gegnerzug schneller." if _enemy_phase and state == State.BUSY else ""
+	_refresh_threat()
 
 
 ## Nur fuer Aufnahmen: HUD aus, Kamera bleibt wie gesetzt.
@@ -1459,6 +1494,37 @@ const LEAN_TO_CAM := 0.45      # Weltabstand, um den Figuren zur Kamera ruecken
 func _process(delta: float) -> void:
 	_clock += delta
 	_place_overlays()
+	_apply_speed()
+
+
+const ENEMY_SPEED := [1.0, 2.0, 3.5]      # Option "Gegnerzuege": Normal, Schnell, Sehr schnell
+const HOLD_SPEED := 3.5                   # Leertaste gehalten
+
+## Zeitraffer nur in der Gegnerphase, nie waehrend Dialogen (HUD ist dann aus), Geheimnis-Szenen oder Super-Auftritten.
+func _apply_speed() -> void:
+	var want := 1.0
+	if _enemy_phase and state == State.BUSY and _talk == 0 and _hud_layer != null and _hud_layer.visible:
+		want = ENEMY_SPEED[Settings.get_value("enemy_speed")]
+		if Input.is_key_pressed(KEY_SPACE):
+			want = maxf(want, HOLD_SPEED)
+	if want != 1.0:
+		Engine.time_scale = want
+		_sped = true
+	elif _sped:
+		Engine.time_scale = 1.0
+		_sped = false
+
+
+func _exit_tree() -> void:
+	if _sped:
+		Engine.time_scale = 1.0
+		_sped = false
+
+
+func _secret_show(sec: Dictionary) -> void:
+	_talk += 1
+	await secret_runner.call(sec)
+	_talk -= 1
 
 
 ## Balken, Detailtext und Symbolreihe stehen ueber dem Kopf, gemessen entlang der Kamera-Hochachse (siehe _spawn).
@@ -1505,6 +1571,122 @@ func _unhandled_input(event: InputEvent) -> void:
 			_cancel()
 	elif event.is_action_pressed("ui_cancel"):
 		_cancel()
+	elif event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_G:
+		_toggle_threat_all()
+
+
+# ------------------------------------------------------------------ Gefahrenzone
+
+const COL_THREAT := Color(0.95, 0.1, 0.12, 0.3)       # hier kann ein angezeigter Gegner in seiner naechsten Phase angreifen
+const COL_WAKE := Color(1.0, 0.85, 0.2, 0.22)         # Weckzone einer Wache: wer hier steht, alarmiert sie
+
+## Felder, die Gegner e in seiner naechsten Phase angreifen kann: erst laufen (wie die Gegner-KI), dann Waffe oder Schadens-Faehigkeit.
+## Wachen ("guard") greifen nur an, wenn sie geweckt werden: "wake" ist ihre Weckzone, "hit" liegt innerhalb davon.
+## Naeherung: Verstaerkung, Flaechenschaden auf Nachbarn und Spott sind nicht eingerechnet.
+func _threat_of(e: Dictionary) -> Dictionary:
+	var out := {"hit": {}, "wake": {}}
+	if e.get("idle", false) or Status.has(e, "stun") or Status.has(e, "angst") or Status.has(e, "verwirrt") or Status.has(e, "polymorph"):
+		return out
+	var spans: Array = [[int(e.get("range_min", 1)), int(e.get("range", 1))]]
+	for id: String in e["abilities"]:
+		var ab: Dictionary = abilities[id]
+		if ab["target"] == "enemy" and ab.has("ai_bonus") and not _first_effect(ab, "damage").is_empty() and int(e["cd"].get(id, 0)) <= 1:
+			spans.append(ab["range"])
+	var guard: bool = e.get("guard", false)
+	if guard:
+		for dx in range(-GUARD_RADIUS, GUARD_RADIUS + 1):
+			for dy in range(-GUARD_RADIUS, GUARD_RADIUS + 1):
+				var w: Vector2i = e["pos"] + Vector2i(dx, dy)
+				if absi(dx) + absi(dy) <= GUARD_RADIUS and grid.inside(w):
+					out["wake"][w] = true
+	var occupied := {}
+	for o in units:
+		if o != e:
+			occupied[o["pos"]] = true
+	var stand := grid.reachable(e["pos"], Combat.move_of(e), e["flying"], _team_tiles("p"))
+	for t: Vector2i in stand:
+		if occupied.has(t):
+			continue
+		for span: Array in spans:
+			var r0 := int(span[0])
+			var r1 := int(span[1])
+			for dx in range(-r1, r1 + 1):
+				for dy in range(-r1, r1 + 1):
+					var d := absi(dx) + absi(dy)
+					var q := t + Vector2i(dx, dy)
+					if d >= r0 and d <= r1 and grid.inside(q) and (not guard or out["wake"].has(q)):
+						out["hit"][q] = true
+	return out
+
+
+## Gefahrenzonen neu berechnen (fuer die Feldauskunft) und die angezeigten zeichnen.
+func _refresh_threat() -> void:
+	if _threat_root == null:
+		return
+	for c in _threat_root.get_children():
+		c.queue_free()
+	_threat_by.clear()
+	if state == State.OVER or state == State.BUSY or _in_stage:
+		return
+	var hit := {}
+	var wake := {}
+	for e in units:
+		if e["team"] != "e":
+			continue
+		var t := _threat_of(e)
+		_threat_by[e["uid"]] = t
+		if _threat_all or _threat_pick.has(e["uid"]):
+			hit.merge(t["hit"])
+			wake.merge(t["wake"])
+	for p: Vector2i in wake:
+		if not hit.has(p):
+			_threat_tile(p, COL_WAKE)
+	for p: Vector2i in hit:
+		_threat_tile(p, COL_THREAT)
+
+
+func _threat_tile(p: Vector2i, col: Color) -> void:
+	var q := MeshInstance3D.new()
+	q.mesh = terrain.tile_mesh(p, 0.48, 0.05)
+	q.material_override = _mat(col, true, true)
+	_threat_root.add_child(q)
+
+
+func _toggle_threat(e: Dictionary) -> void:
+	if _threat_pick.has(e["uid"]):
+		_threat_pick.erase(e["uid"])
+	else:
+		_threat_pick[e["uid"]] = true
+	_refresh_threat()
+	if _threat_pick.has(e["uid"]):
+		var t: Dictionary = _threat_by.get(e["uid"], {"hit": {}, "wake": {}})
+		if not (t["wake"] as Dictionary).is_empty():
+			_hint.text = "%s hält Wache: Gelb ist die Weckzone, Rot kann die Wache danach angreifen. Noch ein Klick blendet aus." % e["name"]
+		elif (t["hit"] as Dictionary).is_empty():
+			_hint.text = "%s kann in der nächsten Gegnerphase nicht angreifen." % e["name"]
+		else:
+			_hint.text = "Rot: dort kann %s in der nächsten Gegnerphase angreifen. Noch ein Klick blendet aus, G zeigt alle Gegner." % e["name"]
+
+
+func _toggle_threat_all() -> void:
+	_threat_all = not _threat_all
+	if not _threat_all:
+		_threat_pick.clear()
+	if _threat_btn != null:
+		_threat_btn.text = "Gefahr aus (G)" if _threat_all else "Gefahrenzone (G)"
+	_refresh_threat()
+
+
+## Namen der Gegner, die Feld p in ihrer naechsten Phase angreifen koennen (gleiche Namen zusammengefasst).
+func _threat_names(p: Vector2i) -> String:
+	var count := {}
+	for e in units:
+		if e["team"] == "e" and (_threat_by.get(e["uid"], {}) as Dictionary).get("hit", {}).has(p):
+			count[e["name"]] = int(count.get(e["name"], 0)) + 1
+	var parts: PackedStringArray = []
+	for n: String in count:
+		parts.append(n if count[n] == 1 else "%d× %s" % [count[n], n])
+	return ", ".join(parts)
 
 
 func _hover(p: Vector2i) -> void:
@@ -1525,6 +1707,9 @@ func _hover(p: Vector2i) -> void:
 	var u := unit_at(p)
 	if state == State.SELECTED and not reach.has(p) and u.is_empty():
 		_info.text += "   –   " + _why_not_reachable(p)
+	elif state == State.SELECTED and reach.has(p) and (u.is_empty() or u == sel) and _count_team("e") > 0:
+		var foes := _threat_names(p)
+		_info.text += ("   –   Gefahr: in Reichweite von " + foes) if foes != "" else "   –   außer Reichweite der Gegner"
 	_show_card(u if not u.is_empty() else sel)
 	if state == State.TARGETING and not u.is_empty() and _target_units.has(u):
 		_forecast.text = _forecast_text(sel, u)
@@ -1583,11 +1768,15 @@ func _click(p: Vector2i) -> void:
 		State.IDLE:
 			if not u.is_empty() and u["team"] == "p" and not u["done"]:
 				_select(u)
+			elif not u.is_empty() and u["team"] == "e":
+				_toggle_threat(u)
 		State.SELECTED:
 			if not u.is_empty() and u != sel and u["team"] == "p" and not u["done"]:
 				_select(u)
 			elif reach.has(p) and (u.is_empty() or u == sel) and (_hide_allowed.is_empty() or _hide_allowed.has(p)):
 				_move_player(p)
+			elif not u.is_empty() and u["team"] == "e":
+				_toggle_threat(u)
 			else:
 				_hint.text = _why_not_reachable(p)   # Auswahl bleibt, Rechtsklick bricht ab
 		State.TARGETING:
@@ -1932,6 +2121,13 @@ func _on_death(def: Dictionary) -> void:
 		_actor["st"]["kills"] += 1
 	if def["team"] == "e":
 		kills_total += 1
+		(feats["order"] as Array).append(def["id"])
+		if not _actor.is_empty() and _actor["team"] == "p":
+			if _cur_ability != "":
+				feats["ability_kills"] += 1
+			if is_same(_last_hit.get("def"), def) and _last_hit.get("back", false):
+				feats["back_kills"] += 1
+				(feats["back_ids"] as Array).append(def["id"])
 		var carry: Dictionary = def.get("carry", {})
 		if not carry.is_empty():
 			var lines := _grant(carry)
@@ -2090,7 +2286,7 @@ func results() -> Dictionary:
 	var done: Array = []
 	for o: Dictionary in map_data.get("objectives", []):
 		var ok := false
-		match o["id"]:
+		match str(o.get("kind", o["id"])):      # "kind" = Art des Ziels, wenn die id frei gewaehlt ist
 			"alle_leben":
 				ok = fallen.is_empty()
 			"schnell":
@@ -2111,7 +2307,24 @@ func results() -> Dictionary:
 				ok = world.by_id("maschine")["state"] == "broken"
 			"durchgehalten":
 				ok = turn > int(o["turns"])     # so viele Runden ausgehalten, bevor die Szene den Kampf beendet
-		done.append({"id": o["id"], "text": o["text"], "done": ok, "reward": o.get("reward", {})})
+			"taktik":      # so viele Treffer mit Positionsbonus (Ruecken, Flanke, Hoehe, Hinterhalt)
+				var hits := 0
+				for hu in all_units:
+					if hu["team"] == "p":
+						hits += int(hu["st"]["bonus"])
+				ok = hits >= int(o.get("count", 1))
+			"ruecken":     # Gegner mit einem Treffer in den Ruecken besiegt ("unit": ein bestimmter, sonst "count" beliebige)
+				ok = (feats["back_ids"] as Array).has(o["unit"]) if o.has("unit") else int(feats["back_kills"]) >= int(o.get("count", 1))
+			"zuerst":      # dieser Gegner faellt (oder flieht) als erster
+				ok = not (feats["order"] as Array).is_empty() and str(feats["order"][0]) == str(o["unit"])
+			"faehigkeit":  # so viele Gegner mit einer Faehigkeit besiegt
+				ok = int(feats["ability_kills"]) >= int(o.get("count", 1))
+			"ohne_traenke":
+				ok = int(feats["items"]) == 0
+			"truhen":      # alle Truhen geoeffnet und Doerfer besucht
+				ok = chests.all(func(c: Dictionary) -> bool: return c["open"]) and villages.all(func(v: Dictionary) -> bool: return v["visited"])
+		if not skipped:      # uebersprungene Mission: keine Bonusziele
+			done.append({"id": o["id"], "text": o["text"], "done": ok, "reward": o.get("reward", {})})
 	# Kapitelbelohnung und erfuellte Ziele gutschreiben
 	var bonus: Array = [map_data.get("rewards", {})]
 	for d: Dictionary in done:
@@ -2127,6 +2340,7 @@ func results() -> Dictionary:
 	gained["inventory"] = inventory.duplicate()
 	gained["objectives"] = done
 	gained["turns"] = turn
+	gained["skipped"] = skipped
 	gained["fled"] = fled.duplicate()
 	gained["recruited"] = recruited.duplicate()
 	gained["secrets_seen"] = secrets_seen.duplicate()
@@ -3157,6 +3371,8 @@ func _begin_item(id: String) -> void:
 ## Gegenstand benutzen: kostet die Aktion, der Rucksack gehoert dem ganzen Team.
 func _use_item(u: Dictionary, id: String, target: Dictionary) -> void:
 	inventory[id] = int(inventory.get(id, 0)) - 1
+	if u["team"] == "p":
+		feats["items"] += 1
 	var it: Dictionary = Items.consumables()[id]
 	if target != u:
 		_turn_towards(u, target["pos"])
@@ -3328,6 +3544,7 @@ func _strike(att: Dictionary, def: Dictionary, mult := 1.0, ignore_def := 0.0, l
 		return      # Figur ist schon vom Feld (z. B. frueh geflohen)
 	_actor = att
 	var fc := forecast(att, def, att["pos"], mult, ignore_def)
+	_last_hit = {"def": def, "back": (fc["tags"] as Array).has("Rücken +30 %")}
 	var dmg: int = fc["dmg"]
 	var spared := _spare_full_hp(att, def, dmg)
 	if spared:
@@ -3496,6 +3713,7 @@ func goal_met() -> bool:
 
 
 var goal_then_done := false
+var skipped := false              # Mission nach Niederlagen uebersprungen: keine Bonusziele, keine Statistik
 var enemy_spawned := false         # Schritt "spawn" mit team "e" ist gelaufen (Ziel "rout_spawned")
 var peace_win := false             # Schritt {"win": true}: friedlicher Sieg
 var recruited: Array = []           # Schritt {"recruit": id}: gewonnene Verbuendete
@@ -3529,6 +3747,21 @@ func _check_end() -> void:
 		Sfx.event("victory" if won else "defeat")
 		await get_tree().create_timer(1.2).timeout
 		finished.emit(won)
+
+
+## Mission ueberspringen (nach zwei Niederlagen): Die Abschlussszenen ("when": {"victory": true}) laufen auf dem frischen
+## Schlachtfeld wie nach einem Sieg, danach geht die Geschichte normal weiter. Bonusziele zaehlen nicht.
+func skip_to_victory() -> void:
+	skipped = true
+	state = State.OVER
+	_show_tiles({})
+	_close_menu()
+	_hint.text = ""
+	goal_then_done = true
+	for t: Dictionary in triggers:
+		if (t["when"] as Dictionary).has("victory") and not t.get("fired", false) and _cond_ok(t.get("if", {})):
+			t["fired"] = true
+			await _fire(t, {})
 
 
 # ------------------------------------------------------------------ Ausloeser
@@ -4088,6 +4321,12 @@ func _capture_unit(cu: Dictionary) -> void:
 var _super_player: AudioStreamPlayer
 
 func _super_cutin(u: Dictionary, ab: Dictionary, title := "", sub := "") -> void:
+	_talk += 1
+	await _super_cutin_run(u, ab, title, sub)
+	_talk -= 1
+
+
+func _super_cutin_run(u: Dictionary, ab: Dictionary, title := "", sub := "") -> void:
 	var stream: AudioStreamMP3 = load("res://assets/audio/super_attack.mp3")
 	stream.loop = false
 	_super_player = AudioStreamPlayer.new()
@@ -4160,7 +4399,7 @@ func _run_inspire(u: Dictionary, o: Dictionary, sec: Dictionary) -> void:
 	if not secrets_seen.has(sec["id"]):
 		secrets_seen.append(sec["id"])
 		if secret_runner.is_valid():
-			await secret_runner.call(sec)
+			await _secret_show(sec)
 	var ci: Dictionary = ef.get("cutin", {})
 	if not ci.is_empty():
 		await _super_cutin(o, {}, str(ci.get("title", sec["name"])), str(ci.get("sub", "")))
@@ -4223,7 +4462,7 @@ func _object_secret_intro(u: Dictionary, sec: Dictionary) -> void:
 	if not secrets_seen.has(sec["id"]):
 		secrets_seen.append(sec["id"])
 		if secret_runner.is_valid():
-			await secret_runner.call(sec)
+			await _secret_show(sec)
 	var ci: Dictionary = (sec["effects"] as Dictionary).get("cutin", {})
 	if not ci.is_empty():
 		await _super_cutin(u, {}, str(ci.get("title", sec["name"])), str(ci.get("sub", "")))
@@ -4310,7 +4549,7 @@ func _run_oiroke(u: Dictionary, id: String, target: Dictionary, sec: Dictionary)
 	await get_tree().create_timer(0.5).timeout
 	if not secrets_seen.has(sec["id"]) and secret_runner.is_valid():
 		secrets_seen.append(sec["id"])
-		await secret_runner.call(sec)
+		await _secret_show(sec)
 	Sfx.play("poof", 3.0, 0.85, 0.25)
 	await fx.ab._smoke_bomb(u)                                   # Rauch: die Schwestern sind wieder normal
 	_swap_token(u, u["id"])
@@ -4355,7 +4594,7 @@ func _run_revive(by: Dictionary, def: Dictionary, sec: Dictionary) -> void:
 	await get_tree().create_timer(0.7).timeout
 	if not secrets_seen.has(sec["id"]) and secret_runner.is_valid():
 		secrets_seen.append(sec["id"])
-		await secret_runner.call(sec)
+		await _secret_show(sec)
 	_check_end()
 
 
@@ -4417,7 +4656,7 @@ func _run_protect(by: Dictionary, ward: Dictionary, sec: Dictionary) -> void:
 		await get_tree().create_timer(0.5).timeout
 	if not secrets_seen.has(sec["id"]) and units.has(ward) and secret_runner.is_valid():
 		secrets_seen.append(sec["id"])
-		await secret_runner.call(sec)
+		await _secret_show(sec)
 	_check_end()
 
 
@@ -4452,7 +4691,7 @@ func _run_fury(_u: Dictionary, o: Dictionary, sec: Dictionary, fab: Dictionary, 
 	if not secrets_seen.has(sec["id"]):
 		secrets_seen.append(sec["id"])
 		if secret_runner.is_valid():
-			await secret_runner.call(sec)
+			await _secret_show(sec)
 	var ci: Dictionary = ef.get("cutin", {})
 	if not ci.is_empty():
 		await _super_cutin(o, {}, str(ci.get("title", sec["name"])), str(ci.get("sub", "")))
@@ -4495,7 +4734,7 @@ func _widen_secret(u: Dictionary, id: String) -> Dictionary:
 		if not secrets_seen.has(sec["id"]):
 			secrets_seen.append(sec["id"])
 			if secret_runner.is_valid():
-				await secret_runner.call(sec)
+				await _secret_show(sec)
 		var ci: Dictionary = ef.get("cutin", {})
 		if not ci.is_empty():
 			await _super_cutin(o, {}, str(ci.get("title", sec["name"])), str(ci.get("sub", "")))
@@ -4518,7 +4757,7 @@ func _run_boost(u: Dictionary, o: Dictionary, sec: Dictionary) -> void:
 	if not secrets_seen.has(sec["id"]):
 		secrets_seen.append(sec["id"])
 		if secret_runner.is_valid():
-			await secret_runner.call(sec)
+			await _secret_show(sec)
 	var ci: Dictionary = ef.get("cutin", {})
 	if not ci.is_empty():
 		await _super_cutin(o, {}, str(ci.get("title", sec["name"])), str(ci.get("sub", "")))
@@ -4547,7 +4786,7 @@ func _run_near(u: Dictionary, o: Dictionary, sec: Dictionary) -> void:
 	if not secrets_seen.has(sec["id"]):
 		secrets_seen.append(sec["id"])
 		if secret_runner.is_valid():
-			await secret_runner.call(sec)
+			await _secret_show(sec)
 	var ci: Dictionary = ef.get("cutin", {})
 	if not ci.is_empty():
 		await _super_cutin(o, {}, str(ci.get("title", sec["name"])), str(ci.get("sub", "")))
@@ -4580,7 +4819,7 @@ func _throw_with_rain(u: Dictionary, ally: Dictionary, dest: Vector2i, sec: Dict
 	if not secrets_seen.has(sec["id"]):
 		secrets_seen.append(sec["id"])
 		if secret_runner.is_valid():
-			await secret_runner.call(sec)
+			await _secret_show(sec)
 	var ci: Dictionary = ef.get("cutin", {})
 	if not ci.is_empty():
 		await _super_cutin(ally, {}, str(ci.get("title", sec["name"])), str(ci.get("sub", "")))
@@ -4621,7 +4860,7 @@ func _run_catch(u: Dictionary, via: Dictionary, sec: Dictionary) -> void:
 	if not secrets_seen.has(sec["id"]):
 		secrets_seen.append(sec["id"])
 		if secret_runner.is_valid():
-			await secret_runner.call(sec)
+			await _secret_show(sec)
 	var ci: Dictionary = ef.get("cutin", {})
 	if not ci.is_empty():
 		await _super_cutin(via, {}, str(ci.get("title", "Futter")), str(ci.get("sub", "")))
@@ -4663,7 +4902,7 @@ func _run_reflect(u: Dictionary, id: String, target: Dictionary, via: Dictionary
 	if first:
 		secrets_seen.append(sec["id"])
 		if secret_runner.is_valid():
-			await secret_runner.call(sec)
+			await _secret_show(sec)
 	var ci: Dictionary = ef.get("cutin", {})
 	if not ci.is_empty():
 		await _super_cutin(via, ab, str(ci.get("title", ab["name"])), str(ci.get("sub", "")))
@@ -4732,7 +4971,7 @@ func _run_secret(u: Dictionary, id: String, target: Dictionary) -> void:
 	if not secrets_seen.has(sec["id"]):
 		secrets_seen.append(sec["id"])
 		if secret_runner.is_valid():
-			await secret_runner.call(sec)
+			await _secret_show(sec)
 	var ci: Dictionary = ef.get("cutin", {})          # Erkennungszeichen: der Polarlicht-Auftritt
 	if not ci.is_empty():
 		await _super_cutin(target, {}, str(ci.get("title", sec["name"])), str(ci.get("sub", "")))
@@ -4876,6 +5115,7 @@ func _run_ability(u: Dictionary, id: String, target: Dictionary) -> void:
 	_note("ability", {"id": id, "by": u})
 	if target != u:
 		_turn_towards(u, target["pos"])
+	_cur_ability = id if u["team"] == "p" else ""
 	if ab.get("super", false):
 		await _super_cutin(u, ab)
 	if fx.has_fx(id):
@@ -4896,6 +5136,7 @@ func _run_ability(u: Dictionary, id: String, target: Dictionary) -> void:
 	_refresh_unit(u)
 	if ab.get("super", false):
 		_super_music_stop()
+	_cur_ability = ""
 	_widen_r = 0
 	fx.spin_scale = 1.0
 	await _near_reactions(u, id)
@@ -5149,6 +5390,7 @@ func _end_player_turn() -> void:
 	if state == State.BUSY or state == State.OVER:
 		return
 	state = State.BUSY
+	_enemy_phase = true
 	sel = {}
 	_close_menu()
 	_show_tiles({})
@@ -5180,6 +5422,7 @@ func _end_player_turn() -> void:
 			await _sting_check(e)
 		if state == State.OVER:
 			return
+	_enemy_phase = false
 	turn += 1
 	await _begin_phase("p")
 	if state == State.OVER:

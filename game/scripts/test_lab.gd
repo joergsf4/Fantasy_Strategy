@@ -93,6 +93,7 @@ func _ready() -> void:
 	col2.add_child(_label("Bildschirme", UiTheme.F_HEAD, 20, UiTheme.CREAM))
 	col2.add_child(_button("Aufstiegsbildschirm (Stufe 4, ein Punkt)", func() -> void: run.emit("aufstieg", _hero_id(), _foe_id(), false)))
 	col2.add_child(_button("Lager (Kapitel 8, 999 Gold)", func() -> void: run.emit("lager", _hero_id(), _foe_id(), false)))
+	col2.add_child(_button("Chronik (Missionen erneut spielen, Medaillen)", func() -> void: run.emit("chronik", _hero_id(), _foe_id(), false)))
 	col2.add_child(_button("Belohnungs- und Statistikbildschirm", func() -> void: run.emit("belohnung", _hero_id(), _foe_id(), false)))
 	col2.add_child(_button("Zwischensequenz Schneesturm (PoC)", func() -> void: run.emit("schneesturm", _hero_id(), _foe_id(), false)))
 	col2.add_child(_button("Zwischenspiel Überfall am Pass (Frischlinge, Sack)", func() -> void: run.emit("berge", _hero_id(), _foe_id(), false)))

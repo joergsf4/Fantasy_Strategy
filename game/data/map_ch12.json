@@ -157,9 +157,10 @@
    }
   },
   {
-   "id": "schnell",
-   "text": "In 12 Runden gewonnen",
-   "turns": 12,
+   "id": "taktik",
+   "kind": "taktik",
+   "count": 6,
+   "text": "Sechs Treffer von hinten, von der Seite oder von oben",
    "reward": {
     "items": {
      "heilhonig": 1
@@ -167,5 +168,18 @@
    }
   }
  ],
- "mood": "mittag"
+ "mood": "mittag",
+ "chests": [
+  {
+   "pos": [
+    11,
+    9
+   ],
+   "reward": {
+    "items": {
+     "aether": 1
+    }
+   }
+  }
+ ]
 }
