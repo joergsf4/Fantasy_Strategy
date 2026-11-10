@@ -406,6 +406,8 @@ func _kill(by: Dictionary, def: Dictionary, tag: String) -> void:
 func strike(att: Dictionary, def: Dictionary, mult := 1.0, ignore_def := 0.0, turn_faces := true, tag := "_attack") -> int:
 	var fc := forecast(att, def, att["pos"], mult, ignore_def)
 	var dmg: int = mini(fc["dmg"], def["hp"])
+	if att["team"] == "e" and def["team"] == "p" and def["hp"] >= def["maxhp"] and def["hp"] > 1 and dmg >= def["hp"]:
+		dmg = def["hp"] - 1      # Schutz vor Sofort-K.o. wie im Spiel
 	def["hp"] -= dmg
 	Status.remove(att, "stealth")
 	if turn_faces:

@@ -918,6 +918,23 @@ func _build_environment() -> void:
 	cam_home = cam.transform
 
 
+## Figurenbild in voller Aufloesung (fuer grosse Auftritte wie den Polarlicht-Auftritt); _portrait_tex ist fuer die Karte auf 256 Pixel verkleinert.
+func _full_tex(id: String) -> Texture2D:
+	var path := TOKEN_DIR + id + ".png"
+	if not ResourceLoader.exists(path):
+		path = PORTRAIT_DIR + id + ".png"
+	if not ResourceLoader.exists(path):
+		return _portrait_tex(id)
+	var img: Image = (load(path) as Texture2D).get_image()
+	if img.is_compressed():
+		img.decompress()
+	var s := 900.0 / maxf(img.get_width(), img.get_height())      # etwas groesser als die Anzeige (620 Pixel), sauber verkleinert
+	if s < 1.0:
+		img.resize(int(img.get_width() * s), int(img.get_height() * s), Image.INTERPOLATE_LANCZOS)
+	img.generate_mipmaps()
+	return ImageTexture.create_from_image(img)
+
+
 func _portrait_tex(id: String) -> Texture2D:
 	if _tex_cache.has(id):
 		return _tex_cache[id]
@@ -1752,6 +1769,14 @@ func _enter_action(show_abilities := false, show_items := false) -> void:
 			for hm in world.objects:
 				if hm["type"] == "honigmaschine" and hm["state"] == "empty" and sel["id"] == "bienenmaedchen" and Grid.dist(sel["pos"], hm["pos"]) == 1:
 					_menu_button(box, "Honig einfüllen", true, func() -> void: _fill_honey(sel, hm))
+			var rp := _reprogram_target(sel)
+			if not rp.is_empty():      # Ziel "capture" mit Aktion (Mission 8): Robo programmiert Robina um, einmal pro Runde
+				var n_done := capture_progress
+				var n_all := int(goal.get("turns", 3))
+				if capture_turn == turn:
+					_menu_button(box, "Umprogrammieren (nächste Runde)", false, func() -> void: pass)
+				else:
+					_menu_button(box, "Umprogrammieren (%d/%d)" % [n_done + 1, n_all], true, func() -> void: _reprogram(sel, rp))
 			var hs := _hostage_near(sel["pos"])
 			if not hs.is_empty():
 				var ho := _hostage_option(hs)
@@ -2461,6 +2486,17 @@ func _refresh_object(o: Dictionary, animate: bool) -> void:
 				fx.particles("fx_smoke", to_world(o["pos"]) + Vector3(0, 0.3, 0), 10, 1.5, 0.7, 1.0, -0.3, Color(0.3, 0.3, 0.3), false, 70.0)
 	if o["type"] == "hive_p":
 		(p["body"] as Node3D).visible = st == "active"
+	if o["type"] == "hive" or o["type"] == "crate":      # zerstoerbare Objekte (Bienenstock Mission 5, Kisten): zerstoert verschwinden sie
+		var gone := st == "broken"
+		(p["body"] as Node3D).visible = not gone
+		if animate and gone:
+			var at := to_world(o["pos"]) + Vector3(0, 0.4, 0)
+			Sfx.event("wall_break")
+			fx.particles("fx_smoke", at, 12, 1.8, 0.6, 0.9, -0.2, Color(0.8, 0.72, 0.55), false, 140.0)
+			if o["type"] == "hive":
+				Sfx.event("buzz")
+				fx.particles("fx_star", at + Vector3(0, 0.3, 0), 10, 2.0, 0.18, 0.8, 0.5, Color(1.0, 0.85, 0.3), true, 180.0)
+			fx.shake(0.05, 0.2)
 	if o["type"] == "zylinder":
 		(p["body"] as Node3D).visible = st == "intact"
 		(p["glow"] as Node3D).visible = st == "intact"
@@ -2711,7 +2747,7 @@ func _obj_targets(u: Dictionary, id: String, pos: Vector2i) -> Array[Dictionary]
 	var r: Array = ab["range"]
 	for o in world.objects:
 		var d := Grid.dist(pos, o["pos"])
-		if d < r[0] or d > r[1]:
+		if d < r[0] or d > int(r[1]) + int(o.get("reach_bonus", 0)):      # Objektfeld "reach_bonus": aus groesserem Abstand treffbar (Brueckenhebel Mission 12)
 			continue
 		var sol := world.solution(o, ab.get("caps", []))
 		if sol.is_empty() or sol["cap"] == "throw_ally":
@@ -3281,6 +3317,11 @@ func _resolve(u: Dictionary, target: Dictionary) -> void:
 		await _strike(target, u)
 	_check_end()
 
+## Schutz vor Sofort-K.o.: Ein Held mit vollen Leben ueberlebt jeden einzelnen gegnerischen Treffer mit 1 Leben
+## (unabhaengig von Ausruestung und Richtung; Folgetreffer und Gift wirken normal).
+func _spare_full_hp(att: Dictionary, def: Dictionary, dmg: int) -> bool:
+	return att.get("team", "") == "e" and def.get("team", "") == "p" and int(def["hp"]) >= int(def["maxhp"]) and int(def["hp"]) > 1 and dmg >= int(def["hp"])
+
 
 func _strike(att: Dictionary, def: Dictionary, mult := 1.0, ignore_def := 0.0, lunge := true, quick := false) -> void:
 	if not is_instance_valid(att.get("node")) or not is_instance_valid(def.get("node")):
@@ -3288,6 +3329,9 @@ func _strike(att: Dictionary, def: Dictionary, mult := 1.0, ignore_def := 0.0, l
 	_actor = att
 	var fc := forecast(att, def, att["pos"], mult, ignore_def)
 	var dmg: int = fc["dmg"]
+	var spared := _spare_full_hp(att, def, dmg)
+	if spared:
+		dmg = int(def["hp"]) - 1
 	_count(att, def, mini(dmg, def["hp"]))
 	if not (fc["tags"] as Array).is_empty():
 		att["st"]["bonus"] += 1                 # Treffer mit Positionsbonus (Ruecken, Flanke, Hoehe, Hinterhalt)
@@ -3317,6 +3361,8 @@ func _strike(att: Dictionary, def: Dictionary, mult := 1.0, ignore_def := 0.0, l
 		_popup(def, "-%d%s" % [dmg, tag_text], Color(1, 0.45, 0.35))   # nicht abwarten (Serientreffer)
 	else:
 		await _popup(def, "-%d%s" % [dmg, tag_text], Color(1, 0.45, 0.35))
+	if spared:
+		_popup(def, "Knapp überlebt!", Color(1.0, 0.9, 0.5))
 	if def["hp"] <= 0 or _flees_early(def):
 		units.erase(def)
 		await _down(def)
@@ -3946,7 +3992,42 @@ func _run_ram(u: Dictionary, target: Dictionary, ef: Dictionary) -> void:
 
 # ------------------------------------------------------------------ Uebernahme (Ziel "capture")
 
-var capture_progress := 0           # aufeinanderfolgende Spielerphasen mit einem Helden neben dem Ziel
+var capture_progress := 0           # aufeinanderfolgende Spielerphasen mit einem Helden neben dem Ziel (bzw. Einsaetze der Aktion)
+var capture_turn := -1              # Runde des letzten Einsatzes der Aktion (hoechstens einer pro Runde)
+
+
+## Ziel "capture" mit "action": true (Mission 8): Wen kann u gerade umprogrammieren? Nur die Figur goal["by"] (Robo) auf einem Nachbarfeld.
+func _reprogram_target(u: Dictionary) -> Dictionary:
+	if goal.get("type", "") != "capture" or not goal.get("action", false) or u["id"] != str(goal.get("by", u["id"])):
+		return {}
+	var cu := _find(str(goal["unit"]))
+	if cu.is_empty() or cu["team"] != "e" or Grid.dist(u["pos"], cu["pos"]) != 1:
+		return {}
+	return cu
+
+
+## Aktion "Umprogrammieren": ein Schritt pro Runde, der Fortschritt bleibt auch, wenn das Ziel wegfaehrt. Nach goal["turns"] Schritten wechselt es die Seite.
+func _reprogram(u: Dictionary, cu: Dictionary) -> void:
+	_close_menu()
+	state = State.BUSY
+	_show_tiles({})
+	_update_status()
+	_actor = u
+	_turn_towards(u, cu["pos"])
+	capture_progress += 1
+	capture_turn = turn
+	var need := int(goal.get("turns", 3))
+	Sfx.event("switch")
+	fx.particles("fx_star", fx.chest(cu, 0.8), 8, 1.4, 0.2, 0.6, 0.5, Color(0.55, 0.85, 1.0), true, 160.0)
+	_update_status()
+	if capture_progress < need:
+		await _popup(cu, "Umprogrammiert %d/%d" % [capture_progress, need], Color(0.6, 0.85, 1.0))
+	else:
+		await _capture_unit(cu)
+	_check_end()
+	if state == State.OVER:
+		return
+	_finish_unit_after(u)
 
 
 func _capture_info() -> Dictionary:
@@ -3961,7 +4042,7 @@ func _capture_info() -> Dictionary:
 ## Ende der Spielerphase: Steht mindestens ein Held neben dem Ziel, zaehlt die Runde, sonst beginnt die Zaehlung von vorn.
 ## Nach goal["turns"] Runden in Folge wechselt das Ziel die Seite (Mission gewonnen).
 func _capture_phase() -> void:
-	if goal.get("type", "") != "capture":
+	if goal.get("type", "") != "capture" or goal.get("action", false):      # mit Aktion zaehlt nur "Umprogrammieren"
 		return
 	var cu := _find(str(goal["unit"]))
 	if cu.is_empty() or cu["team"] != "e":
@@ -4022,7 +4103,7 @@ func _super_cutin(u: Dictionary, ab: Dictionary, title := "", sub := "") -> void
 	layer.layer = 9
 	add_child(layer)
 	var c := SuperCutin.new()
-	c.setup((u["sprite"] as Sprite3D).texture, title if title != "" else str(ab["name"]), sub if title != "" else str(ab.get("super_sub", "")))
+	c.setup(_full_tex(str(u.get("token_id", unit_defs.get(u["id"], {}).get("portrait", u["id"])))), title if title != "" else str(ab["name"]), sub if title != "" else str(ab.get("super_sub", "")))
 	layer.add_child(c)
 	await c.finished
 	layer.queue_free()
@@ -4190,6 +4271,7 @@ func _foe_secret_available(u: Dictionary, id: String, pos: Vector2i) -> Dictiona
 
 
 func _swap_token(u: Dictionary, token_id: String) -> void:
+	u["token_id"] = token_id      # der Polarlicht-Auftritt zeigt dann dieses Bild (in voller Aufloesung)
 	var sp := u["sprite"] as Sprite3D
 	var tex := _portrait_tex(token_id)
 	sp.texture = tex
@@ -5161,7 +5243,8 @@ func _machine_phase() -> void:
 
 
 ## Faehigkeiten mit "ai_debuff" (Computer-Analyse): vor dem Angriff das Ziel schwaechen, solange es den Status noch nicht hat. Kostet keine Aktion.
-func _enemy_debuff(e: Dictionary, target: Dictionary) -> void:
+## Rueckgabe true: die Faehigkeit kostete die Aktion (z. B. Computer-Analyse), danach greift die Figur in diesem Zug nicht mehr an.
+func _enemy_debuff(e: Dictionary, target: Dictionary) -> bool:
 	for id: String in e["abilities"]:
 		var ab: Dictionary = abilities[id]
 		if str(ab.get("ai_debuff", "")) == "" or int(e["cd"].get(id, 0)) > 0:
@@ -5173,7 +5256,8 @@ func _enemy_debuff(e: Dictionary, target: Dictionary) -> void:
 		if dd < r[0] or dd > r[1]:
 			continue
 		await _run_ability(e, id, target)
-		return
+		return bool(ab.get("ends_turn", true))
+	return false
 
 
 func _hive_phase() -> void:
@@ -5486,7 +5570,9 @@ func _enemy_move(e: Dictionary) -> void:
 		await _flush_events()
 		return
 	if not best_target.is_empty() and units.has(best_target):
-		await _enemy_debuff(e, best_target)
+		if await _enemy_debuff(e, best_target):
+			await _flush_events()
+			return
 	if not best_target.is_empty():
 		if best_ab != "":
 			await _run_ability(e, best_ab, best_target)

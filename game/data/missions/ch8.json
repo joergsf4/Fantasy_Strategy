@@ -2,13 +2,15 @@
  "id": "ch8",
  "title": "Die bewachte Oase",
  "map": "res://data/map_ch8.json",
- "briefing": "Im Inneren der Wüsteninsel ist es mörderisch heiß und trocken. Die einzige Oase wird von Xiùlán und Soldaten des Regenten bewacht. Nach vier Runden rollt Robinas Dampfpanzer heran, die ältere Schwester von Robo. Er hat Elisabeths Breitseite, steht aber auf der Gegenseite, und seine Panzerung hält jeden Angriff aus. Das Ziel: Bleibt drei Runden in Folge neben dem Panzer, dann übernehmt ihr sein Steuer. Xiùlán kann wieder fliehen.",
+ "briefing": "Im Inneren der Wüsteninsel ist es mörderisch heiß und trocken. Die einzige Oase wird von Xiùlán und Soldaten des Regenten bewacht. Nach vier Runden rollt Robinas Dampfpanzer heran, die ältere Schwester von Robo. Er hat Elisabeths Breitseite, steht aber auf der Gegenseite, und seine Panzerung hält jeden Angriff aus. Das Ziel: Stellt Robo neben den Panzer und wählt im Menü „Umprogrammieren“. Nach drei Einsätzen (höchstens einer pro Runde) gehört Robina zu euch. Fährt sie weg, bleibt der Fortschritt erhalten, Robo muss nur wieder zu ihr. Robo darf dabei nicht fallen, sonst ist die Mission verloren. Xiùlán kann wieder fliehen.",
  "goals": [
   {
    "type": "capture",
    "unit": "panzer",
    "turns": 3,
-   "wait_text": "Ziel: Haltet die Oase (in Runde 5 rollt ein Panzer heran)"
+   "wait_text": "Ziel: Haltet die Oase (in Runde 5 rollt ein Panzer heran)",
+   "action": true,
+   "by": "robo"
   }
  ],
  "triggers": [
@@ -145,7 +147,7 @@
        "left": "",
        "right": "robo",
        "speaker": "robo",
-       "text": "Sie ist stur, aber nicht böse. Ich brauche Zeit an ihrer Klappe. Lange. Haltet mir den Rücken frei und bleibt bei mir.",
+       "text": "Sie ist stur, aber nicht böse. Ich muss an ihre Klappe und sie umprogrammieren: dreimal, einmal pro Runde. Haltet mir den Rücken frei.",
        "story": true
       }
      ]
@@ -460,5 +462,6 @@
     "story": true
    }
   ]
- }
+ },
+ "lose_if_fallen": "robo"
 }

@@ -35,19 +35,50 @@ func _initialize() -> void:
 	check(b._ab_targets(hero, "roter_laser", hero["pos"]).filter(func(o: Dictionary) -> bool: return o == tank).is_empty(), "Fähigkeiten zielen nicht auf den Panzer")
 	var spin: Array[Dictionary] = b._effect_targets(hero, b.abilities["todeswirbel"], hero, "area_enemies")
 	check(not spin.has(tank), "Flaechenfaehigkeiten treffen den Panzer nicht")
-	check(Mission.goal_text(b.goal, 6, 5, b._capture_info()).contains("(0/3)"), "Zieltext zeigt den Fortschritt")
-	# Uebernahme: Held steht daneben
+	var gt := Mission.goal_text(b.goal, 6, 5, b._capture_info())
+	check(gt.contains("(0/3)") and gt.contains("Umprogrammieren") and gt.contains("nicht fallen"), "Zieltext erklaert die Aktion: %s" % gt)
+	check(String(m["briefing"]).contains("Umprogrammieren"), "Briefing erklaert die Aktion")
+	# Uebernahme ist eine Aktion: nur Robo, nur daneben, einmal pro Runde; Fortschritt bleibt, auch wenn der Panzer wegfaehrt
 	await b._capture_phase()
-	check(b.capture_progress == 1 and tank["team"] == "e", "Runde 1 von 3")
-	await b._capture_phase()
-	check(b.capture_progress == 2, "Runde 2 von 3")
-	hero["pos"] = Vector2i(2, 2)        # weg: Zaehlung bricht ab
-	await b._capture_phase()
-	check(b.capture_progress == 0 and tank["team"] == "e", "Nicht in Folge: Zaehlung beginnt von vorn")
-	hero["pos"] = Vector2i(6, 8)
-	for i in 3:
-		await b._capture_phase()
-	check(tank["team"] == "p" and b.goal_met(), "Nach drei Runden in Folge gehoert der Panzer uns, Ziel erreicht")
+	check(b.capture_progress == 0, "Danebenstehen allein zaehlt nicht mehr")
+	var robo: Dictionary = b._find("robo")
+	if robo.is_empty():
+		b._spawn("robo", "p", Vector2i(1, 1))
+		robo = b.units.back()
+	robo["pos"] = Vector2i(5, 7)
+	check(b._reprogram_target(hero).is_empty() or hero == robo, "Andere Helden koennen nicht umprogrammieren")
+	robo["pos"] = Vector2i(2, 2)
+	check(b._reprogram_target(robo).is_empty(), "Robo nicht daneben: keine Aktion")
+	robo["pos"] = Vector2i(5, 7)
+	check(b._reprogram_target(robo) == tank, "Robo daneben: Aktion moeglich")
+	await b._reprogram(robo, tank)
+	check(b.capture_progress == 1 and tank["team"] == "e" and b.capture_turn == b.turn, "Einsatz 1 von 3")
+	tank["pos"] = Vector2i(9, 2)        # Panzer faehrt weg: Fortschritt bleibt
+	b.turn += 1
+	robo["pos"] = Vector2i(8, 2)
+	robo["done"] = false
+	await b._reprogram(robo, tank)
+	check(b.capture_progress == 2, "Einsatz 2 von 3, Fortschritt blieb erhalten")
+	b.turn += 1
+	robo["done"] = false
+	await b._reprogram(robo, tank)
+	check(tank["team"] == "p" and b.goal_met(), "Nach drei Einsaetzen gehoert der Panzer uns, Ziel erreicht")
+	check(str(b.map_data.get("lose_if_fallen", "")) == "robo" and String(m["briefing"]).contains("nicht fallen"), "Faellt Robo, ist die Mission verloren (im Briefing erklaert)")
+	var bl := Battle.new()
+	bl.setup(Mission.load_mission("ch8"), defs)
+	root.add_child(bl)
+	await process_frame
+	var lost := []
+	bl.finished.connect(func(w: bool) -> void: lost.append(w))
+	var r2: Dictionary = bl._find("robo")
+	bl.units.erase(r2)
+	bl.fallen.append("robo")
+	await bl._check_end()
+	for i in 60:
+		if not lost.is_empty():
+			break
+		await process_frame
+	check(lost == [false], "Robo gefallen: Niederlage")
 	check(b._count_team("e") > 0, "Die uebrigen Gegner leben noch, gewonnen ist trotzdem")
 	check(b._hittable(tank), "Nach der Uebernahme ist Robina ein normales Ziel")
 	var hr: Dictionary = defs["panzer"]

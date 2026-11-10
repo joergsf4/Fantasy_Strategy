@@ -70,11 +70,23 @@ func _ready() -> void:
 	_body.add_theme_constant_override("separation", 8)
 	_body.custom_minimum_size = Vector2(1120, 0)
 	scroll.add_child(_body)
+	var bottom := HBoxContainer.new()
+	bottom.alignment = BoxContainer.ALIGNMENT_CENTER
+	bottom.add_theme_constant_override("separation", 30)
+	col.add_child(bottom)
+	var auto := CheckButton.new()      # Option: freie Ausruestungsplaetze der Gruppe vor der Mission aus dem Lager fuellen
+	auto.text = "Ausrüstung automatisch verteilen"
+	auto.button_pressed = party.auto_gear
+	auto.focus_mode = Control.FOCUS_NONE
+	auto.add_theme_font_override("font", UiTheme.font(UiTheme.F_BODY))
+	auto.add_theme_font_size_override("font_size", 20)
+	auto.add_theme_color_override("font_color", UiTheme.CREAM)
+	auto.toggled.connect(func(on: bool) -> void: party.auto_gear = on)
+	bottom.add_child(auto)
 	var go := _button("Los geht's", func() -> void:
 		closed.emit()
 		queue_free(), Vector2(260, 42))
-	go.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	col.add_child(go)
+	bottom.add_child(go)
 	_refresh()
 
 
@@ -84,7 +96,7 @@ func _refresh() -> void:
 	for c in _body.get_children():
 		c.queue_free()
 	var fixed: Array = Mission.dialogue_ids(mission["id"])
-	_body.add_child(_text("🔒 Story: muss mit. Alle anderen Plätze lassen sich tauschen. Ausrüstung von Zurückbleibenden wandert ins Lager.", 16, Color(0.8, 0.85, 0.75), 1120))
+	_body.add_child(_text("🔒 Story: muss mit. Alle anderen Plätze lassen sich tauschen. Ausrüstung von Zurückbleibenden wandert ins Lager, Neue bekommen auf Wunsch (unten) freie Stücke daraus.", 16, Color(0.8, 0.85, 0.75), 1120))
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 10)
 	row.alignment = BoxContainer.ALIGNMENT_CENTER

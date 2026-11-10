@@ -73,24 +73,10 @@
    ]
   },
   {
-   "id": "soldat_infanterie",
-   "pos": [
-    6,
-    4
-   ]
-  },
-  {
    "id": "soldat_bogenschuetze",
    "pos": [
     7,
     1
-   ]
-  },
-  {
-   "id": "soldat_bogenschuetze",
-   "pos": [
-    7,
-    7
    ]
   },
   {
@@ -133,7 +119,8 @@
     7,
     4
    ],
-   "figure": "kind_lotte"
+   "figure": "kind_lotte",
+   "steps": 1
   },
   {
    "id": "kind2",
@@ -142,7 +129,8 @@
     9,
     4
    ],
-   "figure": "kind_pip"
+   "figure": "kind_pip",
+   "steps": 1
   },
   {
    "id": "kind3",
@@ -151,7 +139,8 @@
     8,
     6
    ],
-   "figure": "kind_mia"
+   "figure": "kind_mia",
+   "steps": 1
   },
   {
    "id": "zylinder",

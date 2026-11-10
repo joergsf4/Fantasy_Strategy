@@ -27,6 +27,7 @@ Vorschläge, nach Nutzen sortiert:
 - Technik: Pro Mission ermitteln, welche Figuren sprechen (Sprecher in `story_*.json` und in den Auslösern der Mission, `left`/`right`/`speaker`, `$hero` zählt nicht). Der Dialog-Editor (`tools/dialog_editor`) kann das schon auswerten. Dazu ein Wahlbildschirm im Lager (`camp.gd`, Reiter „Aufstellung“ ist bisher nur eine Anzeige).
 - Offen: Gruppengröße (heute 6), Mindestanzahl Heiler, Startpositionen der Wahlfiguren, Balancing (die Simulation misst feste Gruppen), Wendy „zu oft dabei“ (Wunsch nach Abwechslung).
 ### 3.1 Ausrüstung abwesender Figuren
+- **Seit 2026-11-10:** Option in der Gruppenwahl „Ausrüstung automatisch verteilen“ (ab Werk an, im Spielstand `auto_gear`): Vor jeder Mission bekommen Neue in der Gruppe freie Stücke aus dem Lager, angelegte Ausrüstung bleibt. Vorher gingen eingewechselte Helden ohne Ausrüstung in den Kampf, während die Stücke der Ausgewechselten ungenutzt im Lager lagen.
 - Wer nicht mitkommt, gibt seine **Ausrüstung** frei: sie geht in den Pool zurück (`Party.pool`) und lässt sich neu verteilen. Rückgabe automatisch beim Entfernen aus der Gruppe, beim Zurückholen wird neu ausgerüstet.
 
 ### 3.2 Automatisch ausrüsten — umgesetzt

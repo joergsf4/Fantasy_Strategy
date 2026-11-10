@@ -2,7 +2,7 @@
  "id": "ch12",
  "title": "Die hochgezogene Brücke",
  "map": "res://data/map_ch12.json",
- "briefing": "Ein Fluss teilt die Karte, und die Frischlinge, Warts Ersatz als Boss, haben die Zugbrücke an ihrem Ufer hochgezogen. Das Fußvolk kommt nicht hinüber. Am anderen Ufer, ein Feld vom Ufer entfernt, steht der Hebel, der die Brücke herunterlässt: Trefft ihn aus der Ferne (Kanone, Kyujutsu, Breitseite, Sternschnuppe) oder bringt jemanden hinüber (Wurf, Flieger). Besiegt alle Gegner. Die Frischlinge sinnen auf Rache für Wart.",
+ "briefing": "Ein Fluss teilt die Karte, und die Frischlinge, Warts Ersatz als Boss, haben die Zugbrücke an ihrem Ufer hochgezogen. Das Fußvolk kommt nicht hinüber. Am anderen Ufer, ein Feld vom Ufer entfernt, steht der Hebel, der die Brücke herunterlässt: Trefft ihn aus der Ferne (Kanone, Kyujutsu, Robinas Breitseite, Knochenwurf, Sternschnuppe) oder bringt jemanden hinüber (Muskelaugusts Wurf, Lins Stabsprung über die hochgezogene Brücke, Flieger). Besiegt alle Gegner. Die Frischlinge sinnen auf Rache für Wart.",
  "goals": [
   {
    "type": "rout"

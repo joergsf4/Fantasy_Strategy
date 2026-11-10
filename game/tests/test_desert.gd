@@ -43,11 +43,11 @@ func _initialize() -> void:
 	var humbug: Dictionary = b._find("quacksalber")
 	hero["hp"] = 5
 	await b._run_ability(lumi, "sternensegen", hero)
-	check(hero["hp"] == 12 and Status.has(hero, "buff") and Combat.stat(hero, "def") == defs["hund"]["def"] + 2, "Sternensegen heilt 7 und gibt +2 Verteidigung")
+	check(hero["hp"] == 13 and Status.has(hero, "buff") and Combat.stat(hero, "def") == defs["hund"]["def"] + 2, "Sternensegen heilt 8 und gibt +2 Verteidigung")
 	hero["hp"] = 5
 	Status.add(hero, "poison", 3)
 	await b._run_ability(humbug, "wundersalbe", hero)
-	check(hero["hp"] == 19 and not Status.has(hero, "poison") and Status.has(hero, "tired"), "Wundersalbe heilt 14, entgiftet, macht erschoepft")
+	check(hero["hp"] == 20 and not Status.has(hero, "poison") and Status.has(hero, "tired"), "Wundersalbe heilt 15, entgiftet, macht erschoepft")
 	# Gruppe: Sprecher fest, einer tauschbar, Heiler waehlbar ab Kapitel 7
 	var fixed := Mission.dialogue_ids("ch7")
 	check(fixed.has("magical_girl") and not fixed.has("quacksalber") and not fixed.has("ritter"), "Lumi ist fest (Beitritt), Dr. Humbug und Albrecht sind tauschbar: %s" % [fixed])

@@ -488,7 +488,7 @@ func _mission_with_squad(cid: String) -> Dictionary:
 	for i in (m["players"] as Array).size():
 		m["players"][i]["id"] = ids[i]
 	party.release_absent(ids)
-	if party.test_run:
+	if party.test_run or party.auto_gear:      # Neue in der Gruppe bekommen freie Ausruestung aus dem Lager (Option in der Gruppenwahl)
 		party.auto_equip(ids, units)
 	return m
 

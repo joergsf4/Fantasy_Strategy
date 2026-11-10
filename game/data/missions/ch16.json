@@ -112,17 +112,19 @@
     {
      "dialogue": [
       {
-       "left": "ritter",
+       "left": "kugelblitz",
        "right": "xiulan",
        "speaker": "xiulan",
        "text": "Und wo bleibt mein Lohn, Professor?! Ich kämpfe nicht für Luft!",
+       "left_expr": "wuetend",
        "right_expr": "wuetend"
       },
       {
-       "left": "ritter",
-       "right": "kugelblitz",
+       "left": "kugelblitz",
+       "right": "xiulan",
        "speaker": "kugelblitz",
        "text": "Später! Später! Der Meister zahlt am Monatsende!",
+       "left_expr": "wuetend",
        "right_expr": "wuetend"
       }
      ]

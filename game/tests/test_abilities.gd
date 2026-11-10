@@ -182,7 +182,7 @@ func run_tests() -> void:
 	h2["hp"] -= 10
 	Status.add(h2, "poison", 3)
 	await b._run_ability(wen, "gruppenheilung", h1)
-	check(h1["hp"] == h1["maxhp"] - 4 and h2["hp"] == h2["maxhp"] - 4, "Gruppenheilung +6 an beiden, war %d/%d" % [h1["maxhp"] - h1["hp"], h2["maxhp"] - h2["hp"]])
+	check(h1["hp"] == h1["maxhp"] - 3 and h2["hp"] == h2["maxhp"] - 3, "Gruppenheilung +7 an beiden, war %d/%d" % [h1["maxhp"] - h1["hp"], h2["maxhp"] - h2["hp"]])
 	check(not Status.has(h2, "poison"), "Gruppenheilung entfernt Gift")
 
 	# --- Kanone: Splash auf Nachbarn des Ziels

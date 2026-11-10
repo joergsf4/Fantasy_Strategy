@@ -159,12 +159,14 @@
  "bridge": {
   "name": "Zugbrücke",
   "start": "up",
-  "active": "",
+  "active": "up",
   "blocks": [
    "up"
   ],
   "hp": 0,
-  "solutions": {}
+  "solutions": {
+   "leap": "pass"
+  }
  },
  "maschine": {
   "name": "Energiemaschine",

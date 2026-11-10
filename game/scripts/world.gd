@@ -23,6 +23,7 @@ func _init(list: Array = []) -> void:
 			"state": e.get("state", d["start"]), "hp": int(d.get("hp", 0)), "maxhp": int(d.get("hp", 0)), "age": 0,
 			"link": e.get("link", []), "dir": e.get("dir", "v"), "look": e.get("look", ""), "perm": e.get("perm", false), "figure": e.get("figure", ""), "burn": int(e.get("burn", BURN_TURNS)), "steps": int(e.get("steps", 2)),
 			"locked": e.get("locked", false), "replace": e.get("replace", false), "dim": e.get("dim", false),      # Kaefige im Finale (Mission 25)
+			"reach_bonus": int(e.get("reach_bonus", 0)),      # aus groesserem Abstand treffbar (Brueckenhebel Mission 12)
 		})
 
 

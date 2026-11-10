@@ -355,7 +355,7 @@ func flash_unit(u: Dictionary, color := Color(3, 3, 3), time := 0.18) -> void:
 func windup(id: String, u: Dictionary, target: Dictionary) -> void:
 	Sfx.ability(id, "windup", u, target)
 	match id:
-		"kanone", "rakete", "breitseite":
+		"kanone", "rakete", "cyborg_rakete", "breitseite":
 			await _kanone_windup(u, target)
 		"verspotten":
 			await _verspotten_windup(u)
@@ -384,7 +384,7 @@ func cast(id: String, u: Dictionary, _target: Dictionary, tiles: Array[Vector2i]
 func before_hit(id: String, u: Dictionary, v: Dictionary, i: int) -> void:
 	Sfx.ability(id, "shot", u, v)
 	match id:
-		"kanone", "rakete", "breitseite":
+		"kanone", "rakete", "cyborg_rakete", "breitseite":
 			await _kanone_shot(u, v, id)
 		"knochenwurf":
 			await _bone_shot(u, v, i)
@@ -413,7 +413,7 @@ func before_hit(id: String, u: Dictionary, v: Dictionary, i: int) -> void:
 func on_hit(id: String, u: Dictionary, v: Dictionary, i: int) -> void:
 	Sfx.ability(id, "hit", u, v)
 	match id:
-		"kanone", "rakete", "breitseite":
+		"kanone", "rakete", "cyborg_rakete", "breitseite":
 			_explosion(chest(v, 0.4), 1.0)
 			for o in battle.units:
 				if o != v and o["team"] != u["team"] and Grid.dist(o["pos"], v["pos"]) == 1:

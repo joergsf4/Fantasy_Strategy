@@ -355,6 +355,18 @@
     "glass",
     "heal"
    ]
+  },
+  "cyborg_rakete": {
+   "shot": "rocket_launch",
+   "hit": "explosion"
+  },
+  "kugelblitz_laser": {
+   "windup": "laser_charge",
+   "shot": "laser_fire",
+   "hit": {
+    "s": "zap",
+    "db": -4
+   }
   }
  },
  "events": {

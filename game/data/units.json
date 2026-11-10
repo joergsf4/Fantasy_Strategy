@@ -516,7 +516,7 @@
  "magical_girl": {
   "name": "Lumi Sternenglanz",
   "hp": 24,
-  "atk": 3,
+  "atk": 5,
   "def": 3,
   "res": 6,
   "move": 4,
@@ -622,10 +622,10 @@
  },
  "kugelblitz": {
   "name": "Professor Kugelblitz",
-  "hp": 55,
+  "hp": 38,
   "atk": 9,
-  "def": 4,
-  "res": 5,
+  "def": 2,
+  "res": 2,
   "move": 3,
   "range_min": 1,
   "range": 2,
@@ -635,7 +635,7 @@
    "boss"
   ],
   "abilities": [
-   "roter_laser"
+   "kugelblitz_laser"
   ],
   "weapon": "metal",
   "body": "flesh",
@@ -645,7 +645,7 @@
  "cyborg_wart": {
   "name": "Cyborg-Wart",
   "hp": 72,
-  "atk": 13,
+  "atk": 11,
   "def": 6,
   "res": 3,
   "move": 3,
@@ -657,7 +657,7 @@
    "boss"
   ],
   "abilities": [
-   "rakete",
+   "cyborg_rakete",
    "computer_analyse"
   ],
   "ranged_mult": 0.85,

@@ -77,7 +77,7 @@ func _initialize() -> void:
 	var cw := b3._find("cyborg_wart")
 	check(not cw.is_empty() and cw["team"] == "e", "Cyborg-Wart ist da: %s" % [said])
 	check(said.has("cyborg_wart"), "Cyborg-Wart spricht")
-	check((cw["abilities"] as Array).has("rakete") and (cw["abilities"] as Array).has("computer_analyse"), "Raketenwerfer und Computer-Analyse")
+	check((cw["abilities"] as Array).has("cyborg_rakete") and (cw["abilities"] as Array).has("computer_analyse"), "Raketenwerfer und Computer-Analyse")
 	# Computer-Analyse: Ziel nimmt 20 % mehr Schaden
 	var tgt := b3._find("ritter")
 	var base := Combat.damage(cw, tgt, 0, 0.0, 1.0)
@@ -88,5 +88,8 @@ func _initialize() -> void:
 	Status.remove(tgt, "analysiert")
 	await b3._enemy_debuff(cw, tgt)
 	check(Status.has(tgt, "analysiert") and int(cw["cd"].get("computer_analyse", 0)) > 0, "KI analysiert das Ziel und die Faehigkeit ist auf Abklingzeit")
+	var mp: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/map_ch13.json"))
+	var kids: Array = (mp["objects"] as Array).filter(func(o: Dictionary) -> bool: return o["type"] == "hostage")
+	check(kids.size() == 3 and kids.all(func(o: Dictionary) -> bool: return int(o.get("steps", 2)) == 1), "Kinder werden in einer Runde befreit")
 	print("labor: ", "OK" if fails == 0 else "%d Fehler" % fails)
 	quit(fails)

@@ -15,6 +15,7 @@ var squads: Dictionary = {}              # {Mission: [Helden]}: vom Spieler geae
 var nemesis: Array = []            # entkommene Gegner, tauchen in spaeteren Missionen wieder auf
 var secrets_seen: Array = []     # gesehene Geheimnis-Szenen (Szene laeuft nur beim ersten Mal)
 var test_run := false              # Teststart (START_CH, Testlabor): wird nie gespeichert
+var auto_gear := true              # Gruppenwahl: vor jeder Mission freie Ausruestungsplaetze der Gruppe aus dem Lager fuellen
 var recruited: Array = []          # in einer Mission gewonnene Verbuendete (z. B. Alphawolf), nur dann waehlbar (recruit_only)
 var pending_interlude: Dictionary = {}
 var earned := 0                    # geschaffte Kampfmissionen; daraus ergeben sich Gruppenstufe und Talentpunkte (alle levels_per_point Stufen einer)
@@ -190,7 +191,7 @@ func spend(price: int) -> bool:
 
 
 func to_dict() -> Dictionary:
-	return {"order": ORDER, "chapter": chapter, "gold": gold, "inventory": inventory, "equipment": equipment, "pool": pool, "bought": bought, "nemesis": nemesis, "squads": squads, "secrets_seen": secrets_seen, "earned": earned, "talents": talents, "prompted": prompted, "recruited": recruited, "pending_interlude": pending_interlude}
+	return {"order": ORDER, "chapter": chapter, "gold": gold, "inventory": inventory, "equipment": equipment, "pool": pool, "bought": bought, "nemesis": nemesis, "squads": squads, "secrets_seen": secrets_seen, "earned": earned, "talents": talents, "prompted": prompted, "recruited": recruited, "pending_interlude": pending_interlude, "auto_gear": auto_gear}
 
 
 static func from_dict(d: Dictionary) -> Party:
@@ -199,6 +200,7 @@ static func from_dict(d: Dictionary) -> Party:
 	p.earned = int(d.get("earned", 0))
 	p.recruited = (d.get("recruited", []) as Array).duplicate()
 	p.pending_interlude = (d.get("pending_interlude", {}) as Dictionary).duplicate(true)
+	p.auto_gear = bool(d.get("auto_gear", true))
 	p.prompted = _ints(d.get("prompted", {}))
 	p.talents = (d.get("talents", {}) as Dictionary).duplicate(true)
 	p.gold = int(d.get("gold", 0))

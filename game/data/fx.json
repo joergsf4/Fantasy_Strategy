@@ -225,5 +225,20 @@
  },
  "trankwurf": {
   "lunge": false
+ },
+ "cyborg_rakete": {
+  "arc": 1.9,
+  "time": 0.56,
+  "ball": "fx_cannonball",
+  "fire": "fx_fireball",
+  "smoke": "fx_smoke",
+  "boom": 2.6,
+  "shake": 0.14,
+  "lunge": false
+ },
+ "kugelblitz_laser": {
+  "beam_time": 0.4,
+  "width": 0.3,
+  "lunge": false
  }
 }
