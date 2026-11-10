@@ -75,7 +75,7 @@ Manche Fähigkeiten wirken auf Verbündete anders, als man denkt. Wer es herausf
 
 <table>
 <tr>
-<td width="33%"><img src="docs/img/lager.jpg" alt="Lager mit Händler Sack"><br><b>Lager.</b> Händler Sack (ein lebender Wollsack) mit Ausrüstung in vier Stufen und Verkauf, Aufstellung und Talente.</td>
+<td width="33%"><img src="docs/img/lager.jpg" alt="Lager mit Händler Sack"><br><b>Lager.</b> Übersicht mit der nächsten Mission und ihren Bonuszielen, Händler Sack (ein lebender Wollsack) mit Ausrüstung in vier Stufen und Verkauf, Aufstellung, Talente und ein Album der Geheimnisse.</td>
 <td width="33%"><img src="docs/img/gruppenwahl.jpg" alt="Gruppenwahl"><br><b>Gruppenwahl.</b> Vor jeder Runde wählst du deine Helden. Wer in der Geschichte gebraucht wird, ist gesperrt.</td>
 <td width="33%"><img src="docs/img/statistik.jpg" alt="Siegbildschirm mit Statistik"><br><b>Statistik.</b> Beute, Bonusziele, Auszeichnungen und der Verlauf der Schlacht Runde für Runde, nach dem Sieg mit fröhlicher, nach der Niederlage mit trauriger Musik. Jede Mission legt die Werte zusätzlich als JSON im Nutzerordner ab.</td>
 </tr>
@@ -99,7 +99,7 @@ Manche Fähigkeiten wirken auf Verbündete anders, als man denkt. Wer es herausf
 ## Spielen
 
 ### Fertige Testversion
-Unter [Releases](https://github.com/joergsf4/Fantasy_Strategy/releases) liegen ZIPs für macOS (`FuzaketaTactics-macOS.zip`) und Windows (`FuzaketaTactics-Windows.zip`). Aktuell: **Testversion 0.11.0** mit 22 Kampfmissionen in drei Kapiteln bis zum Finale samt Epilog, Zwischensequenzen, Talentpunkten, gestufter Ausrüstung, Grafikoptionen, Sumpf-, Schnee-, Vulkan-, Labor- und Thronsaal-Biom, vierzehn geheimen Interaktionen, Gruppenwahl mit wechselnden Sprechern und Wetter in den Missionen.
+Unter [Releases](https://github.com/joergsf4/Fantasy_Strategy/releases) liegen ZIPs für macOS (`FuzaketaTactics-macOS.zip`) und Windows (`FuzaketaTactics-Windows.zip`). Aktuell: **Testversion 0.12.0** mit 22 Kampfmissionen in drei Kapiteln bis zum Finale samt Epilog, Chronik zum erneuten Spielen mit Medaillen, Gefahrenzone der Gegner, Zwischensequenzen, Talentpunkten, gestufter Ausrüstung, Grafikoptionen, Sumpf-, Schnee-, Vulkan-, Labor- und Thronsaal-Biom, vierzehn geheimen Interaktionen, Gruppenwahl mit wechselnden Sprechern und Wetter in den Missionen.
 - **macOS:** ZIP entpacken, Rechtsklick auf die App, „Öffnen“ (nicht notarisiert). Falls macOS sie sperrt: `xattr -cr "Fuzaketa Tactics.app"`.
 - **Windows:** ZIP entpacken, `game.exe` starten. SmartScreen warnt eventuell („Weitere Informationen“, „Trotzdem ausführen“).
 
@@ -171,5 +171,5 @@ Dazu viele weitere in `game/tests/` (Fähigkeiten, Missionen, Feuer, Gruppenwahl
 
 ## Hinweise
 - **KI-generierte Inhalte:** Alle Figuren-, Effekt- und Hintergrundbilder (`strategie/`, `game/assets/portraits|tokens|fx`) und die Musik (`game/assets/audio/`) wurden mit Google Gemini erzeugt, die Soundeffekte synthetisch. Programmcode und Daten entstanden mit Claude Code. Das Projekt ist ein nicht kommerzielles Hobbyprojekt.
-- **Stand:** Testversion 0.11.0. Werte und Balancing sind vorläufig, Fehler bitte als Issue melden.
+- **Stand:** Testversion 0.12.0. Werte und Balancing sind vorläufig, Fehler bitte als Issue melden.
 - **Schriften:** Cinzel Decorative, IM Fell English und Dela Gothic One (für die Katakana des Namens, nur ein Auszug; SIL Open Font License, Lizenztexte im Ordner `game/assets/fonts/`).
