@@ -77,6 +77,9 @@ func _run() -> void:
 	add_child(stage)
 	_play_music(TITLE_MUSIC)
 	var start_ch := OS.get_environment("START_CH")      # START_CH=ch14 (und START_SKIP=1 ohne Einleitung): Titel und Menue ueberspringen, direkt in diese Mission
+	if OS.get_environment("START_FLASHBACK") != "":      # START_FLASHBACK=rb_takeda: direkt in die Rueckblende, danach weiter mit dem naechsten Kapitel
+		_lab_flashback = OS.get_environment("START_FLASHBACK")
+		start_ch = CHAPTERS[mini(CHAPTERS.find(_flashback_host(_lab_flashback)) + 1, CHAPTERS.size() - 1)]
 	var choice: Dictionary = {"action": "continue", "cheat": true} if start_ch != "" and CHAPTERS.has(start_ch) else await _title(mini(party.chapter, CHAPTERS.size()) if resumed else 0)
 	if choice["action"] == "new" and not choice["cheat"]:              # Neues Spiel: alter Spielstand weg
 		Party.delete_save()
@@ -94,6 +97,11 @@ func _run() -> void:
 	var pick: Array = [CHAPTERS.find(start_ch), OS.get_environment("START_SKIP") == "1"] if start_ch != "" and CHAPTERS.has(start_ch) else (await _choose_level() if cheat else await _resume_pick(resumed))
 	if cheat:
 		_prepare_test_chapter(int(pick[0]))
+	if _lab_flashback != "":          # Testmenue "Rueckblende": erst die Rueckblende, dann das Kapitel danach mit Einleitung
+		var fb := _lab_flashback
+		_lab_flashback = ""
+		await _cover_in(0.3)
+		await _flashback(fb, _flashback_host(fb))
 	for i in range(int(pick[0]), CHAPTERS.size()):
 		party.chapter = i + 1
 		var nxt: String = CHAPTERS[i + 1] if i + 1 < CHAPTERS.size() else ""
@@ -418,6 +426,11 @@ func _choose_level() -> Array:
 		if units.has(fid):
 			ls.lab_foes.append({"id": fid, "name": units[fid]["name"] + " + 2 Büttel"})
 	ls.finale_end_requested.connect(func() -> void: _finale_end = true)
+	for cid: String in CHAPTERS:      # Rueckblenden: eigener Knopf, startet die Rueckblende und danach das naechste Kapitel
+		var fb := str(Mission.load_mission(cid).get("flashback", ""))
+		if fb != "":
+			ls.flashbacks.append({"id": fb, "title": str(Mission.load_mission(fb)["title"]), "index": mini(CHAPTERS.find(cid) + 1, CHAPTERS.size() - 1)})
+	ls.flashback_requested.connect(func(fid: String) -> void: _lab_flashback = fid)
 	ls.new_game_requested.connect(func() -> void:
 		Party.delete_save()
 		party = Party.new_game()
@@ -744,6 +757,8 @@ func _chapter(cid: String, skip_intro := false, next_cid := "", direct_arrival :
 		await _dialogue_at_sea(Mission.voiced(story_c["outro"], _squad_ids(m)), m["outro_at_sea"])
 	elif not (story_c["outro"] as Array).is_empty():     # leerer Abschluss (Mission 23 endet mit der Schwarzblende im Kampf)
 		await _dialogue(Mission.voiced(story_c["outro"], _squad_ids(m)))
+	if m.has("flashback") and not skip_intro:           # Rueckblende (eigene Mission mit fester Gruppe), z. B. Takedas Vorgeschichte nach Mission 3
+		await _flashback(str(m["flashback"]), cid)
 	if next_cid != "" and Mission.load_mission(next_cid).get("stub", false):
 		party.save()
 		await _cover_in(0.4)
@@ -753,6 +768,50 @@ func _chapter(cid: String, skip_intro := false, next_cid := "", direct_arrival :
 	await _play_pending_interlude()
 	if next_cid != "":
 		await _cover_in(0.4)
+
+
+## Rueckblende: Textkarte, Einleitung, Kampf mit fester Gruppe (ohne Belohnung, Aufstieg und Kapitelzaehler), Abschluss (auf See, wenn
+## "outro_at_sea"), Textkarte zurueck zur Karte von back_cid und das Gespraech "after" in der Gegenwart. Daten: missions/<fid>.json, story_<fid>.json.
+func _flashback(fid: String, back_cid := "") -> void:
+	var m := Mission.load_mission(fid)
+	var story_f := _load_json("res://data/story_%s.json" % fid)
+	var music := str(m.get("battle_music", BATTLE_MUSIC))      # eigene Kampfmusik der Rueckblende (Hanakaze: J-Pop)
+	_fade_music(1.0)
+	await _scene_card(str(m.get("card", "Rückblende")), fid, _cover != null)
+	_play_music(music, 1.5)
+	await _dialogue(story_f.get("intro", []))
+	var defeats := 0
+	while true:
+		_battle_active = true
+		await stage.start_battle()
+		var won: bool = await stage.battle.finished
+		_battle_active = false
+		if _restart_requested:
+			_restart_requested = false
+			stage.new_battle()
+			_play_music(music, 1.5)
+			continue
+		if won:
+			break
+		defeats += 1
+		var summary := stage.battle.defeat_summary()
+		summary["can_skip"] = defeats >= SKIP_AFTER_DEFEATS
+		var skip: bool = await _reward(summary)
+		stage.new_battle()
+		if skip:
+			await stage.start_battle()
+			await stage.battle.skip_to_victory()
+			break
+		_play_music(music, 2.0)
+	_fade_music(3.0)
+	stage.backdrop_again()
+	if m.has("outro_at_sea"):
+		await _dialogue_at_sea(story_f.get("outro", []), m["outro_at_sea"])      # endet schwarz (Abdeckung bleibt)
+	elif not (story_f.get("outro", []) as Array).is_empty():
+		await _dialogue(story_f["outro"])
+	if back_cid != "":
+		await _scene_card(str(m.get("card_back", "Zurück in der Gegenwart")), back_cid, _cover != null)
+		await _dialogue(Mission.voiced(story_f.get("after", []), _squad_ids(Mission.load_mission(back_cid))))
 
 
 func _play_pending_interlude() -> void:
@@ -1076,6 +1135,17 @@ func _talent_screen(hero_ids: Array) -> void:
 
 
 ## Dialog mitten im Kampf: ueber der abgedunkelten Karte, ohne die Buehne zu wechseln.
+var _lab_flashback := ""      # Testmenue / START_FLASHBACK: diese Rueckblende vor dem gewaehlten Kapitel abspielen
+
+
+## Kapitel, nach dem eine Rueckblende laeuft (Missionsfeld "flashback"), "" wenn keines.
+func _flashback_host(fid: String) -> String:
+	for cid: String in CHAPTERS:
+		if str(Mission.load_mission(cid).get("flashback", "")) == fid:
+			return cid
+	return ""
+
+
 const SKIP_AFTER_DEFEATS := 2      # ab so vielen Niederlagen in einer Mission bietet der Niederlage-Bildschirm "Mission ueberspringen" an
 var _finale_end := false      # Testmenue: Mission 25 beginnt direkt vor dem letzten Schlag gegen den Sack
 var _auto_dialogue := 0.0      # Aufnahmen (SHOT=cutscene): Dialoge schalten nach so vielen Sekunden selbst weiter
@@ -1149,7 +1219,7 @@ func _interlude_chapter(cid: String, next_cid := "") -> void:
 
 
 ## Schwarzblende, Textkarte ("An einem anderen Ort ..."), waehrenddessen laeuft der Wechsel zur Karte des naechsten Kapitels, dann Aufblende.
-func _scene_card(text: String, next_cid := "") -> void:
+func _scene_card(text: String, next_cid := "", uncover := false) -> void:
 	var layer := CanvasLayer.new()
 	layer.layer = 30
 	add_child(layer)
@@ -1176,6 +1246,8 @@ func _scene_card(text: String, next_cid := "") -> void:
 	tw.tween_property(black, "modulate:a", 1.0, 1.0)
 	tw.tween_property(l, "modulate:a", 1.0, 0.9)
 	await tw.finished
+	if uncover:          # die Schwarzblende darunter (z. B. nach der Meer-Szene) entfernen, solange die Karte noch verdeckt ist
+		_cover_out(0.0)
 	if next_cid != "":
 		var nm := Mission.load_mission(next_cid)
 		if stage.map_data.get("id", "") != next_cid:
@@ -1316,6 +1388,23 @@ func _screenshot_mode() -> void:
 		else:
 			await stage.start_battle()
 		await get_tree().create_timer(1.0).timeout
+		get_viewport().get_texture().get_image().save_png(OS.get_environment("SHOT_OUT"))
+		get_tree().quit()
+		return
+	if mode == "rueckblende":   # Karte der Rueckblende Takeda (Biom fernost); SHOT_TWIST=1: nach dem Wendepunkt (Stadtwache, Elisabeth)
+		_auto_dialogue = 0.05
+		stage = Stage.new()
+		stage.setup(Mission.load_mission("rb_takeda"), units)
+		stage.dialogue_runner = _battle_dialogue
+		add_child(stage)
+		await stage.start_battle()
+		if OS.get_environment("SHOT_TWIST") == "1":
+			var rb := stage.battle
+			rb.dialogue_runner = func(_l: Array) -> void: pass
+			var kg: Dictionary = rb._find("kage_gegner")
+			kg["hp"] = 1
+			await rb._flush_events()
+		await get_tree().create_timer(1.5).timeout
 		get_viewport().get_texture().get_image().save_png(OS.get_environment("SHOT_OUT"))
 		get_tree().quit()
 		return

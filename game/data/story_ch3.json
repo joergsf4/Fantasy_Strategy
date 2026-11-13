@@ -115,6 +115,35 @@
    "text": "Praxis hin oder her: Ich komme mit. Wundersalbe wirkt im Feld am besten, und die Nebenwirkungen sind überschaubar.",
    "story": true,
    "left_expr": "lachend"
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "samurai",
+   "speaker": "maedchen_baer",
+   "text": "Takeda, du hast gekämpft, als hättest du etwas gutzumachen. Du bist nicht von hier, oder?",
+   "story": true
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "samurai",
+   "speaker": "samurai",
+   "text": "Nein. Ich komme aus Hanakaze, weit hinter dem Meer. Dort war ich Leibwächter des Fürsten. Bis zu der Nacht mit den Kage-Schwestern.",
+   "story": true
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "samurai",
+   "speaker": "maedchen_baer",
+   "text": "Kage-Schwestern?",
+   "story": true
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "samurai",
+   "speaker": "samurai",
+   "text": "Zwei Diebinnen. Die geschicktesten, die ich je gesehen habe. Und die frechsten. Setz dich, es ist eine lange Geschichte.",
+   "right_expr": "lachend",
+   "story": true
   }
  ]
 }

@@ -25,6 +25,8 @@ func _init(list: Array = []) -> void:
 			"locked": e.get("locked", false), "replace": e.get("replace", false), "dim": e.get("dim", false),      # Kaefige im Finale (Mission 25)
 			"reach_bonus": int(e.get("reach_bonus", 0)),      # aus groesserem Abstand treffbar (Brueckenhebel Mission 12)
 		})
+		if e.has("size"):      # Sondergroesse des Sprites (Pagode in Hanakaze)
+			objects.back()["size"] = float(e["size"])
 
 
 ## Objekt zur Laufzeit hinzufuegen (Bienenkorb der Stachelia).

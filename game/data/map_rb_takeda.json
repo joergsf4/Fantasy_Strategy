@@ -1,0 +1,175 @@
+{
+ "biome": "fernost",
+ "mood": "daemmerung",
+ "weather": [
+  "petals"
+ ],
+ "rows": [
+  "FGVGFFGGVGGFGGWW",
+  "GGGFFGGGGGGGGGWW",
+  "FGGGGGVGGGGFGGWW",
+  "GGVGGGGGGGGGGWWW",
+  "GGGGVGGGGGGGGWWW",
+  "GGGGGGGGFGGGGWWW",
+  "FGGGGGGGGGGPPPWW",
+  "GGGFGGVGGGGGGWWW",
+  "GVGGFGGGGGGGGWWW",
+  "FFGGFFGGGGVGGWWW"
+ ],
+ "players": [
+  {
+   "id": "samurai",
+   "pos": [
+    1,
+    5
+   ]
+  }
+ ],
+ "enemies": [
+  {
+   "id": "kage_gegner",
+   "pos": [
+    5,
+    5
+   ]
+  }
+ ],
+ "objects": [
+  {
+   "id": "schiff",
+   "type": "ship",
+   "pos": [
+    14,
+    7
+   ]
+  },
+  {
+   "id": "h1",
+   "type": "house",
+   "pos": [
+    6,
+    1
+   ]
+  },
+  {
+   "id": "h2",
+   "type": "house",
+   "pos": [
+    9,
+    1
+   ]
+  },
+  {
+   "id": "h3",
+   "type": "house",
+   "pos": [
+    5,
+    7
+   ]
+  },
+  {
+   "id": "pagode",
+   "type": "house",
+   "pos": [
+    8,
+    8
+   ],
+   "look": "fx_pagode",
+   "size": 2.0
+  },
+  {
+   "id": "kiste1",
+   "type": "crate",
+   "pos": [
+    11,
+    8
+   ]
+  },
+  {
+   "id": "kiste2",
+   "type": "crate",
+   "pos": [
+    12,
+    1
+   ]
+  },
+  {
+   "id": "h4",
+   "type": "house",
+   "pos": [
+    1,
+    1
+   ]
+  },
+  {
+   "id": "h5",
+   "type": "house",
+   "pos": [
+    2,
+    7
+   ]
+  }
+ ],
+ "decor": [
+  {
+   "sprite": "fx_torii",
+   "pos": [
+    7,
+    4
+   ],
+   "size": 1.35
+  },
+  {
+   "sprite": "fx_laterne",
+   "pos": [
+    10,
+    6
+   ],
+   "size": 0.7,
+   "effect": "lantern"
+  },
+  {
+   "sprite": "fx_laterne",
+   "pos": [
+    12,
+    3
+   ],
+   "size": 0.7,
+   "effect": "lantern"
+  },
+  {
+   "sprite": "fx_laterne",
+   "pos": [
+    12,
+    9
+   ],
+   "size": 0.7,
+   "effect": "lantern"
+  },
+  {
+   "sprite": "fx_laterne",
+   "pos": [
+    5,
+    3
+   ],
+   "size": 0.7,
+   "effect": "lantern"
+  },
+  {
+   "sprite": "fx_laterne",
+   "pos": [
+    3,
+    3
+   ],
+   "size": 0.7,
+   "effect": "lantern"
+  }
+ ],
+ "grants": {
+  "elisabeth": [
+   "breitseite"
+  ]
+ },
+ "rewards": {},
+ "objectives": []
+}

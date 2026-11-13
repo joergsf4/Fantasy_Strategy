@@ -935,5 +935,44 @@
   "abilities": [],
   "weapon": "fist",
   "body": "flesh"
+ },
+ "kage_gegner": {
+  "name": "Die Kage-Schwestern",
+  "hp": 34,
+  "atk": 6,
+  "def": 2,
+  "res": 3,
+  "move": 5,
+  "range_min": 1,
+  "range": 2,
+  "role": "damage",
+  "dmg_type": "body",
+  "tags": [
+   "standard"
+  ],
+  "abilities": [],
+  "ranged_mult": 0.7,
+  "flees": true,
+  "weapon": "metal",
+  "body": "flesh",
+  "portrait": "ninjas"
+ },
+ "stadtwache": {
+  "name": "Stadtwache von Hanakaze",
+  "hp": 15,
+  "atk": 5,
+  "def": 3,
+  "res": 1,
+  "move": 3,
+  "range_min": 1,
+  "range": 1,
+  "role": "soldier",
+  "dmg_type": "body",
+  "tags": [
+   "standard"
+  ],
+  "weapon": "metal",
+  "body": "armor",
+  "size": 1.2
  }
 }

@@ -1,0 +1,127 @@
+{
+ "intro": [
+  {
+   "left": "",
+   "right": "samurai",
+   "speaker": "samurai",
+   "text": "Das Laternenfest von Hanakaze. Die ganze Stadt feiert. Nur ich bewache den Palast. Wie jedes Jahr.",
+   "story": true
+  },
+  {
+   "left": "samurai",
+   "right": "",
+   "speaker": "samurai",
+   "text": "Moment. Zwei Schatten auf dem Dach… und sie tragen die Jadeteekanne des Fürsten!",
+   "left_expr": "wuetend",
+   "story": true
+  },
+  {
+   "left": "samurai",
+   "right": "ninjas",
+   "speaker": "ninjas",
+   "text": "Guten Abend, Blechhut! – Schöne Teekanne, oder? – Wir haben sie nur ausgeliehen.",
+   "right_expr": "lachend",
+   "story": true
+  },
+  {
+   "left": "samurai",
+   "right": "ninjas",
+   "speaker": "samurai",
+   "text": "Ich bin Takeda, Leibwächter des Fürsten. Gebt sie zurück, dann lasse ich euch laufen.",
+   "story": true
+  },
+  {
+   "left": "samurai",
+   "right": "ninjas",
+   "speaker": "ninjas",
+   "text": "Dann fang uns doch. – Aber zieh die Sandalen aus. – Die klappern so.",
+   "right_expr": "lachend",
+   "story": true
+  }
+ ],
+ "outro": [
+  {
+   "left": "elisabeth",
+   "right": "samurai",
+   "speaker": "elisabeth",
+   "text": "Leinen los! Willkommen an Bord der Rostigen Möwe. Sie ist alt, sie leckt, aber sie ist schneller als jedes Boot der Stadtwache.",
+   "left_expr": "lachend",
+   "story": true
+  },
+  {
+   "left": "elisabeth",
+   "right": "samurai",
+   "speaker": "samurai",
+   "text": "Ich habe meinen Fürsten verloren, meine Ehre und meine Heimat. Wegen einer Teekanne.",
+   "story": true
+  },
+  {
+   "left": "ninjas",
+   "right": "samurai",
+   "speaker": "ninjas",
+   "text": "Und dafür hast du zwei Freundinnen gewonnen. – Zwei sehr gute. – Mit viel Erfahrung im Weglaufen.",
+   "left_expr": "lachend",
+   "story": true
+  },
+  {
+   "left": "elisabeth",
+   "right": "samurai",
+   "speaker": "elisabeth",
+   "text": "Ich segle nach Westen, zur Möwenbucht. Dort fragt keiner, woher man kommt. Und ich muss die Löcher flicken, die eure Stadtwache in mein Schiff geschossen hat.",
+   "story": true
+  },
+  {
+   "left": "elisabeth",
+   "right": "samurai",
+   "speaker": "samurai",
+   "text": "Dann nach Westen. Ich suche mir dort jemanden, für den es sich zu kämpfen lohnt.",
+   "story": true
+  },
+  {
+   "left": "ninjas",
+   "right": "samurai",
+   "speaker": "ninjas",
+   "text": "Und wir… – …stehlen nur noch von Leuten, die es verdienen. – Versprochen. Meistens.",
+   "story": true
+  }
+ ],
+ "after": [
+  {
+   "left": "maedchen_baer",
+   "right": "samurai",
+   "speaker": "maedchen_baer",
+   "text": "Wegen einer Teekanne? Das ist die traurigste lustige Geschichte, die ich je gehört habe.",
+   "left_expr": "lachend",
+   "story": true
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "samurai",
+   "speaker": "samurai",
+   "text": "Elisabeth hat uns in der Möwenbucht an Land gesetzt. Seitdem suche ich jemanden, für den es sich zu kämpfen lohnt.",
+   "story": true
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "samurai",
+   "speaker": "samurai",
+   "text": "Ich glaube, ich habe ihn gefunden. Und Brumm.",
+   "right_expr": "lachend",
+   "story": true
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "samurai",
+   "speaker": "maedchen_baer",
+   "text": "Und die beiden Schwestern? Wo sind die jetzt?",
+   "story": true
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "samurai",
+   "speaker": "samurai",
+   "text": "Irgendwo in der Nähe. Wo es Ärger gibt, sind sie nie weit.",
+   "story": true
+  }
+ ]
+}

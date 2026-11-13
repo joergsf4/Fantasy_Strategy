@@ -5,11 +5,13 @@ extends Control
 signal chosen(index: int, skip_story: bool)
 signal new_game_requested
 signal finale_end_requested      # Testmenue: Finale direkt am Ende des Kampfs gegen den Sack (bis zum Abspann ansehen)
+signal flashback_requested(id: String)      # Testmenue: Rueckblende abspielen, danach das Kapitel "index" mit Einleitung
 
 var lab_runner := Callable()      # Main: func(kind, hero, foe, maxed) -> Coroutine (Testlabor)
 var lab_heroes: Array = []
 var lab_foes: Array = []
 var lab_secrets: Array = []      # [{id, name, heroes: [id, id]}]
+var flashbacks: Array = []       # [{id, title, index}]
 
 var chapters: Array = []     # [{id, title}]
 var save_info := ""
@@ -58,6 +60,10 @@ func _ready() -> void:
 		col.add_child(_button("Finale: Sieg über den Sack (bis zum Schluss)", func() -> void:
 			finale_end_requested.emit()
 			pick(fin, true)))
+	for fb: Dictionary in flashbacks:
+		col.add_child(_button(str(fb["title"]), func() -> void:
+			flashback_requested.emit(str(fb["id"]))
+			pick(int(fb["index"]), false)))
 	col.add_child(_button("Soundlabor", _open_lab))
 	col.add_child(_button("Testlabor (Arena, Bildschirme, Lager)", _open_test_lab))
 	col.add_child(_button("Spielstand zurücksetzen", func() -> void: new_game_requested.emit()))

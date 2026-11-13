@@ -258,5 +258,19 @@
  "morgrim_lachend": true,
  "morgrim_chibi": true,
  "bg_heimkehr": true,
- "haendler_wuetend": true
+ "haendler_wuetend": true,
+ "fx_haus_fernost1": true,
+ "fx_haus_fernost2": true,
+ "fx_dorf_fernost": true,
+ "fx_pagode": true,
+ "fx_torii": true,
+ "fx_kirschbaum1": true,
+ "fx_kirschbaum2": true,
+ "stadtwache": true,
+ "stadtwache_chibi": true,
+ "fx_laterne": true,
+ "_ref_ninjas_lachend": true,
+ "ninjas_lachend_maske": true,
+ "sec_ninja_brueder_v2": true,
+ "sec_ninja_brueder_v3": true
 }

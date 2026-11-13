@@ -24,6 +24,51 @@
   },
   {
    "left": "maedchen_baer",
+   "right": "wendy",
+   "speaker": "wendy",
+   "text": "Mäh! Mira, warte! Wenn hier jemand verletzt wird, will ich dabei sein. Ich habe jedem in Eichenfurt schon einmal ein Knie verbunden.",
+   "story": true
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "braumeisterin",
+   "speaker": "braumeisterin",
+   "text": "Und ich braue seit zwanzig Jahren das Bier für dieses Dorf. Wer Eichenfurt angreift, bekommt ein Fass. Nicht zum Trinken.",
+   "right_expr": "lachend",
+   "story": true
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "kungfu",
+   "speaker": "kungfu",
+   "text": "Eigentlich wollte ich euren Kindern heute das Teekochen beibringen. Dann eben eine andere Lektion: Man verteidigt, was man liebt.",
+   "story": true
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "ritter",
+   "speaker": "ritter",
+   "text": "Ser Albrecht, Ritter im Ruhestand. Vierzig Jahre im Dienst des alten Königs. Ich wollte eigentlich nur noch Rosen züchten.",
+   "story": true
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "elisabeth",
+   "speaker": "elisabeth",
+   "text": "Und Käpt'n Elisabeth! Mein Schiff liegt zum Flicken in der Möwenbucht, und ich langweile mich hier seit Wochen zu Tode. Endlich passiert was!",
+   "right_expr": "lachend",
+   "story": true
+  },
+  {
+   "left": "elisabeth",
+   "right": "maedchen_baer",
+   "speaker": "maedchen_baer",
+   "text": "Brumm, schau: Wir sind nicht allein.",
+   "right_expr": "lachend",
+   "story": true
+  },
+  {
+   "left": "maedchen_baer",
    "right": "soldat_beritten",
    "speaker": "soldat_beritten",
    "text": "Halt! Im Namen des Regenten: Dieses Dorf zahlt ab sofort Steuern. Rückwirkend. Mit Zinsen.",

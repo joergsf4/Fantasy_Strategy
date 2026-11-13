@@ -1,0 +1,690 @@
+{
+ "id": "rb_takeda",
+ "title": "Rückblende: Takeda und die Kage-Schwestern",
+ "map": "res://data/map_rb_takeda.json",
+ "fixed_squad": true,
+ "no_rewards": true,
+ "card": "Rückblende\nHanakaze, ein halbes Jahr zuvor",
+ "card_back": "Zurück in Mühlbach",
+ "briefing": "Hanakaze, eine Hafenstadt weit hinter dem Meer, in der Nacht des Laternenfests. Takeda, Leibwächter des Fürsten, stellt die Kage-Schwestern, die die Jadeteekanne des Fürsten gestohlen haben. Dann kommt die Stadtwache, und plötzlich sind alle drei auf der Flucht. Ziel: Takeda muss den Steg zur Rostigen Möwe erreichen (eines der goldenen Felder). Käpt'n Elisabeth kann vom Schiff aus die Breitseite feuern.",
+ "goals": [
+  {
+   "type": "defeat",
+   "unit": "kage_gegner",
+   "text": "Ziel: Stell die Kage-Schwestern"
+  }
+ ],
+ "flee": {
+  "kage_gegner": [
+   {
+    "left": "samurai",
+    "right": "ninjas",
+    "speaker": "ninjas",
+    "text": "Autsch! – Rauchbombe! – Und tschüss!",
+    "right_expr": "lachend"
+   }
+  ]
+ },
+ "triggers": [
+  {
+   "when": {
+    "hp_below": {
+     "id": "kage_gegner",
+     "ratio": 0.6
+    }
+   },
+   "if": {
+    "absent": [
+     "ninjas"
+    ]
+   },
+   "note": "Wendepunkt: die Stadtwache kommt",
+   "do": [
+    {
+     "goal": {
+      "type": "reach",
+      "tiles": [
+       [
+        11,
+        6
+       ],
+       [
+        12,
+        6
+       ],
+       [
+        13,
+        6
+       ]
+      ],
+      "unit": "samurai",
+      "text": "Ziel: Bring Takeda auf den Steg zur Rostigen Möwe (goldene Felder)"
+     }
+    },
+    {
+     "dialogue": [
+      {
+       "left": "samurai",
+       "right": "stadtwache",
+       "speaker": "stadtwache",
+       "text": "Im Namen des Fürsten! Wer hat die Laternen umgeworfen? Alle drei: festnehmen!"
+      },
+      {
+       "left": "samurai",
+       "right": "stadtwache",
+       "speaker": "samurai",
+       "text": "Ich bin der Leibwächter des Fürsten!",
+       "left_expr": "wuetend"
+      },
+      {
+       "left": "samurai",
+       "right": "stadtwache",
+       "speaker": "stadtwache",
+       "text": "Und ich bin die Mondprinzessin. Packt sie!"
+      }
+     ]
+    },
+    {
+     "spawn": [
+      {
+       "id": "stadtwache",
+       "pos": [
+        0,
+        2
+       ],
+       "label": "Stadtwache"
+      },
+      {
+       "id": "stadtwache",
+       "pos": [
+        0,
+        6
+       ],
+       "label": "Stadtwache"
+      },
+      {
+       "id": "stadtwache",
+       "pos": [
+        0,
+        9
+       ],
+       "label": "Stadtwache"
+      },
+      {
+       "id": "stadtwache",
+       "pos": [
+        7,
+        9
+       ],
+       "label": "Stadtwache"
+      },
+      {
+       "id": "stadtwache",
+       "pos": [
+        12,
+        2
+       ],
+       "label": "Hafenwache"
+      },
+      {
+       "id": "stadtwache",
+       "pos": [
+        11,
+        9
+       ],
+       "label": "Hafenwache"
+      },
+      {
+       "id": "stadtwache",
+       "pos": [
+        10,
+        7
+       ],
+       "label": "Hafenwache"
+      },
+      {
+       "id": "stadtwache",
+       "pos": [
+        10,
+        5
+       ],
+       "label": "Hafenwache"
+      },
+      {
+       "id": "stadtwache",
+       "pos": [
+        9,
+        4
+       ],
+       "label": "Hafenwache"
+      }
+     ]
+    },
+    {
+     "dialogue": [
+      {
+       "left": "samurai",
+       "right": "ninjas",
+       "speaker": "ninjas",
+       "text": "Schlechte Nachricht, Blechhut. – Die Teekanne ist kaputt. – Irgendwo in dem Gerangel eben.",
+       "right_expr": "lachend"
+      },
+      {
+       "left": "samurai",
+       "right": "ninjas",
+       "speaker": "samurai",
+       "text": "Die Jadeteekanne des Fürsten… Dafür werfen sie mich in den Kerker. Für immer.",
+       "left_expr": "wuetend"
+      },
+      {
+       "left": "samurai",
+       "right": "ninjas",
+       "speaker": "ninjas",
+       "text": "Dann komm mit uns. – Wir kennen ein Schiff. – Die Kapitänin schuldet uns noch einen Gefallen."
+      }
+     ]
+    },
+    {
+     "side": {
+      "id": "kage_gegner",
+      "become": "ninjas",
+      "label": "Verbündet!"
+     }
+    },
+    {
+     "spawn": [
+      {
+       "id": "elisabeth",
+       "team": "p",
+       "pos": [
+        12,
+        5
+       ],
+       "label": "Käpt'n Elisabeth"
+      }
+     ]
+    },
+    {
+     "dialogue": [
+      {
+       "left": "samurai",
+       "right": "elisabeth",
+       "speaker": "elisabeth",
+       "text": "Mädels! Ihr seid zu spät, und ihr bringt Ärger mit! Die Möwe legt ab, sobald der Blechhut an Bord ist. Lauft!",
+       "right_expr": "lachend"
+      },
+      {
+       "left": "samurai",
+       "right": "elisabeth",
+       "speaker": "samurai",
+       "text": "Ich habe einen Namen. Takeda."
+      },
+      {
+       "left": "samurai",
+       "right": "elisabeth",
+       "speaker": "elisabeth",
+       "text": "Schön für dich, Takeda. Meine Kanonen haben auch Namen. Wer im Weg steht, lernt sie kennen."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "turn": 3
+   },
+   "if": {
+    "absent": [
+     "ninjas"
+    ]
+   },
+   "note": "Wendepunkt spaetestens in Runde 3",
+   "do": [
+    {
+     "goal": {
+      "type": "reach",
+      "tiles": [
+       [
+        11,
+        6
+       ],
+       [
+        12,
+        6
+       ],
+       [
+        13,
+        6
+       ]
+      ],
+      "unit": "samurai",
+      "text": "Ziel: Bring Takeda auf den Steg zur Rostigen Möwe (goldene Felder)"
+     }
+    },
+    {
+     "dialogue": [
+      {
+       "left": "samurai",
+       "right": "stadtwache",
+       "speaker": "stadtwache",
+       "text": "Im Namen des Fürsten! Wer hat die Laternen umgeworfen? Alle drei: festnehmen!"
+      },
+      {
+       "left": "samurai",
+       "right": "stadtwache",
+       "speaker": "samurai",
+       "text": "Ich bin der Leibwächter des Fürsten!",
+       "left_expr": "wuetend"
+      },
+      {
+       "left": "samurai",
+       "right": "stadtwache",
+       "speaker": "stadtwache",
+       "text": "Und ich bin die Mondprinzessin. Packt sie!"
+      }
+     ]
+    },
+    {
+     "spawn": [
+      {
+       "id": "stadtwache",
+       "pos": [
+        0,
+        2
+       ],
+       "label": "Stadtwache"
+      },
+      {
+       "id": "stadtwache",
+       "pos": [
+        0,
+        6
+       ],
+       "label": "Stadtwache"
+      },
+      {
+       "id": "stadtwache",
+       "pos": [
+        0,
+        9
+       ],
+       "label": "Stadtwache"
+      },
+      {
+       "id": "stadtwache",
+       "pos": [
+        7,
+        9
+       ],
+       "label": "Stadtwache"
+      },
+      {
+       "id": "stadtwache",
+       "pos": [
+        12,
+        2
+       ],
+       "label": "Hafenwache"
+      },
+      {
+       "id": "stadtwache",
+       "pos": [
+        11,
+        9
+       ],
+       "label": "Hafenwache"
+      },
+      {
+       "id": "stadtwache",
+       "pos": [
+        10,
+        7
+       ],
+       "label": "Hafenwache"
+      },
+      {
+       "id": "stadtwache",
+       "pos": [
+        10,
+        5
+       ],
+       "label": "Hafenwache"
+      },
+      {
+       "id": "stadtwache",
+       "pos": [
+        9,
+        4
+       ],
+       "label": "Hafenwache"
+      }
+     ]
+    },
+    {
+     "dialogue": [
+      {
+       "left": "samurai",
+       "right": "ninjas",
+       "speaker": "ninjas",
+       "text": "Schlechte Nachricht, Blechhut. – Die Teekanne ist kaputt. – Irgendwo in dem Gerangel eben.",
+       "right_expr": "lachend"
+      },
+      {
+       "left": "samurai",
+       "right": "ninjas",
+       "speaker": "samurai",
+       "text": "Die Jadeteekanne des Fürsten… Dafür werfen sie mich in den Kerker. Für immer.",
+       "left_expr": "wuetend"
+      },
+      {
+       "left": "samurai",
+       "right": "ninjas",
+       "speaker": "ninjas",
+       "text": "Dann komm mit uns. – Wir kennen ein Schiff. – Die Kapitänin schuldet uns noch einen Gefallen."
+      }
+     ]
+    },
+    {
+     "side": {
+      "id": "kage_gegner",
+      "become": "ninjas",
+      "label": "Verbündet!"
+     }
+    },
+    {
+     "spawn": [
+      {
+       "id": "elisabeth",
+       "team": "p",
+       "pos": [
+        12,
+        5
+       ],
+       "label": "Käpt'n Elisabeth"
+      }
+     ]
+    },
+    {
+     "dialogue": [
+      {
+       "left": "samurai",
+       "right": "elisabeth",
+       "speaker": "elisabeth",
+       "text": "Mädels! Ihr seid zu spät, und ihr bringt Ärger mit! Die Möwe legt ab, sobald der Blechhut an Bord ist. Lauft!",
+       "right_expr": "lachend"
+      },
+      {
+       "left": "samurai",
+       "right": "elisabeth",
+       "speaker": "samurai",
+       "text": "Ich habe einen Namen. Takeda."
+      },
+      {
+       "left": "samurai",
+       "right": "elisabeth",
+       "speaker": "elisabeth",
+       "text": "Schön für dich, Takeda. Meine Kanonen haben auch Namen. Wer im Weg steht, lernt sie kennen."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "flee": "kage_gegner"
+   },
+   "if": {
+    "absent": [
+     "ninjas"
+    ]
+   },
+   "note": "Wendepunkt, falls die Schwestern vorher fliehen",
+   "do": [
+    {
+     "goal": {
+      "type": "reach",
+      "tiles": [
+       [
+        11,
+        6
+       ],
+       [
+        12,
+        6
+       ],
+       [
+        13,
+        6
+       ]
+      ],
+      "unit": "samurai",
+      "text": "Ziel: Bring Takeda auf den Steg zur Rostigen Möwe (goldene Felder)"
+     }
+    },
+    {
+     "dialogue": [
+      {
+       "left": "samurai",
+       "right": "stadtwache",
+       "speaker": "stadtwache",
+       "text": "Im Namen des Fürsten! Wer hat die Laternen umgeworfen? Alle drei: festnehmen!"
+      },
+      {
+       "left": "samurai",
+       "right": "stadtwache",
+       "speaker": "samurai",
+       "text": "Ich bin der Leibwächter des Fürsten!",
+       "left_expr": "wuetend"
+      },
+      {
+       "left": "samurai",
+       "right": "stadtwache",
+       "speaker": "stadtwache",
+       "text": "Und ich bin die Mondprinzessin. Packt sie!"
+      }
+     ]
+    },
+    {
+     "spawn": [
+      {
+       "id": "stadtwache",
+       "pos": [
+        0,
+        2
+       ],
+       "label": "Stadtwache"
+      },
+      {
+       "id": "stadtwache",
+       "pos": [
+        0,
+        6
+       ],
+       "label": "Stadtwache"
+      },
+      {
+       "id": "stadtwache",
+       "pos": [
+        0,
+        9
+       ],
+       "label": "Stadtwache"
+      },
+      {
+       "id": "stadtwache",
+       "pos": [
+        7,
+        9
+       ],
+       "label": "Stadtwache"
+      },
+      {
+       "id": "stadtwache",
+       "pos": [
+        12,
+        2
+       ],
+       "label": "Hafenwache"
+      },
+      {
+       "id": "stadtwache",
+       "pos": [
+        11,
+        9
+       ],
+       "label": "Hafenwache"
+      },
+      {
+       "id": "stadtwache",
+       "pos": [
+        10,
+        7
+       ],
+       "label": "Hafenwache"
+      },
+      {
+       "id": "stadtwache",
+       "pos": [
+        10,
+        5
+       ],
+       "label": "Hafenwache"
+      },
+      {
+       "id": "stadtwache",
+       "pos": [
+        9,
+        4
+       ],
+       "label": "Hafenwache"
+      }
+     ]
+    },
+    {
+     "dialogue": [
+      {
+       "left": "samurai",
+       "right": "ninjas",
+       "speaker": "ninjas",
+       "text": "Schlechte Nachricht, Blechhut. – Die Teekanne ist kaputt. – Irgendwo in dem Gerangel eben.",
+       "right_expr": "lachend"
+      },
+      {
+       "left": "samurai",
+       "right": "ninjas",
+       "speaker": "samurai",
+       "text": "Die Jadeteekanne des Fürsten… Dafür werfen sie mich in den Kerker. Für immer.",
+       "left_expr": "wuetend"
+      },
+      {
+       "left": "samurai",
+       "right": "ninjas",
+       "speaker": "ninjas",
+       "text": "Dann komm mit uns. – Wir kennen ein Schiff. – Die Kapitänin schuldet uns noch einen Gefallen."
+      }
+     ]
+    },
+    {
+     "side": {
+      "id": "kage_gegner",
+      "become": "ninjas",
+      "label": "Verbündet!"
+     }
+    },
+    {
+     "spawn": [
+      {
+       "id": "elisabeth",
+       "team": "p",
+       "pos": [
+        12,
+        5
+       ],
+       "label": "Käpt'n Elisabeth"
+      }
+     ]
+    },
+    {
+     "dialogue": [
+      {
+       "left": "samurai",
+       "right": "elisabeth",
+       "speaker": "elisabeth",
+       "text": "Mädels! Ihr seid zu spät, und ihr bringt Ärger mit! Die Möwe legt ab, sobald der Blechhut an Bord ist. Lauft!",
+       "right_expr": "lachend"
+      },
+      {
+       "left": "samurai",
+       "right": "elisabeth",
+       "speaker": "samurai",
+       "text": "Ich habe einen Namen. Takeda."
+      },
+      {
+       "left": "samurai",
+       "right": "elisabeth",
+       "speaker": "elisabeth",
+       "text": "Schön für dich, Takeda. Meine Kanonen haben auch Namen. Wer im Weg steht, lernt sie kennen."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "enter": [
+     10,
+     6
+    ]
+   },
+   "note": "Takeda kurz vor dem Steg",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "$hero",
+       "right": "elisabeth",
+       "speaker": "elisabeth",
+       "text": "Nicht trödeln! Und nicht seekrank werden, ich habe gerade geschrubbt.",
+       "right_expr": "lachend"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "when": {
+    "ability": {
+     "id": "breitseite",
+     "by": "elisabeth"
+    }
+   },
+   "note": "Erste Breitseite",
+   "do": [
+    {
+     "dialogue": [
+      {
+       "left": "samurai",
+       "right": "elisabeth",
+       "speaker": "elisabeth",
+       "text": "Feuer frei! Grüßt euren Fürsten von der Rostigen Möwe!",
+       "right_expr": "lachend"
+      },
+      {
+       "left": "samurai",
+       "right": "elisabeth",
+       "speaker": "samurai",
+       "text": "Ich glaube, ich kann nie wieder nach Hause."
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "outro_at_sea": {
+  "scene": "sea",
+  "dir": "right",
+  "speed": 1.8,
+  "music": "res://assets/audio/seefahrt.mp3"
+ },
+ "battle_music": "res://assets/audio/rueckblende_jpop.mp3"
+}

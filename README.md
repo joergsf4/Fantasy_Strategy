@@ -99,7 +99,7 @@ Manche Fähigkeiten wirken auf Verbündete anders, als man denkt. Wer es herausf
 ## Spielen
 
 ### Fertige Testversion
-Unter [Releases](https://github.com/joergsf4/Fantasy_Strategy/releases) liegen ZIPs für macOS (`FuzaketaTactics-macOS.zip`) und Windows (`FuzaketaTactics-Windows.zip`). Aktuell: **Testversion 0.12.0** mit 22 Kampfmissionen in drei Kapiteln bis zum Finale samt Epilog, Chronik zum erneuten Spielen mit Medaillen, Gefahrenzone der Gegner, Zwischensequenzen, Talentpunkten, gestufter Ausrüstung, Grafikoptionen, Sumpf-, Schnee-, Vulkan-, Labor- und Thronsaal-Biom, vierzehn geheimen Interaktionen, Gruppenwahl mit wechselnden Sprechern und Wetter in den Missionen.
+Unter [Releases](https://github.com/joergsf4/Fantasy_Strategy/releases) liegen ZIPs für macOS (`FuzaketaTactics-macOS.zip`) und Windows (`FuzaketaTactics-Windows.zip`). Aktuell: **Testversion 0.13.0** mit 22 Kampfmissionen in drei Kapiteln bis zum Finale samt Epilog, einer spielbaren Rückblende (Takeda und die Kage-Schwestern in Hanakaze), Chronik zum erneuten Spielen mit Medaillen, Gefahrenzone der Gegner, Zwischensequenzen, Talentpunkten, gestufter Ausrüstung, Grafikoptionen, Sumpf-, Schnee-, Vulkan-, Labor-, Thronsaal- und Fernost-Biom, vierzehn geheimen Interaktionen, Gruppenwahl mit wechselnden Sprechern und Wetter in den Missionen.
 - **macOS:** ZIP entpacken, Rechtsklick auf die App, „Öffnen“ (nicht notarisiert). Falls macOS sie sperrt: `xattr -cr "Fuzaketa Tactics.app"`.
 - **Windows:** ZIP entpacken, `game.exe` starten. SmartScreen warnt eventuell („Weitere Informationen“, „Trotzdem ausführen“).
 
@@ -171,5 +171,5 @@ Dazu viele weitere in `game/tests/` (Fähigkeiten, Missionen, Feuer, Gruppenwahl
 
 ## Hinweise
 - **KI-generierte Inhalte:** Alle Figuren-, Effekt- und Hintergrundbilder (`strategie/`, `game/assets/portraits|tokens|fx`) und die Musik (`game/assets/audio/`) wurden mit Google Gemini erzeugt, die Soundeffekte synthetisch. Programmcode und Daten entstanden mit Claude Code. Das Projekt ist ein nicht kommerzielles Hobbyprojekt.
-- **Stand:** Testversion 0.12.0. Werte und Balancing sind vorläufig, Fehler bitte als Issue melden.
+- **Stand:** Testversion 0.13.0. Werte und Balancing sind vorläufig, Fehler bitte als Issue melden.
 - **Schriften:** Cinzel Decorative, IM Fell English und Dela Gothic One (für die Katakana des Namens, nur ein Auszug; SIL Open Font License, Lizenztexte im Ordner `game/assets/fonts/`).

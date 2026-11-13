@@ -164,16 +164,7 @@ func _ready() -> void:
 	_fire_preview = Node3D.new()
 	add_child(_fire_preview)
 	_update_fire_preview()
-	goal = (map_data.get("goals", [{"type": "rout"}]) as Array)[0]
-	if goal.get("type", "rout") == "reach":      # Zielfeld golden markieren, leicht pulsierend
-		var gt := Vector2i(goal["tile"][0], goal["tile"][1])
-		var gm := MeshInstance3D.new()
-		gm.mesh = terrain.tile_mesh(gt, 0.48, 0.07)
-		gm.material_override = _mat(Color(1.0, 0.82, 0.25, 0.55), true, true)
-		add_child(gm)
-		var pulse := gm.create_tween().set_loops()
-		pulse.tween_property(gm, "transparency", 0.5, 0.8).set_trans(Tween.TRANS_SINE)
-		pulse.tween_property(gm, "transparency", 0.0, 0.8).set_trans(Tween.TRANS_SINE)
+	_set_goal((map_data.get("goals", [{"type": "rout"}]) as Array)[0])
 	triggers = (map_data.get("triggers", []) as Array).duplicate(true)
 	_threat_root = Node3D.new()
 	add_child(_threat_root)
@@ -2416,7 +2407,7 @@ func _build_decor() -> void:
 	for y in grid.height:        # Dorf-Felder: Dorfplatz-Sprite statt Mini-Haeuschen (Wiese oder Wueste)
 		for x in grid.width:
 			if grid.terrain(Vector2i(x, y)) == "V" and world.at(Vector2i(x, y)).is_empty():
-				spots.append(["fx_dorf_wueste" if map_data.get("biome", "") == "wueste" else "fx_dorf", Vector2i(x, y), 1.5])
+				spots.append([{"wueste": "fx_dorf_wueste", "fernost": "fx_dorf_fernost"}.get(map_data.get("biome", ""), "fx_dorf"), Vector2i(x, y), 1.5])
 	for d: Dictionary in map_data.get("decor", []):
 		spots.append([d["sprite"], Vector2i(d["pos"][0], d["pos"][1]), float(d.get("size", 1.0)), d.get("effect", ""), d.get("light", []), float(d.get("back", 0.0))])
 	for sp: Array in spots:
@@ -2431,6 +2422,13 @@ func _build_decor() -> void:
 			_campfire(root, sprite)
 		elif sp.size() > 3 and sp[3] == "smoke":
 			_vent_smoke(root)
+		elif sp.size() > 3 and sp[3] == "lantern":      # Deko-Feld "effect": "lantern": warmes Laternenlicht (Hafen von Hanakaze bei Nacht)
+			var ll := OmniLight3D.new()
+			ll.light_color = Color(1.0, 0.62, 0.3)
+			ll.light_energy = 1.6
+			ll.omni_range = 2.6
+			ll.position = Vector3(0, 0.8, 0.3)
+			root.add_child(ll)
 		if sp.size() > 4 and (sp[4] as Array).size() == 3:      # Deko-Feld "light": [r, g, b] farbiges Punktlicht (Geraete in der Basis)
 			var dl := OmniLight3D.new()
 			dl.light_color = Color(float(sp[4][0]), float(sp[4][1]), float(sp[4][2]))
@@ -2917,12 +2915,16 @@ func _make_burnable(o: Dictionary) -> void:
 	var big: bool = o["type"] == "house"
 	if big:      # Haus als Pixel-Sprite (Variante nach Position, in der Wueste Lehmhaeuser), Ruine als zweiter Sprite
 		var h: int = (int(o["pos"].x) * 7 + int(o["pos"].y) * 13) % 3
-		var name := ("fx_haus_wueste%d" % (1 + h % 2)) if map_data.get("biome", "") == "wueste" else "fx_haus%d" % (1 + h)
+		var name := "fx_haus%d" % (1 + h)
+		if map_data.get("biome", "") == "wueste":
+			name = "fx_haus_wueste%d" % (1 + h % 2)
+		elif map_data.get("biome", "") == "fernost":      # Hanakaze (Rueckblende Takeda): Holzhaeuser mit geschwungenem Dach
+			name = "fx_haus_fernost%d" % (1 + h % 2)
 		if o.get("look", "") != "":     # Sonderhaus (z. B. Dr. Humbugs Praxis)
 			name = o["look"]
 		root.remove_child(parts["body"])
 		(parts["body"] as Node).queue_free()
-		parts["body"] = _object_sprite(name, 1.9 if name == "fx_waisenhaus" else 1.15, root)
+		parts["body"] = _object_sprite(name, float(o.get("size", 1.9 if name == "fx_waisenhaus" else 1.15)), root)      # "size": Sondergroesse (Pagode)
 		root.remove_child(parts["rubble"])
 		(parts["rubble"] as Node).queue_free()
 		parts["rubble"] = _object_sprite("fx_ruine%d" % (1 + h % 2), 1.1, root)
@@ -3682,6 +3684,36 @@ func _count_team(team: String) -> int:
 	return n
 
 
+var _goal_marker: MeshInstance3D
+
+
+## Missionsziel setzen (zu Beginn und per Ereignis-Schritt "goal"); Zielfelder ("reach") golden markieren, leicht pulsierend.
+func _set_goal(g: Dictionary) -> void:
+	goal = g
+	if _goal_marker != null and is_instance_valid(_goal_marker):
+		_goal_marker.queue_free()
+	_goal_marker = null
+	if goal.get("type", "rout") == "reach":
+		_goal_marker = MeshInstance3D.new()      # Halter, je Zielfeld ein pulsierendes goldenes Feld
+		add_child(_goal_marker)
+		for gt: Vector2i in goal_tiles():
+			var gm := MeshInstance3D.new()
+			gm.mesh = terrain.tile_mesh(gt, 0.48, 0.07)
+			gm.material_override = _mat(Color(1.0, 0.82, 0.25, 0.55), true, true)
+			_goal_marker.add_child(gm)
+			var pulse := gm.create_tween().set_loops()
+			pulse.tween_property(gm, "transparency", 0.5, 0.8).set_trans(Tween.TRANS_SINE)
+			pulse.tween_property(gm, "transparency", 0.0, 0.8).set_trans(Tween.TRANS_SINE)
+
+
+## Zielfelder des Ziels "reach": "tile" (ein Feld) oder "tiles" (mehrere, z. B. der ganze Steg in der Rueckblende).
+func goal_tiles() -> Array:
+	var out: Array = []
+	for t: Array in goal.get("tiles", [goal["tile"]] if goal.has("tile") else []):
+		out.append(Vector2i(int(t[0]), int(t[1])))
+	return out
+
+
 ## Ist das Missionsziel erreicht? (Verloren: alle Helden gefallen, siehe _check_end)
 func goal_met() -> bool:
 	match goal.get("type", "rout"):
@@ -3700,10 +3732,10 @@ func goal_met() -> bool:
 		"defeat":      # nur wenn die Figur schon auf dem Feld war (Mission 24: Robo-Wart kommt erst spaeter)
 			var gid := str(goal["unit"])
 			return _find(gid).is_empty() and all_units.any(func(x: Dictionary) -> bool: return x["id"] == gid)
-		"reach":
-			var t := Vector2i(goal["tile"][0], goal["tile"][1])
+		"reach":      # "unit": nur diese Figur zaehlt (Rueckblende: Takeda muss an Bord)
+			var tiles := goal_tiles()
 			for u in units:
-				if u["team"] == "p" and u["pos"] == t:
+				if u["team"] == "p" and tiles.has(u["pos"]) and (not goal.has("unit") or u["id"] == str(goal["unit"])):
 					return true
 			return false
 		"rout_spawned":     # wie rout, aber erst, wenn irgendwann Gegner aufgetaucht sind (Mission beginnt ohne Feinde)
@@ -3951,6 +3983,23 @@ func _hero_lines(lines: Array, who: Dictionary) -> Array:
 
 func _fire(t: Dictionary, who := {}) -> void:
 	for step: Dictionary in t["do"]:
+		if step.has("goal"):          # {"goal": {"type": "reach", "tile": [x, y], "text": ...}}: neues Missionsziel (Rueckblende Takeda: erst kaempfen, dann fliehen)
+			_set_goal(step["goal"])
+			_update_status()
+		if step.has("side"):          # {"side": {"id": "kage_gegner", "become": "ninjas"}}: Gegner verschwindet im Rauch und steht als Verbuendeter da
+			var su := _find(str(step["side"]["id"]))
+			if not su.is_empty():
+				var spos: Vector2i = su["pos"]
+				fx.particles("fx_smoke", fx.chest(su, 1.0), 16, 1.7, 0.8, 1.1, -0.3, Color(0.82, 0.82, 0.9, 0.9), false, 120.0)
+				Sfx.event("flee")
+				units.erase(su)
+				if is_instance_valid(su["node"]):
+					(su["node"] as Node3D).queue_free()
+				await get_tree().create_timer(0.35).timeout
+				_spawn(str(step["side"]["become"]), "p", spos, {})
+				var nu: Dictionary = units.back()
+				fx.particles("fx_smoke", fx.chest(nu, 1.0), 10, 1.3, 0.6, 0.9, -0.3, Color(0.82, 0.82, 0.9, 0.8), false, 120.0)
+				await _popup(nu, str(step["side"].get("label", "Verbündet!")), Color(0.6, 0.9, 1.0))
 		if step.has("popup") and not units.is_empty():
 			var anchor: Dictionary = units[0]
 			await _popup(anchor, step["popup"], Color(1.0, 0.55, 0.4))

@@ -20,6 +20,29 @@
    "text": "Hört ihr das Geschrei? Das Baby hat Lungen für drei. Jeder im Umkreis weiß, wo wir hinmüssen, und die Wachen auch.",
    "left_expr": "wuetend",
    "story": true
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "ninjas",
+   "speaker": "ninjas",
+   "text": "Psst. – Hier oben. – Auf dem Dach.",
+   "right_expr": "lachend",
+   "story": true
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "ninjas",
+   "speaker": "maedchen_baer",
+   "text": "Ihr seid die Kage-Schwestern! Die mit der Teekanne!",
+   "left_expr": "lachend",
+   "story": true
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "ninjas",
+   "speaker": "ninjas",
+   "text": "Takeda hat also geplaudert. – Die Wachen im Teehaus schauen nie nach oben. – Wir helfen euch. Ausnahmsweise umsonst.",
+   "story": true
   }
  ],
  "outro": [

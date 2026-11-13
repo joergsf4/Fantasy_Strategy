@@ -322,6 +322,7 @@ const SPRITES := {
 	"snowpine0": ["fx_schneefichte1", 1.05, 0.5], "snowpine1": ["fx_schneefichte2", 1.1, 0.42],
 	"snowrock": ["fx_eisfels", 0.35, 0.3], "snowmound": ["fx_schneehaufen", 0.28, 0.3],
 	"dead": ["fx_totbaum", 1.0, 0.4], "reed": ["fx_schilf", 0.5, 0.3],
+	"sakura0": ["fx_kirschbaum1", 1.0, 0.55], "sakura1": ["fx_kirschbaum2", 0.95, 0.5],
 	"bush": ["fx_busch", 0.4, 0.32], "rock0": ["fx_fels1", 0.25, 0.26], "rock1": ["fx_fels2", 0.24, 0.3],
 }
 var _prop_shader: Shader
@@ -331,6 +332,8 @@ var _shadow_mat: StandardMaterial3D
 func _make_sprite_meshes() -> void:
 	_prop_shader = load("res://shaders/prop_sprite.gdshader")
 	for kind: String in SPRITES:
+		if not ResourceLoader.exists("res://assets/fx/%s.png" % SPRITES[kind][0]):      # Sprite noch nicht erzeugt (neues Biom): Art wird nicht benutzt
+			continue
 		var tex: Texture2D = load("res://assets/fx/%s.png" % SPRITES[kind][0])
 		var h: float = SPRITES[kind][1]
 		var q := QuadMesh.new()
@@ -430,6 +433,8 @@ func _place(kind: String, x: float, z: float, scale: float, tint: Color, min_y :
 func _tree(x: float, z: float, scale: float, prefer_pine := 0.45) -> void:
 	var oak := 2 if _rng.randf() < 0.12 else _rng.randi_range(0, 1)      # gelbe Birken sind selten
 	var kind := ("pine%d" % _rng.randi_range(0, 1)) if _rng.randf() < prefer_pine else ("oak%d" % oak)
+	if biome == "fernost" and kind.begins_with("oak") and ResourceLoader.exists("res://assets/fx/fx_kirschbaum1.png"):      # Hanakaze: Kirschbaeume statt Eichen
+		kind = "sakura%d" % _rng.randi_range(0, 1)
 	_place(kind, x, z, scale * 0.72 * _rng.randf_range(0.85, 1.25), _tint(0.14))
 
 

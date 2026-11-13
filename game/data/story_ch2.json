@@ -10,6 +10,27 @@
   },
   {
    "left": "maedchen_baer",
+   "right": "robo",
+   "speaker": "robo",
+   "text": "Analyse: ein Mann mit mehr Muskeln als Verstand. Hallo. Ich bin Robo. Ich bin euch seit Eichenfurt gefolgt.",
+   "story": true
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "robo",
+   "speaker": "maedchen_baer",
+   "text": "Du bist uns gefolgt? Woher kommst du denn?",
+   "story": true
+  },
+  {
+   "left": "maedchen_baer",
+   "right": "robo",
+   "speaker": "robo",
+   "text": "Unbekannt. Ich bin in einem Bach aufgewacht, mit Moos in den Zahnrädern. Davor ist mein Speicher leer. Aber ihr wart die Einzigen, die nicht weggelaufen sind. Das gefällt mir.",
+   "story": true
+  },
+  {
+   "left": "maedchen_baer",
    "right": "museklaugust",
    "speaker": "maedchen_baer",
    "text": "Ein Tor in einer Mauer. Zu. Natürlich.",
