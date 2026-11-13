@@ -42,6 +42,7 @@ func _ready() -> void:
 		_left.size = Vector2(672, 570)
 		_right.position = _left.position
 		_right.size = _left.size
+	_add_fog()
 
 	var box := PanelContainer.new()
 	box.position = Vector2(60, 548)
@@ -83,6 +84,20 @@ func _ready() -> void:
 	pulse.tween_property(_more, "modulate:a", 0.25, 0.7).set_trans(Tween.TRANS_SINE)
 	pulse.tween_property(_more, "modulate:a", 1.0, 0.7).set_trans(Tween.TRANS_SINE)
 	_advance()
+
+
+## Blauer Nebel ueber dem unteren Teil der Gespraechsbilder (unter dem Textfeld): Die Portraets enden je nach Bildformat
+## auf unterschiedlicher Hoehe; der Nebel verdeckt diese Kanten (shaders/dialog_fog.gdshader).
+func _add_fog() -> void:
+	var fog := ColorRect.new()
+	fog.name = "Fog"
+	fog.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	fog.position = Vector2(0, 330)
+	fog.size = Vector2(1280, 390)
+	var mat := ShaderMaterial.new()
+	mat.shader = load("res://shaders/dialog_fog.gdshader")
+	fog.material = mat
+	add_child(fog)
 
 
 func _make_slot(r: Rect2, flip: bool) -> TextureRect:

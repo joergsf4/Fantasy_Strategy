@@ -142,3 +142,20 @@ Fähigkeiten auf sich selbst (Befehl, Blick) setzt die Gegner-KI ein, wenn genug
 - **Tempo der Gegnerphase:** Leertaste halten beschleunigt die Gegnerphase (×3,5). Dauerhaft geht es im Pause-Menü unter „Ton und Spiel“ mit **Gegnerzüge: Normal / Schnell (×2) / Sehr schnell (×3,5)** (`Settings` `enemy_speed`, `Battle._apply_speed`). Dialoge, Geheimnis-Szenen und Super-Auftritte laufen immer in normalem Tempo.
 - **Bonusziele im Kampf:** Die Bonusziele der Mission stehen oben rechts unter dem Knopf der Gefahrenzone. Vorher erfuhr man sie erst im Belohnungsbildschirm.
 - Test: `tests/test_spielspass.gd`. Bildschirmfoto: `SHOT=gefahr` (optional `SHOT_CH=chN`, `SHOT_PICK=1` für nur einen Gegner).
+
+## Spieltest-Bot (Spielbarkeit aller Missionen)
+Ein Bot spielt den echten Kampf auf der Spielerseite, nur über die Wege eines Spielers: Figur anklicken, Feld anklicken, Knopf im Aktionsmenü drücken, Ziel anklicken (`Battle._click`, `Battle._menu`). So prüft er nebenbei, ob das Menü zu den Regeln passt: Will er etwas, das das Menü nicht anbietet, meldet er eine **Planabweichung**.
+- **Dateien** (`game/scripts/bot/`):
+  - `play_bot.gd` (Ablauf, Klicks, Grenzen)
+  - `bot_eval.gd` (Bewertung aller Aktionen je erreichbarem Feld, Ideen aus der Simulations-KI `game/sim/sim_ai.gd`, gerechnet mit den Funktionen des echten Kampfs)
+  - `bot_goals.gd` (Missionsziel: reach mit Figur oder Feldern, Geiseln mit Anker, Umprogrammieren, Erkunden ungefeuerter Auslöser, Objekt-Aufgaben wie Glocke, Honig, Schalter)
+  - `bot_setup.gd` (Spielstand eines Kapitels wie `Party.for_chapter`, zurückkehrende Gegner wie im echten Spiel, Varianten)
+  - `bot_run.gd` (Massenlauf für das Skript)
+- **Hinweise** in `game/data/bot_hints.json` nur dort, wo der allgemeine Bot verliert, ein Mensch aber gewinnen würde (jeder mit `note`). Zurzeit braucht keine Mission einen.
+- **Headless:** Dialoge und Szenen werden übersprungen, `Battle.fast` schaltet die Echtzeit-Pause beim Treffer (Hitstop) ab, Zeitraffer ×40, fester Zufallsstart (`b.rng.seed`). Ein Kampf dauert so ein bis fünf Sekunden.
+- **Grenzen:** Rundenlimit 30 (bei „überleben“ Rundenzahl + 2), Zeitlimit, Hänger-Erkennung, Schleifenschutz.
+- **Tests:**
+  - `tests/test_spielbarkeit.gd`: jede Kampfmission und die Rückblende mit Standardgruppe, erwarteter Stufe und Ausrüstung, „Normal“. Bei einer Niederlage zweiter Versuch mit vorsichtigem Stil. Filter `SPIEL_NUR=ch5,ch8`, Protokoll jeder Aktion mit `SPIEL_DEBUG=1`.
+  - `tests/test_play_bot.gd`: Bausteine (Hinweise, Aufbau, Reproduzierbarkeit, Sperren).
+- **Langer Lauf:** `python3 tools/spielbarkeit.py` (Optionen `--scale`, `--styles`, `--missions`, `--resume`, `--report`), Bericht `docs/spielbarkeit.md`.
+- **Aussagekraft:** Ein Bot-Sieg beweist, dass eine Mission schaffbar ist. Eine Bot-Niederlage beweist nicht das Gegenteil, der Bot ist schwächer als ein Mensch. Geheimnisse löst er nicht gezielt aus, Würfe auf Verbündete benutzt er nicht.

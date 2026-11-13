@@ -48,6 +48,7 @@ var _popup_next := {}             # Figur -> fruehester Start der naechsten Meld
 var _enemy_phase := false         # Gegnerphase laeuft: Option "Gegnerzuege" und gehaltene Leertaste beschleunigen sie
 var _talk := 0                    # laufende Szenen (Geheimnis, Super-Auftritt): solange kein Zeitraffer
 var _sped := false                # dieser Kampf hat Engine.time_scale gesetzt (wird wieder zurueckgestellt)
+var fast := false                 # Spieltest-Bot und Tests: keine Echtzeit-Pausen (Hitstop), siehe scripts/bot/
 var _threat_root: Node3D          # Kacheln der Gefahrenzone (liegen knapp ueber den Bewegungsfeldern: Blau wird dort violett)
 var _threat_all := false          # Gefahrenzone aller Gegner (Taste G oder Knopf)
 var _threat_pick: Dictionary = {} # einzeln angeklickte Gegner (uid -> true)

@@ -164,10 +164,17 @@ godot --headless --path game --script tests/test_combat.gd
 ```
 Dazu viele weitere in `game/tests/` (Fähigkeiten, Missionen, Feuer, Gruppenwahl, Brabbel-Laute, Statistik, Editor-Bedienung und mehr). Jedes Skript läuft einzeln und meldet Fehler als `FAIL`.
 
+**Spielbarkeit:** Ein Bot (`game/scripts/bot/`) spielt den echten Kampf über dieselben Klicks und Menüknöpfe wie ein Mensch.
+```
+godot --headless --path game --script tests/test_spielbarkeit.gd     # alle Missionen mit der Standardgruppe, ca. 1–2 Minuten
+python3 tools/spielbarkeit.py                                        # langer Lauf mit Varianten, Bericht docs/spielbarkeit.md
+```
+Der lange Lauf prüft zufällige Gruppen, ohne und mit bester Ausrüstung, weniger Talentpunkte, jede Fähigkeit einzeln gesperrt und mehr, jeweils mit drei Spielstilen. Ein Bot-Sieg beweist, dass eine Mission schaffbar ist; eine Bot-Niederlage beweist nicht das Gegenteil.
+
 ## Dokumentation
 - [Kampfsystem](docs/kampfsystem.md) · [Figuren](docs/figuren.md) · [Missionen](docs/missionen.md)
 - [Geheime Interaktionen und Super-Attacken](docs/geheimnisse.md) · [Sound](docs/sound.md)
-- [Balancing](docs/balance.md) · [Fortschritt und Talente](docs/fortschritt.md) · [Backlog](docs/backlog.md)
+- [Balancing](docs/balance.md) · [Spielbarkeit](docs/spielbarkeit.md) · [Fortschritt und Talente](docs/fortschritt.md) · [Backlog](docs/backlog.md)
 
 ## Hinweise
 - **KI-generierte Inhalte:** Alle Figuren-, Effekt- und Hintergrundbilder (`strategie/`, `game/assets/portraits|tokens|fx`) und die Musik (`game/assets/audio/`) wurden mit Google Gemini erzeugt, die Soundeffekte synthetisch. Programmcode und Daten entstanden mit Claude Code. Das Projekt ist ein nicht kommerzielles Hobbyprojekt.

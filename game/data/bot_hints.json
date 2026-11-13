@@ -1,0 +1,4 @@
+{
+ "_info": "Hinweise fuer den Spieltest-Bot (scripts/bot/). Nur dort, wo der allgemeine Bot verliert, ein Mensch aber gewinnen wuerde; jeder Eintrag mit note. objectives: [{object, by?, weight, from_turn?}], max_turns.",
+ "_default": {"max_turns": 30}
+}

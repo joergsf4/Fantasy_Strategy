@@ -278,7 +278,7 @@ func shake(amount: float, time := 0.3) -> void:
 
 ## Kurzes Einfrieren beim Treffer (laeuft in Echtzeit, unabhaengig vom Zeitmassstab).
 func hitstop(real_time := 0.06) -> void:
-	if _hitstop_busy:
+	if _hitstop_busy or (battle != null and battle.fast):      # Spieltest-Bot: keine Echtzeit-Pausen
 		return
 	_hitstop_busy = true
 	var prev := Engine.time_scale
