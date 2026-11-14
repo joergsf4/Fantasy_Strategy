@@ -68,11 +68,51 @@ func _make_ring() -> Texture2D:
 	return ImageTexture.create_from_image(img)
 
 
+## Fadenkreuz (Computer-Analyse von Cyborg-Wart): Ring mit Luecken, vier Striche nach innen, Punkt in der Mitte. Weiss, wird eingefaerbt.
+func _make_crosshair() -> Texture2D:
+	var n := 128
+	var c := Vector2(63.5, 63.5)
+	var mask := []      # Linien des Kreuzes (true/false)
+	for y in n:
+		for x in n:
+			var v := Vector2(x, y) - c
+			var d := v.length()
+			var ang := fposmod(atan2(v.y, v.x), PI * 0.5)
+			var on := absf(d - 50.0) < 5.5 and absf(ang - PI * 0.25) < 0.42      # Ring, an den Strichen offen
+			on = on or absf(d - 33.0) < 3.0                                            # innerer Ring
+			on = on or ((absf(v.x) < 4.0 or absf(v.y) < 4.0) and d > 18.0 and d < 60.0)   # vier Striche
+			on = on or d < 6.0                                                         # Punkt
+			mask.append(on)
+	var img := Image.create(n, n, false, Image.FORMAT_RGBA8)
+	for y in n:
+		for x in n:
+			if mask[y * n + x]:
+				img.set_pixel(x, y, Color(1, 1, 1, 1))
+				continue
+			var edge := false      # dunkle Kontur: 3 Pixel um die Linien
+			for dy in range(-3, 4):
+				for dx in range(-3, 4):
+					var xx := x + dx
+					var yy := y + dy
+					if xx >= 0 and yy >= 0 and xx < n and yy < n and mask[yy * n + xx]:
+						edge = true
+						break
+				if edge:
+					break
+			if edge:
+				img.set_pixel(x, y, Color(0.05, 0.02, 0.02, 0.9))
+	return ImageTexture.create_from_image(img)
+
+
 func tex(name: String) -> Texture2D:
 	if name == "soft":
 		return _soft
 	if name == "ring":
 		return _ring
+	if name == "crosshair":
+		if not _tex_cache.has(name):
+			_tex_cache[name] = _make_crosshair()
+		return _tex_cache[name]
 	if _tex_cache.has(name):
 		return _tex_cache[name]
 	var p := FX_DIR + name + ".png"
@@ -461,13 +501,39 @@ func on_status(id: String, u: Dictionary, v: Dictionary, status: String) -> void
 
 
 ## Computer-Analyse: cyanfarbener Abtaststrahl vom Cyborg zum Ziel, Gitter-Ring und kurzes Aufleuchten.
+## Ein grosses rotes Fadenkreuz fliegt drehend vom Cyborg zum Ziel, schrumpft und rastet mit Aufblitzen ein ("Anvisiert!").
+## Danach bleibt das kleinere Fadenkreuz des Status "analysiert" auf der Figur (_status_holder).
 func _scan(u: Dictionary, v: Dictionary) -> void:
 	var from := chest(u, 0.8)
 	var to := chest(v, 0.5)
-	await beam(from, to, Color(0.3, 0.9, 1.0), 0.07, 0.35)
-	shockwave((v["node"] as Node3D).position, 0.9, Color(0.3, 0.9, 1.0, 0.8), 0.5)
-	light_flash(to, Color(0.3, 0.9, 1.0), 2.0, 3.0, 0.4)
-	flash_unit(v, Color(0.5, 1.6, 2.0), 0.3)
+	if battle != null and battle.cam != null:      # vor der Figur einrasten, nicht in ihr
+		to += (battle.cam.global_position - to).normalized() * 0.45
+	var col := Color(1.0, 0.22, 0.18, 1.0)
+	var ch := make_sprite("crosshair", from, 1.6, false, col, 2)
+	var s0 := ch.scale
+	var tw := create_tween().set_parallel(true)
+	tw.tween_property(ch, "position", to, 0.55).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	tw.tween_property(ch, "scale", s0 * 0.6, 0.55).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	tw.tween_method(func(r: float) -> void:
+		if is_instance_valid(ch):
+			(ch.material_override as ShaderMaterial).set_shader_parameter("roll", r), 0.0, TAU * 0.75, 0.55)
+	await tw.finished
+	var tw2 := create_tween()      # einrasten: kurz zusammenziehen, dann ausblenden
+	tw2.tween_property(ch, "scale", s0 * 0.45, 0.08)
+	tw2.tween_property(ch, "scale", s0 * 0.55, 0.1)
+	shockwave((v["node"] as Node3D).position, 0.9, Color(1.0, 0.3, 0.2, 0.8), 0.5)
+	light_flash(to, Color(1.0, 0.3, 0.2), 2.0, 3.0, 0.4)
+	flash_unit(v, Color(2.0, 0.7, 0.6), 0.3)
+	if battle != null:
+		battle._popup(v, "Anvisiert!", Color(1.0, 0.45, 0.35))
+	await tw2.finished
+	var tw3 := create_tween()
+	tw3.tween_method(func(a: float) -> void:
+		if is_instance_valid(ch):
+			(ch.material_override as ShaderMaterial).set_shader_parameter("tint", Color(col.r, col.g, col.b, a)), 1.0, 0.0, 0.25)
+	await tw3.finished
+	if is_instance_valid(ch):
+		ch.queue_free()
 	particles("fx_star", to, 8, 1.5, 0.16, 0.7, 0.0, Color(0.4, 1.0, 1.0), true, 180.0)
 
 
@@ -984,6 +1050,18 @@ func _status_holder(id: String, n: Node3D) -> Node3D:
 			_loop_particles(root, "fx_arrow_up", Vector3(0, 0.3, 0), 3, 0.9, 0.2, 1.4, -0.4, Color(1.0, 0.9, 0.5), true)
 		"tired":
 			_loop_particles(root, "fx_sweat", Vector3(0.2, 1.7, 0), 2, 0.5, 0.2, 1.0, 3.0, Color.WHITE)
+		"analysiert":   # Computer-Analyse: rotes Fadenkreuz auf der Figur, dreht sich langsam und pulsiert (nimmt 20 % mehr Schaden)
+			var front := Vector3.ZERO      # ein Stueck zur Kamera hin, damit das Kreuz vor der Figur liegt und nicht in ihr verschwindet
+			if battle != null and battle.cam != null:
+				front = (battle.cam.global_position - n.global_position).normalized() * 0.45
+			var cx := make_sprite("crosshair", Vector3(0, 0.62, 0) + front, 0.9, false, Color(1.0, 0.18, 0.12, 0.82), 2, root)
+			var twa := root.create_tween().set_loops()
+			twa.tween_method(func(r: float) -> void:
+				if is_instance_valid(cx):
+					(cx.material_override as ShaderMaterial).set_shader_parameter("roll", r), 0.0, TAU, 6.0)
+			var twp := root.create_tween().set_loops()
+			twp.tween_property(cx, "scale", cx.scale * 1.12, 0.6).set_trans(Tween.TRANS_SINE)
+			twp.tween_property(cx, "scale", cx.scale, 0.6).set_trans(Tween.TRANS_SINE)
 		_:
 			if not nw.status_holder(id, root):
 				root.queue_free()
