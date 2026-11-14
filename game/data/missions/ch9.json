@@ -83,9 +83,9 @@
     {
      "dialogue": [
       {
-       "left": "$hero",
+       "left": "maedchen_baer",
        "right": "maedchen_baer",
-       "speaker": "$hero",
+       "speaker": "maedchen_baer",
        "text": "Hier oben stimmt was nicht.",
        "right_expr": "wuetend"
       }
@@ -110,7 +110,7 @@
     {
      "dialogue": [
       {
-       "left": "ritter",
+       "left": "maedchen_baer",
        "right": "wart",
        "speaker": "wart",
        "text": "Ich kämpfe bis zum Ende! Was mich erwartet, wenn ich verliere, ist schlimmer als eure Klingen.",
@@ -161,12 +161,12 @@
        "left": "maedchen_baer",
        "right": "wart",
        "speaker": "maedchen_baer",
-       "text": "Das ist ja wie bei Shakespeare.",
+       "text": "Das ist ja wie im Theater.",
        "story": true,
        "voices": [
         {
          "id": "elisabeth",
-         "text": "Das ist ja wie bei Shakespeare.",
+         "text": "Das ist ja wie im Theater.",
          "expr": "lachend"
         }
        ],

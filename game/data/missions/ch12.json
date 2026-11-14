@@ -18,19 +18,31 @@
     {
      "dialogue": [
       {
-       "left": "elisabeth",
-       "right": "robo",
-       "speaker": "robo",
-       "text": "Scan: Hebel. Beschriftung: ‚NICHT ZIEHEN‘. Ich empfehle Ziehen.",
-       "right_expr": "lachend"
+       "left": "hund",
+       "right": "maedchen_baer",
+       "speaker": "maedchen_baer",
+       "text": "Da drüben steht ein Hebel. Wenn wir den treffen, kommt die Brücke vielleicht runter.",
+       "right_expr": "lachend",
+       "voices": [
+        {
+         "id": "robo",
+         "text": "Scan: Hebel. Beschriftung: ‚NICHT ZIEHEN‘. Ich empfehle Ziehen."
+        }
+       ]
       },
       {
-       "left": "elisabeth",
-       "right": "robo",
-       "speaker": "elisabeth",
-       "text": "Dann treffen wir ihn von hier aus. Ein Kanonenschuss löst jedes Problem!",
+       "left": "hund",
+       "right": "maedchen_baer",
+       "speaker": "hund",
+       "text": "Dann treffen wir ihn eben von hier aus.",
        "right_expr": "",
-       "left_expr": "lachend"
+       "left_expr": "lachend",
+       "voices": [
+        {
+         "id": "elisabeth",
+         "text": "Dann treffen wir ihn von hier aus. Ein Kanonenschuss löst jedes Problem!"
+        }
+       ]
       }
      ]
     }
@@ -59,7 +71,7 @@
        "left": "hund",
        "right": "frischlinge",
        "speaker": "frischlinge",
-       "text": "Oh nein! Wer hat den Hebel getroffen?! Den sollte doch niemand erreichen!",
+       "text": "Oh nein! Wer hat den Hebel umgelegt?! Den sollte doch niemand erreichen!",
        "right_expr": "wuetend",
        "story": true
       }

@@ -6,7 +6,7 @@
   "oskar",
   "maja"
  ],
- "briefing": "Das Schiff hat im Sandhafen angelegt, der letzten Station vor der Insel des Regenten. Die Wüste ist neu: Dünen (Bewegung kostet 2) und Kakteen bremsen, die Oase und die Zelte geben Deckung. Hier warten die Zwillinge Oskar und Maja, die Generäle des Regenten. Diesmal fliehen sie nicht: Besiegt sie beide. Lumi stößt als neue Heilerin zur Gruppe, Dr. Humbug ist schon seit Mühlbach dabei.",
+ "briefing": "Das Schiff hat im Sandhafen angelegt, dem Hafen der Insel des Regenten. Die Wüste ist neu: Dünen (Bewegung kostet 2) und Kakteen bremsen, die Oase und die Zelte geben Deckung. Hier warten die Zwillinge Oskar und Maja, die Generäle des Regenten. Diesmal fliehen sie nicht: Besiegt sie beide. Lumi stößt als neue Heilerin zur Gruppe, Dr. Humbug ist schon seit Mühlbach dabei.",
  "goals": [
   {
    "type": "rout"
@@ -89,17 +89,23 @@
      "dialogue": [
       {
        "left": "quacksalber",
-       "right": "elisabeth",
+       "right": "maedchen_baer",
        "speaker": "quacksalber",
        "text": "Wundersalbe nach Hausrezept! Nebenwirkungen: Müdigkeit, Juckreiz, ein leichter Hang zum Lügen.",
        "left_expr": "lachend"
       },
       {
        "left": "quacksalber",
-       "right": "elisabeth",
-       "speaker": "elisabeth",
-       "text": "Das Zeug riecht wie 10 Monate alter Fisch.",
-       "right_expr": "wuetend"
+       "right": "maedchen_baer",
+       "speaker": "maedchen_baer",
+       "text": "Das Zeug riecht wie zehn Monate alter Fisch.",
+       "right_expr": "wuetend",
+       "voices": [
+        {
+         "id": "elisabeth",
+         "text": "Das Zeug riecht wie zehn Monate alter Fisch."
+        }
+       ]
       }
      ]
     }
@@ -189,7 +195,7 @@
     {
      "dialogue": [
       {
-       "left": "hund",
+       "left": "maedchen_baer",
        "right": "maja",
        "speaker": "maja",
        "text": "OSKAR! Das büßt ihr! Alle!",
@@ -215,7 +221,7 @@
     {
      "dialogue": [
       {
-       "left": "hund",
+       "left": "maedchen_baer",
        "right": "oskar",
        "speaker": "oskar",
        "text": "Maja! Dafür zahlt ihr, und zwar mit Zinsen!",

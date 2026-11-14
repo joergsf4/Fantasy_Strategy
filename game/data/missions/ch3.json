@@ -32,7 +32,13 @@
       }
      ]
     }
-   ]
+   ],
+   "if": {
+    "present": [
+     "wendy",
+     "braumeisterin"
+    ]
+   }
   },
   {
    "when": {
@@ -53,7 +59,12 @@
       }
      ]
     }
-   ]
+   ],
+   "if": {
+    "present": [
+     "braumeisterin"
+    ]
+   }
   },
   {
    "when": {
@@ -67,7 +78,7 @@
      "dialogue": [
       {
        "left": "braumeisterin",
-       "right": "ritter",
+       "right": "maedchen_baer",
        "speaker": "braumeisterin",
        "left_expr": "lachend",
        "text": "Hicks! Wer löscht, der darf auch trinken."
@@ -151,12 +162,18 @@
     {
      "dialogue": [
       {
-       "left": "braumeisterin",
-       "right": "wendy",
-       "speaker": "wendy",
+       "left": "",
+       "right": "maedchen_baer",
+       "speaker": "maedchen_baer",
        "left_expr": "wuetend",
        "text": "Nein! Das Feuer ist schon schlimm genug. Haltet durch!",
-       "right_expr": "wuetend"
+       "right_expr": "wuetend",
+       "voices": [
+        {
+         "id": "wendy",
+         "text": "Nein! Das Feuer ist schon schlimm genug. Haltet durch!"
+        }
+       ]
       }
      ]
     }
@@ -359,9 +376,9 @@
        "story": true
       },
       {
-       "left": "$hero",
+       "left": "maedchen_baer",
        "right": "wart",
-       "speaker": "$hero",
+       "speaker": "maedchen_baer",
        "text": "Der schon wieder.",
        "story": true
       },
@@ -404,16 +421,22 @@
      "dialogue": [
       {
        "left": "quacksalber",
-       "right": "ritter",
+       "right": "maedchen_baer",
        "speaker": "quacksalber",
        "text": "Meine Praxis steht noch! Wenn dort etwas brennt, gibt es nie wieder Wundersalbe nach Hausrezept.",
        "left_expr": "wuetend"
       },
       {
        "left": "quacksalber",
-       "right": "ritter",
-       "speaker": "ritter",
-       "text": "Dann verteidigen wir sie, Herr Doktor."
+       "right": "maedchen_baer",
+       "speaker": "maedchen_baer",
+       "text": "Dann verteidigen wir sie, Herr Doktor.",
+       "voices": [
+        {
+         "id": "ritter",
+         "text": "Dann verteidigen wir sie, Herr Doktor."
+        }
+       ]
       }
      ]
     }
@@ -435,17 +458,23 @@
      "dialogue": [
       {
        "left": "quacksalber",
-       "right": "braumeisterin",
+       "right": "maedchen_baer",
        "speaker": "quacksalber",
-       "text": "Meine Praxis brennt! Mein Lebenswerk, äußerst seriös! Brunhilde, ein Fass, schnell!",
+       "text": "Meine Praxis brennt! Mein Lebenswerk, äußerst seriös! Wasser, schnell!",
        "left_expr": "wuetend"
       },
       {
        "left": "quacksalber",
-       "right": "braumeisterin",
-       "speaker": "braumeisterin",
-       "text": "Für Dr. Humbug gibt es Bier gratis. Zum Löschen.",
-       "right_expr": "lachend"
+       "right": "maedchen_baer",
+       "speaker": "maedchen_baer",
+       "text": "Alle zur Praxis, schnell!",
+       "right_expr": "lachend",
+       "voices": [
+        {
+         "id": "braumeisterin",
+         "text": "Für Dr. Humbug gibt es Bier gratis. Zum Löschen."
+        }
+       ]
       }
      ]
     }

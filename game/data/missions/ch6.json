@@ -22,17 +22,24 @@
     {
      "dialogue": [
       {
-       "left": "ritter",
+       "left": "maedchen_baer",
        "right": "elisabeth",
        "speaker": "elisabeth",
        "text": "Mein Schiff liegt hinten am Steg. Von der Bucht aus kann ich es feuern lassen. Nennt mir ein Ziel, und die Möwe antwortet!",
-       "right_expr": "lachend"
+       "right_expr": "lachend",
+       "story": true
       },
       {
-       "left": "ritter",
+       "left": "maedchen_baer",
        "right": "elisabeth",
-       "speaker": "ritter",
-       "text": "Dann zeig, was deine Möwe kann, Kapitänin."
+       "speaker": "maedchen_baer",
+       "text": "Dann zeig, was deine Möwe kann, Kapitänin.",
+       "voices": [
+        {
+         "id": "ritter",
+         "text": "Dann zeig, was deine Möwe kann, Kapitänin."
+        }
+       ]
       }
      ]
     }
@@ -50,17 +57,23 @@
     {
      "dialogue": [
       {
-       "left": "ritter",
+       "left": "maedchen_baer",
        "right": "elisabeth",
        "speaker": "elisabeth",
        "text": "Feuer frei! Das ist für jeden Zoll meiner Planken!",
        "right_expr": "lachend"
       },
       {
-       "left": "ritter",
+       "left": "maedchen_baer",
        "right": "elisabeth",
-       "speaker": "ritter",
-       "text": "Ich bin froh, dass sie auf unserer Seite steht."
+       "speaker": "maedchen_baer",
+       "text": "Ich bin froh, dass sie auf unserer Seite steht.",
+       "voices": [
+        {
+         "id": "ritter",
+         "text": "Ich bin froh, dass sie auf unserer Seite steht."
+        }
+       ]
       }
      ]
     }
@@ -185,7 +198,7 @@
     {
      "dialogue": [
       {
-       "left": "ritter",
+       "left": "maedchen_baer",
        "right": "elisabeth",
        "speaker": "elisabeth",
        "text": "Der Weg zum Steg wird frei! Schnell, bevor die Flut die Planken schluckt.",

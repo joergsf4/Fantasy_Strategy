@@ -48,7 +48,7 @@
    "left": "maedchen_baer",
    "right": "ritter",
    "speaker": "ritter",
-   "text": "Ser Albrecht, Ritter im Ruhestand. Vierzig Jahre im Dienst des alten Königs. Ich wollte eigentlich nur noch Rosen züchten.",
+   "text": "Vierzig Jahre habe ich dem alten König gedient. Eigentlich wollte ich hier nur noch Rosen züchten. Aber gut: ein letzter Ritt.",
    "story": true
   },
   {
@@ -225,7 +225,7 @@
    "left": "maedchen_baer",
    "right": "haendler",
    "speaker": "maedchen_baer",
-   "text": "Dann bist du dabei. Brumm wird dich mögen, fürchte ich.",
+   "text": "Klingt vernünftig. Brumm wird dich mögen, fürchte ich.",
    "left_expr": "lachend",
    "story": true
   },

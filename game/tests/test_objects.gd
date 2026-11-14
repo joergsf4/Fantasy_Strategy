@@ -95,7 +95,7 @@ func run_tests() -> void:
 	check(b._obj_targets(robo, "roter_laser", robo["pos"]).size() == 1, "Laser hilft nur gegen das Tor, nicht gegen Mauern")
 	await b._use_on_object(robo, "roter_laser", gt)
 	check(gt["state"] == "open" and not b.grid.blocked.has(Vector2i(5, 4)), "Tor offen")
-	check(talk.size() == 1 and talk[0][0]["speaker"] == "kungfu", "Ausloeser: Dialog bei offenem Tor")
+	check(talk.size() == 1 and talk[0][0]["speaker"] == "maedchen_baer", "Ausloeser: Dialog bei offenem Tor (Mira, Lin ist nicht dabei)")
 
 	# Pranke bricht das Tor, anderer Dialog
 	s = scene([["maedchen_baer", [5, 5]]])

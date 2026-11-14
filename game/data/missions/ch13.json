@@ -80,18 +80,24 @@
     {
      "dialogue": [
       {
-       "left": "robo",
+       "left": "maedchen_baer",
        "right": "kugelblitz",
        "speaker": "kugelblitz",
        "text": "Meine Frisur! Meine Maschine! Das ist nicht im Versuchsplan!",
        "right_expr": "wuetend"
       },
       {
-       "left": "robo",
+       "left": "hund",
        "right": "kugelblitz",
-       "speaker": "robo",
-       "text": "Puls des Professors: hoch. Frisur: höher.",
-       "left_expr": "lachend"
+       "speaker": "hund",
+       "text": "Er wird nervös. Gut so.",
+       "left_expr": "lachend",
+       "voices": [
+        {
+         "id": "robo",
+         "text": "Puls des Professors: hoch. Frisur: höher."
+        }
+       ]
       }
      ]
     }
@@ -204,7 +210,7 @@
        "left": "hund",
        "right": "waisenkinder",
        "speaker": "hund",
-       "text": "Lotte, Pip, Mia! Seid ihr in Ordnung?",
+       "text": "Pip, Mia! Seid ihr in Ordnung?",
        "story": true
       },
       {

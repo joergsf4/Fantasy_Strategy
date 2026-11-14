@@ -95,11 +95,11 @@
    "left": "maedchen_baer",
    "right": "",
    "speaker": "maedchen_baer",
-   "text": "Wer Dörfer anzündet, um drei Leute aufzuhalten, hat Angst vor drei Leuten.",
+   "text": "Wer Dörfer anzündet, um eine Handvoll Leute aufzuhalten, hat Angst vor dieser Handvoll.",
    "voices": [
     {
      "id": "ritter",
-     "text": "Wer Dörfer anzündet, um drei Leute aufzuhalten, hat Angst vor drei Leuten."
+     "text": "Wer Dörfer anzündet, um eine Handvoll Leute aufzuhalten, hat Angst vor dieser Handvoll."
     },
     {
      "id": "samurai",

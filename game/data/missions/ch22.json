@@ -19,7 +19,7 @@
     {
      "dialogue": [
       {
-       "left": "$hero",
+       "left": "maedchen_baer",
        "right": "cyborg_wart",
        "speaker": "cyborg_wart",
        "text": "Ihr glaubt, das war's? Da unten wohnen noch Hunderte.",

@@ -2,7 +2,7 @@
  "id": "ch15",
  "title": "Der Sumpf vor den Bergen",
  "map": "res://data/map_ch15.json",
- "briefing": "Weit im Norden, vor dem Gebirge, beginnt ein gefährlicher Sumpf (neues Biom). Morast kostet doppelte Bewegung, und wer zu Beginn seiner Phase im Morast steht, atmet Sumpfgas ein (3 Schaden). Flieger sind verschont. Trockener Boden (Gras) ist sicher. Cyborg-Wart und die Frischlinge stellen sich euch in den Weg; Stachelia ist jetzt Teil der Gruppe.",
+ "briefing": "Weit im Norden, vor dem Gebirge, beginnt ein gefährlicher Sumpf (neues Biom). Morast kostet doppelte Bewegung, und wer zu Beginn seiner Phase im Morast steht, atmet Sumpfgas ein (2 Schaden). Flieger sind verschont. Trockener Boden (Gras) ist sicher. Cyborg-Wart und die Frischlinge stellen sich euch in den Weg; Stachelia ist jetzt Teil der Gruppe.",
  "goals": [
   {
    "type": "rout"

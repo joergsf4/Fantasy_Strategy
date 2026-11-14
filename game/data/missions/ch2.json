@@ -61,14 +61,20 @@
      "dialogue": [
       {
        "left": "maedchen_baer",
-       "right": "kungfu",
-       "speaker": "kungfu",
+       "right": "",
+       "speaker": "maedchen_baer",
        "right_expr": "lachend",
-       "text": "Das Tor ist offen. Man muss nur wissen, wie man klopft."
+       "text": "Das Tor ist offen.",
+       "voices": [
+        {
+         "id": "kungfu",
+         "text": "Das Tor ist offen. Man muss nur wissen, wie man klopft."
+        }
+       ]
       },
       {
        "left": "maedchen_baer",
-       "right": "kungfu",
+       "right": "",
        "speaker": "maedchen_baer",
        "left_expr": "lachend",
        "text": "Brumm hätte einfach gerempelt."

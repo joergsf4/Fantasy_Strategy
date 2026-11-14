@@ -75,7 +75,7 @@
      "dialogue": [
       {
        "left": "hund",
-       "right": "wendy",
+       "right": "maedchen_baer",
        "speaker": "hund",
        "text": "Der hat sich ja davongemacht. Interessant."
       }
@@ -187,13 +187,19 @@
     {
      "dialogue": [
       {
-       "left": "wendy",
+       "left": "hund",
        "right": "maedchen_baer",
-       "speaker": "wendy",
-       "text": "Die weiße Wölfin... Das hätte nicht sein müssen."
+       "speaker": "hund",
+       "text": "Die weiße Wölfin... Das hätte nicht sein müssen.",
+       "voices": [
+        {
+         "id": "wendy",
+         "text": "Die weiße Wölfin... Das hätte nicht sein müssen."
+        }
+       ]
       },
       {
-       "left": "wendy",
+       "left": "hund",
        "right": "maedchen_baer",
        "speaker": "maedchen_baer",
        "text": "Wir hatten keine Wahl. Aber wir merken es uns."
@@ -215,13 +221,13 @@
      "dialogue": [
       {
        "left": "maedchen_baer",
-       "right": "wendy",
+       "right": "hund",
        "speaker": "maedchen_baer",
        "text": "Ruhe. Endlich."
       },
       {
        "left": "bienenmaedchen",
-       "right": "wendy",
+       "right": "maedchen_baer",
        "speaker": "bienenmaedchen",
        "text": "Kein Wort über Wölfe. Ich will nur noch ins Warme.",
        "left_expr": "wuetend"

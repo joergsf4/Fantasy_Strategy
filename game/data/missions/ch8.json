@@ -68,10 +68,10 @@
     {
      "dialogue": [
       {
-       "left": "$hero",
+       "left": "robo",
        "right": "maedchen_baer",
-       "speaker": "$hero",
-       "text": "Noch ein Tag in dieser Hitze, und ich bin ein Rosinenheld."
+       "speaker": "robo",
+       "text": "Kühlwasser verdampft. Noch ein Tag in dieser Hitze, und ich bin ein Rosinenroboter."
       },
       {
        "left": "$hero",
@@ -205,18 +205,24 @@
     {
      "dialogue": [
       {
-       "left": "ritter",
+       "left": "maedchen_baer",
        "right": "xiulan",
        "speaker": "xiulan",
        "text": "Mein Kreuz! Ihr wollt einer alten Dame doch nichts tun, oder?",
        "right_expr": "wuetend"
       },
       {
-       "left": "ritter",
+       "left": "maedchen_baer",
        "right": "xiulan",
-       "speaker": "ritter",
+       "speaker": "maedchen_baer",
        "text": "Eine alte Dame, die mit Gebissen wirft, hat keinen Respekt verdient. Tritt zur Seite!",
-       "left_expr": "wuetend"
+       "left_expr": "wuetend",
+       "voices": [
+        {
+         "id": "ritter",
+         "text": "Eine alte Dame, die mit Gebissen wirft, hat keinen Respekt verdient. Tritt zur Seite!"
+        }
+       ]
       }
      ]
     }

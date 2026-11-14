@@ -28,7 +28,7 @@ func _initialize() -> void:
 	var old: String = base[free_i]
 	party.equipment[old] = ["eisenschwert"]
 	var f6 := Mission.dialogue_ids("ch6")
-	check(f6.has("hund") and f6.has("maedchen_baer") and not f6.has("elisabeth") and not f6.has("ritter") and not f6.has("robo"), "nur Story-Gespraeche legen fest, Fluff nicht: %s" % [f6])
+	check(f6.has("hund") and f6.has("maedchen_baer") and f6.has("elisabeth") and not f6.has("ritter") and not f6.has("robo"), "nur Story-Gespraeche legen fest, Fluff nicht (Elisabeth fest: ihr Schiff, ihre Breitseite): %s" % [f6])
 	var f3 := Mission.dialogue_ids("ch3")
 	check(f3.has("maedchen_baer") and f3.has("quacksalber") and not f3.has("wendy") and not f3.has("braumeisterin") and not f3.has("ritter"), "Kapitel 3: nur Mira und Dr. Humbug fest: %s" % [f3])
 	var vl := Mission.voiced([{"left": "maedchen_baer", "right": "", "speaker": "maedchen_baer", "text": "Mira", "voices": [{"id": "wendy", "text": "Wendy", "expr": "lachend"}, {"id": "ritter", "text": "Ritter"}]}], ["maedchen_baer", "ritter", "wendy"])

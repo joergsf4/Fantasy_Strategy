@@ -61,7 +61,7 @@
    "voices": [
     {
      "id": "elisabeth",
-     "text": "Ich nehme trotzdem zwei Flaschen.",
+     "text": "Hauptsache, dein Glitzer kommt nicht ans Pulverfass.",
      "expr": "lachend"
     }
    ],
@@ -92,6 +92,13 @@
    ]
   },
   {
+   "left": "maedchen_baer",
+   "right": "",
+   "speaker": "maedchen_baer",
+   "text": "Und die Zwillinge? … Ihre Soldaten haben sie zum Boot geschleppt. Die sehen wir wieder.",
+   "story": true
+  },
+  {
    "left": "magical_girl",
    "right": "",
    "speaker": "magical_girl",
@@ -103,7 +110,7 @@
    "left": "magical_girl",
    "right": "maedchen_baer",
    "speaker": "maedchen_baer",
-   "text": "Ihr beide habt uns heute am Leben gehalten. Danke.",
+   "text": "Du hast uns heute am Leben gehalten, Lumi. Danke.",
    "story": true,
    "voices": [
     {

@@ -126,14 +126,8 @@
        "left": "$hero",
        "right": "ritter",
        "speaker": "$hero",
-       "text": "Einer weniger! Das war leichter, als es aussah.",
+       "text": "Einer weniger! Aber nicht übermütig werden, der Regent schickt mehr.",
        "left_expr": "lachend"
-      },
-      {
-       "left": "$hero",
-       "right": "ritter",
-       "speaker": "ritter",
-       "text": "Gut. Aber werdet nicht übermütig, der Regent schickt mehr."
       }
      ]
     }

@@ -208,7 +208,7 @@
        "left": "",
        "right": "xiulan",
        "speaker": "xiulan",
-       "text": "Ich sollte nur auf die Kleine aufpassen! Für Geld, ja, aber nicht dafür. Der Auftrag ist beendet.",
+       "text": "Ich sollte nur auf den Kleinen aufpassen! Für Geld, ja, aber nicht dafür. Der Auftrag ist beendet.",
        "right_expr": "wuetend",
        "story": true
       },
@@ -287,7 +287,7 @@
        "left": "ritter",
        "right": "",
        "speaker": "ritter",
-       "text": "Eine Geisel mit Baby. Ritterpflicht ruft! …Und bitte hält jemand dem Kleinen die Ohren zu.",
+       "text": "Eine Geisel mit Baby. Ritterpflicht ruft! …Und bitte hält mir jemand die Ohren zu.",
        "left_expr": "lachend"
       }
      ]
@@ -334,7 +334,7 @@
        "left": "ninjas",
        "right": "",
        "speaker": "ninjas",
-       "text": "Wir sind schon da. – Seit drei Runden. – Niemand hat uns bemerkt. – Ihr auch nicht."
+       "text": "Die Wachen schauen immer noch nicht nach oben. – Seit drei Runden. – Fast schon beleidigend."
       }
      ]
     }
@@ -464,7 +464,7 @@
     "left": "$hero",
     "right": "xiulan",
     "speaker": "xiulan",
-    "text": "Mein Kreuz! Du Rüpel. Ich rufe meinen Enkel an!",
+    "text": "Mein Kreuz! Du Rüpel. Ich hetze euch meinen Enkel auf den Hals!",
     "right_expr": "wuetend",
     "story": true
    },

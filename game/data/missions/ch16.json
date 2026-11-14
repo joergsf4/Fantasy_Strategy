@@ -42,7 +42,7 @@
        "left": "xiulan",
        "right": "kugelblitz",
        "speaker": "kugelblitz",
-       "text": "Meine Maschine wurde zerstört! Gold gibt es, wenn der Meister zahlt!",
+       "text": "Mein Experiment ist gescheitert! Gold gibt es, wenn der Meister zahlt!",
        "right_expr": "wuetend",
        "story": true
       },
@@ -247,7 +247,7 @@
     {
      "dialogue": [
       {
-       "left": "robo",
+       "left": "maedchen_baer",
        "right": "kugelblitz",
        "speaker": "kugelblitz",
        "text": "Meine Frisur! Mein Vertrag! Mein Honig! Alles ruiniert!",

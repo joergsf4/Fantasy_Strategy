@@ -5,7 +5,7 @@
  "no_flee": [
   "cyborg_wart"
  ],
- "briefing": "Die Zwerge haben verraten, dass der Minenschacht in die Basis des Meisters führt. Die Gruppe steigt im Labor von Professor Kugelblitz aus, doch der Professor und seine Leute sind schon fort. Nur die Glasbehälter blubbern noch. Nähert ihr euch, platzen sie: Drei Robo-Frischlinge mit Elementarkanonen (Feuer: Brand, Blitz: springt über, Eis: unterkühlt) greifen an. Danach kommt Robo-Wart selbst, und diesmal flieht er nicht. Besiegt ihn.",
+ "briefing": "Die Zwerge haben verraten, dass der Minenschacht in die Basis des Meisters führt. Die Gruppe steigt im Labor von Professor Kugelblitz aus, doch der Professor und seine Leute sind schon fort. Nur die Glasbehälter blubbern noch. Nähert ihr euch, platzen sie: Drei Robo-Frischlinge mit Elementarkanonen (Feuer: Brand, Blitz: springt über, Eis: unterkühlt) greifen an. Danach kommt Cyborg-Wart selbst, und diesmal kämpft er bis zum Schluss. Besiegt ihn.",
  "goals": [
   {
    "type": "defeat",

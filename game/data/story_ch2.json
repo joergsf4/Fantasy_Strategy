@@ -5,7 +5,7 @@
    "right": "museklaugust",
    "speaker": "museklaugust",
    "right_expr": "lachend",
-   "text": "Seid gegrüßt, ihr Schwächlinge! Ich bin Muskelaugust, Kurfürst und König der Muskeln. Ich bin auf dem Weg nach Süden und der führt durch den Hohlweg. Lass uns ein Stück gemeinsam gehen.",
+   "text": "Seid gegrüßt, ihr Schwächlinge! Ich bin Muskelaugust, Kurfürst und König der Muskeln. Ich bin auf dem Weg nach Süden und der führt durch den Hohlweg. Lasst uns ein Stück gemeinsam gehen.",
    "story": true
   },
   {
@@ -26,7 +26,7 @@
    "left": "maedchen_baer",
    "right": "robo",
    "speaker": "robo",
-   "text": "Unbekannt. Ich bin in einem Bach aufgewacht, mit Moos in den Zahnrädern. Davor ist mein Speicher leer. Aber ihr wart die Einzigen, die nicht weggelaufen sind. Das gefällt mir.",
+   "text": "Ich bin in einem Bach aufgewacht, mit Moos in den Zahnrädern. Mein Speicher hat Lücken. Ich weiß nur noch, dass ich eine große Schwester habe. Irgendwo im Süden. Und ihr wart die Einzigen, die nicht weggelaufen sind. Das gefällt mir.",
    "story": true
   },
   {
@@ -50,12 +50,12 @@
    "left": "",
    "right": "maedchen_baer",
    "speaker": "maedchen_baer",
-   "text": "Der Hohlweg ist frei. Dahinter liegt die Brücke, und die ist, hört man, nicht mehr ganz.",
+   "text": "Der Hohlweg ist frei. Aber seht ihr den Rauch hinter den Hügeln? Das kommt aus Richtung Mühlbach.",
    "story": true,
    "voices": [
     {
      "id": "kungfu",
-     "text": "Der Hohlweg ist frei. Dahinter liegt die Brücke, und die ist, hört man, nicht mehr ganz."
+     "text": "Der Hohlweg ist frei. Aber seht ihr den Rauch hinter den Hügeln? Das kommt aus Richtung Mühlbach."
     }
    ]
   },
@@ -64,7 +64,7 @@
    "right": "",
    "speaker": "maedchen_baer",
    "left_expr": "lachend",
-   "text": "Dann springen wir eben. Brumm, ich glaube, du wirst nass.",
+   "text": "Dann schnell. Brumm, das riecht nicht nach Lagerfeuer.",
    "story": true
   }
  ]
