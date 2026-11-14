@@ -48,7 +48,17 @@ func _ready() -> void:
 	_pause.can_restart_cb = func() -> bool: return _battle_active
 	_pause.restart_cb = _restart_battle
 	get_tree().root.add_child.call_deferred(_pause)
+	if OS.get_environment("SNAP_DIR") != "":      # Fehlersuche: waehrend des normalen Spiels alle 2 Sekunden ein Bild nach SNAP_DIR (snap_000.png ...)
+		_snap_loop(OS.get_environment("SNAP_DIR"))
 	_run()
+
+
+func _snap_loop(dir: String) -> void:
+	var n := 0
+	while is_inside_tree():
+		await get_tree().create_timer(2.0, true, false, true).timeout
+		get_viewport().get_texture().get_image().save_png("%s/snap_%03d.png" % [dir, n])
+		n += 1
 
 
 func _names() -> Dictionary:
@@ -1192,6 +1202,8 @@ func _interlude_chapter(cid: String, next_cid := "") -> void:
 		stage.new_battle()
 	stage.set_mode("dialog")
 	_cover_out(0.0)
+	if m.has("music"):      # Missionsfeld "music": eigene Musik fuer ein Kapitel ohne Kampf (Epilog: Heimkehr ins Waisenhaus)
+		_play_music(str(m["music"]), 2.5)
 	var il: Dictionary = (m.get("interlude", {}) as Dictionary).duplicate()
 	var squad: Array = []
 	if m.get("voiced", false):      # Gruppe des vorigen Kapitels: sie laeuft durch das Bild und spricht (Stimmen der Zeilen)
@@ -1365,6 +1377,21 @@ func _screenshot_mode() -> void:
 		var tr2 := Trailer2.new()
 		tr2.setup(map, units)
 		add_child(tr2)
+		return
+	if mode == "cutin":   # Polarlicht-Auftritt ansehen: SHOT_IMAGE=sec_ninja_brueder (Portraet oder Token), SHOT_TITLE, SHOT_SUB, SHOT_DELAY
+		var bc := Battle.new()
+		bc.setup(map, units)
+		add_child(bc)
+		await get_tree().process_frame
+		var cl := CanvasLayer.new()
+		cl.layer = 9
+		add_child(cl)
+		var sc := SuperCutin.new()
+		sc.setup(bc._full_tex(OS.get_environment("SHOT_IMAGE") if OS.get_environment("SHOT_IMAGE") != "" else "ninjas"), OS.get_environment("SHOT_TITLE"), OS.get_environment("SHOT_SUB"))
+		cl.add_child(sc)
+		await get_tree().create_timer(float(OS.get_environment("SHOT_DELAY")) if OS.get_environment("SHOT_DELAY") != "" else 1.5).timeout
+		get_viewport().get_texture().get_image().save_png(OS.get_environment("SHOT_OUT"))
+		get_tree().quit()
 		return
 	if mode == "aurora":   # Polarlicht-Shader allein ansehen
 		var ar := ColorRect.new()

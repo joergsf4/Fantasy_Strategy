@@ -5,7 +5,7 @@
  "no_flee": [
   "sack_boss"
  ],
- "briefing": "Brumm folgt Xiùláns Fährte bis in den Thronsaal der Basis. Auf dem Thron sitzt Professor Kugelblitz, bewacht von Maja, Oskar und Soldaten. In zwei Käfigen sitzen der Sack und die bewusstlose Xiùlán. An den Professor kommt niemand heran. Der Sack weiß Rat: Stachelia soll den magischen Honig in die Maschine an der Ostwand füllen. Xiùlán kann man befreien (zwei Runden), dann kämpft sie mit.",
+ "briefing": "Brumm folgt Xiùláns Fährte bis in den Thronsaal der Basis. Auf dem Thron sitzt Professor Kugelblitz, bewacht von Maja, Oskar und Soldaten. In zwei Käfigen sitzen der Sack und die bewusstlose Xiùlán. An den Professor kommt niemand heran. Der Sack weiß Rat: Stachelia soll den magischen Honig in die Maschine an der Ostwand füllen. Xiùlán kann man befreien (zwei Runden), dann kämpft sie mit. Stachelia darf nicht fallen, bevor der Honig in der Maschine ist.",
  "goals": [
   {
    "type": "rout",
@@ -221,6 +221,71 @@
   },
   {
    "when": {
+    "cleared": [
+     "soldat_infanterie",
+     "soldat_bogenschuetze",
+     "soldat_beritten"
+    ]
+   },
+   "if": {
+    "object": {
+     "id": "honigmaschine",
+     "state": "empty"
+    }
+   },
+   "note": "Alle Soldaten besiegt, solange der Honig fehlt: jedes Mal Nachschub von Sueden, der Sack erinnert an die Aufgabe",
+   "do": [
+    {
+     "spawn": [
+      {
+       "id": "soldat_infanterie",
+       "pos": [
+        1,
+        10
+       ],
+       "label": "Verstärkung von Süden"
+      },
+      {
+       "id": "soldat_infanterie",
+       "pos": [
+        12,
+        10
+       ],
+       "label": "Verstärkung von Süden"
+      },
+      {
+       "id": "soldat_bogenschuetze",
+       "pos": [
+        7,
+        10
+       ],
+       "label": "Verstärkung von Süden"
+      }
+     ]
+    },
+    {
+     "dialogue": [
+      {
+       "left": "maedchen_baer",
+       "right": "haendler",
+       "speaker": "haendler",
+       "text": "Psst! Hier drüben, im Käfig! Die Soldaten kommen immer wieder, das bringt nichts!",
+       "story": true
+      },
+      {
+       "left": "maedchen_baer",
+       "right": "haendler",
+       "speaker": "haendler",
+       "text": "Stachelia muss den magischen Honig in die Maschine an der Ostwand füllen. Erst dann bricht der Schild des Professors zusammen!",
+       "story": true
+      }
+     ]
+    }
+   ],
+   "repeat": true
+  },
+  {
+   "when": {
     "victory": true
    },
    "if": {
@@ -402,5 +467,12 @@
   "height": 3.0,
   "fov": 42,
   "seconds": 7
+ },
+ "lose_if_fallen": "bienenmaedchen",
+ "lose_if_fallen_if": {
+  "object": {
+   "id": "honigmaschine",
+   "state": "empty"
+  }
  }
 }

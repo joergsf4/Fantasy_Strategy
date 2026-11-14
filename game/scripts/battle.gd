@@ -978,6 +978,9 @@ func _spawn(id: String, team: String, pos: Vector2i, extra := {}) -> void:
 		u["atk"] = int(extra["atk"])
 	if extra.has("atk_mult"):
 		u["atk"] = maxi(1, roundi(float(u["atk"]) * float(extra["atk_mult"])))
+	if extra.has("hp_mult"):      # Missionsfeld: staerker als die Grundwerte (Robo-Frischlinge in Mission 24: +15 % Leben)
+		u["hp"] = maxi(1, roundi(float(u["hp"]) * float(extra["hp_mult"])))
+		u["maxhp"] = u["hp"]
 	if team == "p":     # Faehigkeiten, die nur diese Mission gewaehrt ("grants": {Held: [Faehigkeit]}), z. B. Breitseite
 		for ab_id: String in (map_data.get("grants", {}) as Dictionary).get(id, []):
 			(u["abilities"] as Array).append(ab_id)
@@ -3761,7 +3764,7 @@ func _check_end() -> void:
 	if guard_id != "" and world.by_id(guard_id).get("state", "") == "ruin":
 		lost = true
 	var vip := str(map_data.get("lose_if_fallen", ""))        # Kartenfeld "lose_if_fallen": faellt diese Figur (z. B. der zu schuetzende Regent), ist die Mission verloren
-	if vip != "" and fallen.has(vip):
+	if vip != "" and fallen.has(vip) and _cond_ok(map_data.get("lose_if_fallen_if", {})):      # "lose_if_fallen_if": nur solange diese Bedingung gilt (Stachelia vor dem Honig, Mission 25)
 		lost = true
 	var won := not lost and (goal_met() or peace_win)
 	if story_lost:
@@ -3885,6 +3888,14 @@ func _match_note(w: Dictionary, n: Dictionary) -> Dictionary:
 
 ## Ereignisse, die vom Zustand abhaengen (kein einzelnes Geschehen): Naehe, Leben, Zahl der Gegner.
 func _match_state(w: Dictionary) -> Dictionary:
+	if w.has("cleared"):      # {"cleared": [IDs]}: von diesen Gegnertypen war einer da, jetzt lebt keiner mehr (Mission 25: alle normalen Soldaten besiegt)
+		var ids: Array = w["cleared"]
+		var was := all_units.any(func(x: Dictionary) -> bool: return x["team"] == "e" and ids.has(x["id"]))
+		var now := units.any(func(x: Dictionary) -> bool: return x["team"] == "e" and ids.has(x["id"]))
+		if was and not now:
+			for pu in units:
+				if pu["team"] == "p":
+					return pu
 	if w.has("hp_below"):
 		var c: Dictionary = w["hp_below"]
 		var u := _find(c["id"])
@@ -4065,7 +4076,11 @@ func _fire(t: Dictionary, who := {}) -> void:
 		if step.has("spawn"):
 			for e: Dictionary in step["spawn"]:
 				var pos := _free_tile_near(_spawn_base(e), {"flying": false})
-				_spawn(e["id"], e.get("team", "e"), pos, {"carry": e.get("carry", {})})
+				var sx := {"carry": e.get("carry", {})}
+				for mk in ["hp_mult", "atk_mult"]:      # Staerke nur in dieser Mission (z. B. Robo-Frischlinge in Mission 24)
+					if e.has(mk):
+						sx[mk] = float(e[mk])
+				_spawn(e["id"], e.get("team", "e"), pos, sx)
 				var u: Dictionary = units.back()
 				if e.has("hp_ratio"):      # mit weniger Leben auftauchen (Xiùlán wacht mit halbem Leben auf, Mission 25)
 					u["hp"] = maxi(1, roundi(float(u["maxhp"]) * float(e["hp_ratio"])))
@@ -4407,13 +4422,14 @@ func _capture_unit(cu: Dictionary) -> void:
 ## Super-Attacke: Polarlicht-Auftritt mit dem vergroesserten Chibi, dazu eigene Musik (die Kampfmusik wird leiser).
 var _super_player: AudioStreamPlayer
 
-func _super_cutin(u: Dictionary, ab: Dictionary, title := "", sub := "") -> void:
+func _super_cutin(u: Dictionary, ab: Dictionary, title := "", sub := "", image := "") -> void:
 	_talk += 1
-	await _super_cutin_run(u, ab, title, sub)
+	await _super_cutin_run(u, ab, title, sub, image)
 	_talk -= 1
 
 
-func _super_cutin_run(u: Dictionary, ab: Dictionary, title := "", sub := "") -> void:
+## image: eigenes Bild statt der Figur (Portraet oder Token, z. B. "sec_ninja_brueder" fuer Sexy Jutsu; Geheimnis-Feld cutin.image).
+func _super_cutin_run(u: Dictionary, ab: Dictionary, title := "", sub := "", image := "") -> void:
 	var stream: AudioStreamMP3 = load("res://assets/audio/super_attack.mp3")
 	stream.loop = false
 	_super_player = AudioStreamPlayer.new()
@@ -4429,7 +4445,7 @@ func _super_cutin_run(u: Dictionary, ab: Dictionary, title := "", sub := "") -> 
 	layer.layer = 9
 	add_child(layer)
 	var c := SuperCutin.new()
-	c.setup(_full_tex(str(u.get("token_id", unit_defs.get(u["id"], {}).get("portrait", u["id"])))), title if title != "" else str(ab["name"]), sub if title != "" else str(ab.get("super_sub", "")))
+	c.setup(_full_tex(image if image != "" else str(u.get("token_id", unit_defs.get(u["id"], {}).get("portrait", u["id"])))), title if title != "" else str(ab["name"]), sub if title != "" else str(ab.get("super_sub", "")))
 	layer.add_child(c)
 	await c.finished
 	layer.queue_free()
@@ -4625,7 +4641,7 @@ func _run_oiroke(u: Dictionary, id: String, target: Dictionary, sec: Dictionary)
 	await get_tree().create_timer(0.5).timeout
 	var ci: Dictionary = ef.get("cutin", {})
 	if not ci.is_empty():
-		await _super_cutin(u, {}, str(ci.get("title", sec["name"])), str(ci.get("sub", "")))
+		await _super_cutin(u, {}, str(ci.get("title", sec["name"])), str(ci.get("sub", "")), str(ci.get("image", "")))
 		_super_music_stop()
 	var st: Dictionary = ef.get("status", {"id": "verwirrt", "turns": 3})
 	if units.has(target):

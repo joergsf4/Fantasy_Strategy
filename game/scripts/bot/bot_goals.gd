@@ -87,8 +87,6 @@ static func target(bot: PlayBot, u: Dictionary) -> Dictionary:
 			if not vip.is_empty():
 				return {"tile": vip["pos"], "dist": 1, "weight": 0.6}
 		return {"tile": _nearest(u["pos"], tiles), "dist": 0, "weight": 3.0}
-	if u["id"] == str(b.map_data.get("lose_if_fallen", "")):      # Schuetzling (Regent in Mission 19): haelt sich heraus
-		return {"tile": u["pos"], "dist": 0, "weight": 0.0}
 	if gtype == "capture" and u["id"] == str(g.get("by", "")):
 		var cu := b._find(str(g["unit"]))
 		if not cu.is_empty() and cu["team"] == "e":
@@ -99,6 +97,8 @@ static func target(bot: PlayBot, u: Dictionary) -> Dictionary:
 		if ob["value"] >= 30.0 or (ob["actor"] == u["id"] and ob["actor"] != ""):
 			if _closest_capable(bot, ob) == u:
 				return {"tile": ob["obj"]["pos"], "dist": 1 if ob["adj"] else 0, "weight": 3.0}
+	if u["id"] == str(b.map_data.get("lose_if_fallen", "")):      # Schuetzling ohne eigene Aufgabe (Regent in Mission 19): haelt sich heraus
+		return {"tile": u["pos"], "dist": 0, "weight": 0.0}
 	var fs := foes(b)
 	if fs.is_empty() or (gtype == "rout_spawned" and not b.enemy_spawned):
 		var ex := explore_tiles(b)

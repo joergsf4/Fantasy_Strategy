@@ -12,5 +12,6 @@
  "triggers": [],
  "flight": 8.0,
  "random_pick": 4,
- "dedication": "Für Elisabeth"
+ "dedication": "Für Elisabeth",
+ "music": "res://assets/audio/epilog_fest.mp3"
 }

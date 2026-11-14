@@ -84,6 +84,12 @@ func _ready() -> void:
 	_chibi.size = Vector2(620, 620)
 	_chibi.pivot_offset = Vector2(310, 620)
 	_chibi.position = Vector2(-900, 80)
+	if texture != null and float(texture.get_width()) > 1.2 * float(texture.get_height()):      # breites Bild (Szene statt Figur, z. B. Sexy Jutsu): unten auf dem Kinobalken
+		var w := 660.0
+		var h := w * float(texture.get_height()) / float(texture.get_width())
+		_chibi.size = Vector2(w, h)
+		_chibi.pivot_offset = Vector2(w * 0.5, h)
+		_chibi.position = Vector2(-900, 634.0 - h)
 	_chibi.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_chibi)
 
@@ -118,7 +124,7 @@ func _ready() -> void:
 	tw.tween_property(bars[0], "position:y", 0.0, 0.3).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 	tw.tween_property(bars[1], "position:y", 634.0, 0.3).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 	tw.tween_property(_glow, "modulate:a", 0.75, 0.6).set_delay(0.3)
-	tw.tween_property(_chibi, "position:x", 70.0, 0.55).set_delay(0.3).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tw.tween_property(_chibi, "position:x", 40.0 if _chibi.size.x > 640.0 else 70.0, 0.55).set_delay(0.3).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	tw.tween_callback(_ghosts).set_delay(0.35)
 	tw.tween_property(box, "modulate:a", 1.0, 0.12).set_delay(0.85)
 	box.scale = Vector2(2.4, 2.4)

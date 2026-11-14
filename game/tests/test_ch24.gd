@@ -46,6 +46,11 @@ func _initialize() -> void:
 	ids.sort()
 	check(ids == ["frischling_blitz", "frischling_eis", "frischling_feuer"], "drei Robo-Frischlinge, jeder eine eigene Figur: %s" % [ids])
 	check(b.world.by_id("geraet_z2")["state"] == "broken", "Behaelter sind geplatzt")
+	var sc := Progression.enemy_scale("ch24")      # Robo-Frischlinge in dieser Mission: +15 % Leben, +10 % Schaden
+	var fe := b._find("frischling_feuer")
+	var want_hp := roundi(float(roundi(float(defs["frischling_feuer"]["hp"]) * 1.15)) * float(sc["hp"]) * Settings.difficulty_mult())
+	var want_atk := roundi(float(roundi(float(defs["frischling_feuer"]["atk"]) * 1.1)) * float(sc["atk"]) * Settings.difficulty_mult())
+	check(int(fe["maxhp"]) == want_hp and int(fe["atk"]) == want_atk, "Robo-Frischling staerker: Leben %d (erwartet %d), Angriff %d (erwartet %d)" % [fe["maxhp"], want_hp, fe["atk"], want_atk])
 	check(b._find("cyborg_wart").is_empty() and not b.goal_met(), "Robo-Wart noch nicht da, Mission nicht gewonnen")
 	# Die drei Kanonen auf Helden
 	var p: Array = b.units.filter(func(u: Dictionary) -> bool: return u["team"] == "p")

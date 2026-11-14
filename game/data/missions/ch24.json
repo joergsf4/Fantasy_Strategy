@@ -67,7 +67,9 @@
         5
        ],
        "label": "Robo-Frischling (Feuer)",
-       "dust": true
+       "dust": true,
+       "hp_mult": 1.15,
+       "atk_mult": 1.1
       },
       {
        "id": "frischling_blitz",
@@ -75,7 +77,9 @@
         5,
         3
        ],
-       "label": "Robo-Frischling (Blitz)"
+       "label": "Robo-Frischling (Blitz)",
+       "hp_mult": 1.15,
+       "atk_mult": 1.1
       },
       {
        "id": "frischling_eis",
@@ -83,7 +87,9 @@
         5,
         1
        ],
-       "label": "Robo-Frischling (Eis)"
+       "label": "Robo-Frischling (Eis)",
+       "hp_mult": 1.15,
+       "atk_mult": 1.1
       }
      ]
     },
@@ -306,17 +312,23 @@
       {
        "id": "frischling_feuer",
        "near": "cyborg_wart",
-       "label": "Robo-Frischling"
+       "label": "Robo-Frischling",
+       "hp_mult": 1.15,
+       "atk_mult": 1.1
       },
       {
        "id": "frischling_blitz",
        "near": "cyborg_wart",
-       "label": "Robo-Frischling"
+       "label": "Robo-Frischling",
+       "hp_mult": 1.15,
+       "atk_mult": 1.1
       },
       {
        "id": "frischling_eis",
        "near": "cyborg_wart",
-       "label": "Robo-Frischling"
+       "label": "Robo-Frischling",
+       "hp_mult": 1.15,
+       "atk_mult": 1.1
       }
      ]
     },

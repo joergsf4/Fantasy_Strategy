@@ -302,7 +302,13 @@ def _check_cutin(name: str, ef: dict, units: dict) -> dict:
         raise ValueError(f"{name}: unbekannte Figur im Auftritt")
     if len(str(cut.get("title", ""))) > 40 or len(str(cut.get("sub", ""))) > 40:
         raise ValueError(f"{name}: Titel und Untertitel des Auftritts hoechstens 40 Zeichen")
-    return {"unit": cut["unit"], "title": str(cut.get("title", "")).strip(), "sub": str(cut.get("sub", "")).strip()}
+    out = {"unit": cut["unit"], "title": str(cut.get("title", "")).strip(), "sub": str(cut.get("sub", "")).strip()}
+    if str(cut.get("image", "")).strip():      # eigenes Bild statt der Figur (Portraet oder Token, z. B. sec_ninja_brueder)
+        img = str(cut["image"]).strip()
+        if not ((ASSETS / "portraits" / f"{img}.png").exists() or (ASSETS / "tokens" / f"{img}.png").exists()):
+            raise ValueError(f"{name}: Bild des Auftritts fehlt ({img})")
+        out["image"] = img
+    return out
 
 
 def save_secrets(body: dict) -> None:

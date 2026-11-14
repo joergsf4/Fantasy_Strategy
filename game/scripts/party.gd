@@ -33,7 +33,10 @@ static func for_chapter(defs: Dictionary, n: int) -> Party:
 	p.test_run = true
 	p.chapter = n
 	p.earned = Progression.missions_done_before(n)
-	var squad: Array = (Mission.load_mission("ch%d" % n)["players"] as Array).map(func(e: Dictionary) -> String: return e["id"])
+	var sq_no := n      # Kapitel ohne Kampf (Epilog: 22 Figuren auf der Karte): Ausruestung fuer die Gruppe des letzten Kampfes
+	while sq_no > 1 and Mission.load_mission("ch%d" % sq_no).get("stub", false):
+		sq_no -= 1
+	var squad: Array = (Mission.load_mission("ch%d" % sq_no)["players"] as Array).map(func(e: Dictionary) -> String: return e["id"])
 	for id: String in defs:
 		if not defs[id].get("hero", false):
 			continue
@@ -451,8 +454,8 @@ func auto_equip(squad: Array, unit_defs: Dictionary) -> int:
 	var equipped := 0
 	for slot: String in ["waffe", "ruestung", "talisman"]:
 		var heroes: Array = []
-		for hero: String in squad:
-			if unit_defs.has(hero) and not heroes.has(hero) and worn_in(hero, slot) == "":
+		for hero: String in squad:      # nur Helden (Kinder, Gaeste und andere Figuren tragen nichts; die Suche waechst mit 2^Anzahl)
+			if unit_defs.has(hero) and unit_defs[hero].get("hero", false) and not heroes.has(hero) and worn_in(hero, slot) == "":
 				heroes.append(hero)
 		# Bitmaske der bereits versorgten Helden -> Gesamtwert und Zuordnung.
 		var states := {0: {"score": 0, "assignments": []}}

@@ -115,5 +115,68 @@ func _initialize() -> void:
 	await b._check_end()
 	check(got == [true], "Sieg")
 	check(said.any(func(t: String) -> bool: return t.contains("Geld")), "Xiùlán im Abschluss")
+	await _soldiers_cleared(defs)
+	check(await _stachelia_falls(defs, false), "Stachelia faellt vor dem Honig: Mission verloren")
+	check(not await _stachelia_falls(defs, true), "Stachelia faellt nach dem Honig: Mission laeuft weiter")
 	print("ch25: ", "OK" if fails == 0 else "%d Fehler" % fails)
 	quit(fails)
+
+
+## Alle normalen Soldaten besiegt (vor dem Honig): von Sueden kommen zwei Buettel und ein Bogenschuetze, der Sack erinnert an den Honig. Immer wieder, bis der Honig drin ist.
+func _soldiers_cleared(defs: Dictionary) -> void:
+	var b := Battle.new()
+	b.setup(Mission.load_mission("ch25"), defs)
+	var heard: Array = []
+	b.dialogue_runner = func(lines: Array) -> void:
+		for l: Dictionary in lines:
+			heard.append(str(l["text"]))
+	root.add_child(b)
+	await process_frame
+	var soldiers := ["soldat_infanterie", "soldat_bogenschuetze", "soldat_beritten"]
+	for e in b.units.duplicate():
+		if soldiers.has(e["id"]):
+			b.units.erase(e)
+	await b._flush_events()
+	var fresh: Array = b.units.filter(func(u: Dictionary) -> bool: return soldiers.has(u["id"]))
+	var ids: Array = fresh.map(func(u: Dictionary) -> String: return u["id"])
+	ids.sort()
+	check(ids == ["soldat_bogenschuetze", "soldat_infanterie", "soldat_infanterie"], "Nachschub: zwei Buettel und ein Bogenschuetze: %s" % [ids])
+	check(fresh.all(func(u: Dictionary) -> bool: return int(u["pos"].y) >= 9), "Nachschub kommt von Sueden")
+	check(heard.any(func(t: String) -> bool: return t.contains("Honig") and t.contains("Ostwand")), "Der Sack erinnert an die Aufgabe: %s" % [heard])
+	var n := fresh.size()
+	await b._flush_events()
+	check(b.units.filter(func(u: Dictionary) -> bool: return soldiers.has(u["id"])).size() == n, "solange Soldaten leben, kein weiterer Nachschub")
+	for e in b.units.duplicate():      # zweite Welle besiegt: wieder Nachschub und wieder der Hinweis
+		if soldiers.has(e["id"]):
+			b.units.erase(e)
+	var hints := heard.size()
+	await b._flush_events()
+	check(b.units.filter(func(u: Dictionary) -> bool: return soldiers.has(u["id"])).size() == 3 and heard.size() > hints, "Nachschub und Hinweis kommen immer wieder")
+	b.world.by_id("honigmaschine")["state"] = "filled"      # nach dem Honig: kein Nachschub mehr
+	for e in b.units.duplicate():
+		if soldiers.has(e["id"]):
+			b.units.erase(e)
+	await b._flush_events()
+	check(b.units.filter(func(u: Dictionary) -> bool: return soldiers.has(u["id"])).is_empty(), "nach dem Honig kein Nachschub mehr")
+	b.queue_free()
+
+
+## Stachelia faellt (vor oder nach dem Honig). Rueckgabe: true, wenn die Mission damit verloren ist.
+func _stachelia_falls(defs: Dictionary, honey: bool) -> bool:
+	var b := Battle.new()
+	b.setup(Mission.load_mission("ch25"), defs)
+	b.dialogue_runner = func(_lines: Array) -> void: pass
+	root.add_child(b)
+	await process_frame
+	if honey:
+		b.world.by_id("honigmaschine")["state"] = "filled"
+	var st := b._find("bienenmaedchen")
+	b.units.erase(st)
+	b.fallen.append("bienenmaedchen")
+	var got := []
+	b.finished.connect(func(w: bool) -> void: got.append(w))
+	await b._check_end()
+	var lost := b.state == Battle.State.OVER and got == [false]
+	b.queue_free()
+	await process_frame
+	return lost
