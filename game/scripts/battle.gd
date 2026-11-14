@@ -1285,6 +1285,7 @@ func _show_card(u: Dictionary) -> void:
 
 func _update_status() -> void:
 	_sync_labels()
+	_update_capture_marker()
 	_status.text = "Runde %d  –  %s" % [turn, "Deine Phase" if state != State.BUSY else "Gegner / Aktion"]
 	_goal.text = Mission.goal_text(goal, _count_team("e"), turn, _capture_info())
 	match state:
@@ -3652,7 +3653,7 @@ func _popup(u: Dictionary, text: String, color: Color) -> void:
 
 
 ## Name einer Faehigkeit als Banner oben im Bild (unter dem Rundenband), damit er nicht mit Schaden und Status an der Figur kollidiert.
-func _banner(text: String, color := Color(1.0, 0.9, 0.5)) -> void:
+func _banner(text: String, color := Color(1.0, 0.9, 0.5), hold := 1.0) -> void:
 	if _hud_root == null:
 		return
 	if _banner_label == null:
@@ -3673,7 +3674,7 @@ func _banner(text: String, color := Color(1.0, 0.9, 0.5)) -> void:
 	_banner_label.modulate.a = 0.0
 	_banner_tween = create_tween()
 	_banner_tween.tween_property(_banner_label, "modulate:a", 1.0, 0.12)
-	_banner_tween.tween_interval(1.0)
+	_banner_tween.tween_interval(hold)
 	_banner_tween.tween_property(_banner_label, "modulate:a", 0.0, 0.3)
 
 
@@ -4001,6 +4002,10 @@ func _fire(t: Dictionary, who := {}) -> void:
 				var nu: Dictionary = units.back()
 				fx.particles("fx_smoke", fx.chest(nu, 1.0), 10, 1.3, 0.6, 0.9, -0.3, Color(0.82, 0.82, 0.9, 0.8), false, 120.0)
 				await _popup(nu, str(step["side"].get("label", "Verbündet!")), Color(0.6, 0.9, 1.0))
+		if step.has("banner"):        # {"banner": "Text", "hold": Sekunden}: Hinweis gross in der Bildmitte (Aufgabe nach einem Wendepunkt)
+			var hold := float(step.get("hold", 3.0))
+			_banner(str(step["banner"]), Color(1.0, 0.9, 0.5), hold)
+			await get_tree().create_timer(hold + 0.4).timeout
 		if step.has("popup") and not units.is_empty():
 			var anchor: Dictionary = units[0]
 			await _popup(anchor, step["popup"], Color(1.0, 0.55, 0.4))
@@ -4311,6 +4316,38 @@ func _reprogram(u: Dictionary, cu: Dictionary) -> void:
 	if state == State.OVER:
 		return
 	_finish_unit_after(u)
+
+
+var _capture_marker: Node3D
+var _capture_marker_at := Vector2i(-99, -99)
+
+
+## Ziel "capture" mit Aktion (Mission 8): die freien Felder neben dem Ziel (Robina) leuchten golden, solange es auf der Gegenseite steht.
+## Die Markierung wandert mit, wenn das Ziel faehrt.
+func _update_capture_marker() -> void:
+	var cu: Dictionary = _find(str(goal.get("unit", ""))) if goal.get("type", "") == "capture" and goal.get("action", false) else {}
+	var at: Vector2i = cu["pos"] if not cu.is_empty() and cu["team"] == "e" else Vector2i(-99, -99)
+	if at == _capture_marker_at:
+		return
+	_capture_marker_at = at
+	if _capture_marker != null and is_instance_valid(_capture_marker):
+		_capture_marker.queue_free()
+	_capture_marker = null
+	if at.x < 0:
+		return
+	_capture_marker = Node3D.new()
+	add_child(_capture_marker)
+	for d: Vector2i in Grid.DIRS:
+		var p := at + d
+		if not grid.inside(p) or grid.cost(p) < 0 or grid.blocked.has(p):
+			continue
+		var gm := MeshInstance3D.new()
+		gm.mesh = terrain.tile_mesh(p, 0.46, 0.06)
+		gm.material_override = _mat(Color(1.0, 0.45, 0.05, 0.78), true, true)      # kraeftiges Orange: auch auf Wuestensand gut zu sehen
+		_capture_marker.add_child(gm)
+		var pulse := gm.create_tween().set_loops()
+		pulse.tween_property(gm, "transparency", 0.55, 0.8).set_trans(Tween.TRANS_SINE)
+		pulse.tween_property(gm, "transparency", 0.0, 0.8).set_trans(Tween.TRANS_SINE)
 
 
 func _capture_info() -> Dictionary:

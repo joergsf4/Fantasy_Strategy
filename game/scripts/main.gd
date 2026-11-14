@@ -2131,6 +2131,9 @@ func _screenshot_mode() -> void:
 		if OS.get_environment("SHOT_SPAWN") != "":      # z. B. SHOT_SPAWN=panzer,e,8,6 : eine Figur dazustellen
 			var sp := OS.get_environment("SHOT_SPAWN").split(",")
 			bk._spawn(sp[0], sp[1], Vector2i(int(sp[2]), int(sp[3])))
+			bk._update_status()
+		if OS.get_environment("SHOT_BANNER") != "":      # Banner-Hinweis einer Mission ansehen, z. B. SHOT_BANNER="Aufgabe: ..."
+			bk._banner(OS.get_environment("SHOT_BANNER"), Color(1.0, 0.9, 0.5), 30.0)
 		for i in 30:
 			await get_tree().process_frame
 		await get_tree().create_timer(0.8).timeout

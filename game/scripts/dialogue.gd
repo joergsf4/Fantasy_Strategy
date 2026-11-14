@@ -92,8 +92,8 @@ func _add_fog() -> void:
 	var fog := ColorRect.new()
 	fog.name = "Fog"
 	fog.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	fog.position = Vector2(0, 330)
-	fog.size = Vector2(1280, 390)
+	fog.position = Vector2(0, 430)
+	fog.size = Vector2(1280, 290)
 	var mat := ShaderMaterial.new()
 	mat.shader = load("res://shaders/dialog_fog.gdshader")
 	fog.material = mat

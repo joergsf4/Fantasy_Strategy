@@ -36,7 +36,7 @@ func _initialize() -> void:
 	var spin: Array[Dictionary] = b._effect_targets(hero, b.abilities["todeswirbel"], hero, "area_enemies")
 	check(not spin.has(tank), "Flaechenfaehigkeiten treffen den Panzer nicht")
 	var gt := Mission.goal_text(b.goal, 6, 5, b._capture_info())
-	check(gt.contains("(0/3)") and gt.contains("Umprogrammieren") and gt.contains("nicht fallen"), "Zieltext erklaert die Aktion: %s" % gt)
+	check(gt.contains("(0/3") and gt.contains("Umprogrammieren") and gt.contains("einmal pro Runde"), "Zieltext erklaert die Aktion: %s" % gt)
 	check(String(m["briefing"]).contains("Umprogrammieren"), "Briefing erklaert die Aktion")
 	# Uebernahme ist eine Aktion: nur Robo, nur daneben, einmal pro Runde; Fortschritt bleibt, auch wenn der Panzer wegfaehrt
 	await b._capture_phase()
