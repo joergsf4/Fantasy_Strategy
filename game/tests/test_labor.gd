@@ -1,6 +1,6 @@
 extends SceneTree
 ## godot --headless --path game --script tests/test_labor.gd
-## Kapitel 13 "Das Labor im Wald": drei Kinder befreien (free_all), Energiemaschine schockt Helden daneben, Professor flieht, Bonus Maschine zerstoert.
+## Kapitel 13 "Das Labor im Wald": zwei Kinder befreien (Pip und Mia; Lotte konnte sich in Kapitel 10 verstecken) (free_all), Energiemaschine schockt Helden daneben, Professor flieht, Bonus Maschine zerstoert.
 
 var fails := 0
 var said: Array = []
@@ -45,11 +45,10 @@ func _initialize() -> void:
 	await b._machine_phase()
 	check(hero["hp"] == hp1, "Weit weg: kein Schaden")
 	# Kinder befreien
-	for id in ["kind1", "kind2"]:
-		b.world.by_id(id)["state"] = "free"
-	check(not b.goal_met(), "Zwei von drei befreit: noch nicht geschafft")
+	b.world.by_id("kind2")["state"] = "free"
+	check(not b.goal_met(), "Eines von zwei befreit: noch nicht geschafft")
 	b.world.by_id("kind3")["state"] = "free"
-	check(b.goal_met(), "Alle drei frei: Ziel erreicht")
+	check(b.goal_met(), "Beide frei: Ziel erreicht")
 	var got := []
 	b.finished.connect(func(w: bool) -> void: got.append(w))
 	await b._check_end()
@@ -90,6 +89,6 @@ func _initialize() -> void:
 	check(Status.has(tgt, "analysiert") and int(cw["cd"].get("computer_analyse", 0)) > 0, "KI analysiert das Ziel und die Faehigkeit ist auf Abklingzeit")
 	var mp: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/map_ch13.json"))
 	var kids: Array = (mp["objects"] as Array).filter(func(o: Dictionary) -> bool: return o["type"] == "hostage")
-	check(kids.size() == 3 and kids.all(func(o: Dictionary) -> bool: return int(o.get("steps", 2)) == 1), "Kinder werden in einer Runde befreit")
+	check(kids.size() == 2 and not kids.any(func(o: Dictionary) -> bool: return o.get("figure", "") == "kind_lotte") and kids.all(func(o: Dictionary) -> bool: return int(o.get("steps", 2)) == 1), "Kinder werden in einer Runde befreit")
 	print("labor: ", "OK" if fails == 0 else "%d Fehler" % fails)
 	quit(fails)

@@ -2,11 +2,11 @@
  "id": "ch13",
  "title": "Das Labor im Wald",
  "map": "res://data/map_ch13.json",
- "briefing": "Mitten im Wald steht das Labor von Professor Kugelblitz. Seine Energiemaschine hängt an den entführten Waisenkindern und am magischen Honig. Befreit alle drei Kinder: Wer neben einem Kind steht, löst mit „Befreien“ sofort die Fesseln, aber nur wenn kein Gegner daneben steht. Die Maschine verpasst jedem Helden neben ihr jede Runde einen Stromschlag. Zerstört sie (Bonus), oder haltet euch fern. Der Professor flieht, wenn es ihm zu bunt wird. Achtung: Die Frischlinge sind zurück. Fällt ihre Gesundheit unter die Hälfte, bricht der grüne Glasbehälter neben dem Professor auf, und etwas Schreckliches kommt heraus.",
+ "briefing": "Mitten im Wald steht das Labor von Professor Kugelblitz. Seine Energiemaschine hängt an den entführten Waisenkindern und am magischen Honig. Befreit die beiden Kinder Pip und Mia: Wer neben einem Kind steht, löst mit „Befreien“ sofort die Fesseln, aber nur wenn kein Gegner daneben steht. Die Maschine verpasst jedem Helden neben ihr jede Runde einen Stromschlag. Zerstört sie (Bonus), oder haltet euch fern. Der Professor flieht, wenn es ihm zu bunt wird. Achtung: Die Frischlinge sind zurück. Fällt ihre Gesundheit unter die Hälfte, bricht der grüne Glasbehälter neben dem Professor auf, und etwas Schreckliches kommt heraus.",
  "goals": [
   {
    "type": "free_all",
-   "text": "Ziel: Befreit die drei Waisenkinder"
+   "text": "Ziel: Befreit die beiden Waisenkinder"
   }
  ],
  "triggers": [
