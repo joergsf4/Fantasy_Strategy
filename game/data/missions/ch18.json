@@ -38,7 +38,7 @@
        "left": "hund",
        "right": "bienenmaedchen",
        "speaker": "bienenmaedchen",
-       "text": "Die Große da. Die Weiße. Die ist der Chef. Ich hasse Wölfe, sie sind zu laut.",
+       "text": "Die Große da. Die Weiße. Die ist die Chefin. Ich hasse Wölfe, sie sind zu laut.",
        "right_expr": "wuetend",
        "story": true
       },
@@ -299,7 +299,7 @@
        "left": "kungfu",
        "right": "",
        "speaker": "kungfu",
-       "text": "Im Schnee gilt: Nichts ist schöner als heißer Tee im Schnee. Und ich habe keinen."
+       "text": "Nichts ist schöner als heißer Tee im Schnee. Leider habe ich keinen."
       }
      ]
     }

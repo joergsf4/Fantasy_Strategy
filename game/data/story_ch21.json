@@ -32,7 +32,7 @@
    "left": "xiulan",
    "right": "oskar",
    "speaker": "xiulan",
-   "text": "Der Professor schuldet mir immer noch Geld. Und du schuldest mir eine Entschuldigung.",
+   "text": "Der Professor schuldet mir immer noch Geld. Und du, Bürschchen, schuldest mir eine Entschuldigung.",
    "left_expr": "wuetend"
   },
   {
@@ -126,7 +126,7 @@
    "left": "xiulan",
    "right": "maedchen_baer",
    "speaker": "xiulan",
-   "text": "Ich habe eine Rechnung einzutreiben. Aber meinen Weg gehe ich allein.",
+   "text": "Ich habe noch eine Rechnung einzutreiben. Und das erledige ich allein.",
    "left_expr": "lachend"
   },
   {

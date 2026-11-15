@@ -149,7 +149,7 @@
        "left": "maedchen_baer",
        "right": "bienenmaedchen",
        "speaker": "bienenmaedchen",
-       "text": "Ihr werdet den Regenten nicht aufhalten! Königin Krone wird euch… ach, egal. Stecht zu!",
+       "text": "Ihr werdet den Regenten nicht aufhalten! Und mich, die Bienenkönigin, schon gar nicht. Stecht zu, meine Süßen!",
        "right_expr": "wuetend"
       }
      ]
@@ -196,7 +196,7 @@
        "left": "elisabeth",
        "right": "",
        "speaker": "elisabeth",
-       "text": "Ein Dorf ohne Hafen. Wo soll ich hier meine Kanone festmachen? Egal, ich improvisiere.",
+       "text": "Ein Dorf ohne Hafen. Hier kann ich nicht mal ein Ruderboot festmachen. Egal, die Kanone tut's auch.",
        "left_expr": "lachend"
       }
      ]

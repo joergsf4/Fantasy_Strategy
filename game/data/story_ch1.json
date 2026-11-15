@@ -55,7 +55,7 @@
    "left": "maedchen_baer",
    "right": "elisabeth",
    "speaker": "elisabeth",
-   "text": "Und Käpt'n Elisabeth! Mein Schiff liegt zum Flicken in der Möwenbucht, und ich langweile mich hier seit Wochen zu Tode. Endlich passiert was!",
+   "text": "Und Käpt'n Elisabeth ist auch dabei! Mein Schiff liegt zum Flicken in der Möwenbucht, und ich langweile mich hier seit Wochen zu Tode. Endlich passiert was!",
    "right_expr": "lachend",
    "story": true
   },
@@ -86,7 +86,7 @@
    "left": "maedchen_baer",
    "right": "soldat_beritten",
    "speaker": "soldat_beritten",
-   "text": "Das war… ein Sicherheitsbonus. Angriff!",
+   "text": "Das ist… nur zur Sicherheit. Angriff!",
    "story": true
   },
   {
@@ -107,7 +107,7 @@
    "left": "maedchen_baer",
    "right": "bienenmaedchen",
    "speaker": "bienenmaedchen",
-   "text": "Bsssss... Der Honig des Dorfes gehört jetzt der Königin. Und ihr gehört bald dem Stachel.",
+   "text": "Bsssss... Der Honig dieses Dorfes gehört jetzt mir, der Bienenkönigin. Und ihr bekommt gleich meinen Stachel zu spüren.",
    "right_expr": "lachend",
    "story": true
   },
@@ -218,7 +218,7 @@
    "left": "maedchen_baer",
    "right": "haendler",
    "speaker": "haendler",
-   "text": "Der Regent hat meinen Marktstand beschlagnahmt, rückwirkend und mit Zinsen. Wo er verliert, werden meine Preise wieder sicher. Und wo ihr gewinnt, gibt es Beute: Gold für euch, Kundschaft für mich.",
+   "text": "Der Regent hat meinen Marktstand beschlagnahmt, rückwirkend und mit Zinsen. Wo er verliert, kann ich wieder verkaufen. Und wo ihr gewinnt, gibt es Beute: Gold für euch, Kundschaft für mich.",
    "story": true
   },
   {

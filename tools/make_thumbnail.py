@@ -97,7 +97,7 @@ def main():
     c.alpha_composite(band, (0, H - 110))
     f = ImageFont.truetype(FONT_B, 44)
     d = ImageDraw.Draw(c)
-    txt = "Rundentaktik  ·  13 Helden  ·  Lebendige 3D-Karten"
+    txt = "Rundentaktik  ·  16 Helden  ·  Lebendige 3D-Karten"
     w = d.textlength(txt, font=f)
     d.text(((W - w) / 2, H - 78), txt, font=f, fill=(250, 232, 190), stroke_width=6, stroke_fill=(30, 16, 8))
     out = OUT / "thumbnail.png"
@@ -106,4 +106,38 @@ def main():
     print(out)
 
 
+def cover():
+    """Titelbild fuer itch.io (630x500), eigenes Layout: Titel oben, alle Gesichter darunter."""
+    global W, H
+    W, H = 1260, 1000
+    c = background().convert("RGBA")
+    place(c, cutout("ritter", 680), 40, 290)
+    place(c, cutout("robo", 660), 790, 350, glow=(255, 190, 110))
+    place(c, cutout("elisabeth_lachend", 560), -90, 470)
+    place(c, cutout("maedchen_baer_lachend", 720), 380, 340)
+    shade = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    sd = ImageDraw.Draw(shade)
+    for yy in range(0, 380):
+        sd.line([(0, yy), (W, yy)], fill=(5, 8, 20, int(210 * (1 - yy / 380) ** 1.4)))
+    c.alpha_composite(shade)
+    gold_text(c, "フザケタ・", FONT_JP, 140, W / 2, 0, stroke=12)
+    gold_text(c, "タクティクス", FONT_JP, 140, W / 2, 135, stroke=12)
+    band = Image.new("RGBA", (W, 100), (0, 0, 0, 0))
+    bd = ImageDraw.Draw(band)
+    for yy in range(100):
+        bd.line([(0, yy), (W, yy)], fill=(8, 6, 16, int(220 * min(1, yy / 35))))
+    c.alpha_composite(band, (0, H - 100))
+    f = ImageFont.truetype(FONT_B, 40)
+    d = ImageDraw.Draw(c)
+    txt = "Rundentaktik  ·  16 Helden  ·  3D-Karten"
+    w = d.textlength(txt, font=f)
+    d.text(((W - w) / 2, H - 70), txt, font=f, fill=(250, 232, 190), stroke_width=5, stroke_fill=(30, 16, 8))
+    out = ROOT / "out" / "itch" / "cover.png"
+    out.parent.mkdir(parents=True, exist_ok=True)
+    c.convert("RGB").resize((630, 500), Image.LANCZOS).save(out)
+    c.convert("RGB").save(OUT / "cover_gross.png")
+    print(out)
+
+
 main()
+cover()
