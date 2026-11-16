@@ -27,6 +27,12 @@ func _initialize() -> void:
 	check(Settings.get_value("fps") == 3 or Settings.get_value("fps") < 4, "Werte bleiben im Bereich")
 	Settings.set_value("shadows", 99)
 	check(Settings.get_value("shadows") == 3, "Wert wird begrenzt")
+	# 3D-Aufloesung: nie mehr als MAX_3D_LINES Zeilen, kleinere Fenster unveraendert
+	Settings.set_value("scale", 2)
+	check(is_equal_approx(Settings.scale_3d(720.0), 1.0) and is_equal_approx(Settings.scale_3d(1080.0), 1.0), "bis 1080 Zeilen volle Aufloesung")
+	check(is_equal_approx(Settings.scale_3d(2160.0), 0.5), "4K/Retina: auf 1080 Zeilen begrenzt")
+	Settings.set_value("scale", 0)
+	check(is_equal_approx(Settings.scale_3d(2160.0), 0.5) and is_equal_approx(Settings.scale_3d(720.0), 0.5), "50 % bleibt 50 %")
 	# Speichern und Laden
 	Settings.set_value("scale", 1)
 	Settings.set_value("particles", 2)

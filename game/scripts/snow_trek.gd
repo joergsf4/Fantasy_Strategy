@@ -53,6 +53,7 @@ func _ready() -> void:
 	theme = UiTheme.get_theme()
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_STOP
+	Settings.hold_main_3d(self)      # die verdeckte Kampfkarte nicht mitrendern
 	_rng.seed = 7
 	_noise.seed = 11
 	_noise.frequency = 0.07
@@ -63,7 +64,7 @@ func _ready() -> void:
 	_vp = SubViewport.new()
 	_vp.size = Vector2i(1280, 720)
 	_vp.own_world_3d = true
-	_vp.msaa_3d = Viewport.MSAA_4X
+	Settings.apply_aa(_vp)      # Kantenglaettung aus den Grafikoptionen (vorher fest MSAA 4x)
 	holder.add_child(_vp)
 	_build_world()
 	_build_party()

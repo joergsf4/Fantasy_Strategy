@@ -50,6 +50,7 @@ func _ready() -> void:
 	theme = UiTheme.get_theme()
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_STOP
+	Settings.hold_main_3d(self)      # die verdeckte Kampfkarte nicht mitrendern
 	var bg := ColorRect.new()
 	bg.color = Color.BLACK
 	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -137,7 +138,7 @@ func _build_sea() -> void:
 	var vp := SubViewport.new()
 	vp.size = Vector2i(1280, 720)
 	vp.own_world_3d = true
-	vp.msaa_3d = Viewport.MSAA_4X
+	Settings.apply_aa(vp)      # Kantenglaettung aus den Grafikoptionen (vorher fest MSAA 4x)
 	holder.add_child(vp)
 	var sky_mat := ProceduralSkyMaterial.new()
 	sky_mat.sky_top_color = Color(0.32, 0.45, 0.72)

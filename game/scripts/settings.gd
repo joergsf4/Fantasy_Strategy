@@ -38,6 +38,9 @@ const SCALE := [0.5, 0.75, 1.0]
 const PARTICLES := [0.4, 1.0, 1.6]
 const VERSION := 2            # Einstellungsdatei: 2 = Bildrate ab Werk 60, Schatten ab Werk Mittel (alte Werkswerte werden einmal umgestellt)
 const BACKGROUND_FPS := 10    # Fenster nicht im Vordergrund (Alt-Tab, minimiert): kaum Last
+## Hoechstens so viele Bildzeilen rendert die 3D-Szene (Retina/4K im Vollbild: sonst bis zu achtmal so viele Pixel wie 1280x720,
+## Laptops laufen heiss). "Renderaufloesung" gilt zusaetzlich; Menues und Schrift (2D) bleiben in voller Aufloesung.
+const MAX_3D_LINES := 1080.0      # gemessen (Retina 2940x1846, Mission 12, 60 FPS): 14 ms GPU pro Bild ohne Grenze, 7,5 ms mit
 
 static var values: Dictionary = {}
 
@@ -134,14 +137,49 @@ static func apply(vp: Viewport = null) -> void:
 	Engine.max_fps = FPS[get_value("fps")] if focused else BACKGROUND_FPS
 	var v: Viewport = vp if vp != null else (Engine.get_main_loop() as SceneTree).root
 	v.scaling_3d_mode = Viewport.SCALING_3D_MODE_BILINEAR
-	v.scaling_3d_scale = SCALE[get_value("scale")]
-	var aa := get_value("aa")
-	v.screen_space_aa = Viewport.SCREEN_SPACE_AA_FXAA if aa == 1 else Viewport.SCREEN_SPACE_AA_DISABLED
-	v.msaa_3d = Viewport.MSAA_2X if aa == 2 else (Viewport.MSAA_4X if aa == 3 else Viewport.MSAA_DISABLED)
+	update_3d_scale(v)
+	apply_aa(v)
 	var sz: int = SHADOW_SIZE[get_value("shadows")]
 	if sz > 0:
 		RenderingServer.directional_shadow_atlas_set_size(sz, true)
 	(Engine.get_main_loop() as SceneTree).call_group("env_adjust", "apply_adjustments")      # Helligkeit und Kontrast der laufenden Szene
+
+
+## 3D-Renderaufloesung: Option "Renderaufloesung", aber nie mehr als MAX_3D_LINES Zeilen (main.gd ruft das auch bei jeder Fenstergroesse).
+static func update_3d_scale(vp: Viewport = null) -> void:
+	_ensure()
+	var v: Viewport = vp if vp != null else (Engine.get_main_loop() as SceneTree).root
+	var h: float = (v as Window).size.y if v is Window else v.get_visible_rect().size.y      # Fenster: echte Pixel (Retina)
+	v.scaling_3d_scale = scale_3d(h)
+
+
+## Faktor der 3D-Aufloesung fuer ein Fenster mit h echten Bildzeilen.
+static func scale_3d(h: float) -> float:
+	var s: float = SCALE[get_value("scale")]
+	if h > 0.0:
+		s = minf(s, MAX_3D_LINES / h)
+	return s
+
+
+## Kantenglaettung fuer eigene 3D-Welten (Zwischensequenzen in SubViewports): gleiche Option wie die Kampfkarte.
+static func apply_aa(v: Viewport) -> void:
+	var aa := get_value("aa")
+	v.screen_space_aa = Viewport.SCREEN_SPACE_AA_FXAA if aa == 1 else Viewport.SCREEN_SPACE_AA_DISABLED
+	v.msaa_3d = Viewport.MSAA_2X if aa == 2 else (Viewport.MSAA_4X if aa == 3 else Viewport.MSAA_DISABLED)
+
+
+## Bildschirmfuellende Zwischensequenz mit eigener 3D-Welt: solange node lebt, rendert das Hauptfenster keine 3D-Szene
+## (die Kampfkarte darunter ist ohnehin verdeckt und wuerde sonst jedes Bild mitgerendert).
+static var _hold_3d := 0
+
+static func hold_main_3d(node: Node) -> void:
+	var root := (Engine.get_main_loop() as SceneTree).root
+	_hold_3d += 1
+	root.disable_3d = true
+	node.tree_exiting.connect(func() -> void:
+		_hold_3d = maxi(0, _hold_3d - 1)
+		if _hold_3d == 0:
+			root.disable_3d = false, CONNECT_ONE_SHOT)
 
 
 ## Lautstaerke von Musik und Effekten auf die Busse legen (legt den Musik-Bus bei Bedarf an). Auch im Headless-Betrieb harmlos.
