@@ -1,9 +1,10 @@
 shader_type spatial;
 render_mode unshaded, cull_disabled, depth_draw_opaque;
+#include "res://shaders/farbraum.gdshaderinc"
 // Landschafts-Sprite (Baum, Busch, Fels): zeigt wie die Figuren immer zur Kamera (volles Billboard, Fuss am Boden),
 // scharfe Pixelkanten per Alpha-Schwelle, die Krone wiegt sich leicht im Wind. Farbe je Instanz (MultiMesh) = Tonung.
 
-uniform sampler2D tex : source_color, filter_linear_mipmap, repeat_disable;
+uniform sampler2D tex : filter_linear_mipmap, repeat_disable;
 uniform float sway : hint_range(0.0, 0.2) = 0.045;
 uniform float brightness : hint_range(0.5, 1.5) = 0.97;
 uniform float desaturate : hint_range(0.0, 1.0) = 0.0;
@@ -25,7 +26,7 @@ void vertex() {
 void fragment() {
 	vec4 c = texture(tex, UV);
 	float grey = dot(c.rgb, vec3(0.299, 0.587, 0.114));
-	ALBEDO = mix(c.rgb, vec3(grey), desaturate) * tint * brightness;
+	ALBEDO = LIN(mix(c.rgb, vec3(grey), desaturate) * tint * brightness);
 	ALPHA = c.a;
 	ALPHA_SCISSOR_THRESHOLD = 0.5;
 }

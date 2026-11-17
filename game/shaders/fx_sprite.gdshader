@@ -1,10 +1,11 @@
 shader_type spatial;
 render_mode blend_mix, unshaded, cull_disabled, depth_draw_never, shadows_disabled;
+#include "res://shaders/farbraum.gdshaderinc"
 
 // Effekt-Sprite: immer zur Kamera gedreht, mit eigenem Roll (Drehung um die Blickachse).
 // fx.gd erzeugt daraus eine additive Variante (blend_mix -> blend_add).
-uniform sampler2D tex : source_color, filter_linear_mipmap;
-uniform vec4 tint : source_color = vec4(1.0);
+uniform sampler2D tex : filter_linear_mipmap, repeat_disable;
+uniform vec4 tint = vec4(1.0);
 uniform float alpha = 1.0;
 uniform float glow = 1.0;
 uniform float roll = 0.0;
@@ -28,6 +29,6 @@ void vertex() {
 
 void fragment() {
 	vec4 t = texture(tex, UV);
-	ALBEDO = t.rgb * tint.rgb * vcol.rgb * glow;
+	ALBEDO = LIN(t.rgb * tint.rgb * vcol.rgb * glow);
 	ALPHA = t.a * tint.a * vcol.a * alpha;
 }

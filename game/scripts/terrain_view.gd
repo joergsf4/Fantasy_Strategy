@@ -640,6 +640,7 @@ func _build_mesh_at(k: MeshKit, x: float, y: float, z: float, name: String) -> v
 	mi.mesh = k.build()
 	var mat := StandardMaterial3D.new()
 	mat.vertex_color_use_as_albedo = true
+	mat.vertex_color_is_srgb = true      # Vertexfarben sind sRGB (sonst unter Metal blasser als unter OpenGL)
 	mat.roughness = 1.0
 	mi.material_override = mat
 	mi.position = Vector3(x, y, z)

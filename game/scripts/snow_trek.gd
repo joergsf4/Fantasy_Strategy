@@ -120,6 +120,7 @@ func _build_world() -> void:
 	land.mesh = _terrain_mesh()
 	var m := StandardMaterial3D.new()
 	m.vertex_color_use_as_albedo = true
+	m.vertex_color_is_srgb = true      # Vertexfarben sind sRGB (sonst unter Metal blasser als unter OpenGL)
 	m.roughness = 1.0
 	m.metallic_specular = 0.0
 	land.material_override = m
@@ -276,6 +277,7 @@ func _flake_mesh(size: float) -> QuadMesh:
 	m.albedo_texture = _flake_tex()
 	m.albedo_color = Color(1, 1, 1, 0.85)
 	m.vertex_color_use_as_albedo = true
+	m.vertex_color_is_srgb = true      # Vertexfarben sind sRGB (sonst unter Metal blasser als unter OpenGL)
 	q.material = m
 	return q
 

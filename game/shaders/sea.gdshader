@@ -1,5 +1,6 @@
 shader_type spatial;
 render_mode blend_mix, cull_disabled, specular_schlick_ggx;
+#include "res://shaders/farbraum.gdshaderinc"
 
 // Wasser: Vertexfarbe R = Wassertiefe in Kacheln (<= 0 = kein Wasser).
 uniform float t_sea = 0.0;            // Zeit der Szene (gleiche Formel wie sea_height() in interlude.gd)
@@ -73,7 +74,7 @@ void fragment() {
 	col = mix(col, vec3(0.95, 0.98, 1.0), foam * 0.8);
 
 	float a = smoothstep(0.0, 0.04, depth) * 0.45 + smoothstep(0.02, 0.35, depth) * 0.45;
-	ALBEDO = col;
+	ALBEDO = LIN(col);
 	ALPHA = clamp(max(a, foam * 0.85), 0.0, 0.93);
 	ROUGHNESS = 0.18;
 	SPECULAR = 0.6;

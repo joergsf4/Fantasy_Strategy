@@ -467,6 +467,7 @@ func _storm_loop(sun: DirectionalLight3D) -> void:
 			y += strike_rng.randf_range(34.0, 64.0)
 		bolt.points = pts
 		bolt.visible = true
+		base_energy = sun.light_energy      # aktuell lesen (Farbraum.match_sun kann sie nach dem Start angehoben haben)
 		var tw := create_tween()
 		tw.tween_property(flash, "modulate:a", 0.55, 0.04)
 		tw.parallel().tween_property(sun, "light_energy", 2.2, 0.04)
@@ -783,6 +784,7 @@ func _far_lightning_loop(sun: DirectionalLight3D) -> void:
 		await get_tree().create_timer(0.8 if OS.get_environment("SHOT_STORM") != "" else rng2.randf_range(7.0, 15.0)).timeout
 		if not is_inside_tree() or state == State.OVER:
 			return
+		base_energy = sun.light_energy
 		var tw := create_tween()
 		tw.tween_property(flash, "modulate:a", 0.22, 0.05)
 		tw.parallel().tween_property(sun, "light_energy", base_energy * 1.5, 0.05)
@@ -911,6 +913,7 @@ func _build_environment() -> void:
 		_apply_swamp(env, sun)
 	if map_data.get("mood", "") in ["nacht_regen", "nacht", "gewitter", "nacht_schnee"]:
 		_apply_night_rain(env, sun)
+	Farbraum.match_sun(sun, env)      # Metal: Sonne wie unter OpenGL (vor dem Wetter, Blitze lesen die Sonnenhelligkeit)
 	for wname: String in map_data.get("weather", []):      # Kartenfeld "weather": ["pollen", "drizzle", ...]
 		_build_weather(wname, sun)
 	var center := Vector3((grid.width - 1) / 2.0, 0, (grid.height - 1) / 2.0)
@@ -1264,11 +1267,7 @@ func _show_card(u: Dictionary) -> void:
 	_card.visible = true
 	var id: String = u["id"]
 	var d: Dictionary = unit_defs[id]
-	var pid: String = d.get("portrait", id)
-	var path := TOKEN_DIR + pid + ".png"
-	if not ResourceLoader.exists(path):
-		path = PORTRAIT_DIR + pid + ".png"
-	_card_icon.texture = load(path)
+	_card_icon.texture = _portrait_tex(d.get("portrait", id))      # zwischengespeichert: sonst laedt jeder Wechsel der Maus auf eine andere Figur das Bild neu (ca. 17 ms)
 	_card_name.text = "%s%s" % [u["name"], "" if u["team"] == "p" else "  (Gegner)"]
 	_card_hp.max_value = u["maxhp"]
 	_card_hp.value = u["hp"]
@@ -2587,6 +2586,7 @@ func _make_object(o: Dictionary) -> void:
 	var iron := Color(0.3, 0.3, 0.34)
 	var mat := StandardMaterial3D.new()
 	mat.vertex_color_use_as_albedo = true
+	mat.vertex_color_is_srgb = true      # Vertexfarben sind sRGB (sonst unter Metal blasser als unter OpenGL)
 	mat.roughness = 1.0
 	var root := Node3D.new()
 	root.position = to_world(o["pos"])
@@ -2772,6 +2772,7 @@ func _make_bridge(o: Dictionary) -> void:
 			kit.box(Vector3(x, 0.1, z), Vector3(0.05, 0.22, 0.05), dark)
 	var mat := StandardMaterial3D.new()
 	mat.vertex_color_use_as_albedo = true
+	mat.vertex_color_is_srgb = true      # Vertexfarben sind sRGB (sonst unter Metal blasser als unter OpenGL)
 	mat.roughness = 1.0
 	var mi := MeshInstance3D.new()
 	mi.mesh = kit.build()

@@ -1,5 +1,6 @@
 shader_type spatial;
 render_mode specular_disabled;
+#include "res://shaders/farbraum.gdshaderinc"
 
 // Baeume, Buesche, Felsen: Vertexfarbe * Instanzfarbe, dazu koerniges Blattwerk.
 varying vec3 wp;
@@ -18,6 +19,6 @@ void vertex() {
 
 void fragment() {
 	float g = hash21(floor(wp.xz * 26.0 + wp.y * 26.0));
-	ALBEDO = COLOR.rgb * (0.88 + 0.24 * g);
+	ALBEDO = LIN(COLOR.rgb * (0.88 + 0.24 * g));
 	ROUGHNESS = 1.0;
 }

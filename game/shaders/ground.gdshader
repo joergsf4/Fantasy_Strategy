@@ -1,5 +1,6 @@
 shader_type spatial;
 render_mode specular_disabled;
+#include "res://shaders/farbraum.gdshaderinc"
 
 // Boden: Gras, Waldboden, Fels, Pfad und Sand/Schlamm am Ufer, alles prozedural.
 // Vertexfarbe = Gewichte (R Gras, G Waldboden, B Fels, A Pfad).
@@ -160,7 +161,7 @@ void fragment() {
 	col *= 1.0 - grid_strength * line * inside * (1.0 - snow);
 	col *= 1.0 - 0.1 * (1.0 - inside);
 
-	ALBEDO = col;
-	EMISSION = vec3(1.0, 0.17, 0.015) * ember * 0.55 + mix(vec3(0.1, 0.75, 1.0), vec3(0.75, 0.3, 1.0), throne_hall) * glow_seam * inside_b * base_floor * (0.9 - 0.4 * throne_hall);
+	ALBEDO = LIN(col);
+	EMISSION = LIN(vec3(1.0, 0.17, 0.015) * ember * 0.55 + mix(vec3(0.1, 0.75, 1.0), vec3(0.75, 0.3, 1.0), throne_hall) * glow_seam * inside_b * base_floor * (0.9 - 0.4 * throne_hall));
 	ROUGHNESS = 1.0;
 }

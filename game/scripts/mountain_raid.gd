@@ -131,10 +131,12 @@ func _build_world() -> void:
 	sun.shadow_enabled = true
 	sun.directional_shadow_max_distance = 70.0
 	_vp.add_child(sun)
+	Farbraum.match_sun(sun, env)      # Metal: Sonne wie unter OpenGL
 	var land := MeshInstance3D.new()
 	land.mesh = _terrain_mesh()
 	var m := StandardMaterial3D.new()
 	m.vertex_color_use_as_albedo = true
+	m.vertex_color_is_srgb = true      # Vertexfarben sind sRGB (sonst unter Metal blasser als unter OpenGL)
 	m.roughness = 1.0
 	m.metallic_specular = 0.0
 	land.material_override = m
@@ -246,6 +248,7 @@ func _flake_mesh(size: float) -> QuadMesh:
 	m.albedo_texture = gt
 	m.albedo_color = Color(1, 1, 1, 0.85)
 	m.vertex_color_use_as_albedo = true
+	m.vertex_color_is_srgb = true      # Vertexfarben sind sRGB (sonst unter Metal blasser als unter OpenGL)
 	q.material = m
 	return q
 

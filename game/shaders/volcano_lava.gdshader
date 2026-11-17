@@ -1,14 +1,15 @@
 shader_type spatial;
 render_mode unshaded, cull_disabled, depth_prepass_alpha, shadows_disabled;
+#include "res://shaders/farbraum.gdshaderinc"
 
-uniform sampler2D tex : source_color, filter_linear_mipmap, repeat_disable;
+uniform sampler2D tex : filter_linear_mipmap, repeat_disable;
 uniform float elapsed = 0.0;
 uniform float phase = 0.0;
 uniform float strength = 1.0;
 uniform vec2 red_green_threshold = vec2(0.08, 0.24);
 uniform vec2 red_blue_threshold = vec2(0.08, 0.30);
 uniform vec2 brightness_threshold = vec2(0.12, 0.30);
-uniform vec4 tint : source_color = vec4(1.0);
+uniform vec4 tint = vec4(1.0);
 
 void vertex() {
 	vec3 center = (MODEL_MATRIX * vec4(0.0, 0.0, 0.0, 1.0)).xyz;
@@ -28,6 +29,6 @@ void fragment() {
 	float pulse = sin(elapsed * 2.4 + phase + UV.y * 22.0 + UV.x * 9.0)
 		* 0.65 + sin(elapsed * 3.7 + phase - UV.y * 37.0 + UV.x * 19.0) * 0.35;
 	vec3 cycled = original.rgb * (vec3(1.0) + vec3(0.12, 0.38, 0.16) * pulse * strength);
-	ALBEDO = mix(original.rgb, cycled, fire) * tint.rgb;
+	ALBEDO = LIN(mix(original.rgb, cycled, fire) * tint.rgb);
 	ALPHA = original.a * tint.a;
 }

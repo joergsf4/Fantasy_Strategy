@@ -1,9 +1,10 @@
 shader_type spatial;
 render_mode unshaded, cull_disabled, depth_test_disabled, depth_draw_never, shadows_disabled, blend_mix;
+#include "res://shaders/farbraum.gdshaderinc"
 
 // Lebensbalken ueber dem Kopf: dunkler Rahmen in Teamfarbe, Fuellung nach Lebensanteil (gruen, gelb, rot), immer zur Kamera gedreht.
 uniform float ratio : hint_range(0.0, 1.0) = 1.0;
-uniform vec4 team_col : source_color = vec4(0.2, 0.5, 1.0, 1.0);
+uniform vec4 team_col = vec4(0.2, 0.5, 1.0, 1.0);
 
 varying vec2 vuv;
 
@@ -30,6 +31,6 @@ void fragment() {
 		float tick = step(0.985, fract(fx * 4.0 + 0.0005)) * 0.12;     // kleine Teilstriche (Viertel)
 		col = fx <= ratio ? fill * (1.0 + tick + (1.0 - uv.y) * 0.15) : vec3(0.08, 0.07, 0.1);
 	}
-	ALBEDO = col;
+	ALBEDO = LIN(col);
 	ALPHA = 1.0;
 }

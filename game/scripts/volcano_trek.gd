@@ -81,9 +81,10 @@ func _build_world() -> void:
 	shader.code = """
 shader_type spatial;
 render_mode diffuse_burley;
+#include "res://shaders/farbraum.gdshaderinc"
 void fragment() {
 	float shade = clamp(COLOR.r, 0.0, 1.0);
-	ALBEDO = mix(vec3(0.075, 0.055, 0.055), vec3(0.27, 0.19, 0.17), shade);
+	ALBEDO = LIN(mix(vec3(0.075, 0.055, 0.055), vec3(0.27, 0.19, 0.17), shade));
 	ROUGHNESS = 1.0;
 }
 """

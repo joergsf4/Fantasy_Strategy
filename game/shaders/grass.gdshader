@@ -1,5 +1,6 @@
 shader_type spatial;
 render_mode cull_disabled, specular_disabled;
+#include "res://shaders/farbraum.gdshaderinc"
 
 // Grashalme und Blumen im Wind. Vertexfarbe a: 0 = Halm/Stiel, 1 = Blueten-Kopf (Instanzfarbe)
 uniform float wind = 0.035;
@@ -13,6 +14,6 @@ void vertex() {
 }
 
 void fragment() {
-	ALBEDO = COLOR.rgb;
+	ALBEDO = LIN(COLOR.rgb);
 	ROUGHNESS = 1.0;
 }

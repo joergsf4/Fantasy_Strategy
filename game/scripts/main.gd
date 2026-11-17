@@ -43,6 +43,16 @@ func _ready() -> void:
 		Settings.load_file()
 		Settings.apply()                         # Grafikoptionen (Standard: Vollbild; F11 oder Pause-Menue schalten um)
 		get_tree().root.size_changed.connect(func() -> void: Settings.update_3d_scale())      # 3D-Aufloesung begrenzen, auch nach Vollbild/Fenster
+	if RendererChoice.wanted():              # Mac: Metal oder OpenGL waehlen (ein Wechsel startet neu)
+		var layer := CanvasLayer.new()
+		layer.layer = 20
+		add_child(layer)
+		var rc := RendererChoice.new()
+		layer.add_child(rc)
+		var restarting: bool = await rc.done
+		if restarting:
+			return
+		layer.queue_free()
 	_pause = PauseHost.new()
 	_pause.save_cb = func() -> void: party.save()
 	_pause.can_save_cb = func() -> bool: return _in_game
